@@ -15,11 +15,11 @@ from pathlib import Path
 
 if __package__:
     from .photo_story_motion import validate_story_motion
-    from .photo_issues import (ROOT, image_path, issue_url, load_photo_issues,
+    from .photo_issues import (ROOT, MODEL_CHAT_URLS, image_path, issue_url, load_photo_issues,
                                photo_image_url, published_issues)
 else:
     from photo_story_motion import validate_story_motion
-    from photo_issues import (ROOT, image_path, issue_url, load_photo_issues,
+    from photo_issues import (ROOT, MODEL_CHAT_URLS, image_path, issue_url, load_photo_issues,
                              photo_image_url, published_issues)
 
 JST = timezone(timedelta(hours=9))
@@ -35,6 +35,7 @@ VOICE_PROFILES = {
 }
 FIELDS = {"id", "model_id", "published_at", "setting", "text", "source"}
 MAX_PHOTO_STORIES = 5000
+STORY_RECORD_PATHS = frozenset("content/photo_stories/" + model + ".json" for model in MODEL_CHAT_URLS)
 STORY_STRIP_POSTS_PER_MODEL = 3
 # Preserve the initial same-day history; new daily publication uses JST dates.
 DAILY_POST_LIMIT_START_JST = date(2026, 11, 17)
@@ -64,7 +65,8 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
     if now.tzinfo is None:
         raise ValueError("Photo story clock needs a timezone")
     if (not isinstance(data, dict) or set(data) != {"schema_version", "stories"}
-            or data["schema_version"] != 1 or not isinstance(data["stories"], list)
+            or type(data["schema_version"]) is not int or data["schema_version"] != 1
+            or not isinstance(data["stories"], list)
             or len(data["stories"]) > MAX_PHOTO_STORIES):
         raise ValueError("Invalid photo story catalog")
     models = {model["id"]: model for model in catalog["models"]}
@@ -154,15 +156,44 @@ def validate_photo_stories(data, *, catalog, published, root=ROOT, now=None):
     return tuple(sorted(result, key=lambda story: _stamp(story["publishedAt"]), reverse=True))
 
 
-def load_photo_stories(root=ROOT, *, catalog=None, published=None, now=None):
-    path = Path(root) / "content/photo_stories.json"
-    if not path.exists():
-        return ()
-    if path.is_symlink():
+def read_story_document(root=ROOT):
+    """Read the original history and the seven independent creator streams."""
+    content = Path(root) / "content"
+    history, directory = content / "photo_stories.json", content / "photo_stories"
+    if any(path.is_symlink() for path in (content, history, directory)):
         raise ValueError("Unsafe photo story catalog symlink")
+    files = [history]
+    if directory.exists():
+        expected = {Path(path).name for path in STORY_RECORD_PATHS}
+        if {path.name for path in directory.glob("*.json")} != expected:
+            raise ValueError("Missing or unexpected creator story file")
+        files.extend(directory / name for name in sorted(expected))
+    stories = []
+    for path in files:
+        if path.is_symlink() or not path.is_file():
+            raise ValueError("Unsafe or missing photo story catalog")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if (not isinstance(data, dict) or set(data) != {"schema_version", "stories"}
+                or type(data["schema_version"]) is not int or data["schema_version"] != 1
+                or not isinstance(data["stories"], list)
+                or len(stories) + len(data["stories"]) > MAX_PHOTO_STORIES):
+            raise ValueError("Invalid photo story catalog")
+        if path != history and any(not isinstance(row, dict) or row.get("model_id") != path.stem
+                                   for row in data["stories"]):
+            raise ValueError("Creator story file contains another model")
+        stories.extend(data["stories"])
+    return {"schema_version": 1, "stories": stories}
+
+
+def load_photo_stories(root=ROOT, *, catalog=None, published=None, now=None):
+    content = Path(root) / "content"
+    if not any(path.exists() or path.is_symlink() for path in
+               (content / "photo_stories.json", content / "photo_stories")):
+        return ()
+    document = read_story_document(root)
     catalog = catalog if catalog is not None else load_photo_issues(root)
     published = published if published is not None else published_issues(catalog, root=root, now=now)
-    return validate_photo_stories(json.loads(path.read_text(encoding="utf-8")),
+    return validate_photo_stories(document,
                                   catalog=catalog, published=published, root=root, now=now)
 
 

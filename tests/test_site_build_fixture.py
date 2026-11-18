@@ -141,6 +141,10 @@ if output:
         path = "content/photo_stories.json"
         self.assertTrue(fixture.photo_story_data_only([("M", path)]))
         self.assertFalse(fixture.market_data_only([("M", path)]))
+        for model_path in fixture.STORY_RECORD_PATHS:
+            self.assertTrue(fixture.photo_story_data_only([("M", model_path)]))
+            self.assertEqual(fixture.python_test_command([("M", model_path)]),
+                             fixture.python_test_command([("M", path)]))
         for changes in (None, [], [("A", path)], [("D", path)], [("T", path)],
                         [("R100", path)], [("?", path)], [("M", path + ".backup")],
                         [("M", "./" + path)], [("M", "content/photo_issues.json")],
@@ -150,7 +154,12 @@ if output:
                         [("M", path), ("M", "tests/test_photo_stories.py")],
                         [("M", path), ("M", ".github/workflows/check.yml")],
                         [("M", path), ("M", "docs/ARCHITECTURE.md")],
-                        [("M", path), ("M", "unknown")]):
+                        [("M", path), ("M", "unknown")],
+                        [("M", path), ("M", "content/photo_stories/shioba-rio.json")],
+                        [("M", "content/photo_stories/nonmember.json")],
+                        [("A", "content/photo_stories/shioba-rio.json")],
+                        [("M", "content/photo_stories/shioba-rio.json"),
+                         ("M", "content/photo_stories/nagino-saya.json")]):
             with self.subTest(changes=changes):
                 self.assertFalse(fixture.photo_story_data_only(changes))
                 self.assertEqual(fixture.python_test_command(changes),

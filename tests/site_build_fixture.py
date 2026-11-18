@@ -11,6 +11,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if __name__ == "__main__":
+    sys.path.insert(0, str(ROOT))
+from scripts.photo_stories import STORY_RECORD_PATHS
+
 _built = False
 MARKET_DATA_PATHS = frozenset({
     "content/market_bulletins.json", "content/market_outlooks.json",
@@ -69,8 +73,10 @@ def market_data_only(changes):
 
 
 def photo_story_data_only(changes):
-    return bool(changes) and all(status == "M" and path == PHOTO_STORY_PATH
-                                 for status, path in changes)
+    if not changes or len(changes) != 1:
+        return False
+    status, path = changes[0]
+    return status == "M" and (path == PHOTO_STORY_PATH or path in STORY_RECORD_PATHS)
 
 
 def native_image_engine_tests_required(changes, event):

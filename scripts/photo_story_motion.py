@@ -83,7 +83,11 @@ def generate(story_id, *, root):
     stories = load_photo_stories(root)
     selected = next(story for story in stories if story["id"] == story_id)
     catalog = load_photo_issues(root)
+    creator_path = root / "content/photo_stories" / (selected["modelId"] + ".json")
     document_path = root / "content/photo_stories.json"
+    if creator_path.is_file() and any(row["id"] == story_id for row in
+                                      json.loads(creator_path.read_text(encoding="utf-8"))["stories"]):
+        document_path = creator_path
     original = document_path.read_bytes()
     document = json.loads(original)
     raw = next(story for story in document["stories"] if story["id"] == story_id)
