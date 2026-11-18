@@ -226,6 +226,36 @@
       }
     },
     {
+      "id": "kiritani-sumire-post-20261118142211342000",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-18T14:22:11.342+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後、薄い青のニットに古い銀色のブローチを合わせてみた。どちらの位置がいいか鏡の前で迷って、結局まだ決まらない。こういう時間、案外好き。",
+      "source": {
+        "issue_slug": "november-favorite-colors-sumire-007",
+        "cut_id": "06",
+        "image_sha256": "f934f64fb03eaf2b8f4ed4717c7b5e78d1d60197296acf9aec9660256d6ff8a0"
+      }
+    },
+    {
+      "id": "amane-hikari-post-20261118155237067000",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-18T15:52:37+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "衣装合わせで袖を動かしたら、思ったより大きく広がってびっくり！ さっきから鏡の前で何度もターンしてる。帰る時間、また忘れそう😂",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "06",
+        "image_sha256": "22b6bcde3a24639f6ab6e5f63e9fa49ce6a30d7da14e6ced5fa061ddc4c242eb"
+      }
+    },
+    {
       "id": "shiramine-yuki-post-20261118182015900000",
       "model_id": "shiramine-yuki",
       "published_at": "2026-11-18T18:20:15.900+09:00",
