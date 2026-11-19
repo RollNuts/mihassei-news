@@ -9691,6 +9691,174 @@
         "jpeg_quality": 84
       }
     }
+  ,
+    "reskilling-certificates-twelve-paid-placements-seven": {
+  "article_sha256": "c3c128c593b548cb2b471df7053f3e2bea4bd9cfb5718eda85886633f3e248e7",
+  "bytes": 152275,
+  "generated_at": "2026-11-19T12:29:11.344Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "26ccfb11-e5c1-44a1-be1e-b6e16e520197",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:26ccfb11-e5c1-44a1-be1e-b6e16e520197",
+  "generation_prompt": "A 54-year-old Japanese woman working as a warehouse inspector tilts a cardboard parcel to check its wet underside beside a stopped conveyor. She wears practical work clothes and gloves, with a small strip of red tape on the parcel marking it for inspection; a colleague stands nearby in an orderly modern distribution warehouse. The damp lower corner of the box is visible. A candid realistic documentary photograph with natural overhead light, believable skin, hands, cloth and corrugated cardboard textures, no readable writing, labels, logos, or real person likeness, horizontal 16:9.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "e78d41ded4446455d71a65a179c79c032dace2878a19f0a1ea8b8d71b98b1a7a",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:9549c1a0-c259-4728-b3e7-d7b814657f0f",
+    "instanceID": "xmp:iid:26ccfb11-e5c1-44a1-be1e-b6e16e520197",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          212,
+          70,
+          205,
+          170,
+          173,
+          197,
+          21,
+          216,
+          49,
+          122,
+          110,
+          200,
+          182,
+          225,
+          254,
+          218,
+          24,
+          243,
+          5,
+          52,
+          88,
+          228,
+          27,
+          199,
+          44,
+          255,
+          152,
+          255,
+          193,
+          190,
+          48,
+          37
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-19T12:29:04.223587815Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-19T12:29:04.223591065Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-19T12:29:04.222914869Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "8b3f2c3b0be9d16990af2902066ba62b359caad044af3aa76882fff3013f9669",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:c3c128c593b548cb2b471df7053f3e2bea4bd9cfb5718eda85886633f3e248e7",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/5d2fb206f28f/generated_images as /workspace/scratch/5d2fb206f28f/generated_images/exec-10f62351-438d-4017-b13c-225013c8e796.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-19T12:29:11.344Z",
+    "bytes": 2302925,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "c470fe5382b0b3e100f404a9b4de4217fde1c6b9050bbf7a4d7ce8e63e05728a",
+    "candidate_branch": "native-image-candidate/reskilling-certificates-twelve-paid-placements-seven/c3c128c593b548cb-ef6cae4e01cb",
+    "candidate_commit": "d599956894eb719b41af279fec19438822e8f25a",
+    "receipt_path": "maintenance/native-image-candidates/reskilling-certificates-twelve-paid-placements-seven/receipt.json",
+    "receipt_sha256": "245dba26cde9046e4abe6beeb2e4258e96ec2cb11bc1a1cfe12d632a12e2b18b",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/reskilling-certificates-twelve-paid-placements-seven/source.png.part000",
+        "bytes": 524288,
+        "sha256": "36273cbe84dfc1a8c98868c900aa3258427cd15b6791a646db3af2d87080e8c6",
+        "blob_sha": "32a48d36d38eefc0336ef30007fa5d57f6dfd91e"
+      },
+      {
+        "path": "maintenance/native-image-candidates/reskilling-certificates-twelve-paid-placements-seven/source.png.part001",
+        "bytes": 524288,
+        "sha256": "8a17e8f0a245e666030d68e40724c186a022996c65a2818c568f14b25a6b8d19",
+        "blob_sha": "47f1c1b94d3c45da49ccfefe7a6ae294e7a0e94e"
+      },
+      {
+        "path": "maintenance/native-image-candidates/reskilling-certificates-twelve-paid-placements-seven/source.png.part002",
+        "bytes": 524288,
+        "sha256": "b9db44fbc1572eb68b68bf3bc15a89b565da599d94fae3c6963d634e66caace2",
+        "blob_sha": "1ccbf3935ffefe7e2339f372a99c9b5ef1d97207"
+      },
+      {
+        "path": "maintenance/native-image-candidates/reskilling-certificates-twelve-paid-placements-seven/source.png.part003",
+        "bytes": 524288,
+        "sha256": "7471fcf184fa10e2039a34bd8b8cafc0f96a206e9235b7d54991acf980ca2b1e",
+        "blob_sha": "17714609c2ae2c025fdc6a43b8922a840741b5ca"
+      },
+      {
+        "path": "maintenance/native-image-candidates/reskilling-certificates-twelve-paid-placements-seven/source.png.part004",
+        "bytes": 205773,
+        "sha256": "c19388e1c6eaf29816d72682d9b3fbb399dc15d4e0fc0dc4840bb4c35d86d1fe",
+        "blob_sha": "3c4e60c3c015f8313a4425bb2a177cada071c2a0"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "61129d5d0e965e6a9b57fb92df3432c886294a99",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "2a38330bb53e24879639f15740e6bd6ceda115d60f4402179736cab1b18e508f",
+      "observed_at": "2026-11-19T12:27:43.837Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/940322baa0935d901edabb26b93bf2ca6b6f09e90929170c312d0f3b092cfa07",
+      "receipt_path": "maintenance/native-image-generation-claims/940322baa0935d901edabb26b93bf2ca6b6f09e90929170c312d0f3b092cfa07.json",
+      "receipt_sha256": "b3cb390a90e8e287e6f6186724d5b2cd3d12bdd9078951f1826e08af4784cdfc",
+      "commit_sha": "7e90c4157f8c3db79aadd4e454ae268e578843a5"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
