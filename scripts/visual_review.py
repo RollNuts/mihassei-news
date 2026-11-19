@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from xml.etree import ElementTree
@@ -113,6 +114,54 @@ def reviewed_generated_scene(article: dict, *, root: Path = ROOT) -> bool:
     return _scene_state(article, root=Path(root))["status"] == "accepted"
 
 
+def _rejection_evidence(article: dict, row: dict, *, root: Path) -> dict | None:
+    """Expose the current saved rejection for recovery, never for approval.
+
+    A hold deliberately makes the JPEG unavailable to the publication gate.
+    Read its explanation separately so that compact recovery reports do not
+    require another search through the full generation manifest.
+    """
+    if row["status"] != "rejected":
+        return None
+    if row["reason"] == "current_visual_hold":
+        source = "assets/generated/manifest.json"
+        try:
+            payload = read_publication_json(root / source)
+        except (OSError, UnicodeError, ValueError):
+            return None
+        if (not isinstance(payload, dict) or type(payload.get("version")) is not int
+                or payload["version"] != 1 or not isinstance(payload.get("rejected"), dict)):
+            return None
+        record = payload["rejected"].get(article["slug"])
+        reason_key, image_key = "reason", "rejected_candidate_sha256"
+    elif row["reason"] == "matching_visual_review_record":
+        source = REVIEW_FILE.as_posix()
+        record = _review_records(root).get(article["slug"])
+        if (not isinstance(record, dict) or record.get("decision") != "rejected"
+                or any(record.get(key) != row.get(key)
+                       for key in ("image_sha256", "reviewed_at", "note"))):
+            return None
+        reason_key, image_key = "note", "image_sha256"
+    else:
+        return None
+    if (not isinstance(record, dict)
+            or record.get("article_sha256") != article_fingerprint(article)
+            or not isinstance(record.get(reason_key), str) or not record[reason_key].strip()):
+        return None
+    result = {"source": source, "reason": record[reason_key]}
+    image_sha = record.get(image_key)
+    if isinstance(image_sha, str) and SHA256.fullmatch(image_sha):
+        result["image_sha256"] = image_sha
+    if _timezone_qualified_iso(record.get("reviewed_at")):
+        result["reviewed_at"] = record["reviewed_at"]
+    run = record.get("review_run")
+    if isinstance(run, str) and re.fullmatch(
+            r"(?:https://github\.com/RollNuts/mihassei-news/actions/runs/[1-9][0-9]*"
+            r"|[A-Za-z0-9][A-Za-z0-9_.:-]{0,199})", run):
+        result["review_run"] = run
+    return result
+
+
 def _editorial_scene_state(article: dict, *, root: Path) -> dict:
     """Explain an authored SVG's gate result without changing its approval."""
     relative = Path("assets/editorial-scenes") / (article["slug"] + ".svg")
@@ -161,6 +210,9 @@ def _publication_row(article: dict, *, root: Path) -> dict:
               "visual_strategy": strategy,
               "publication": {"kind": kind, "url": url}, "editorial_scene": scene,
               "article_diagram": article_diagram_state(article, root=root)}
+    rejection = _rejection_evidence(article, row, root=root)
+    if rejection is not None:
+        result["rejection_evidence"] = rejection
     if kind == "editorial_svg":
         # This is the same byte/proof gate used by the build. Keep the import
         # local: preparation also consults this module's JPEG approval gate.
@@ -246,11 +298,14 @@ def _photo_followup(row: dict) -> list[dict]:
             "同条件の再生成や保留解除だけで完了にしない。"
         ),
     }
-    return [{
+    item = {
         "slug": row["slug"], "article_sha256": row["article_sha256"],
         "status": row["status"], "reason": row["reason"],
         "publication": row["publication"], "next_action": actions[row["status"]],
-    }]
+    }
+    if "rejection_evidence" in row:
+        item["rejection_evidence"] = row["rejection_evidence"]
+    return [item]
 
 
 def main(argv: list[str] | None = None) -> int:

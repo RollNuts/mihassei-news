@@ -49,6 +49,31 @@ def cell(value: object) -> str:
             .replace("\r", " ").replace("\n", " "))
 
 
+def rejection_lines(item: dict) -> list[str]:
+    """Keep saved rejection evidence available in the readable job log too."""
+    evidence = item.get("rejection_evidence")
+    if (item.get("status") != "rejected" or not isinstance(evidence, dict)
+            or evidence.get("source") not in (
+                "assets/generated/manifest.json", "content/visual_reviews.json")
+            or not isinstance(evidence.get("reason"), str) or not evidence["reason"].strip()):
+        return []
+    lines = ["", "#### Saved rejection: " + cell(item["slug"]), "",
+             "- Reason: " + cell(evidence["reason"]),
+             "- Record: " + cell(evidence["source"])]
+    image_sha = evidence.get("image_sha256")
+    if isinstance(image_sha, str) and re.fullmatch(r"[0-9a-f]{64}", image_sha):
+        lines.append("- JPEG SHA-256: `" + image_sha + "`")
+    reviewed_at = evidence.get("reviewed_at")
+    if visual_review._timezone_qualified_iso(reviewed_at):
+        lines.append("- Reviewed at: " + cell(reviewed_at))
+    run = evidence.get("review_run")
+    if isinstance(run, str) and re.fullmatch(
+            r"(?:https://github\.com/RollNuts/mihassei-news/actions/runs/[1-9][0-9]*"
+            r"|[A-Za-z0-9][A-Za-z0-9_.:-]{0,199})", run):
+        lines.append("- Review run: " + cell(run))
+    return lines
+
+
 def summary(report: dict) -> str:
     lines = [
         "## Photograph completion and recovery",
@@ -78,6 +103,8 @@ def summary(report: dict) -> str:
         for item in report["photo_followup"]:
             lines.append("| " + " | ".join(cell(value) for value in (
                 item["slug"], item["status"], item["publication"]["kind"], item["next_action"])) + " |")
+        for item in report["photo_followup"]:
+            lines += rejection_lines(item)
     else:
         lines.append("No unfinished photograph is reported by the current selection rules.")
     lines += ["", "### Other image and diagram attention", ""]

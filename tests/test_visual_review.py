@@ -342,6 +342,89 @@ class VisualReviewTests(unittest.TestCase):
         self.assertEqual(result["photo_followup"][0]["article_sha256"], article_fingerprint(selected))
         self.assertEqual(result["counts"], {"accepted": 0, "pending": 0, "rejected": 0, "missing": 1})
 
+    def test_compact_photo_followup_retains_current_hold_evidence_without_changing_selection(self):
+        self.accept()
+        self.write_editorial_scene(self.article)
+        self.write_editorial_social_png(self.article)
+        image_sha = self.manifest["images"][self.article["slug"]]["sha256"]
+        reason = "The saved fixture has pieces on the board; the article requires an empty board."
+        reviewed_at = "2026-11-16T01:50:19.985066+00:00"
+        review_run = "https://github.com/RollNuts/mihassei-news/actions/runs/43786876737"
+        self.manifest["rejected"][self.article["slug"]] = {
+            "article_sha256": article_fingerprint(self.article), "reason": reason,
+            "rejected_candidate_sha256": image_sha, "reviewed_at": reviewed_at,
+            "review_run": review_run, "unrelated_private_field": "must not be copied",
+        }
+        self.manifest["images"][self.article["slug"]]["seed"] = 9007199254740993
+        self.write_manifest()
+        manifest_path = self.root / "assets/generated/manifest.json"
+        before = manifest_path.read_bytes()
+        detailed = self.report([self.article])
+        compact = self.report([self.article], "--compact")
+        expected = {
+            "source": "assets/generated/manifest.json", "reason": reason,
+            "image_sha256": image_sha, "reviewed_at": reviewed_at, "review_run": review_run,
+        }
+        self.assertEqual(detailed["images"][0]["rejection_evidence"], expected)
+        self.assertEqual(compact["photo_followup"][0]["rejection_evidence"], expected)
+        self.assertEqual(compact, {key: value for key, value in detailed.items() if key != "images"})
+        self.assertEqual(compact["counts"], {"accepted": 0, "pending": 0, "rejected": 1, "missing": 0})
+        self.assertEqual(compact["photo_followup"][0]["publication"]["kind"], "editorial_svg")
+        self.assertEqual(compact["attention"], [])
+        self.assertFalse(reviewed_generated_scene(self.article, root=self.root))
+        self.assertEqual(manifest_path.read_bytes(), before)
+
+        # Old holds cannot be presented as a current rejection or block the
+        # existing current-photo approval after the held fingerprint changes.
+        self.manifest["rejected"][self.article["slug"]]["article_sha256"] = "0" * 64
+        self.write_manifest()
+        stale = self.report([self.article])
+        self.assertNotIn("rejection_evidence", stale["images"][0])
+        self.assertEqual(stale["photo_followup"], [])
+        self.assertTrue(reviewed_generated_scene(self.article, root=self.root))
+
+    def test_rejection_evidence_omits_malformed_optional_fields_without_lifting_hold(self):
+        self.accept()
+        hold = {
+            "article_sha256": article_fingerprint(self.article), "reason": "A saved rejection.",
+            "rejected_candidate_sha256": "not-a-sha", "reviewed_at": "2026-11-16T01:50:19",
+            "review_run": {"guessed": "reference"},
+        }
+        self.manifest["rejected"][self.article["slug"]] = hold
+        self.write_manifest()
+        result = self.report([self.article], "--compact")
+        self.assertEqual(result["photo_followup"][0]["rejection_evidence"], {
+            "source": "assets/generated/manifest.json", "reason": "A saved rejection.",
+        })
+        self.assertEqual(result["photo_followup"][0]["status"], "rejected")
+        self.assertFalse(reviewed_generated_scene(self.article, root=self.root))
+        for invalid_reason in (None, [], " \n\t"):
+            with self.subTest(reason=invalid_reason):
+                hold["reason"] = invalid_reason
+                self.write_manifest()
+                result = self.report([self.article], "--compact")
+                self.assertNotIn("rejection_evidence", result["photo_followup"][0])
+                self.assertEqual(result["photo_followup"][0]["status"], "rejected")
+                self.assertFalse(reviewed_generated_scene(self.article, root=self.root))
+
+    def test_rejected_review_explanation_survives_compact_report_without_a_manifest_hold(self):
+        self.accept()
+        review = self.reviews["reviews"][self.article["slug"]]
+        review.update({"decision": "rejected", "note": "The fixture depicts the wrong action.",
+                       "review_run": "chatgpt:12345678-1234-1234-1234-123456789abc"})
+        self.write_reviews()
+        report = self.report([self.article], "--compact")
+        self.assertEqual(report["photo_followup"][0]["rejection_evidence"], {
+            "source": "content/visual_reviews.json", "reason": review["note"],
+            "image_sha256": review["image_sha256"], "reviewed_at": review["reviewed_at"],
+            "review_run": review["review_run"],
+        })
+        self.assertFalse(reviewed_generated_scene(self.article, root=self.root))
+        changed = {**self.article, "paragraphs": ["The article now describes a different action."]}
+        stale = self.report([changed], "--compact")
+        self.assertEqual(stale["photo_followup"][0]["status"], "missing")
+        self.assertNotIn("rejection_evidence", stale["photo_followup"][0])
+
     def test_compact_preserves_alerts_followup_counts_and_explanatory_basis(self):
         self.accept()
         pending = {**self.article, "slug": "pending-fixture"}
