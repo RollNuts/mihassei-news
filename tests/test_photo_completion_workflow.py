@@ -10,18 +10,36 @@ ROOT = Path(__file__).resolve().parents[1]
 class PhotoCompletionWorkflowTests(unittest.TestCase):
     def setUp(self):
         self.markup = (ROOT / '.github/workflows/verify-public-photos.yml').read_text()
-        self.delivery, remaining = self.markup.split('\n  photo_completion:\n', 1)
-        self.recorder, self.finalizer = remaining.split('\n  finalize:\n', 1)
+        self.common, jobs = self.markup.split('\njobs:\n', 1)
+        # Sibling jobs do not inherit the delivery job's token-free restrictions.
+        sections = dict(re.findall(
+            r'(?ms)^  ([A-Za-z_][\w-]*):\n(.*?)(?=^  [A-Za-z_][\w-]*:\n|\Z)', jobs))
+        self.delivery = sections['check']
+        self.mobile = sections['mobile_capture']
+        self.recorder = sections['photo_completion']
+        self.finalizer = sections['finalize']
 
     def test_existing_delivery_job_keeps_read_only_permissions_and_no_api_write(self):
-        self.assertIn('permissions:\n  contents: read\njobs:', self.delivery)
+        permissions = re.search(r'(?ms)^permissions:\n(.*?)(?=^\S|\Z)', self.common).group(1)
+        self.assertEqual(permissions, '  contents: read')
         for forbidden in ('GH_TOKEN:', 'checks: write', 'contents: write',
                           'github-script', 'gh api', '--method POST'):
-            self.assertNotIn(forbidden, self.delivery)
+            self.assertNotIn(forbidden, self.common + '\n' + self.delivery)
         for command in ('wait_for_live_revision.py --allow-docs-only', 'check_live.py',
                         'check_share_cards.py', 'report_photo_health.py'):
             self.assertIn(command, self.delivery)
         self.assertNotIn('GH_TOKEN:', self.recorder)
+
+    def test_mobile_capture_keeps_read_only_permissions_and_api_methods(self):
+        permissions = self.mobile.split('    permissions:\n', 1)[1].split('    steps:', 1)[0]
+        self.assertEqual(permissions, '      contents: read\n      pull-requests: read\n      actions: read\n')
+        for forbidden in ('GH_TOKEN:', 'checks: write', 'contents: write',
+                          'pull-requests: write', 'actions: write', 'gh api', '--method POST'):
+            self.assertNotIn(forbidden, self.mobile)
+        self.assertEqual(set(re.findall(r'github\.rest\.([A-Za-z]+\.[A-Za-z]+)\(', self.mobile)), {
+            'repos.get', 'repos.getCollaboratorPermissionLevel', 'repos.compareCommitsWithBasehead',
+            'pulls.get', 'actions.listWorkflowRuns', 'actions.listJobsForWorkflowRun', 'git.getRef',
+        })
 
     def allowed(self, result='success', ref='refs/heads/main', repo='RollNuts/mihassei-news', private=False, cancelled=False):
         expression = re.search(r'(?m)^    if: \$\{\{ (.+) \}\}$', self.recorder).group(1)
@@ -45,8 +63,8 @@ class PhotoCompletionWorkflowTests(unittest.TestCase):
         permissions = self.recorder.split('    permissions:\n', 1)[1].split('    steps:', 1)[0]
         self.assertEqual(permissions, '      contents: read\n      checks: write\n')
         self.assertEqual(self.markup.count('checks: write'), 1)
-        self.assertNotIn('contents: write', self.delivery + self.recorder)
-        self.assertNotIn('pull-requests: write', self.delivery + self.recorder)
+        self.assertNotIn('contents: write', self.common + self.delivery + self.mobile + self.recorder)
+        self.assertNotIn('pull-requests: write', self.common + self.delivery + self.mobile + self.recorder)
         self.assertIn('timeout-minutes: 3', self.recorder)
         self.assertIn('persist-credentials: false', self.recorder)
 
@@ -74,7 +92,7 @@ class PhotoCompletionWorkflowTests(unittest.TestCase):
     def test_publication_handoff_cannot_cancel_or_run_as_a_delivery_check(self):
         self.assertIn("github.event_name == 'push' || github.event_name == 'workflow_dispatch'", self.delivery)
         self.assertIn("inputs.finalize_pr == ''", self.delivery)
-        self.assertIn("format('publication-finalize-{0}', github.run_id)", self.delivery)
+        self.assertIn("format('publication-finalize-{0}', github.run_id)", self.common)
         self.assertIn('ref: refs/heads/main', self.finalizer)
         self.assertIn('persist-credentials: false', self.finalizer)
         self.assertNotIn('actions/download-artifact', self.finalizer)

@@ -136,18 +136,19 @@ class DeploymentWorkflowTests(unittest.TestCase):
         markup=(ROOT/".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
         self.assertIn("concurrency:",markup)
         cancellation = re.search(r"(?m)^  cancel-in-progress: \$\{\{ (.+) \}\}$", markup).group(1)
-        cancellation = cancellation.replace('&&', 'and').replace('||', 'or')
-        for event, expected, pr, should_cancel in (
-            ('push', '', '', True), ('workflow_run', '', '', False),
-            ('pull_request_target', '', '', False),
-            ('workflow_dispatch', '', '', True),
-            ('workflow_dispatch', 'a' * 40, '', False),
-            ('workflow_dispatch', '', '123', False),
+        cancellation = cancellation.replace('&&', 'and').replace('||', 'or').replace('!inputs.capture_mobile', 'not inputs.capture_mobile')
+        for event, expected, pr, capture_mobile, should_cancel in (
+            ('push', '', '', False, True), ('workflow_run', '', '', False, False),
+            ('pull_request_target', '', '', False, False),
+            ('workflow_dispatch', '', '', False, True),
+            ('workflow_dispatch', 'a' * 40, '', False, False),
+            ('workflow_dispatch', '', '123', False, False),
+            ('workflow_dispatch', '', '', True, False),
         ):
             with self.subTest(event=event, expected=expected, pr=pr):
                 self.assertEqual(eval(cancellation, {'__builtins__': {}}, {
                     'github': SimpleNamespace(event_name=event),
-                    'inputs': SimpleNamespace(expected_sha=expected, finalize_pr=pr),
+                    'inputs': SimpleNamespace(expected_sha=expected, finalize_pr=pr, capture_mobile=capture_mobile),
                 }), should_cancel)
         self.assertIn('EVENT_SHA: ${{ github.sha }}',markup)
         self.assertIn('EXPECTED_SHA: ${{ steps.target.outputs.sha }}',markup)
@@ -160,6 +161,47 @@ class DeploymentWorkflowTests(unittest.TestCase):
         self.assertNotIn("Workers Builds: mihassei-news",markup)
         self.assertNotIn("GH_TOKEN:",markup.split('\n  photo_completion:\n', 1)[0])
         self.assertIn("read-only",markup.lower())
+
+    def test_mobile_capture_is_opt_in_and_does_not_share_live_push_concurrency(self):
+        workflow = (ROOT / ".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
+        self.assertRegex(workflow, r"capture_mobile:\n(?:        .*\n)*?        type: boolean\n        default: false")
+        job = workflow.split("\n  mobile_capture:\n", 1)[1].split("\n  photo_completion:\n", 1)[0]
+        condition = re.search(r"(?m)^    if: \$\{\{ (.+) \}\}$", job).group(1)
+        condition = condition.replace("&&", "and").replace("||", "or").replace("!cancelled()", "not cancelled()").replace("!contains", "not contains")
+        for event, enabled, pr, branch, checked, expected in (
+            ("workflow_dispatch", True, "", "main", "success", True),
+            ("workflow_dispatch", False, "", "main", "success", False),
+            ("push", True, "", "main", "success", False),
+            ("workflow_run", True, "", "main", "success", False),
+            ("workflow_dispatch", True, "123", "main", "success", False),
+            ("workflow_dispatch", True, "", "topic", "success", False),
+            ("workflow_dispatch", True, "", "main", "failure", False),
+            ("pull_request_target", False, "", "main", "skipped", True),
+        ):
+            with self.subTest(event=event, enabled=enabled, pr=pr, branch=branch, checked=checked):
+                self.assertEqual(eval(condition, {"__builtins__": {}}, {
+                    "github": SimpleNamespace(event_name=event, ref="refs/heads/" + branch,
+                        repository="RollNuts/mihassei-news", event=SimpleNamespace(
+                            repository=SimpleNamespace(private=False), action="edited",
+                            pull_request=SimpleNamespace(merged=True, body="<!-- mobile-capture\n{}\n-->"))),
+                    "inputs": SimpleNamespace(capture_mobile=enabled, finalize_pr=pr),
+                    "needs": SimpleNamespace(check=SimpleNamespace(result=checked)),
+                    "cancelled": lambda: False, "contains": lambda value, needle: needle in value,
+                    "false": False, "true": True,
+                }), expected)
+        group = re.search(r"(?m)^  group: \$\{\{ (.+) \}\}$", workflow).group(1)
+        group = group.replace("&&", "and").replace("||", "or")
+        self.assertEqual(eval(group, {"__builtins__": {}}, {
+            "github": SimpleNamespace(event_name="workflow_dispatch", run_id=123),
+            "inputs": SimpleNamespace(capture_mobile=True, finalize_pr="", expected_sha=""),
+            "format": lambda pattern, value: pattern.format(value),
+        }), "verify-mobile-123")
+        self.assertIn("needs: check", job)
+        self.assertIn("permissions:\n      contents: read\n      pull-requests: read\n      actions: read", job)
+        self.assertIn("persist-credentials: false", job)
+        self.assertNotIn("GH_TOKEN", job)
+        self.assertLess(job.index("id: request"), job.index("uses: actions/checkout"))
+        self.assertIn("ref: ${{ steps.request.outputs.sha }}", job)
 
 
 class PVHealthTriggerTests(unittest.TestCase):

@@ -2413,15 +2413,15 @@
     "day": "2026-11-19",
     "slot": "am",
     "coverage": "investor",
-    "published_at": "2026-11-19T08:32:27+09:00",
+    "published_at": "2026-11-19T12:26:35+09:00",
     "title": "19日朝：米ナスダックは小幅高、NVIDIA下落と小売TJX高―日本株の買い戻しは広がるか",
-    "summary": "米国18日はナスダック0.39%高、S&P500が0.24%安、ダウ1.12%安。NVIDIAの好決算後の下落とTJXの決算高を対比。日本の19日寄り前は18日TOPIX終値3,824.00を基準に、20日判定の横ばい予想を新規固定します。",
+    "summary": "米国18日はナスダック0.42%高、S&P500が0.23%安、ダウ1.11%安。NVIDIAの好決算後の下落とTJXの決算高を対比。日本の19日寄り前は18日TOPIX終値3,824.00を基準に、20日判定の横ばい予想を新規固定します。",
     "lead": "11月19日（木）の東京市場寄り付き前に確認した米国18日（現地）の通常取引は、ナスダック総合だけが小幅高で、S&P500とダウは下落しました。米半導体NVIDIAの増収決算が株価全体の上昇につながったわけではありません。一方、小売TJXは決算後に上昇しています。18日の日本株終値と米国18日終値は別市場・別取引日で、19日の東証の当日値はまだ含みません。日本株保有者は半導体への期待と、米利上げ警戒による幅広い売り圧力を分けて確認します。",
     "sections": [
       {
         "heading": "米国18日：ナスダックだけ上昇、FOMC議事要旨で金利が重荷",
         "paragraphs": [
-          "米国11月18日（水）通常取引の終値（日本時間19日6:00）は、ナスダック総合24,429.89ポイント（前日比0.39%高）、S&P500が7,322.53ポイント（0.24%安）、ダウ工業株30種平均が50,193.03ポイント（1.12%安）でした。米国17日のS&P500は7,340.53ポイント。指数ごとの方向差があり、ナスダックの上昇だけで全面的なリスク選好とはいえません。",
+          "米国11月18日（水）通常取引の終値（日本時間19日6:00）は、ナスダック総合24,429.88ポイント（前日比0.42%高）、S&P500が7,323.63ポイント（0.23%安）、ダウ工業株30種平均が50,198.17ポイント（1.11%安）でした。米国17日のS&P500は7,340.53ポイント。指数ごとの方向差があり、ナスダックの上昇だけで全面的なリスク選好とはいえません。",
           "米FRBが18日14:00米東部時間（日本時間19日4:00）に公表した10月27～28日のFOMC議事要旨では、参加者のほぼ全員が基本見通しのもとで追加の利上げが適切になる可能性を示しました。委員会の当時の政策金利目標は3.75～4.00%に据え置き（10対2）で、今回の資料公表は新しい利上げ決定ではありません。株価の強弱を見る際は決算だけでなく、この金利見通しが評価倍率を圧迫し得る点も確認します。"
         ]
       },
@@ -2445,9 +2445,9 @@
         "id": "sp500-nov18-close",
         "kind": "bars",
         "title": "S&P500：米国17日と18日の通常終値",
-        "note": "Reutersが18日米国通常引け後に報じた指数終値。時刻は米国18日16:00東部時間＝19日6:00 JST。",
+        "note": "Yahoo Financeの日付別履歴のClose列を使用。指数算出元ページの数値は未取得。米国18日の通常取引終了は19日6:00 JST。",
         "unit": "ポイント",
-        "source_url": "https://www.reuters.com/business/nasdaq-futures-jump-nvidia-forecast-lifts-ai-trade-ahead-anthropic-pricing-2026-11-18/",
+        "source_url": "https://finance.yahoo.com/quote/%5ESPX/history/",
         "observed_at": "2026-11-19T06:00:00+09:00",
         "values": [
           {
@@ -2457,7 +2457,7 @@
           },
           {
             "label": "米国11/18",
-            "value": 7322.53,
+            "value": 7323.63,
             "state": "実績"
           }
         ]
@@ -2486,7 +2486,7 @@
       {
         "id": "tjx-nov18-close",
         "kind": "bars",
-        "title": "TJX：決算発表日の株価は8.05%高",
+        "title": "TJX：決算後8.05%高",
         "note": "NYSE通常取引終値。米国18日の会社公表決算と株価の同日変化であり、将来の利益を保証しない。",
         "unit": "米ドル",
         "source_url": "https://finance.yahoo.com/quote/TJX/history/",
@@ -2509,8 +2509,8 @@
       {
         "name": "米国主要3指数の方向が分かれる",
         "signal": "中立",
-        "meaning": "11月18日通常取引はナスダック+0.39%、S&P500-0.24%、ダウ-1.12%。米国株全面高ではない。",
-        "source_url": "https://www.reuters.com/business/nasdaq-futures-jump-nvidia-forecast-lifts-ai-trade-ahead-anthropic-pricing-2026-11-18/",
+        "meaning": "11月18日通常取引はナスダック+0.42%、S&P500-0.23%、ダウ-1.11%。米国株全面高ではない。",
+        "source_url": "https://finance.yahoo.com/quote/%5ESPX/history/",
         "observed_at": "2026-11-19T06:00:00+09:00"
       },
       {
@@ -2566,8 +2566,20 @@
     ],
     "sources": [
       {
-        "title": "Reuters：米国11月18日通常取引の主要3指数終値とNVIDIA・小売・Fed市場反応",
-        "url": "https://www.reuters.com/business/nasdaq-futures-jump-nvidia-forecast-lifts-ai-trade-ahead-anthropic-pricing-2026-11-18/",
+        "title": "Yahoo Finance：NASDAQ総合 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5EIXIC/history/?.tsrc=fin-srch&p=%5EIXIC",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：S&P500 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5ESPX/history/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：ダウ工業株30種平均 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5EDJI/history/",
         "published_on": "2026-11-18",
         "checked_on": "2026-11-19"
       },

@@ -1,12 +1,15 @@
 """Owner-supplied photos retain bytes, aspect and observed review bindings."""
 import copy
 import hashlib
+import io
 import json
 import shutil
 import tempfile
 import unittest
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
+from PIL import Image, __version__ as pillow_version
 from scripts import photo_issues as p
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,6 +70,161 @@ class SuppliedPhotoTests(unittest.TestCase):
 
     def validate(self):
         return p._validate_supplied_photo(self.issue, "03", self.image, self.data, root=self.root, now=NOW)
+
+    def use_pillow_library_archive(self):
+        """Make real ZIP/PNG/JPEG test bytes, not a renamed sips receipt."""
+        member = "original.jpg" if self.receipt["source"].get("format", "png") == "jpeg" else "original.png"
+        archive = io.BytesIO()
+        with zipfile.ZipFile(archive, "w") as bundle:
+            bundle.writestr(member, self.original)
+        source = self.receipt["source"]
+        source.update(url="https://chatgpt.com/library?file_id=libfile_test_archive&account_id=personal",
+                      library_file_id="libfile_test_archive",
+                      generation_turn_status="not_retained", generation_turn=None,
+                      archive={"format": "zip", "filename": "photos.zip", "member": member,
+                               "sha256": hashlib.sha256(archive.getvalue()).hexdigest(),
+                               "bytes": len(archive.getvalue())})
+        for key in ("turn_key", "image_number"):
+            source.pop(key, None)
+        with Image.open(io.BytesIO(self.original)) as original:
+            converted = original.convert("RGB")
+        converted.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
+        encoded = io.BytesIO()
+        converted.save(encoded, format="JPEG", quality=84, optimize=True, progressive=False, subsampling=0)
+        self.data = encoded.getvalue()
+        self.image.update(sha256=hashlib.sha256(self.data).hexdigest(), bytes=len(self.data),
+                          width=converted.width, height=converted.height)
+        self.image["review"]["image_sha256"] = self.image["sha256"]
+        self.receipt["jpeg"].update({key: self.image[key] for key in ("path", "sha256", "bytes", "width", "height")})
+        self.receipt["transform"] = {"encoder": "Pillow", "max_edge": 1200, "jpeg_quality": 84,
+                                     "geometry": "preserve-aspect"}
+        self.receipt["encoding_details"] = {"pillow_version": pillow_version, "resample": "LANCZOS", "mode": "RGB",
+                                             "optimize": True, "progressive": False, "subsampling": 0}
+        (self.root / self.image["path"]).write_bytes(self.data)
+        self.issue["images"]["03"] = self.image
+        self.save()
+
+    def rewrite_receipt(self):
+        raw = (json.dumps(self.receipt, ensure_ascii=False, indent=2) + "\n").encode()
+        (self.root / self.image["provenance"]["receipt_path"]).write_bytes(raw)
+        self.image["provenance"]["receipt_sha256"] = hashlib.sha256(raw).hexdigest()
+
+    def test_real_pillow_archive_and_direct_library_original_keep_existing_gates(self):
+        self.use_pillow_library_archive()
+        self.assertEqual(self.validate(), ("upper_body", False))
+        p.validate_published_issue(self.issue, root=self.root, now=NOW)
+        del self.receipt["source"]["archive"]
+        self.rewrite_receipt()
+        self.assertEqual(self.validate(), ("upper_body", False))
+
+    def test_pillow_library_portrait_retains_its_full_original_aspect(self):
+        with Image.open(io.BytesIO(self.original)) as original:
+            portrait = original.transpose(Image.Transpose.ROTATE_90) if original.width > original.height else original.copy()
+        encoded = io.BytesIO()
+        portrait.save(encoded, format="PNG")
+        self.original = encoded.getvalue()
+        self.receipt["source"].update(format="png", width=portrait.width, height=portrait.height)
+        self.use_pillow_library_archive()
+        self.assertEqual(self.image["height"], 1200)
+        self.assertLess(self.image["width"], self.image["height"])
+        p.validate_published_issue(self.issue, root=self.root, now=NOW)
+
+    def test_pillow_library_archive_accepts_a_real_jpeg_member(self):
+        self.original = self.data
+        width, height = p.jpeg_dimensions(self.original)
+        self.receipt["source"].update(format="jpeg", width=width, height=height)
+        self.use_pillow_library_archive()
+        self.assertEqual(self.receipt["source"]["archive"]["member"], "original.jpg")
+        self.assertTrue(self.receipt["source"]["path"].endswith(".jpg"))
+        p.validate_published_issue(self.issue, root=self.root, now=NOW)
+
+    def test_library_file_id_account_and_unknown_turn_are_bound(self):
+        self.use_pillow_library_archive()
+        baseline = copy.deepcopy(self.receipt["source"])
+        url = baseline["url"]
+        bad_urls = [url.replace("https:", "http:"), url.replace("chatgpt.com/", "chatgpt.com.evil/"),
+                    url.replace("libfile_test_archive", "libfile_other"), url.replace("personal", "team"),
+                    url.replace("&account_id=personal", ""), url + "&account_id=personal",
+                    url + "&file_id=libfile_other", url + "#fragment", url + "&extra=1",
+                    "https://chatgpt.com/library/share/libfile_test_archive?account_id=personal"]
+        changes = [("url", value) for value in bad_urls] + [
+            ("library_file_id", None), ("library_file_id", "libfile_other"),
+            ("generation_turn_status", "known"), ("generation_turn", "4c0a07b0-c1c9-4faf-8cf8-9af807531370"),
+            ("turn_key", "4c0a07b0-c1c9-4faf-8cf8-9af807531370"), ("image_number", 1),
+            ("generation_prompt", "A prompt that was never retained")]
+        for field, value in changes:
+            with self.subTest(field=field, value=value):
+                self.receipt["source"] = {**baseline, field: value}
+                self.rewrite_receipt()
+                with self.assertRaisesRegex(ValueError, "provenance"):
+                    self.validate()
+        self.receipt["source"] = copy.deepcopy(baseline)
+        del self.receipt["source"]["generation_turn"]
+        self.rewrite_receipt()
+        with self.assertRaisesRegex(ValueError, "provenance"):
+            self.validate()
+
+    def test_archive_cannot_hide_unsafe_members_or_invalid_archive_metadata(self):
+        self.use_pillow_library_archive()
+        baseline = copy.deepcopy(self.receipt["source"]["archive"])
+        changes = [("format", "tar"), ("sha256", "not-a-sha"), ("bytes", 0), ("bytes", True),
+                   ("bytes", "42"), ("filename", "../photos.zip"), ("filename", "/tmp/photos.zip"),
+                   ("filename", "photos.tar"), ("member", "../original.png"), ("member", "folder/original.png"),
+                   ("member", "/original.png"), ("member", "folder\\original.png"), ("member", "C:original.png"),
+                   ("member", "original\x00.png"), ("member", " original.png"), ("member", "original.jpg")]
+        for field, value in changes:
+            with self.subTest(field=field, value=value):
+                self.receipt["source"]["archive"] = {**baseline, field: value}
+                self.rewrite_receipt()
+                with self.assertRaisesRegex(ValueError, "provenance"):
+                    self.validate()
+        for archive in (None, {}, {key: value for key, value in baseline.items() if key != "member"}):
+            self.receipt["source"]["archive"] = archive
+            self.rewrite_receipt()
+            with self.assertRaisesRegex(ValueError, "provenance"):
+                self.validate()
+
+    def test_pillow_cannot_relax_encoder_quality_or_resampling_metadata(self):
+        self.use_pillow_library_archive()
+        baseline = copy.deepcopy(self.receipt)
+        changes = [("transform", "encoder", "macOS sips"), ("transform", "encoder", "unknown"),
+                   ("transform", "max_edge", 1199), ("transform", "max_edge", 1200.0),
+                   ("transform", "jpeg_quality", 85), ("transform", "geometry", "crop"),
+                   ("encoding_details", "pillow_version", "unknown"), ("encoding_details", "pillow_version", None),
+                   ("encoding_details", "resample", "BICUBIC"), ("encoding_details", "mode", "CMYK"),
+                   ("encoding_details", "optimize", False), ("encoding_details", "progressive", True),
+                   ("encoding_details", "subsampling", 2), ("encoding_details", "subsampling", False)]
+        for section, field, value in changes:
+            with self.subTest(section=section, field=field, value=value):
+                self.receipt = copy.deepcopy(baseline)
+                self.receipt[section][field] = value
+                self.rewrite_receipt()
+                with self.assertRaisesRegex(ValueError, "provenance"):
+                    self.validate()
+        self.receipt = copy.deepcopy(baseline)
+        del self.receipt["encoding_details"]
+        self.rewrite_receipt()
+        with self.assertRaisesRegex(ValueError, "provenance"):
+            self.validate()
+
+    def test_pillow_library_route_still_checks_actual_original_and_jpeg_bindings(self):
+        self.use_pillow_library_archive()
+        baseline = copy.deepcopy(self.receipt)
+        for section, field, value in [("source", "sha256", "0" * 64), ("source", "bytes", 1),
+                                       ("source", "width", baseline["source"]["width"] + 1), ("source", "format", "jpeg"),
+                                       ("jpeg", "sha256", "0" * 64), ("jpeg", "bytes", 1),
+                                       ("jpeg", "width", baseline["jpeg"]["width"] + 1)]:
+            with self.subTest(section=section, field=field):
+                self.receipt = copy.deepcopy(baseline)
+                self.receipt[section][field] = value
+                self.rewrite_receipt()
+                with self.assertRaises(ValueError):
+                    self.validate()
+        self.receipt = copy.deepcopy(baseline)
+        self.rewrite_receipt()
+        (self.root / self.image["path"]).write_bytes(self.data[:-2] + b"xx")
+        with self.assertRaisesRegex(ValueError, "hash/dimensions"):
+            p.validate_published_issue(self.issue, root=self.root, now=NOW)
 
     def test_supplied_portrait_keeps_original_aspect_and_towel_is_not_swimwear(self):
         self.assertEqual(self.validate(), ("upper_body", False))
