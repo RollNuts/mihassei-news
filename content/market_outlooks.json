@@ -435,6 +435,81 @@
     }
   },
   {
+    "type": "forecast",
+    "id": "2026-11-19-topix",
+    "at": "2026-11-19T08:32:27+09:00",
+    "subject": "TOPIX",
+    "direction": "横ばい",
+    "stance": "中立",
+    "reviewed_on": "2026-11-20",
+    "statement": "2026年11月20日のTOPIX公式終値は、11月18日の確定終値3,824.00ポイントに対して±0.5%以内の横ばいと予測する。",
+    "method": "基準はJPXが11月18日16:59 JSTに最終更新した現物TOPIX公式終値3,824.00ポイントで固定。11月20日のJPX公式終値との騰落率（20日終値÷3,824.00−1）×100が+0.5%超なら上昇、-0.5%未満なら下落、-0.5%以上+0.5%以下（両境界を含む）は横ばいと定義する。11月19日の途中値と終値、米国19日相場、当日までの追加判断で元の基準・期日・方法を変更しない。JPX公式値の取得不可は未検証とする。",
+    "reason": "18日東京のTOPIXは前日比0.42%安、日経平均は0.28%高と相場が一方向に揃っていない。米国18日通常取引はNASDAQ+0.42%対S&P500-0.23%・ダウ-1.11%と分かれた。NVIDIAは好決算後でも2.89%安、TJXは個別決算で8.05%高。さらに18日公表のFOMC議事要旨では追加利上げの可能性が示された。19日の国内市場の反応が一部業種へ偏ると見て、20日のTOPIXを18日基準の±0.5%で中立と予想する。",
+    "invalidated_if": "11月20日のTOPIX公式終値が3,824.00から+0.5%を超えて上昇、または-0.5%未満の下落なら当初の横ばい予測は外れ。20日公式終値が未確認なら未検証。",
+    "scenarios": {
+      "強気": "20日公式終値が18日基準3,824.00から0.5%超上昇。米半導体・小売の好材料が日本市場の複数業種へ広がるか確認。",
+      "中立": "20日公式終値が18日基準の±0.5%以内。米金利警戒と一部企業の好材料が拮抗する想定。",
+      "弱気": "20日公式終値が18日基準より0.5%を超えて下落。米国S&P500安・利上げ警戒の国内波及を確認。"
+    },
+    "baseline": {
+      "date": "2026-11-18",
+      "value": 3824,
+      "unit": "ポイント",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "method": "JPX11月18日16:59 JST更新のTOPIX（qcode151）現物大引け15:30確定値を固定。19日寄り前時点の最新公式終値。"
+    },
+    "sources": [
+      {
+        "title": "JPX：11月18日16:59更新のTOPIX現物大引け指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：市場指数更新時刻ファイル",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：NASDAQ総合 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5EIXIC/history/?.tsrc=fin-srch&p=%5EIXIC",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：S&P500 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5ESPX/history/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：ダウ工業株30種平均 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5EDJI/history/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "米連邦準備制度理事会：2026年10月27-28日FOMC議事要旨（11月18日公表）",
+        "url": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20261028.htm",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "NVIDIA IR：2027年度第3四半期決算（米国11月17日取引終了後公表）",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "TJX公式IR：2027年度第3四半期決算（米国11月18日公表）",
+        "url": "https://investor.tjx.com/news-releases/news-release-details/tjx-companies-inc-reports-q3-fy27-results-comp-sales-growth-4",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      }
+    ]
+  },
+  {
     "type": "review",
     "id": "2026-11-19-open-01",
     "at": "2026-11-19T09:41:49+09:00",
