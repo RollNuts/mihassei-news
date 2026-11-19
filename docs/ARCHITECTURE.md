@@ -46,6 +46,7 @@ content/serials.json ────┘                │
 - 通常の表紙は[`scripts/editorial_covers.py`](../scripts/editorial_covers.py)で生成する記事別SVG。SNS共有用にはPNGを生成します。
 - 記事固有の挿絵は`assets/editorial-scenes/`のSVGを本文指紋と照合して採用します。生成JPEGは機械検証に加え、`content/visual_reviews.json`の目視確認が現在の記事・画像に一致する場合だけ公開。未検品JPEGとその派生動画は公開ビルドへコピーしません。日次・週次担当の手順は[`VISUAL_OPERATIONS.md`](VISUAL_OPERATIONS.md)を参照。
 - 写真は`content/approved_photos.json`の承認情報、ライセンス、形式などを検証してから採用。不採用の場合は自作表紙に戻します。
+- 通常記事の画像読込に失敗した場合は、`assets/engagement.js`が元画像のURLと表示情報を保持してSVGへ切り替える。通信復帰・画面復帰の際に失敗した画像だけを上限付きで再確認し、元画像を読み込めた場合だけ写真と説明を復元する。正常な写真は再取得せず、恒久的な失敗時は代替表示を維持する。`capture_live_mobile.py`の写真検査は読込寸法に加えて期待するJPEGのURLを照合し、SVGへの切替を写真の成功と数えない。
 - ローカルのComfyUIによる生成は任意であり、Macが停止していても記事発行には影響しません。詳細は[`MAC_SCENE_SETUP.md`](MAC_SCENE_SETUP.md)。
 - 承認済みJPEGから無料CPUとFFmpegで作る**任意の12秒・24fps・3カットMP4**は、検証済みのものだけ表示。旧4秒・12fpsクリップも互換性を維持し、1本450KiB・全体24MiBの上限を適用します。人物自体を動かすAI動画生成ではありません。
 - 動画は編集者が選んだ記事だけが対象。トップは最大1本の画面内無音プレビュー、記事ページは手動再生とし、動きを減らす設定・データ節約設定・読者の手動停止を尊重します。記事一覧は静止画のままです。
