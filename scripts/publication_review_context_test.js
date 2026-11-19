@@ -40,7 +40,7 @@ function marker(head, extra = {}) {
     article_sha256: { "new-story": "a".repeat(64) }, ...extra }) + "\n-->";
 }
 function world() {
-  const w = { prs: [], documents: new Map(), files: new Map(), checks: new Map(), calls: [], fileCalls: [],
+  const w = { prs: [], documents: new Map(), files: new Map(), checks: new Map(), runs: new Map(), jobs: new Map(), calls: [], fileCalls: [],
     hook: null, wrap: value => value };
   w.put = (ref, file, value) => w.documents.set(ref + ":" + file, clone(value));
   w.add = (number, file = ARTICLES, added = [news("new-story")]) => {
@@ -55,6 +55,13 @@ function world() {
     w.put(REF, file, file === ARTICLES ? [...before, news("main-only-story")] : before);
     w.put(head, file, [...before, ...added]);
     w.checks.set(head, [{ id: number, name: "test", head_sha: head, status: "completed", conclusion: "success" }]);
+    const run = { id: number * 1000, path: ".github/workflows/check.yml", event: "pull_request",
+      head_sha: head, head_repository: { full_name: REPO }, run_attempt: 1,
+      status: "completed", conclusion: "success",
+      pull_requests: [{ number, head: { sha: head }, base: { ref: "main", sha: REF } }] };
+    w.runs.set(head, [run]);
+    w.jobs.set(run.id, [{ id: number * 1000 + 1, name: "test", run_id: run.id, run_attempt: 1,
+      head_sha: head, status: "completed", conclusion: "success" }]);
     return pr;
   };
   w.fetchRepository = async args => {
@@ -78,6 +85,17 @@ function world() {
     } else if (/^\/pulls\/\d+$/.test(route)) value = w.prs.find(pr => pr.number === Number(route.split("/")[2]));
     else if (/^\/pulls\/\d+\/files$/.test(route)) value = w.files.get(Number(route.split("/")[2])).slice((page - 1) * 100, page * 100);
     else if (route.startsWith("/compare/")) value = { merge_base_commit: { sha: BASE }, files: "not a complete file inventory" };
+    else if (route === "/actions/runs") {
+      const rows = w.runs.get(url.searchParams.get("head_sha")) || [];
+      assert.equal(url.searchParams.get("event"), "pull_request");
+      value = { total_count: rows.length, workflow_runs: rows.slice((page - 1) * 100, page * 100) };
+    } else if (/^\/actions\/runs\/\d+$/.test(route)) {
+      value = [...w.runs.values()].flat().find(run => run.id === Number(route.split("/")[3]));
+    } else if (/^\/actions\/runs\/\d+\/jobs$/.test(route)) {
+      assert.equal(url.searchParams.get("filter"), "latest");
+      const rows = w.jobs.get(Number(route.split("/")[3]));
+      value = { total_count: rows.length, jobs: rows.slice((page - 1) * 100, page * 100) };
+    }
     else if (route.endsWith("/check-runs")) {
       const rows = w.checks.get(route.split("/")[2]);
       value = { total_count: rows.length, check_runs: rows.slice((page - 1) * 100, page * 100) };
@@ -173,18 +191,27 @@ test("real main bulletin schema is accepted including legacy and investor stock 
   assert.equal(report.selected_count + report.pending_count, reports.length);
 });
 
-test("current ready handoff and healthy checks stay with the existing machine, including market outlook changes", async () => {
+test("current ready handoff distinguishes active CI from an open PR awaiting finalizer verification", async () => {
   for (const status of ["completed", "in_progress"]) {
     const w = world(), pr = w.add(10, MARKET, [market()]);
     pr.draft = false; pr.body = marker(pr.head.sha, { kind: "market", article_sha256: {} });
     w.files.get(10).push({ filename: "content/market_outlooks.json", status: "modified" }); pr.changed_files++;
-    w.checks.get(pr.head.sha)[0].status = status;
-    w.checks.get(pr.head.sha)[0].conclusion = status === "completed" ? "success" : null;
+    w.runs.get(pr.head.sha)[0].status = status;
+    w.runs.get(pr.head.sha)[0].conclusion = status === "completed" ? "success" : null;
     const report = await w.read();
-    assert.equal(report.selected_count, 0); assert.deepEqual(report.attention, []);
-    assert.equal(report.machine_pending.length, 1);
-    assert.equal(report.machine_pending[0].state, status === "completed" ? "ci_success" : "ci_pending");
-    assert.equal(report.machine_pending[0].verification, "self_reported_handoff_only");
+    assert.equal(report.selected_count, 0);
+    if (status === "in_progress") {
+      assert.deepEqual(report.attention, []); assert.equal(report.machine_pending.length, 1);
+      assert.equal(report.machine_pending[0].state, "ci_pending");
+      assert.equal(report.machine_pending[0].verification, "self_reported_handoff_only");
+      assert.equal(report.machine_pending[0].ci_run_id, 10000);
+    } else {
+      assert.equal(report.machine_pending.length, 0); assert.equal(report.attention.length, 1);
+      assert.equal(report.attention[0].reason, "publication_unverified");
+      assert.equal(report.attention[0].ci_run_id, 10000);
+      assert.match(report.attention[0].next_operation, /If it is active, leave it running/);
+      assert.match(report.attention[0].next_operation, /Do not repeat first read, create another PR, or rerun blindly/);
+    }
     assert.equal(report.empty, false); assert.equal(report.publication_authorized, false);
   }
 });
@@ -212,13 +239,13 @@ test("stale, duplicate, same-author and structurally invalid markers cannot hide
   }
 });
 
-test("failed, absent, skipped or unknown checks and merge conflicts remain explicit unresolved work", async () => {
+test("failed, absent, skipped or unknown workflow runs and merge conflicts remain explicit unresolved work", async () => {
   for (const state of ["failure", "cancelled", "missing", "skipped", "conflict", "unknown"]) {
     const w = world(), pr = w.add(10); pr.draft = false; pr.body = marker(pr.head.sha);
-    if (state === "missing") w.checks.set(pr.head.sha, []);
+    if (state === "missing") w.runs.set(pr.head.sha, []);
     else if (state === "conflict") { pr.mergeable = false; pr.mergeable_state = "dirty"; }
     else if (state === "unknown") { pr.mergeable = null; pr.mergeable_state = "unknown"; }
-    else w.checks.get(pr.head.sha)[0].conclusion = state;
+    else w.runs.get(pr.head.sha)[0].conclusion = state;
     const report = await w.read();
     assert.equal(report.machine_pending.length, 0); assert(report.attention.length);
     assert.equal(report.empty, false);
@@ -239,17 +266,71 @@ test("unhandled market and article-image work needs attention, unrelated code/ph
   }
 });
 
-test("ready current-head image-only and outlook-only handoffs remain with the machine", async () => {
+test("ready current-head image-only and outlook-only handoffs retain finalizer attention without duplicate first read", async () => {
   for (const file of ["assets/generated/example.jpg", "content/market_outlooks.json"]) {
     const w = world(), pr = w.add(10);
     w.files.set(10, [{ filename: file, status: "modified" }]);
     pr.draft = false; pr.body = marker(pr.head.sha);
     const report = await w.read();
-    assert.equal(report.selected_count, 0); assert.deepEqual(report.attention, []);
-    assert.equal(report.machine_pending.length, 1);
-    assert.equal(report.machine_pending[0].state, "ci_success");
+    assert.equal(report.selected_count, 0); assert.equal(report.attention[0].reason, "publication_unverified");
+    assert.equal(report.machine_pending.length, 0);
     assert.equal(w.fileCalls.length, 0, "no duplicate approved-image or article retrieval");
   }
+});
+
+test("a successful check named test cannot replace the exact required CI workflow", async () => {
+  const w = world(), pr = w.add(10);
+  pr.draft = false; pr.body = marker(pr.head.sha);
+  w.runs.get(pr.head.sha)[0].path = ".github/workflows/unrelated.yml";
+  const report = await w.read();
+  assert.equal(w.checks.get(pr.head.sha)[0].conclusion, "success");
+  assert.equal(report.machine_pending.length, 0);
+  assert.equal(report.attention[0].reason, "ci_unverified");
+  assert.equal(report.selected_count, 0, "an existing claimed review needs gate recovery, not another first read");
+  assert.equal(w.calls.some(call => call.route.endsWith("/check-runs")), false);
+});
+
+test("workflow, repository, PR/head/base and job attempt must all identify the same current CI", async () => {
+  for (const fault of ["workflow", "event", "head", "repository", "pr", "pr_head", "base", "attempt",
+    "job_run", "job_head", "job_attempt", "job_status", "job_skipped", "duplicate_test"]) {
+    const w = world(), pr = w.add(10);
+    pr.draft = false; pr.body = marker(pr.head.sha);
+    const original = clone(w.runs.get(pr.head.sha)[0]), detail = clone(original);
+    if (fault === "workflow") detail.path = ".github/workflows/other.yml";
+    if (fault === "event") detail.event = "push";
+    if (fault === "head") detail.head_sha = GIT(999);
+    if (fault === "repository") detail.head_repository.full_name = "someone/else";
+    if (fault === "pr") detail.pull_requests[0].number = 999;
+    if (fault === "pr_head") detail.pull_requests[0].head.sha = GIT(999);
+    if (fault === "base") detail.pull_requests[0].base.ref = "other";
+    if (fault === "attempt") detail.run_attempt = 0;
+    const job = w.jobs.get(original.id)[0];
+    if (fault === "job_run") job.run_id++;
+    if (fault === "job_head") job.head_sha = GIT(999);
+    if (fault === "job_attempt") job.run_attempt++;
+    if (fault === "job_status") job.status = "in_progress";
+    if (fault === "job_skipped") job.conclusion = "skipped";
+    if (fault === "duplicate_test") w.jobs.get(original.id).push({ ...job, id: job.id + 1 });
+    w.hook = ({ route }) => route === "/actions/runs/" + original.id ? detail : undefined;
+    const report = await w.read();
+    assert.equal(report.attention[0].reason, "ci_unverified", fault);
+    assert.equal(report.machine_pending.length, 0, fault);
+  }
+});
+
+test("latest current-head CI supersedes an older success and cancelled work remains visible", async () => {
+  const w = world(), pr = w.add(10);
+  pr.draft = false; pr.body = marker(pr.head.sha);
+  const latest = { ...clone(w.runs.get(pr.head.sha)[0]), id: 10002, status: "queued", conclusion: null };
+  w.runs.get(pr.head.sha).push(latest);
+  let report = await w.read();
+  assert.equal(report.machine_pending[0].ci_run_id, 10002);
+  assert.equal(report.machine_pending[0].state, "ci_pending");
+  latest.status = "completed"; latest.conclusion = "cancelled";
+  report = await w.read();
+  assert.equal(report.machine_pending.length, 0);
+  assert.equal(report.attention[0].reason, "ci_failed");
+  assert.equal(report.attention[0].ci_run_id, 10002);
 });
 
 test("empty is only reported after successful complete inventories at the fixed main", async () => {
@@ -296,14 +377,14 @@ test("unavailable file, duplicate records, unknown schema, body deletion and ren
   }
 });
 
-test("provider error wrappers, incomplete check inventory and changed head/main cannot become normal results", async () => {
-  for (const fault of ["provider", "checks", "head", "main"]) {
+test("provider error wrappers, incomplete run job inventory and changed head/main cannot become normal results", async () => {
+  for (const fault of ["provider", "jobs", "head", "main"]) {
     const w = world(), pr = w.add(10);
-    if (fault === "checks") { pr.draft = false; pr.body = marker(pr.head.sha); }
+    if (fault === "jobs") { pr.draft = false; pr.body = marker(pr.head.sha); }
     let mainReads = 0, inventories = 0;
     w.hook = ({ route }) => {
       if (fault === "provider" && route === "/pulls") return { isError: true, structuredContent: [] };
-      if (fault === "checks" && route.endsWith("/check-runs")) return { total_count: 2, check_runs: w.checks.get(pr.head.sha) };
+      if (fault === "jobs" && route.endsWith("/jobs")) return { total_count: 2, jobs: w.jobs.get(10000) };
       if (fault === "head" && route === "/pulls" && ++inventories === 2)
         return [{ ...clone(pr), head: { ...pr.head, sha: GIT(999) } }];
       if (fault === "main" && route === "/git/ref/heads/main" && ++mainReads === 2)
