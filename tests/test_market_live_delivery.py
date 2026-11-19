@@ -3,7 +3,9 @@
 Production checks reuse these contracts with real GETs; no engagement writes,
 paid services or extra GitHub workflows are needed.
 """
+import copy
 import hashlib
+import html
 import unittest
 from pathlib import Path
 
@@ -64,6 +66,37 @@ class LatestMarketLiveDeliveryTests(unittest.TestCase):
         files = self.fixture()
         files[FEED_URL] = (b"<rss><channel/></rss>", "application/rss+xml")
         with self.assertRaisesRegex(RuntimeError, "RSS differs"):
+            verify_latest_market_bulletin_delivery(self.reports, fetch=files.__getitem__)
+
+    def test_missing_or_stale_lead_and_each_body_paragraph_fail(self):
+        fragments = [('<p class="market-dispatch-lead">'
+                      + html.escape(self.latest["lead"]) + '</p>', "lead")]
+        fragments.extend(('<p>' + html.escape(text) + '</p>', "body paragraphs")
+                         for section in self.latest["sections"]
+                         for text in section["paragraphs"])
+        for index, (fragment, field) in enumerate(fragments):
+            for replacement in ("", fragment.replace('</p>', '（古い本文）</p>')):
+                with self.subTest(index=index, replacement=bool(replacement)):
+                    files = self.fixture()
+                    page, mime = files[self.url]
+                    self.assertEqual(page.count(fragment.encode()), 1)
+                    files[self.url] = (page.replace(fragment.encode(),
+                                                   replacement.encode(), 1), mime)
+                    with self.assertRaisesRegex(RuntimeError, "market " + field + " mismatch"):
+                        verify_latest_market_bulletin_delivery(self.reports, fetch=files.__getitem__)
+
+    def test_html_escaped_body_text_passes_but_text_outside_body_does_not(self):
+        self.reports = copy.deepcopy(self.reports)
+        self.latest = self.reports[-1]
+        self.latest["lead"] = 'A&Bは「<見通し>」と"条件"を確認。'
+        self.latest["sections"][0]["paragraphs"][0] = "A&Bの'予想'は<5%の範囲。"
+        files = self.fixture()
+        self.assertEqual(verify_latest_market_bulletin_delivery(self.reports, fetch=files.__getitem__),
+                         len(self.latest["figures"]))
+        page, mime = files[self.url]
+        files[self.url] = (page.replace(b'class="serial-article-body"',
+                                       b'class="unrelated-content"', 1), mime)
+        with self.assertRaisesRegex(RuntimeError, "market body missing or duplicated"):
             verify_latest_market_bulletin_delivery(self.reports, fetch=files.__getitem__)
 
     def test_missing_mobile_picture_or_changed_share_metadata_is_detected(self):
