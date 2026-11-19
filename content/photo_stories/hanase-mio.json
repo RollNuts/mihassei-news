@@ -1,4 +1,20 @@
 {
   "schema_version": 1,
-  "stories": []
+  "stories": [
+    {
+      "id": "hanase-mio-post-20261119121849123000",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-19T12:18:49.123+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼、川沿いで初めてキックボードに乗った。下りはすいすい、帰りの上り坂はずっと押して歩いた。乗った時間より押した時間のほうが長い。",
+      "source": {
+        "issue_slug": "november-first-detour-mio-004",
+        "cut_id": "07",
+        "image_sha256": "a4120101838a8004be11e8969a249cc758cc5ded46601ef2aeb624f2bfde1d5e"
+      }
+    }
+  ]
 }
