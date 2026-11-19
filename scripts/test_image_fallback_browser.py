@@ -60,7 +60,7 @@ def run_case(browser, source, jpeg, svg, mode):
         page.wait_for_function(ready, arg=expected)
         for attempt in range(5):
             if mode == "permanent" and attempt < 2:
-                with page.expect_request_failed(lambda request: request.url == original):
+                with page.expect_event("requestfailed", predicate=lambda request: request.url == original):
                     page.evaluate("window.dispatchEvent(new Event('online'))")
             else:
                 page.evaluate("window.dispatchEvent(new Event('online'))")
