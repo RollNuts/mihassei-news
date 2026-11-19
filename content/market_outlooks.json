@@ -411,7 +411,7 @@
     "forecast_id": "2026-11-18-topix",
     "stance": "中立",
     "trend": "暫定的に逆行",
-    "observed_value": 3824.0,
+    "observed_value": 3824,
     "observed_on": "2026-11-18",
     "reason": "11月18日のTOPIX公式終値は3,824.00。19日終値が17日基準3,840.02から0.5%超上昇する当初予想に対し、18日終値は基準より0.42%低く逆風。19日の公式終値はまだ公表されていないため、的中・外れは判定しない。",
     "change_reason": "18日前場の3,811.98から大引けは12.02ポイント回復したが、17日基準を下回った。半導体以外への上昇の広がりと19日の公式終値を待つため、見立ては中立を継続する。",
@@ -432,6 +432,31 @@
       "data_sha256": "33f4bcf3d5addfc1cc4e3c2d33cde78e250ae4d6887992acef5668dde7696e58",
       "time_before_sha256": "95b6fc4a08aa17a63917fb303f9cd77ca5e5c9306755e8736b1ee2363c7ca3e9",
       "time_after_sha256": "95b6fc4a08aa17a63917fb303f9cd77ca5e5c9306755e8736b1ee2363c7ca3e9"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-19-open-01",
+    "at": "2026-11-19T09:41:49+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3807.2,
+    "observed_on": "2026-11-19",
+    "reason": "JPX11月19日9:28 JST更新のTOPIX現物途中値3,807.20は、18日朝の固定基準17日終値3,840.02から約0.85%安で、19日終値が0.5%超上昇する強気予測には現時点で逆風。ただし正式判定は19日大引け後のJPX公式値のみ。",
+    "change_reason": "18日15:30公式終値3,824.00から19日9:28には3,807.20へ下落。グロース250は2.27%安、銀行業2.19%安で、REIT0.54%高と業種差が拡大した。元の予測方法・期日・基準値は不変。",
+    "source": {
+      "title": "JPX：2026年11月19日9:28更新TOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-19",
+      "checked_on": "2026-11-19"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611190928",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
     }
   }
 ]
