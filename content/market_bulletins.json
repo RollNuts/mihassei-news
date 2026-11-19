@@ -3082,5 +3082,218 @@
         "checked_on": "2026-11-19"
       }
     ]
+  },
+  {
+    "slug": "2026-11-19-close",
+    "day": "2026-11-19",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-19T15:51:49+09:00",
+    "title": "19日大引け：日経平均0.71%高でもTOPIXは横ばい圏、保険業は2.20%安",
+    "summary": "19日の大引け時点、日経平均は0.71%高の59,444.21円、TOPIXは0.04%安の3,822.47。保険業は2.20%安、REITは0.63%高。損保決算の実績確認と、TOPIX予想の正式判定待ちを分けます。",
+    "lead": "11月19日（木）の東京市場は、日経平均が前日から419.93円上昇した一方、TOPIXはわずかに下げ、保険業は大幅安で終えました。日経平均だけを見て『日本株が全面高』と判断しないため、指数と保有銘柄の差を確認します。以下の国内指数は15:30 JSTの引け時点で配信された値で、JPXの16:59頃の最終更新をまだ照合していない速報段階です。米国11月19日通常取引の結果は含みません。",
+    "sections": [
+      {
+        "heading": "日経平均上昇とTOPIX小幅安、同じ日の方向差",
+        "paragraphs": [
+          "日経平均の算出元が公表した11月19日の大引け値は59,444.21円で、18日の59,024.28円から419.93円高（0.71%高）。一方、JPXの19日15:30更新値ではTOPIXが3,822.47ポイントで、18日大引けの3,824.00から1.53ポイント安（0.04%安）でした。日経平均とTOPIXは対象銘柄・重み付けが違い、片方の上昇だけでは相場全体への買いの広がりを示せません。",
+          "同じJPX更新値では東証グロース市場250指数が675.02ポイントで0.50%安、東証REIT指数が1,684.32ポイントで0.63%高でした。小型成長株と不動産投資信託で方向が違うため、保有株の値動きはまず業種・資産クラスごとに分けて確認します。JPX15:30の指数ファイルは引け時点の速報であり、公式最終値との照合は未了です。"
+        ]
+      },
+      {
+        "heading": "損保株と商社株は下落、決算発表前の値動きは理由を決めつけない",
+        "paragraphs": [
+          "JPXの15:30更新値で保険業指数は4,132.15ポイント（前日比2.20%安）でした。SOMPOホールディングス（8630）は19日15:30の東証株価が6,856円、18日終値7,057円から2.85%安。保険業全体の下落よりも弱い値動きです。19日に決算発表が予定されていますが、引け時点の株価だけから保険引受損益や通期予想の中身を推定しません。発表後の正式な決算資料で保険引受、運用利益、自然災害費用、配当・自社株買いを確かめます。",
+          "商社株の三菱商事（8058）も19日15:30の東証株価が4,951円、前日5,100円から2.92%安でした。同社固有の新しい業績修正を今回の照合では確認できておらず、原油価格や為替だけを直接の原因と決めつけません。保有株なら企業IRの利益・資源感応度と業種指数の両方を見て、株価の下落と企業価値の変化を分けたいところです。"
+        ]
+      },
+      {
+        "heading": "日次TOPIX予想は15:30時点で逆風、正式判定は公式最終値の後",
+        "paragraphs": [
+          "18日朝に示した『19日公式終値が17日終値3,840.02ポイントから0.5%を超えて上昇する』予想に対し、19日15:30のTOPIX速報値は3,822.47で、固定基準比約0.46%安。上昇予想には逆風ですが、JPXの取引終了後最終更新の確認が済んでいないため、正式な外れ判定にはしていません。現段階の確定成績は1勝2敗（的中率33.3%、母数3件）のままです。",
+          "19日朝に示した別の予想は『20日のTOPIX公式終値が18日確定終値3,824.00から±0.5%以内』という横ばいです。19日15:30の速報値はこの基準から0.04%安で、一時的には範囲内ですが、判定日は翌20日であり的中とは扱いません。次の確認点は19日のTOPIX公式最終値、損保各社の実際の決算発表、20日の日米市場の新材料です。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-19-nov-close",
+        "kind": "bars",
+        "title": "日経平均：18日と19日の大引け値",
+        "note": "日経平均公式サイトの11月19日大引け値59,444.21円（前日比+419.93円）と、18日確定終値59,024.28円。",
+        "unit": "円",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 59024.28,
+            "state": "実績"
+          },
+          {
+            "label": "11/19大引け",
+            "value": 59444.21,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-19-nov-close",
+        "kind": "bars",
+        "title": "TOPIX：18日確定値と19日15:30速報値",
+        "note": "18日はJPX公式最終終値3,824.00。19日はJPXファイル15:30更新の引け時点値3,822.47で、16:59頃の最終更新照合前の速報値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/18確定",
+            "value": 3824,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 15:30",
+            "value": 3822.47,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "insurance-19-nov-close",
+        "kind": "bars",
+        "title": "保険業指数：19日15:30は前日比2.20%安",
+        "note": "JPX15:30更新で保険業は4,132.15、前日比-92.88。前日値4,225.03はその差から逆算した計算値。19日は公式最終更新前の引け時点速報。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/18逆算",
+            "value": 4225.03,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/19 15:30",
+            "value": 4132.15,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "日経平均上昇とTOPIX停滞",
+        "signal": "中立",
+        "meaning": "日経平均は0.71%高だが、JPX15:30速報のTOPIXは0.04%安。指数採用銘柄と重みが異なり、全面高とは断定できない。",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-19T15:30:00+09:00"
+      },
+      {
+        "name": "保険業が大幅安",
+        "signal": "逆風",
+        "meaning": "JPX15:30速報の保険業は2.20%安。SOMPOも2.85%安。損保決算の実数値と資本政策を照合するまで企業側の利益悪化を断定しない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00"
+      },
+      {
+        "name": "REITは逆方向に上昇",
+        "signal": "追い風",
+        "meaning": "JPX15:30速報で東証REIT指数は0.63%高。株式の保険・商社と同じ方向には動いておらず、背景の金利や分配金は追加確認が必要。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "8630",
+        "name": "SOMPOホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 7057,
+        "close": 6856,
+        "price_kind": "close",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!同銘柄の11月18日通常終値と調整後終値が一致することを照合。19日15:30の同じ東証JPY現物株価を比較し、独自の分割・併合補正を加えていない。",
+        "context": "15:30時点前日比2.85%安。決算発表前の値動きと実際の保険引受利益・通期見通し・還元を区別して確認する。"
+      },
+      {
+        "code": "8058",
+        "name": "三菱商事",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 5100,
+        "close": 4951,
+        "price_kind": "close",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8058.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!同銘柄の11月18日通常終値と調整後終値が一致することを照合。19日15:30の同じ東証JPY現物株価を比較し、独自の分割・併合補正を加えていない。",
+        "context": "15:30時点前日比2.92%安。商社株の下落が同社固有の新規開示によるものかは未確認。資源価格・円相場・企業開示を分けて見る。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "日経平均算出元：11月19日大引け59,444.21円（+419.93円）",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：11月19日15:30更新のTOPIX・保険業・グロース250・REITの引け時点速報値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：採用した指数ファイル更新時刻202611191530",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数の更新頻度と公開時刻",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月19日東証15:30株価・11月18日終値",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月18日通常終値と調整後終値の一致",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "三菱商事：11月19日東証15:30株価・11月18日終値",
+        "url": "https://finance.yahoo.co.jp/quote/8058.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "三菱商事：11月18日通常終値と調整後終値の一致",
+        "url": "https://finance.yahoo.co.jp/quote/8058.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO公式IR：11月19日2027年3月期第2四半期決算発表予定",
+        "url": "https://www.sompo-hd.com/ir/event",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      }
+    ]
   }
 ]
