@@ -55,6 +55,14 @@ class WeeklyShareCardContracts(unittest.TestCase):
         published = {"slug": "released-photo", "state": "published", "published_at": "2026-11-14T07:00:00+00:00"}
         older = {"slug": "older-photo", "state": "published", "published_at": "2026-11-13T07:00:00+00:00"}
         draft = {"slug": "unfinished-photo", "state": "draft", "published_at": "2031-11-14T07:00:00+00:00"}
+        # The per-feature byte/visual gate is mocked, but its validated cut
+        # metadata still participates in the real cross-feature source guard.
+        cuts = [f"{number:02}" for number in range(1, 11)]
+        for offset, issue in enumerate((older, published)):
+            issue["shots"] = [{"id": cut} for cut in cuts]
+            issue["images"] = {cut: {"provenance": {"kind": "user_supplied_photo"},
+                                    "source_sha256": f"{offset * 10 + int(cut):064x}"}
+                               for cut in cuts}
         catalog = {"issues": [older, draft, published]}
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
