@@ -1,4 +1,20 @@
 {
   "schema_version": 1,
-  "stories": []
+  "stories": [
+    {
+      "id": "shioba-rio-post-20261119092023236000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-19T09:20:23.236+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝の散歩で、花屋の前に赤い実のついた枝を見つけました。名前を調べようと立ち止まったら、もう取材の集合時間。手帳には「赤い実」とだけ書いてあります。",
+      "source": {
+        "issue_slug": "november-off-clock-rio-002",
+        "cut_id": "07",
+        "image_sha256": "4bf65213b6322e65144f079e73e33d4d18e20b9a2416aa2dc4f351d7eb83c167"
+      }
+    }
+  ]
 }
