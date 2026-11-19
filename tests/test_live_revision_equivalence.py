@@ -130,6 +130,7 @@ class PublicRevisionEquivalenceTests(unittest.TestCase):
             pass
 
         with patch.object(check_live, "verify_public_revision", return_value=self.original), \
+                patch.object(check_live, "verify_latest_photo_issue_delivery", return_value=10), \
                 patch.object(check_live, "latest_articles", side_effect=ReachedContentCheck):
             with self.assertRaises(ReachedContentCheck):
                 check_live.check()
