@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "940322baa0935d901edabb26b93bf2ca6b6f09e90929170c312d0f3b092cfa07",
+  "slug": "reskilling-certificates-twelve-paid-placements-seven",
+  "article_sha256": "c3c128c593b548cb2b471df7053f3e2bea4bd9cfb5718eda85886633f3e248e7",
+  "logical_run_id": "news-photo-v1:c3c128c593b548cb2b471df7053f3e2bea4bd9cfb5718eda85886633f3e248e7",
+  "prompt_sha256": "0d77d99166f2eaca9a666cf9bf9793a8e9763ef0bf5d4e145930e1948d7dd1d7",
+  "reserved_at": "2026-11-19T12:28:21.370Z",
+  "baseline": {
+    "commit_sha": "efad31ce2425a2d9d385a65adcc73dbe5384db74",
+    "tree_sha": "d2c661baee6e999ecae91c8d49aef39b25b9b472",
+    "protected_hashes": {
+      "content/articles.json": "7373f863620c496d12335d52255206d57a2a3cdec87e3e95bf60e2ed256a0531",
+      "assets/generated/manifest.json": "752326f5f19b6802347e6bdfc6b5bb6a3f7b41e8f54ee2dbcf9cdb41f217d2b8",
+      "content/visual_reviews.json": "54b60f285a32aaa858f56fd3f09af51e321b51660038ede81fb126b8b77ff92c"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "61129d5d0e965e6a9b57fb92df3432c886294a99",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "2a38330bb53e24879639f15740e6bd6ceda115d60f4402179736cab1b18e508f",
+    "observed_at": "2026-11-19T12:27:43.837Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
