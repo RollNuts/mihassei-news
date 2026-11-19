@@ -1050,6 +1050,15 @@
       "reviewed_at": "2026-11-19T07:51:41+09:00",
       "reviewer_task": "/root"
     }
+  ,
+    "reskilling-certificates-twelve-paid-placements-seven": {
+  "decision": "accepted",
+  "article_sha256": "c3c128c593b548cb2b471df7053f3e2bea4bd9cfb5718eda85886633f3e248e7",
+  "image_sha256": "e78d41ded4446455d71a65a179c79c032dace2878a19f0a1ea8b8d71b98b1a7a",
+  "reviewed_at": "2026-11-19T12:31:40.742Z",
+  "note": "原PNGと固定候補JPEGを実表示。本文の50代女性が同僚の前で濡れた段ボールの底を傾けて検品する場面と、赤い識別テープ・倉庫のコンベヤーが一致する。肌の年齢感、手袋、作業服、濡れた紙と金属ローラーの質感、天井光と影が自然な現場写真として成立。主役と漏れた箱が1200×675の画角に収まり、読める文字やロゴ、目立つ手指・物体の破綻を認めない。",
+  "review_run": "codex:6afee8c9-0e98-8191-a3ef-f60ebad8a081"
+}
   },
   "version": 1
 }
