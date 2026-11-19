@@ -3315,5 +3315,243 @@
         "checked_on": "2026-11-19"
       }
     ]
+  },
+  {
+    "slug": "2026-11-20-am",
+    "day": "2026-11-20",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-20T08:40:23+09:00",
+    "title": "20日朝：米株は全面安、Anthropic初日高でも買いは広がらず―日本株は休日越えに警戒",
+    "summary": "米国19日のS&P500は2.00%安、ナスダックは約2.25%安。Anthropicは上場初日、公募83ドルに対し終値97.17ドル。一方ウォルマートとウィリアムズ・ソノマは決算発表後に下落。日本の寄り前は19日TOPIX終値3,822.47が最新公式基準です。",
+    "lead": "11月20日（金）の東京寄り付き前、米国19日（現地）の主要3指数はそろって約2%以上下落しました。話題のAnthropicは上場初日を公募価格より高く終えましたが、他の成長株まで買いが広がったわけではありません。日本株を保有する人は、20日の東証開始後に半導体だけでなく銀行・小売などの値動きがどう連動するか確認したい朝です。日本株の最新確定基準は19日15:30大引けのTOPIX 3,822.47で、20日当日の株価はまだ含んでいません。",
+    "sections": [
+      {
+        "heading": "米国19日終値：S&P500とナスダックが約2%下落",
+        "paragraphs": [
+          "米国11月19日（木）の通常取引終値は、S&P500が7,175.83ポイント（前日比147.80ポイント安、2.00%安）、ダウ工業株30種平均が49,097.06ポイント（1,101.11ポイント安、2.2%安）、ナスダック総合が23,879.20ポイント（550.69ポイント安、約2.3%安）でした。AP通信によるとS&P500構成銘柄の9割超が下落。AI関連だけでなく市場全体の売りが広がった点が20日の日本市場にとって重要です。",
+          "19日の米国終値は日本時間20日6:00 JSTの通常取引終了時点であり、20日の米国市場や日本の20日寄り付き後の動きを示す数字ではありません。日本の19日大引けTOPIXは3,822.47で、18日終値3,824.00から0.04%安。前日までの日経平均とTOPIXの方向差が、米国の幅広い下げを受けてどう変わるかを見ます。"
+        ]
+      },
+      {
+        "heading": "Anthropicは初日17%高。それでもAI株全体は弱い",
+        "paragraphs": [
+          "Anthropic（NASDAQ: ANT）は19日に新規上場しました。18日に公表した公募価格は1株83米ドル、Nasdaqが発表した初値は111.50米ドル、19日通常取引の終値は97.17米ドルでした。公募価格比では約17.1%高ですが、初値からは下落しています。市場全体の成長株に追い風が続く根拠にはなりません。",
+          "新規上場直後は値動きが大きく、初日の上昇率は将来利益の確かさを示しません。Anthropicの収益力やAIインフラ投資の採算と、既存の半導体・クラウド企業の株価を分けて検討する必要があります。翌週は出来高と初値からの値動きが落ち着くかが確認点です。"
+        ]
+      },
+      {
+        "heading": "米小売決算：売上が増えても株価が上がるとは限らない",
+        "paragraphs": [
+          "ウォルマート（NASDAQ: WMT）が19日に発表した2027年度第3四半期の売上高は1,888億米ドルで前年同期比5.2%増。米国ネット販売は23%増で、同社は通期の売上成長率見通しを引き上げました。それでも同日の通常終値は126.04米ドル、前日の127.36米ドルから約1.04%安。会社の増収と投資家の期待水準は区別したいところです。",
+          "住宅用品小売のウィリアムズ・ソノマ（NYSE: WSM）も同日公表の第3四半期で比較可能売上高5.1%増、売上高5.8%増を示しましたが、株価は260.09から220.66米ドルへ約15.16%下落しました。市場の評価を判断するには利益率・会社見通し・事前期待との比較が必要で、上昇率や売上成長率の数字だけで割安とは言えません。"
+        ]
+      },
+      {
+        "heading": "20日東京の確認点と、次回24日判定の見通し",
+        "paragraphs": [
+          "20日の東京は、まず米国19日の広範囲な下落を受けてTOPIXが19日終値3,822.47からどれだけ動くか、下落業種が広がるかを確認します。20日判定の既存予想は『18日終値3,824.00に対し±0.5%以内の横ばい』で固定されています。現時点は20日の東証寄り前のため結果待ち。米株全面安は逆風ですが、19日終値の数字から20日の的中・外れは決めません。",
+          "新たな短期見通しは、11月24日（火）のTOPIX公式終値が11月19日確定終値3,822.47から0.5%を超えて下落する、というものです。米国19日の下げが週明け後も国内の複数業種に波及するリスクを重視しました。ただし20日の東京市場、米国20日取引、週末材料で見方が変わり得ます。23日（月）は日本の勤労感謝の日で東証休場のため、判定をその日に置きません。確定済みの日次TOPIX予想成績は1勝3敗（25%、4件）で変わりません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "sp500-nov19-close",
+        "kind": "bars",
+        "title": "米S&P500：18日から19日の通常終値",
+        "note": "19日終値7,175.83と前日比-147.80はAP 11/19の確定報道。18日7,323.63は同報道差分からの計算値で、18日当日の別配信の値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2f178054aea79d282e5ccf8d62f26a28",
+        "observed_at": "2026-11-20T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/18",
+            "value": 7323.63,
+            "state": "計算"
+          },
+          {
+            "label": "米国11/19",
+            "value": 7175.83,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "ant-ipo-nov19",
+        "kind": "bars",
+        "title": "Anthropic：公募価格と初日通常終値",
+        "note": "11/18公募価格83ドルはAnthropic公式、19日NASDAQ通常終値97.17ドルはStockAnalysis・APで照合。上場初値111.50ドルとは異なる。",
+        "unit": "米ドル",
+        "source_url": "https://stockanalysis.com/stocks/ant/",
+        "observed_at": "2026-11-20T06:00:00+09:00",
+        "values": [
+          {
+            "label": "公募価格11/18",
+            "value": 83,
+            "state": "実績"
+          },
+          {
+            "label": "通常終値11/19",
+            "value": 97.17,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "wsm-nov19-close",
+        "kind": "bars",
+        "title": "ウィリアムズ・ソノマ：米国18日・19日終値",
+        "note": "Yahoo!米国日別通常終値。両日とも通常終値と調整後終値一致。19日売上発表後の株価は約15.16%安。",
+        "unit": "米ドル",
+        "source_url": "https://finance.yahoo.com/quote/WSM/history/",
+        "observed_at": "2026-11-20T06:00:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 260.09,
+            "state": "実績"
+          },
+          {
+            "label": "11/19終値",
+            "value": 220.66,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "米国株の幅広い売り",
+        "signal": "逆風",
+        "meaning": "19日S&P500は2.00%安、ナスダックは約2.25%安。20日東京でも指数・業種の広がりを確認したい。",
+        "source_url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2f178054aea79d282e5ccf8d62f26a28",
+        "observed_at": "2026-11-20T06:00:00+09:00"
+      },
+      {
+        "name": "新規上場株の強さは限定的",
+        "signal": "中立",
+        "meaning": "Anthropic初日終値は公募価格比約17%高だが初値は下回った。既存AI関連の株価全体が上向いたわけではない。",
+        "source_url": "https://stockanalysis.com/stocks/ant/",
+        "observed_at": "2026-11-20T06:00:00+09:00"
+      },
+      {
+        "name": "日本の最新公式終値",
+        "signal": "中立",
+        "meaning": "JPX19日16:59更新のTOPIXは3,822.47（0.04%安）。これは20日の途中値ではない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "WMT",
+        "name": "ウォルマート",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "下落",
+        "previous_close": 127.36,
+        "close": 126.04,
+        "price_kind": "close",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-20T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/wmt/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "StockAnalysisの2026/11/18・19の同一時系列で両日ともCloseとAdj.Closeが一致。11/19米国通常終値のみ使用し、独自分割調整なし。",
+        "context": "売上高5.2%増、FY27売上成長率の見通し引上げを発表した一方、同日の株価は約1.04%安。決算成長と買い評価は別。"
+      },
+      {
+        "code": "WSM",
+        "name": "ウィリアムズ・ソノマ",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "direction": "下落",
+        "previous_close": 260.09,
+        "close": 220.66,
+        "price_kind": "close",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-20T06:00:00+09:00",
+        "source_url": "https://finance.yahoo.com/quote/WSM/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11/18・19の日別表でCloseとAdj Closeは両日一致。米国通常終値260.09→220.66米ドル、独自補正なし。",
+        "context": "比較可能売上高は前年同期比5.1%増と発表したが11/19株価は15.16%安。決算の増収だけで株価反応を決めつけない。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "AP：米国11月19日主要指数の通常取引終値",
+        "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2f178054aea79d282e5ccf8d62f26a28",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：日本11月19日TOPIX 3,822.47の公式指数データ",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：同指数データの更新時刻16:59",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Nasdaq：Anthropicの上場と初値111.50ドル",
+        "url": "https://www.nasdaq.com/newsroom/anthropic-marks-ipo-at-nasdaq",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Anthropic公式：11月18日決定のIPO公募価格83米ドル",
+        "url": "https://www.anthropic.com/news/anthropic-prices-initial-public-offering",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "StockAnalysis：ANT初日11月19日通常終値97.17ドル",
+        "url": "https://stockanalysis.com/stocks/ant/",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Walmart公式配信：2027年度第3四半期決算",
+        "url": "https://www.nasdaq.com/press-release/walmart-reports-revenue-growth-52-45-constant-currency-cc-2026-11-19",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "StockAnalysis：WMT 11月18・19日の終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/wmt/history/",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Williams-Sonoma公式決算リリース配信版：2026年第3四半期",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/williams-sonoma-inc-announces-strong-130000366.html",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo Finance：WSM 11月18・19日の通常・調整後終値",
+        "url": "https://finance.yahoo.com/quote/WSM/history/",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：2026年11月23日勤労感謝の日休場・24日営業",
+        "url": "https://www.jpx.co.jp/calendar/",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "NYSE：2026年11月の米国市場休場表",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      }
+    ]
   }
 ]
