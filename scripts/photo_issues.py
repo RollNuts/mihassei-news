@@ -822,6 +822,20 @@ def validate_published_issue(issue, *, root=ROOT, now=None):
 
 def published_issues(data, *, root=ROOT, now=None):
     result = [validate_published_issue(issue, root=root, now=now) for issue in data["issues"] if issue["state"] == "published"]
+    # A different JPEG encoding does not make an already-published original new.
+    # Only validated feature cuts participate; drafts, references and stories do not.
+    seen_sources = {}
+    for issue in result:
+        for shot in issue["shots"]:
+            cut = shot["id"]
+            image = issue["images"][cut]
+            supplied = image["provenance"].get("kind") == "user_supplied_photo"
+            source_sha = image["source_sha256" if supplied else "source_png_sha256"]
+            previous = seen_sources.get(source_sha)
+            if previous is not None and previous[0] != issue["slug"]:
+                raise ValueError("Photo original " + source_sha + " is reused across published features: "
+                                 + previous[0] + "/" + previous[1] + " and " + issue["slug"] + "/" + cut)
+            seen_sources.setdefault(source_sha, (issue["slug"], cut))
     return sorted(result, key=lambda issue: issue["published_at"], reverse=True)
 
 
