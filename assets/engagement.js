@@ -1,25 +1,88 @@
 (() => {
   "use strict";
 
-  // Broken or blocked third-party stock photographs never leave empty cards.
-  document.querySelectorAll("img[data-fallback]").forEach(image=>{
+  // Keep the fallback visible while a failed photograph is checked on return.
+  // Successful images make no extra requests; each failed image gets two tries.
+  const failedImages=new Set();
+  function watchImage(image){
+    const original=image.getAttribute("src");
+    const fallback=image.getAttribute("data-fallback");
+    if(!original || !fallback || original===fallback)return;
+    const alt=image.getAttribute("alt");
+    const fallbackAlt=image.getAttribute("data-fallback-alt");
+    const generated=image.getAttribute("data-generated-scene");
+    const link=image.closest(".story-image-link");
+    const generatedLink=link?.classList.contains("story-image-link--generated");
+    const caption=image.closest("figure")?.querySelector("figcaption");
+    const captionText=caption?.textContent;
+    let attempts=0, pending=false, usingFallback=false;
     const recoverImage=()=>{
-      const fallback=image.getAttribute("data-fallback");
-      if(!fallback || image.getAttribute("src")===fallback)return;
-      const fallbackAlt=image.getAttribute("data-fallback-alt");
+      if(usingFallback || image.getAttribute("src")!==original)return;
+      usingFallback=true;
+      image.onerror=null;
       image.removeAttribute("data-fallback");
       image.removeAttribute("data-fallback-alt");
       if(fallbackAlt) image.setAttribute("alt",fallbackAlt);
       image.src=fallback;
-      const caption=image.closest("figure")?.querySelector("figcaption");
       if(caption)caption.textContent="イメージ画像";
       image.removeAttribute("data-generated-scene");
-      image.closest(".story-image-link")?.classList.remove("story-image-link--generated");
+      link?.classList.remove("story-image-link--generated");
+      if(attempts<2)failedImages.add(retry);
     };
-    image.addEventListener("error",recoverImage,{once:true});
+    const retry=()=>{
+      if(!image.isConnected || image.getAttribute("src")!==fallback){
+        failedImages.delete(retry);
+        return;
+      }
+      if(pending || attempts>=2 || !image.getClientRects().length ||
+         typeof window.Image!=="function")return;
+      attempts++;
+      pending=true;
+      const probe=new window.Image();
+      let finished=false;
+      const finish=loaded=>{
+        if(finished)return;
+        finished=true;
+        window.clearTimeout(timer);
+        probe.onload=probe.onerror=null;
+        pending=false;
+        if(loaded && probe.naturalWidth>0 && image.isConnected &&
+           image.getAttribute("src")===fallback){
+          usingFallback=false;
+          if(alt===null)image.removeAttribute("alt");
+          else image.setAttribute("alt",alt);
+          if(generated!==null)image.setAttribute("data-generated-scene",generated);
+          image.setAttribute("data-fallback",fallback);
+          if(fallbackAlt!==null)image.setAttribute("data-fallback-alt",fallbackAlt);
+          if(generatedLink)link.classList.add("story-image-link--generated");
+          if(caption)caption.textContent=captionText;
+          image.onerror=recoverImage;
+          image.src=original;
+          failedImages.delete(retry);
+        }else if(attempts>=2 || !image.isConnected || image.getAttribute("src")!==fallback){
+          failedImages.delete(retry);
+        }
+      };
+      const timer=window.setTimeout(()=>{
+        finish(false);
+        probe.removeAttribute("src");
+      },10000);
+      probe.onload=()=>finish(true);
+      probe.onerror=()=>finish(false);
+      probe.src=original;
+    };
+    image.onerror=recoverImage;
     // A cached failure can finish before this deferred script attaches.
     if(image.complete && image.naturalWidth===0)recoverImage();
-  });
+  }
+  const retryFailedImages=()=>{
+    if(document.visibilityState!=="visible" || navigator.onLine===false)return;
+    failedImages.forEach(retry=>retry());
+  };
+  document.querySelectorAll("img[data-fallback]").forEach(watchImage);
+  window.addEventListener?.("online",retryFailedImages);
+  document.addEventListener("visibilitychange",retryFailedImages);
+  window.addEventListener?.("pageshow",event=>{if(event.persisted)retryFailedImages();});
 
   // Keep the genuine edition label current without a decorative second-by-second clock.
   const editionDateFormat = new Intl.DateTimeFormat("ja-JP", {
@@ -545,17 +608,13 @@
         thumb.decoding="async";
         thumb.width=160;
         thumb.height=90;
-        // These thumbnails are inserted after startup, so the initial
-        // img[data-fallback] scan cannot attach their error handlers.
+        // Dynamic cards use the same bounded recovery as the initial images.
         if(typeof item.fallback==="string" && /^\/images\/[a-z0-9-]+\.svg$/.test(item.fallback) &&
            item.fallback!==item.image){
           thumb.setAttribute("data-fallback",item.fallback);
-          thumb.onerror=()=>{
-            thumb.onerror=null;
-            thumb.src=item.fallback;
-          };
         }
         thumb.src=item.image;
+        watchImage(thumb);
         media.append(thumb);
         li.append(rank,media,content);
       }else{

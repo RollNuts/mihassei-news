@@ -207,6 +207,25 @@ For current compact version 2 steps, retain the same small checkpoint, original 
 
 For legacy `stage` checkpoints only, `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish tree/commit/branch/readback without original data-URI bytes. Before that boundary, retain the raw native result, real byte-returning callback and first observation time; recover `error.transferredImage ?? await readBytes(error.imageGenResult)` through the corresponding legacy storage method with its original proof/claim. Legacy `store` examples require an executor that actually retains values; current GPT does not retain them across cells. A blob or unreferenced commit is incomplete. Authorization failures, missing files on existing branches, malformed responses and ambiguous lookups never authorize overwriting a branch or generating again.
 
+### Install a reviewed candidate in its existing publication PR
+
+For a new image-manifest slug, load `scripts/generated_manifest_patch.js` from the same reviewed immutable commit as the stager and pass its `GeneratedManifestPatch` API as `manifestPatch` to `NativeImageStage.create`. This path requires a photo-routed article (`cpu-photo`, including the unset default) and an ordinary Native candidate retaining its C2PA and original generation claim; historical recovery and existing-record replacement keep their explicit procedures. After displaying and reviewing the source PNG and final JPEG from the **fixed candidate commit**, prepare the public change:
+
+```js
+const prepared = await stager.preparePublication({
+  plan,
+  candidateCommitSha,
+  pullRequestNumber,
+  expectedHeadSha,
+  articleSha256,
+  reviewSource,
+});
+```
+
+`reviewSource` is the original JSON text of the actual accepted decision for that article fingerprint and JPEG SHA, with the observed review time and notes. The helper does not perform visual review or create an acceptance. It rechecks the fixed candidate's bytes and provenance, the current PR's article and head, and returns `prepared_not_published` with the current PR's `baseTreeSha`, `expectedHeadSha`, and three `files` for GitHub `create_tree`: the public JPEG blob, the manifest append, and the review update. Existing manifest and review text, including large integer seeds, is preserved. An existing manifest slug requires its explicit replacement/history procedure; this append-only path must not overwrite it.
+
+Before any GitHub write, run the existing fresh image guard. Use these three files on the returned **current PR tree**, then follow the existing expected-head non-forced update, readback, CI, and publication-finalize procedure. If the head changes, prepare again against the new head. Do not merge the candidate branch or copy its tree into the publication PR: `source.png.partNNN`, `candidate.jpg`, and `receipt.json` remain retrievable at the original candidate commit. A prepared patch is neither saved nor published, and a successful save is not proof of visible delivery.
+
 ## Runtime without Node
 
 Read the helper as UTF-8 from the reviewed repository revision. Load it in a plain JavaScript runtime, including `functions.exec`:

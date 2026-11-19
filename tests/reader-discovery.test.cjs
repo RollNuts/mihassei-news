@@ -33,7 +33,12 @@ async function simulate(candidates,counts,options={}){
     return {
       tag,className:'',textContent:'',href:'',children:[],attributes:{},
       append(...nodes){this.children.push(...nodes);},
-      setAttribute(name,value){this.attributes[name]=value;}
+      setAttribute(name,value){this.attributes[name]=value;},
+      getAttribute(name){return this.attributes[name]??null;},
+      removeAttribute(name){delete this.attributes[name];},
+      closest(){return null;},
+      get src(){return this.attributes.src;},
+      set src(value){this.attributes.src=value;}
     };
   }
   const doc={

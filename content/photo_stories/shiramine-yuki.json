@@ -1,4 +1,20 @@
 {
   "schema_version": 1,
-  "stories": []
+  "stories": [
+    {
+      "id": "shiramine-yuki-post-20261119182052687",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-19T18:20:52.687+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夕方、手袋のほつれを見つけて、久しぶりに針を出しました。細い糸を通すのに少し苦戦したけれど、手首のあたりがまたやわらかくなりました。",
+      "source": {
+        "issue_slug": "november-warm-water-and-riverside-yuki-009",
+        "cut_id": "07",
+        "image_sha256": "2838ebf61dd4b3a84f206911357b811d68e1938b6ff7a060830997de2c3df30f"
+      }
+    }
+  ]
 }
