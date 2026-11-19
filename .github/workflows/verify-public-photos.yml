@@ -10,6 +10,11 @@ on:
         description: 'Exact merged main SHA to verify (empty keeps normal main verification)'
         required: false
         type: string
+      capture_mobile:
+        description: 'Also capture the two November 19 recovery pages at 390px (manual only)'
+        required: false
+        type: boolean
+        default: false
       finalize_pr:
         description: 'Opted-in PR number, only to resume a completed CI handoff'
         required: false
@@ -34,9 +39,9 @@ on:
 # Avoid treating a superseded commit as a production failure.
 # Read-only public-byte verification is the sole deployment wait.
 concurrency:
-  # PR completions and exact-SHA recovery must never cancel a live push check.
-  group: ${{ (github.event_name == 'workflow_run' || github.event_name == 'pull_request_target' || inputs.finalize_pr != '') && format('publication-finalize-{0}', github.run_id) || inputs.expected_sha != '' && format('verify-live-exact-{0}', inputs.expected_sha) || 'verify-live-production-main' }}
-  cancel-in-progress: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.finalize_pr == '' && inputs.expected_sha == '') }}
+  # PR completions, exact-SHA recovery and manual screenshots cannot cancel a live push check.
+  group: ${{ (github.event_name == 'workflow_run' || github.event_name == 'pull_request_target' || inputs.finalize_pr != '') && format('publication-finalize-{0}', github.run_id) || (github.event_name == 'workflow_dispatch' && inputs.capture_mobile) && format('verify-mobile-{0}', github.run_id) || inputs.expected_sha != '' && format('verify-live-exact-{0}', inputs.expected_sha) || 'verify-live-production-main' }}
+  cancel-in-progress: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.capture_mobile && inputs.finalize_pr == '' && inputs.expected_sha == '') }}
 permissions:
   contents: read
 jobs:
@@ -101,6 +106,123 @@ jobs:
         with:
           name: live-photo-health-${{ github.run_id }}
           path: ${{ runner.temp }}/live-photo-health.json
+          if-no-files-found: error
+          retention-days: 3
+
+  mobile_capture:
+    # Opt-in evidence only: no browser installation on normal publication runs.
+    needs: check
+    if: ${{ !cancelled() && github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_dispatch' && inputs.capture_mobile && inputs.finalize_pr == '' && needs.check.result == 'success') || (github.event_name == 'pull_request_target' && github.event.action == 'edited' && github.event.pull_request.merged == true && contains(github.event.pull_request.body, '<!-- mobile-capture') && !contains(github.event.pull_request.body, '<!-- publication-finalize'))) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+      actions: read
+    steps:
+      - name: Authorize only a current-main manual capture request
+        id: request
+        uses: actions/github-script@v8
+        env:
+          CHECKED_SHA: ${{ needs.check.outputs.sha }}
+        with:
+          retries: 0
+          script: |
+            const repo = 'RollNuts/mihassei-news';
+            const api = {owner: 'RollNuts', repo: 'mihassei-news'};
+            const pages = [
+              'https://veripsa.com/articles/old-coat-recut-as-strangers-jacket/?analytics=off',
+              'https://veripsa.com/photo/weekly/november-rooftop-pool-sumire-011/?analytics=off'
+            ];
+            const requireValue = (ok, message) => { if (!ok) throw new Error(message); };
+            core.setOutput('capture', 'false');
+            requireValue(context.repo.owner + '/' + context.repo.repo === repo && context.ref === 'refs/heads/main', 'Only the fixed main repository is allowed');
+            const {data: repository} = await github.rest.repos.get(api);
+            requireValue(repository.full_name === repo && repository.private === false, 'Only the public repository is allowed');
+            let expected = process.env.CHECKED_SHA;
+            let requestId = 'workflow-dispatch-' + context.runId;
+            let verifiedRun = context.runId;
+            if (context.eventName === 'pull_request_target') {
+              const event = context.payload;
+              requireValue(event.action === 'edited' && event.pull_request.merged === true, 'An edit of a merged PR is required');
+              if (typeof event.changes?.body?.from !== 'string') { core.info('PR body unchanged; no new capture'); return; }
+              const blocks = body => [...(body || '').matchAll(/<!-- mobile-capture\s*\n(.*?)\n-->/gs)].map(match => match[1]);
+              const current = blocks(event.pull_request.body);
+              requireValue(current.length === 1 && !event.pull_request.body.includes('<!-- publication-finalize'), 'Use one mobile-capture block on a merged code PR without a publication handoff');
+              const request = JSON.parse(current[0]);
+              const keys = ['version', 'request', 'requested_by', 'expected_sha', 'pages'];
+              requireValue(request && typeof request === 'object' && Object.keys(request).sort().join() === keys.sort().join() && request.version === 1, 'Invalid mobile request fields');
+              requireValue(typeof request.request === 'string' && new RegExp('^pr-' + event.number + '-mobile-390(?:-[a-z0-9-]+)?$').test(request.request), 'Use this real PR number in the request identifier');
+              const previous = blocks(event.changes.body.from);
+              if (previous.length === 1) {
+                let before;
+                try { before = JSON.parse(previous[0]); } catch (_) {}
+                if (before?.request === request.request) { core.info('Request unchanged; no new capture'); return; }
+              }
+              requireValue(JSON.stringify(request.pages) === JSON.stringify(pages), 'Only the two fixed public pages are allowed');
+              requireValue(request.requested_by === context.actor && event.sender?.login === context.actor && process.env.GITHUB_TRIGGERING_ACTOR === context.actor, 'The request must identify the actual editor and triggering actor');
+              const {data: pr} = await github.rest.pulls.get({...api, pull_number: event.number});
+              requireValue(pr.number === event.number && pr.state === 'closed' && pr.merged === true && pr.draft === false && pr.user.login === context.actor, 'Only the writer\'s merged PR is allowed');
+              requireValue(pr.head.repo?.full_name === repo && pr.base.repo?.full_name === repo && pr.base.ref === 'main', 'Only a same-repository PR to main is allowed');
+              requireValue(pr.body === event.pull_request.body && pr.head.sha === event.pull_request.head.sha && pr.merge_commit_sha === event.pull_request.merge_commit_sha, 'PR body or merged head changed after the request event');
+              const {data: permission} = await github.rest.repos.getCollaboratorPermissionLevel({...api, username: context.actor});
+              requireValue(['admin', 'maintain', 'write'].includes(permission.permission), 'The actual editor must be a repository writer');
+              expected = request.expected_sha;
+              requestId = request.request;
+              requireValue(typeof expected === 'string' && /^[a-f0-9]{40}$/.test(expected) && /^[a-f0-9]{40}$/.test(pr.head.sha) && /^[a-f0-9]{40}$/.test(pr.merge_commit_sha), 'Full main and PR revisions are required');
+              const {data: comparison} = await github.rest.repos.compareCommitsWithBasehead({...api, basehead: pr.merge_commit_sha + '...' + expected});
+              requireValue(['ahead', 'identical'].includes(comparison.status), 'The merged PR must be on the requested main history');
+              const {data: runs} = await github.rest.actions.listWorkflowRuns({...api, workflow_id: 'verify-public-photos.yml', event: 'push', head_sha: expected, per_page: 1});
+              const run = runs.workflow_runs[0];
+              requireValue(run && run.path === '.github/workflows/verify-public-photos.yml' && run.event === 'push' && run.head_branch === 'main' && run.head_sha === expected && run.status === 'completed' && run.conclusion === 'success', 'The latest exact-main public verification push run must have succeeded');
+              const {data: jobs} = await github.rest.actions.listJobsForWorkflowRun({...api, run_id: run.id, filter: 'latest', per_page: 100});
+              const job = jobs.jobs.find(job => job.name === 'check');
+              const requiredSteps = [
+                'Bind verification to a full main revision before selecting its files',
+                'Wait for the public revision or a proven docs-only ancestor',
+                'Verify the published revision and live stories without generating traffic',
+                'Verify that Twitterbot can fetch each first-party image card'
+              ];
+              requireValue(job && job.head_sha === expected && job.run_id === run.id && job.run_attempt === run.run_attempt && job.status === 'completed' && job.conclusion === 'success' && requiredSteps.every(name => job.steps.some(step => step.name === name && step.conclusion === 'success')), 'The actual revision, content and image verification steps must have succeeded');
+              verifiedRun = run.id;
+            } else {
+              requireValue(context.eventName === 'workflow_dispatch' && ['true', true].includes(context.payload.inputs?.capture_mobile) && !context.payload.inputs?.finalize_pr, 'Explicit manual capture is required');
+            }
+            const {data: main} = await github.rest.git.getRef({...api, ref: 'heads/main'});
+            requireValue(typeof expected === 'string' && /^[a-f0-9]{40}$/.test(expected) && expected === main.object.sha && expected === context.sha, 'Capture must use the current trusted main revision');
+            core.setOutput('sha', expected);
+            core.setOutput('request', requestId);
+            core.setOutput('verified_run', String(verifiedRun));
+            core.setOutput('capture', 'true');
+      - uses: actions/checkout@v4
+        if: steps.request.outputs.capture == 'true'
+        with:
+          ref: ${{ steps.request.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        if: steps.request.outputs.capture == 'true'
+        with:
+          python-version: '3.12'
+      - name: Install the pinned browser library and Japanese fonts
+        if: steps.request.outputs.capture == 'true'
+        run: |
+          python3 -m pip install --no-cache-dir playwright==1.65.2
+          python3 -m playwright install --with-deps --only-shell chromium
+          sudo apt-get install --no-install-recommends -y fonts-noto-cjk
+      - name: Capture the two live pages without analytics or write requests
+        id: capture
+        if: steps.request.outputs.capture == 'true'
+        env:
+          EXPECTED_SHA: ${{ steps.request.outputs.sha }}
+          CAPTURE_REQUEST: ${{ steps.request.outputs.request }}
+          PUBLIC_CHECK_RUN: ${{ steps.request.outputs.verified_run }}
+        run: python3 scripts/capture_live_mobile.py --expected-sha "$EXPECTED_SHA" --output "$RUNNER_TEMP/mobile-390"
+      - name: Keep actual screenshots and measured layout evidence, including failures
+        if: ${{ !cancelled() && steps.capture.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-390-${{ github.run_id }}
+          path: ${{ runner.temp }}/mobile-390/
           if-no-files-found: error
           retention-days: 3
 
