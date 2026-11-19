@@ -153,7 +153,6 @@
     "sha256": "ab2a96f793ffe27d734fe5e8fa2612e272022cb1afbdabce0cc4e41ffe765b40"
   },
   "remaining_publication_steps": [
-    "Read back this candidate bundle at an immutable saved commit; preserve the existing four original PNGs and original receipt byte for byte.",
     "Merge the normal PR885 Pillow/native Library archive provenance validator change and confirm the current-main gate; the local PR885 check is recorded separately.",
     "At the regular permitted 2026-11-20 06:00 JST slot, confirm daily order/no published duplicate, adopt these exact original/JPEG bytes into ordinary public paths, bind the observed reviews to this editorial fingerprint, set the actual JST publication time, run required checks and one normal publication PR."
   ],
@@ -173,5 +172,18 @@
     "reason": "11/19は遅延したすみれ011を公開済みのため、同日1人1号を守り、次の既存朝編集枠へ繰越。",
     "schedule_modified": false,
     "actual_publication_time": null
+  },
+  "candidate_readback": {
+    "status": "verified",
+    "content_commit": "2dc9c91d405eedc515154feccd6d7e72e72b57ae",
+    "verified_at_utc": "2026-11-19T00:30:15.928581Z",
+    "candidate_files_verified": 25,
+    "new_original_pngs_verified": 6,
+    "prepared_jpegs_verified": 10,
+    "metadata_files_verified": 9,
+    "retained_original_pngs_reassembled_and_verified": 4,
+    "retained_original_files_byte_unchanged": 21,
+    "retained_receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff",
+    "method": "Immutable GitHub commit fetched from origin; all 25 file byte lengths, SHA-256 and Git blob IDs matched the local manifest, all 16 image dimensions verified, all 20 old original parts and receipt unchanged versus f8aa, all four old originals reconstructed and full SHA/dimensions matched."
   }
 }

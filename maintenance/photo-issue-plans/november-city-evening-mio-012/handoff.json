@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "assets_and_new_editorial_column_prepared_awaiting_fixed_commit_readback",
+  "status": "assets_and_new_editorial_column_ready_for_next_regular_editorial_slot",
   "target": {
     "slug": "november-city-evening-mio-012",
     "model_id": "hanase-mio"
@@ -47,8 +47,8 @@
     "source_kind": "new_editorial_column",
     "not_recovered_producer_text": true
   },
-  "publication_state": "未公開。旧未掲載4原本・receiptは不変、別アーカイブの未掲載水着6原本を追加し、元比率JPEG10枚の実目視と新規editorialコラム準備を完了。PR885版validatorで全10組の原本・JPEG・来歴と草稿をローカル検証済み。固定commit読戻しとPR885の通常統合後のmain gate確認は保存後に行う。",
-  "next_action": "この同候補の固定commitを読み戻す。旧ce467納品の2/3/4/5/9/10は既刊004なので再探索・再転送しない。Pillow/実Library URL対応PR885の通常統合後、11/20通常06:00枠で固定順・既刊重複を確認し、同素材を通常公開手順へ採用する。新生成・別候補branch・本日の2人目公開はしない。",
+  "publication_state": "未公開。旧未掲載4原本・receiptは不変、別アーカイブから未掲載水着6原本を追加。元比率JPEG10枚の実目視、新規editorial本人コラム291字、草稿を準備し、固定commit 2dc9c91d405eedc515154feccd6d7e72e72b57ae から全25候補ファイルと旧4原本を読み戻して実バイト・SHA・寸法を確認済み。PR885版validatorによる全10組のローカル検証は成功、PR885通常統合後のmain gate確認と日次枠での公開採用は未実施。",
+  "next_action": "素材や旧producer稿を再探索しない。PR885の通常統合後、次の既存06:00編集枠（最早11/20）で下記adoption_instructionsに従って同候補の10枚と新規editorialコラムを通常採用する。元予定は11/19、実published_atは公開時に付ける。同日1人1号・固定順・既刊重複を確認し、新生成・別候補branch・本日2人目の公開をしない。",
   "planned_publication_date": "2026-11-20",
   "publication_not_before": "2026-11-20T06:00:00+09:00",
   "published": false,
@@ -68,7 +68,7 @@
   },
   "draft_issue": {
     "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/draft-issue.json",
-    "sha256": "b9afdc2bec223824f6aa4a515881636847eaf2a05cd295361e561538b6c5da57",
+    "sha256": "288cf30c9014594aa692240d7bec2b7f893b156e8bef22b81889ccae2dd4d995",
     "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5"
   },
   "original_selection_review": {
@@ -129,5 +129,25 @@
       "step": 5,
       "action": "PR885の通常統合後に現mainのvalidatorで確認し、元予定11/19と繰越後最早11/20の既存06:00編集枠を区別する。同日1人1号と既刊重複を再確認して通常PR/CI/機械承認/本番確認へ進み、実際に公開する時のJST published_atだけを付与する。現候補のpublished_atはnull、公開済み扱いにしない。"
     }
-  ]
+  ],
+  "candidate_readback": {
+    "status": "verified",
+    "content_commit": "2dc9c91d405eedc515154feccd6d7e72e72b57ae",
+    "verified_at_utc": "2026-11-19T00:30:15.928581Z",
+    "candidate_files_verified": 25,
+    "new_original_pngs_verified": 6,
+    "prepared_jpegs_verified": 10,
+    "metadata_files_verified": 9,
+    "retained_original_pngs_reassembled_and_verified": 4,
+    "retained_original_files_byte_unchanged": 21,
+    "retained_receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff",
+    "method": "Immutable GitHub commit fetched from origin; all 25 file byte lengths, SHA-256 and Git blob IDs matched the local manifest, all 16 image dimensions verified, all 20 old original parts and receipt unchanged versus f8aa, all four old originals reconstructed and full SHA/dimensions matched."
+  },
+  "publication_gate": {
+    "status": "awaiting_pr885_merge_and_current_main_validation",
+    "pr": 885,
+    "tested_pr_head": "0550f0bf81926a9f17325bf5d38721a49c1ca8d9",
+    "observed_main": "4cb84e1db1ef400f6229cf0d55c62ff2e9ce3c96",
+    "observed_main_contains_pr885": false
+  }
 }
