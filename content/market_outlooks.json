@@ -508,5 +508,55 @@
         "checked_on": "2026-11-19"
       }
     ]
+  },
+  {
+    "type": "review",
+    "id": "2026-11-19-noon-19th-target",
+    "at": "2026-11-19T12:44:18+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3813.9,
+    "observed_on": "2026-11-19",
+    "reason": "JPXの19日12:39更新TOPIXは3,813.90。17日公式終値3,840.02から約0.68%安で、19日終値が0.5%超上昇する元予想と場中時点では逆方向。ただし19日公式終値の判定前であり、外れとは確定しない。",
+    "change_reason": "18日終値3,824.00に続き、19日12:39も元の3,840.02を下回る。決算前の保険株安があり強気から弱気の暫定判断へ変更。判定条件・期日・基準は不変。",
+    "source": {
+      "title": "JPX：2026年11月19日12:39 JST更新のTOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-19",
+      "checked_on": "2026-11-19"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611191239",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-19-noon-20th-target",
+    "at": "2026-11-19T12:44:18+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "中立",
+    "trend": "暫定的に整合",
+    "observed_value": 3813.9,
+    "observed_on": "2026-11-19",
+    "reason": "JPXの19日12:39 TOPIXは3,813.90。20日判定の横ばい予測の固定基準18日終値3,824.00から約0.26%安で、現時点では±0.5%の範囲内。ただし20日の正式終値は未到来で、この時点の観測を的中とは扱わない。",
+    "change_reason": "18日終値基準の20日横ばい予測に対する19日の観測を新規追記。保険業の下落と小売の上昇が並存し方向が揃わない。元の基準・期日・方法は一切変更しない。",
+    "source": {
+      "title": "JPX：2026年11月19日12:39 JST更新のTOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-19",
+      "checked_on": "2026-11-19"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611191239",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
   }
 ]
