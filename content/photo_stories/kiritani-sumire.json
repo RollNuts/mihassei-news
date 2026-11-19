@@ -1,4 +1,20 @@
 {
   "schema_version": 1,
-  "stories": []
+  "stories": [
+    {
+      "id": "kiritani-sumire-post-20261119135311851",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-19T13:53:11.851+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼休みに古い画集を開いたら、ページの間から小さな展覧会の半券が出てきた。誰の思い出か分からないのに、ちょっと嬉しい。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "05",
+        "image_sha256": "de24a1b682f3b49c394ce1121f0e4d68989fbf19f71477ab680358e5e54ed13d"
+      }
+    }
+  ]
 }

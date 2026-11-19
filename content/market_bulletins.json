@@ -2407,5 +2407,913 @@
         "checked_on": "2026-11-18"
       }
     ]
+  },
+  {
+    "slug": "2026-11-19-am",
+    "day": "2026-11-19",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-19T12:26:35+09:00",
+    "title": "19日朝：米ナスダックは小幅高、NVIDIA下落と小売TJX高―日本株の買い戻しは広がるか",
+    "summary": "米国18日はナスダック0.42%高、S&P500が0.23%安、ダウ1.11%安。NVIDIAの好決算後の下落とTJXの決算高を対比。日本の19日寄り前は18日TOPIX終値3,824.00を基準に、20日判定の横ばい予想を新規固定します。",
+    "lead": "11月19日（木）の東京市場寄り付き前に確認した米国18日（現地）の通常取引は、ナスダック総合だけが小幅高で、S&P500とダウは下落しました。米半導体NVIDIAの増収決算が株価全体の上昇につながったわけではありません。一方、小売TJXは決算後に上昇しています。18日の日本株終値と米国18日終値は別市場・別取引日で、19日の東証の当日値はまだ含みません。日本株保有者は半導体への期待と、米利上げ警戒による幅広い売り圧力を分けて確認します。",
+    "sections": [
+      {
+        "heading": "米国18日：ナスダックだけ上昇、FOMC議事要旨で金利が重荷",
+        "paragraphs": [
+          "米国11月18日（水）通常取引の終値（日本時間19日6:00）は、ナスダック総合24,429.88ポイント（前日比0.42%高）、S&P500が7,323.63ポイント（0.23%安）、ダウ工業株30種平均が50,198.17ポイント（1.11%安）でした。米国17日のS&P500は7,340.53ポイント。指数ごとの方向差があり、ナスダックの上昇だけで全面的なリスク選好とはいえません。",
+          "米FRBが18日14:00米東部時間（日本時間19日4:00）に公表した10月27～28日のFOMC議事要旨では、参加者のほぼ全員が基本見通しのもとで追加の利上げが適切になる可能性を示しました。委員会の当時の政策金利目標は3.75～4.00%に据え置き（10対2）で、今回の資料公表は新しい利上げ決定ではありません。株価の強弱を見る際は決算だけでなく、この金利見通しが評価倍率を圧迫し得る点も確認します。"
+        ]
+      },
+      {
+        "heading": "NVIDIAは増収決算でも値下がり、TJXは決算で上昇",
+        "paragraphs": [
+          "NVIDIA（NASDAQ:NVDA）は米国18日終値150.96米ドル、17日の155.46米ドルから2.89%安。17日通常取引終了後に公表した2027年度第3四半期売上高は1,158億米ドルで前年同期比103%増、次期売上高の会社見通しは1,300億米ドル±3%です。それでも18日の株価は下げました。増収という実績と、決算後も投資家が株を買い増すかは別です。経営体制、粗利益率見通し、次の受注見通しを確認します。",
+          "米小売TJX（NYSE:TJX）は18日終値140.30米ドル、17日の129.85米ドルから8.05%高。18日公表の2027年度第3四半期売上高は160億米ドル（前年同期比6%増）、既存店売上は4%増、調整後1株利益1.34米ドル（前年同期比5%増）でした。調整前の1.39米ドルには関税還付等の純効果0.05米ドルが含まれます。小売を一括りにせず、年末商戦の会社見通しと実際の利益率を見比べます。"
+        ]
+      },
+      {
+        "heading": "日本19日寄り前：18日のTOPIX安を基準に銘柄の広がりを見る",
+        "paragraphs": [
+          "日本株の最新確定値は18日15:30大引けのTOPIX3,824.00ポイントで、17日終値3,840.02から0.42%安。日経平均は18日終値59,024.28円（0.28%高）と方向が分かれました。これらは19日の当日途中値ではありません。18日に買われた半導体関連が19日も上がるかに加えて、金融や小売などへ買いが広がるかを確認します。",
+          "18日朝に固定した『19日TOPIXが17日基準3,840.02から0.5%超上昇』という予想は、19日の公式大引け値が未公表のため結果待ちです。18日の3,824.00は逆風ですが、それだけで判定しません。今回新しく固定する20日判定の予想は『20日のTOPIX公式終値は18日の3,824.00から±0.5%以内の横ばい』。米国の半導体・小売の方向差と利上げ警戒の併存を理由に中立とし、19日の業種別反応と米国19日の通常取引で見方を改める必要があるか検証します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "sp500-nov18-close",
+        "kind": "bars",
+        "title": "S&P500：米国17日と18日の通常終値",
+        "note": "Yahoo Financeの日付別履歴のClose列を使用。指数算出元ページの数値は未取得。米国18日の通常取引終了は19日6:00 JST。",
+        "unit": "ポイント",
+        "source_url": "https://finance.yahoo.com/quote/%5ESPX/history/",
+        "observed_at": "2026-11-19T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/17",
+            "value": 7340.53,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/18",
+            "value": 7323.63,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "nvda-nov18-close",
+        "kind": "bars",
+        "title": "NVIDIA：増収決算後の米国株価は2.89%安",
+        "note": "NASDAQの各日16:00米東部時間の通常取引終値。米国17日決算公表後の18日株価反応。",
+        "unit": "米ドル",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/",
+        "observed_at": "2026-11-19T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/17",
+            "value": 155.46,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/18",
+            "value": 150.96,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "tjx-nov18-close",
+        "kind": "bars",
+        "title": "TJX：決算後8.05%高",
+        "note": "NYSE通常取引終値。米国18日の会社公表決算と株価の同日変化であり、将来の利益を保証しない。",
+        "unit": "米ドル",
+        "source_url": "https://finance.yahoo.com/quote/TJX/history/",
+        "observed_at": "2026-11-19T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/17",
+            "value": 129.85,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/18",
+            "value": 140.3,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "米国主要3指数の方向が分かれる",
+        "signal": "中立",
+        "meaning": "11月18日通常取引はナスダック+0.42%、S&P500-0.23%、ダウ-1.11%。米国株全面高ではない。",
+        "source_url": "https://finance.yahoo.com/quote/%5ESPX/history/",
+        "observed_at": "2026-11-19T06:00:00+09:00"
+      },
+      {
+        "name": "追加利上げ警戒",
+        "signal": "逆風",
+        "meaning": "11/18公表の10月FOMC議事要旨で多くの参加者が追加利上げを想定。決定済みの将来利上げではないが、高PER株の評価に逆風となり得る。",
+        "source_url": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20261028.htm",
+        "observed_at": "2026-11-19T04:00:00+09:00"
+      },
+      {
+        "name": "米小売には個別の好材料",
+        "signal": "追い風",
+        "meaning": "TJXの11/18発表の既存店売上+4%、調整後EPS+5%。会社業績と株価の両方を確認できた。",
+        "source_url": "https://investor.tjx.com/news-releases/news-release-details/tjx-companies-inc-reports-q3-fy27-results-comp-sales-growth-4",
+        "observed_at": "2026-11-19T06:00:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "NVDA",
+        "name": "エヌビディア",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "下落",
+        "previous_close": 155.46,
+        "close": 150.96,
+        "price_kind": "close",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-19T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一履歴表の11/17と11/18のCloseとAdj. Close一致を照合。株式分割の独自調整を追加していない。",
+        "context": "増収103%でも決算後の通常終値は2.89%安。企業業績と市場期待の差、次期粗利益率見通しに注目。"
+      },
+      {
+        "code": "TJX",
+        "name": "TJXカンパニーズ",
+        "exchange": "NYSE",
+        "currency": "USD",
+        "direction": "上昇",
+        "previous_close": 129.85,
+        "close": 140.3,
+        "price_kind": "close",
+        "market_date": "2026-11-18",
+        "previous_market_date": "2026-11-17",
+        "observed_at": "2026-11-19T06:00:00+09:00",
+        "source_url": "https://finance.yahoo.com/quote/TJX/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "同一履歴表の11/17と11/18のCloseとAdj. Close一致を照合。株式分割の独自調整を追加していない。",
+        "context": "既存店売上+4%、調整後EPS+5%を発表し株価は8.05%高。年末商戦と還付除外後の利益率を確認。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "Yahoo Finance：NASDAQ総合 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5EIXIC/history/?.tsrc=fin-srch&p=%5EIXIC",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：S&P500 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5ESPX/history/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：ダウ工業株30種平均 11月17日・18日の通常終値（日付別履歴のClose列）",
+        "url": "https://finance.yahoo.com/quote/%5EDJI/history/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "米連邦準備制度理事会：2026年10月27-28日FOMC議事要旨（11月18日公表）",
+        "url": "https://www.federalreserve.gov/monetarypolicy/fomcminutes20261028.htm",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "NVIDIA IR：2027年度第3四半期決算（米国11月17日取引終了後公表）",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx",
+        "published_on": "2026-11-17",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "TJX公式IR：2027年度第3四半期決算（米国11月18日公表）",
+        "url": "https://investor.tjx.com/news-releases/news-release-details/tjx-companies-inc-reports-q3-fy27-results-comp-sales-growth-4",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "S&P Global Market Intelligence / StockAnalysis：NVDA 11月17日・18日NASDAQ通常終値",
+        "url": "https://stockanalysis.com/stocks/nvda/history/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo Finance：TJX 11月17日・18日NYSE通常終値履歴",
+        "url": "https://finance.yahoo.com/quote/TJX/history/",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：11月18日16:59更新のTOPIX現物大引け指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：市場指数更新時刻ファイル",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-19-open",
+    "day": "2026-11-19",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-19T12:34:41+09:00",
+    "title": "19日寄り後：TOPIXと新興株が下落、REIT・不動産は逆行高",
+    "summary": "19日9:28 JST更新のTOPIXは0.44%安、グロース250は2.27%安。一方、東証REIT指数は0.54%高。不動産・銀行・情報通信で値動きが分かれ、19日判定のTOPIX上昇予想には逆風です。",
+    "lead": "11月19日（木）の東京市場は、寄り付き後の買いが市場全体へ広がっていません。日本取引所グループ（JPX）の9:28 JST更新値ではTOPIXが3,807.20ポイント、前日比0.44%安。グロース250は2.27%安なのに対し、東証REIT指数は0.54%高でした。いずれも取引途中の値で、19日の終値ではありません。前日の米国市場概況とは分け、国内の持ち株と検討銘柄をどの業種から確認するかを考えます。",
+    "sections": [
+      {
+        "heading": "市場全体が小幅安でも、新興株の下げは大きい",
+        "paragraphs": [
+          "JPXの19日9:28 JST更新データでは、TOPIXが3,807.20ポイント（前日終値3,824.00から16.80ポイント安、0.44%安）。東証グロース市場250指数は662.99ポイントで、前日678.41から15.42ポイント安、2.27%安です。19日の大引けまではこの差が続くか分かりません。",
+          "同じ更新時点の銀行業指数は664.40で2.19%安、鉱業指数は968.81で3.49%安。保有銘柄が大型株か新興株かだけでなく、銀行・資源など景気や金融環境に敏感な業種への売りも確認する必要があります。最新の日経平均の現物途中値は今回同時刻の確かな一次資料を取得できず、18日終値59,024.28円を19日の現在値としては表示しません。"
+        ]
+      },
+      {
+        "heading": "REIT・不動産は逆行高、投資判断は価格と資金調達を分ける",
+        "paragraphs": [
+          "JPXの同時刻の東証REIT指数は1,682.68ポイントで0.54%高、不動産業指数は2,580.18で1.15%高。グロース株や銀行株が売られる一方、土地・賃貸収益に関わる市場は逆方向へ動いています。ただし、指数上昇だけを金利低下や賃料増加の証拠とはしません。今後の金利と各社の調達条件・稼働率を確認したいところです。",
+          "物流施設を保有するGLP投資法人（3281）は19日9:30 JST時点で1口136,500円、18日終値135,800円から0.52%高。昨日から反発していますが、REIT指数の上昇とGLPの稼働率・分配金の変化は別です。投資口価格の動きを手掛かりに、次の運用報告と分配金見通しを比較します。"
+        ]
+      },
+      {
+        "heading": "プレイド続落と銀行安、理由を一律にしない",
+        "paragraphs": [
+          "顧客分析サービスのプレイド（4165）は19日9:34 JST時点381円で、18日終値449円から15.14%安。16日に公表されたKARTEへの不正アクセス・情報漏えいの影響が引き続き懸念材料です。被害範囲やサービスの復旧、会社の業績への影響に関する追加開示を確認します。",
+          "三井住友FG（8316）は9:35 JST時点3,066円、18日終値3,101円から1.13%安。同時刻ではないJPX9:28の銀行業指数2.19%安と方向は同じですが、下落率は異なります。金融政策や決算への思惑を個別材料と断定せず、今後の金利動向、信用コスト、決算資料で見直します。"
+        ]
+      },
+      {
+        "heading": "19日判定のTOPIX予想はまだ結論を出さない",
+        "paragraphs": [
+          "18日朝に固定した予想は『19日のTOPIX公式終値が17日終値3,840.02ポイントから0.5%を超えて上昇』です。19日9:28の3,807.20は固定基準より約0.85%低く、現時点では強気予想に逆風。ただしまだ場中なので、的中・外れを判定しません。19日の大引けとJPX公式最終値が出てから確認します。",
+          "11月18日を判定日とした別のTOPIX下落予想は既に公式値で的中と確認済み。確定した日次TOPIX予想は3件中1件的中、2件外れ（33.3%）のままです。今日の途中値はその成績に加えません。後場はグロースの下げ幅と、REIT・銀行との業種差が縮むかを追います。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov19-open",
+        "kind": "bars",
+        "title": "TOPIX：18日終値と19日9:28の途中値",
+        "note": "11月18日のJPX確定終値と11月19日9:28 JST更新の場中値。更新時刻ファイルを照合し、19日の終値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 3824,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 9:28",
+            "value": 3807.2,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth250-nov19-open",
+        "kind": "bars",
+        "title": "グロース250：2.27%安",
+        "note": "JPX19日9:28 JST更新。18日の確定終値678.41と19日の途中値662.99の別時点比較。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 678.41,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 9:28",
+            "value": 662.99,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "reit-nov19-open",
+        "kind": "bars",
+        "title": "東証REIT指数：新興株と逆方向の上昇",
+        "note": "JPX19日9:28 JST更新。前日値1,673.72は当日の値1,682.68から公表前日比8.96を差し引いて復元した値。19日値は途中値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 1673.72,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/19 9:28",
+            "value": 1682.68,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "新興株と銀行に売り",
+        "signal": "逆風",
+        "meaning": "JPX19日9:28更新でグロース250は2.27%安、銀行業は2.19%安。市場全体の0.44%安より下げ幅が大きい。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00"
+      },
+      {
+        "name": "REITと不動産が逆行高",
+        "signal": "追い風",
+        "meaning": "JPXの東証REIT指数は0.54%高、不動産業は1.15%高。金利や企業の利益変化を株価だけから確定しない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00"
+      },
+      {
+        "name": "19日TOPIX予想には逆風",
+        "signal": "逆風",
+        "meaning": "9:28途中値3,807.20は11/17固定基準3,840.02を約0.85%下回るが、判定対象は19日終値なので未確定。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "3281",
+        "name": "GLP投資法人",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 135800,
+        "close": 136500,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T09:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/3281.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!ファイナンスで11月18日の通常終値と調整後終値が一致することを確認。11月19日の取引途中値と同じ単位・円建てで比較し、独自の分割調整なし。",
+        "context": "東証REIT指数と方向が同じ0.52%高。今後は稼働率・分配金・調達金利の開示を確認。"
+      },
+      {
+        "code": "4165",
+        "name": "プレイド",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 449,
+        "close": 381,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T09:34:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/4165.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!ファイナンスで11月18日の通常終値と調整後終値が一致することを確認。11月19日の取引途中値と同じ単位・円建てで比較し、独自の分割調整なし。",
+        "context": "株価は15.14%安。16日公表の情報漏えいに関する追加開示と業績影響を確認。"
+      },
+      {
+        "code": "8316",
+        "name": "三井住友フィナンシャルグループ",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 3101,
+        "close": 3066,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T09:35:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!ファイナンスで11月18日の通常終値と調整後終値が一致することを確認。11月19日の取引途中値と同じ単位・円建てで比較し、独自の分割調整なし。",
+        "context": "銀行業指数2.19%安に対し当該株は1.13%安。信用コスト・金利・業績を別々に確認。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月19日9:28 JST更新のTOPIX・グロース250・REIT・業種別指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数更新時刻の公式ファイル（202611190928）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数値一覧（更新方式の公式案内）",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：3281 11月19日東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/3281.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：3281 11月18日通常/調整後終値履歴",
+        "url": "https://finance.yahoo.co.jp/quote/3281.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：4165 11月19日東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/4165.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：4165 11月18日通常/調整後終値履歴",
+        "url": "https://finance.yahoo.co.jp/quote/4165.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：8316 11月19日東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：8316 11月18日通常/調整後終値履歴",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "プレイド公式：KARTEへの不正アクセスに伴う情報漏えいのお知らせ（11月16日公表）",
+        "url": "https://plaid.co.jp/news/20261116/",
+        "published_on": "2026-11-16",
+        "checked_on": "2026-11-19"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-19-noon",
+    "day": "2026-11-19",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-19T13:50:37+09:00",
+    "title": "19日後場：保険株は決算前に下落、TOPIX小幅安との温度差を確認",
+    "summary": "19日12:39 JSTのTOPIXは0.26%安、保険業指数は1.65%安。午後に決算を予定する大手損保ではMS&ADとSOMPOも下落。株価の先行反応と決算で確認する業績・還元を分けます。",
+    "lead": "11月19日（木）後場に入り、TOPIX全体の下げ幅は小さい一方、保険株にはより強い売りが出ています。JPXの12:39 JST更新による場中の暫定値で、15:30の終値ではありません。きょう予定される損保の決算が出る前に、株価の動きだけで業績悪化や割安を判断しないための確認点を整理します。",
+    "sections": [
+      {
+        "heading": "保険業は1.65%安、TOPIXの0.26%安より弱い",
+        "paragraphs": [
+          "JPXの19日12:39 JST更新値は、TOPIXが3,813.90ポイントで18日終値3,824.00から10.10ポイント安（0.26%安）、保険業指数が4,155.27ポイントで前日比69.76ポイント安（1.65%安）。保険業の前日値4,225.03は公表された当日値と前日比から逆算した値です。保険業の下げは指数全体より大きい一方、これだけでは特定の決算数字を市場が予測した証拠にはなりません。",
+          "同じJPXファイルでは銀行業指数も1.14%安ですが、小売業指数は1.14%高と方向が分かれます。市場全体が一様に下げているという説明ではなく、決算前の保険株が他業種より弱い事実と、決算後に確認すべき内容を分けて読みます。"
+        ]
+      },
+      {
+        "heading": "MS&ADとSOMPOはともに下落、決算前の値動き",
+        "paragraphs": [
+          "MS&AD（8725）は19日12:37 JSTの東証途中値が5,075円。18日終値5,161円から1.67%下落しました。SOMPO（8630）は同じく12:37時点で6,893円、前日7,057円から2.32%安です。いずれも同一銘柄の前日終値と19日の途中値の比較であり、19日の終値ではありません。",
+          "SOMPOは公式IRで19日15:30に2027年3月期第2四半期決算、東京海上HDは19日16:30に2026年度第2四半期決算の発表を予定しています。大手損保を比較する際は、正味収入保険料や保険引受利益、自然災害関連の支払、運用損益、通期見通し、株主還元が実際にどう開示されるかを確認したいところです。発表前に増益・減益や自社株買いを決めつけません。"
+        ]
+      },
+      {
+        "heading": "19日判定と20日判定のTOPIX予想はまだ確定しない",
+        "paragraphs": [
+          "18日朝に固定した『19日のTOPIX公式終値が17日終値3,840.02ポイントから0.5%超上昇』という予想に対し、12:39の3,813.90は基準から約0.68%安で暫定的に逆行しています。ただし判定は19日大引け後の公式終値であり、今の数値は外れの確定ではありません。",
+          "19日朝に別途固定した『20日のTOPIX公式終値が18日終値3,824.00から±0.5%以内』という横ばい予想に対し、19日12:39の値は基準から約0.26%安で一時的には範囲内です。しかし20日の市場は未到来で、こちらも結果待ち。短期予想の確定成績は引き続き1勝2敗（母数3件）です。次は19日の大引けと保険会社の実際の決算資料を確認します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov19-noon",
+        "kind": "bars",
+        "title": "TOPIX：18日終値と19日12:39途中値",
+        "note": "18日はJPX公式大引け終値、19日は12:39更新の場中暫定値。19日の確定終値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 3824,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 12:39",
+            "value": 3813.9,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "insurance-nov19-noon",
+        "kind": "bars",
+        "title": "保険業指数：19日12:39時点で1.65%安",
+        "note": "18日値は19日JPX公表の4,155.27と前日比-69.76から逆算。19日は場中の暫定値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00",
+        "values": [
+          {
+            "label": "11/18値(逆算)",
+            "value": 4225.03,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/19 12:39",
+            "value": 4155.27,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "sompo-nov19-noon",
+        "kind": "bars",
+        "title": "SOMPO：前日終値と19日途中値",
+        "note": "18日終値は同一配信元で調整後値も7,057円。19日12:37は東証の途中値で決算結果反映後の終値ではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "observed_at": "2026-11-19T12:37:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 7057,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 12:37",
+            "value": 6893,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "保険株への売りが優勢",
+        "signal": "逆風",
+        "meaning": "JPX12:39の保険業指数は1.65%安で、TOPIXの0.26%安より下げ幅が大きい。決算未発表の時点では業績悪化の確定ではない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00"
+      },
+      {
+        "name": "東京海上の決算発表予定",
+        "signal": "中立",
+        "meaning": "東京海上HDは19日16:30の第2四半期決算を予定。保険引受・自然災害・通期見通し・還元の開示を確認したい。",
+        "source_url": "https://www.tokiomarinehd.com/ir/",
+        "observed_at": "2026-11-19T12:39:00+09:00"
+      },
+      {
+        "name": "TOPIX20日横ばい予想は結果待ち",
+        "signal": "中立",
+        "meaning": "19日12:39のTOPIXは18日固定基準3,824.00比0.26%安だが、20日の公式終値でしか判定しない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "8725",
+        "name": "MS&ADインシュアランスグループHD",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 5161,
+        "close": 5075,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T12:37:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8725.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11/18時系列の通常終値・調整後終値はいずれも5,161円。19日12:37の東証途中値5,075円と同じ株式・JPY建てで比較。独自の分割換算なし。",
+        "context": "同日発表予定の決算前に1.67%下落。実際の保険引受利益・通期予想・株主還元の開示を確認する。"
+      },
+      {
+        "code": "8630",
+        "name": "SOMPOホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 7057,
+        "close": 6893,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T12:37:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11/18時系列の通常終値・調整後終値はいずれも7,057円。19日12:37の東証途中値6,893円と同一銘柄で比較。独自補正なし。",
+        "context": "決算発表予定日の12:37に前日比2.32%安。会社の実績が出る前の株価変動と保険引受・運用損益を分けて確認。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月19日12:39 JST更新のTOPIX・保険業指数（取引中の暫定値）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数ファイル12:39 JST更新日時",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数値は平日9時〜15時30分に1分間隔更新",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "東京海上HD：11月19日16:30予定の2026年度第2四半期決算",
+        "url": "https://www.tokiomarinehd.com/ir/",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "MS&AD：11月19日12:37東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8725.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "MS&AD：11月18日通常/調整後終値5,161円",
+        "url": "https://finance.yahoo.co.jp/quote/8725.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月19日12:37東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月18日通常/調整後終値7,057円",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO公式IRカレンダー：11月19日15:30予定の2027年3月期第2四半期決算",
+        "url": "https://www.sompo-hd.com/ir/event",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-19-close",
+    "day": "2026-11-19",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-19T18:46:33+09:00",
+    "title": "19日大引け：日経平均0.71%高でもTOPIXは横ばい圏、保険業は2.20%安",
+    "summary": "19日の東京市場は日経平均0.71%高、TOPIX0.04%安。保険業は2.20%安でした。SOMPOの決算・還元を確認し、19日期限のTOPIX上昇予想は外れ、20日の横ばい予想は結果待ちと整理します。",
+    "lead": "11月19日（木）の東京市場は、日経平均が前日から419.93円上昇した一方、TOPIXはわずかに下げ、保険業は大幅安で終えました。日経平均だけで全面高と判断せず、保有銘柄の値動きとSOMPOの決算で変わった利益見通し・還元を確認します。TOPIX・保険業などJPX掲載指数は、同日16:59更新の公式値で照合済みです。米国11月19日通常取引の結果は含みません。",
+    "sections": [
+      {
+        "heading": "日経平均上昇とTOPIX小幅安、同じ日の方向差",
+        "paragraphs": [
+          "日経平均の算出元が公表した11月19日の大引け値は59,444.21円で、18日の59,024.28円から419.93円高（0.71%高）。一方、TOPIXの19日終値は3,822.47ポイントで、18日の3,824.00から1.53ポイント安（0.04%安）でした。日経平均とTOPIXは対象銘柄・重み付けが違い、片方の上昇だけでは相場全体への買いの広がりを示せません。",
+          "JPXの同日16:59更新で確認した東証グロース市場250指数の終値は675.02ポイントで0.50%安、東証REIT指数は1,684.32ポイントで0.63%高でした。小型成長株と不動産投資信託で方向が違うため、保有株の値動きはまず業種・資産クラスごとに分けて確認します。"
+        ]
+      },
+      {
+        "heading": "SOMPOは利益指標で見通しに差、還元も合わせて確認",
+        "paragraphs": [
+          "保険業指数の19日終値は4,132.15ポイント（前日比2.20%安）。SOMPOホールディングス（8630）は6,856円で、18日終値7,057円から2.85%安でした。同日公表の決算短信・補足資料を確認しましたが、この日の株価下落が決算発表によるものかは断定できません。",
+          "SOMPOの2026年4〜9月の親会社所有者に帰属する中間利益は2,138.30億円で、前年同期比40.7%減。通期の同当期利益予想は期初4,900億円から4,600億円へ引き下げました。一方、会社独自の調整を加えた修正連結利益予想は5,000億円から5,400億円へ引き上げています。異なる利益指標を一緒にせず、会計上の利益と会社がみる収益力の違いを確認したいところです。",
+          "年間配当予想は1株200円で、直近予想から変更なし。同日、新たに上限1,500万株・680億円の自己株式取得を決め、取得期間は2026年12月1日から2027年3月31日としています。取得枠の決定は全額取得の完了を意味せず、今後の実施状況も確認が必要です。",
+          "三菱商事（8058）の19日終値も4,951円で、前日5,100円から2.92%安でした。同社固有の新しい業績修正を今回の照合では確認できておらず、原油価格や為替だけを直接の原因と決めつけません。保有株なら企業IRの利益・資源感応度と業種指数の両方を見て、株価の下落と企業価値の変化を分けたいところです。"
+        ]
+      },
+      {
+        "heading": "19日のTOPIX上昇予想は外れ、20日の横ばい予想は結果待ち",
+        "paragraphs": [
+          "18日朝に示した「19日のTOPIX公式終値が17日終値3,840.02ポイントから0.5%を超えて上昇する」という予想は外れでした。19日終値3,822.47は固定基準比約0.46%安で、事前の区分では横ばいに当たります。今回を加えた日次TOPIX予想の確定成績は1勝3敗、的中率25.0%（母数4件）です。まだ4件の結果なので、予測力を判断するには材料が少ない段階です。",
+          "19日朝に示した別の予想は「20日のTOPIX公式終値が18日終値3,824.00から±0.5%以内」という横ばいです。19日終値はこの基準から約0.04%安で範囲内ですが、判定日は翌20日であり的中とは扱いません。20日は損保決算を受けた個別株の動きと米国市場の新材料を見ながら、TOPIXの終値が固定した範囲に収まるかを確認します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-19-nov-close",
+        "kind": "bars",
+        "title": "日経平均：18日と19日の大引け値",
+        "note": "日経平均公式サイトの11月19日大引け値59,444.21円（前日比+419.93円）と、18日確定終値59,024.28円。",
+        "unit": "円",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 59024.28,
+            "state": "実績"
+          },
+          {
+            "label": "11/19大引け",
+            "value": 59444.21,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-19-nov-close",
+        "kind": "bars",
+        "title": "TOPIX：18日と19日の確定終値",
+        "note": "18日終値3,824.00と19日終値3,822.47。19日の引け値はJPX同日16:59最終更新で照合。観測時刻は市場終了の15:30 JST。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/18確定",
+            "value": 3824,
+            "state": "実績"
+          },
+          {
+            "label": "11/19終値",
+            "value": 3822.47,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "insurance-19-nov-close",
+        "kind": "bars",
+        "title": "保険業指数：19日終値は前日比2.20%安",
+        "note": "JPX同日16:59最終更新で19日終値4,132.15、前日比-92.88を確認。前日値4,225.03はその差から逆算した計算値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/18逆算",
+            "value": 4225.03,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/19終値",
+            "value": 4132.15,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "日経平均上昇とTOPIX停滞",
+        "signal": "中立",
+        "meaning": "日経平均は0.71%高だが、TOPIX終値は0.04%安。指数採用銘柄と重みが異なり、全面高とは断定できない。",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-19T15:30:00+09:00"
+      },
+      {
+        "name": "保険業が大幅安",
+        "signal": "逆風",
+        "meaning": "保険業終値は2.20%安、SOMPOは2.85%安。同社の当期利益予想と修正連結利益予想は方向が異なり、当日の下落原因と決算内容を分けて読む。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00"
+      },
+      {
+        "name": "REITは逆方向に上昇",
+        "signal": "追い風",
+        "meaning": "東証REIT指数の終値は0.63%高。株式の保険・商社と同じ方向には動いておらず、背景の金利や分配金は追加確認が必要。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "8630",
+        "name": "SOMPOホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 7057,
+        "close": 6856,
+        "price_kind": "close",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!同銘柄の11月18日通常終値と調整後終値が一致することを照合。19日15:30の同じ東証JPY現物株価を比較し、独自の分割・併合補正を加えていない。",
+        "context": "19日終値は前日比2.85%安。同日決算では当期利益予想を引下げ、修正連結利益予想を引上げ。配当予想は維持、680億円を上限とする自社株取得も決定。株価との因果は断定しない。"
+      },
+      {
+        "code": "8058",
+        "name": "三菱商事",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 5100,
+        "close": 4951,
+        "price_kind": "close",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8058.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!同銘柄の11月18日通常終値と調整後終値が一致することを照合。19日15:30の同じ東証JPY現物株価を比較し、独自の分割・併合補正を加えていない。",
+        "context": "15:30時点前日比2.92%安。商社株の下落が同社固有の新規開示によるものかは未確認。資源価格・円相場・企業開示を分けて見る。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "日経平均算出元：11月19日大引け59,444.21円（+419.93円）",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：11月19日16:59最終更新のTOPIX・保険業・グロース250・REIT終値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻202611191659（前後照合一致）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数の更新頻度と公開時刻",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月19日東証15:30株価・11月18日終値",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月18日通常終値と調整後終値の一致",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "三菱商事：11月19日東証15:30株価・11月18日終値",
+        "url": "https://finance.yahoo.co.jp/quote/8058.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "三菱商事：11月18日通常終値と調整後終値の一致",
+        "url": "https://finance.yahoo.co.jp/quote/8058.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO公式IR：11月19日の決算発表日程",
+        "url": "https://www.sompo-hd.com/ir/event",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：2027年3月期第2四半期決算短信（中間利益・通期予想・配当）",
+        "url": "https://www.sompo-hd.com/-/media/hd/files/doc/pdf/news2026/20261119_1.pdf?la=ja-JP",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：2026年度中間期決算補足資料（通期当期利益・修正連結利益の比較）",
+        "url": "https://www.sompo-hd.com/-/media/hd/files/doc/pdf/ir/2026/ir_20261119_2.pdf?la=ja-JP",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月19日公表の自己株式取得・消却（取得上限680億円）",
+        "url": "https://www.sompo-hd.com/-/media/hd/files/news/2026/20261119_2.pdf?la=ja-JP",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      }
+    ]
   }
 ]

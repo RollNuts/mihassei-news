@@ -1,4 +1,20 @@
 {
   "schema_version": 1,
-  "stories": []
+  "stories": [
+    {
+      "id": "amane-hikari-post-20261119154822668000",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-19T15:48:22.668+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "差し入れの焼き栗をみんなで分けて、最後のひとつはじゃんけん。勝ったのに、みんなに見られてちょっと食べづらかった😂",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "08",
+        "image_sha256": "2b493c0fc5e7a41091de6a977e9ff6cf79b8f2acc393d8ab5348300c8921c948"
+      }
+    }
+  ]
 }

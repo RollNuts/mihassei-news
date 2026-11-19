@@ -1,0 +1,447 @@
+{
+  "schema_version": 1,
+  "status": "formal_accepted_for_current_daily_publication",
+  "verified_reference": {
+    "main_commit_checked": "d98c6562352b71039ca911c7f65c307c2dfc39fc",
+    "model_snapshot": {
+      "id": "kiritani-sumire",
+      "name": "桐谷すみれ",
+      "age": 26,
+      "fictional": true,
+      "appearance": "26歳の架空の成人。上品な服が似合う落ち着いた顔立ち。独自の髪形と表情。",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "occupation": "俳優兼ファッション企画ナビゲーター",
+        "casting_specialty": "演技と美術・装いをつなぐ企画。配色や素材の組合せを案内する。",
+        "personality": "美意識があり、古いものと新しいものを合わせるのが好き。",
+        "voice": "上品だが気取らず、自分のこだわりを少し笑える言葉で話す。",
+        "likes": [
+          "美術",
+          "古い街並み",
+          "小物の配色"
+        ],
+        "weakness": "気になる組合せを比べすぎて決めるのが遅い。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
+        "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+        "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39",
+        "provenance": "assets/generated/photo-reference-kiritani-sumire-b666b4105c64.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 170,
+        "bust_cm": 87,
+        "waist_cm": 62,
+        "hip_cm": 91,
+        "shoulder_width_cm": 39,
+        "inseam_cm": 81,
+        "heads_tall": 7.6
+      },
+      "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "face_reference": {
+        "path": "assets/generated/photo-master-kiritani-sumire-b666b4105c64.jpg",
+        "sha256": "b666b4105c64ce01b80cae435ad98fb35f076e6b5d3f0619a33ab735995b68cc",
+        "source_png_sha256": "a69062fadfdb95495803870c06c6e7d9e3f2e2923143976c0a67b3dbb797af39"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-kiritani-sumire-3c91ce3a1b37.jpg",
+        "sha256": "3c91ce3a1b3739bf5042e377c6f5fb3ef241f8cae171e0c0337b07a02b080ce6",
+        "source_png_sha256": "ccd2e4478ab85b4cf94622b26f6c4d3ae922233be122a47368f3081f0fdd4059",
+        "provenance": "assets/generated/photo-reference-kiritani-sumire-3c91ce3a1b37.json"
+      }
+    }
+  },
+  "target": {
+    "slug": "november-rooftop-pool-sumire-011",
+    "model_id": "kiritani-sumire"
+  },
+  "source": {
+    "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d"
+  },
+  "assets": [
+    {
+      "cut_id": "01",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/01/source-4b6227c7d96b9d9086822b886c57041c63ceaecb197b2324626bab828e406742.png",
+      "source_sha256": "4b6227c7d96b9d9086822b886c57041c63ceaecb197b2324626bab828e406742",
+      "source_bytes": 2485617,
+      "source_width": 1536,
+      "source_height": 1024,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 1,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-01.jpg",
+      "jpeg_sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479",
+      "jpeg_bytes": 306306,
+      "jpeg_width": 1200,
+      "jpeg_height": 800,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/01/receipt-supplied-4b6227c7d96b-0adb15a60cdc.json",
+      "receipt_sha256": "6977a260c4dc9ac5fa30544841a6168d8a5eb4d3d7db3e34801484a853e6bac2",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "02",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/02/source-42515df13232465daf696bc6cc6aa9ef912e410542832391d3b84fcaef022fc7.png",
+      "source_sha256": "42515df13232465daf696bc6cc6aa9ef912e410542832391d3b84fcaef022fc7",
+      "source_bytes": 2526910,
+      "source_width": 1024,
+      "source_height": 1536,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 2,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-02.jpg",
+      "jpeg_sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca",
+      "jpeg_bytes": 306298,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/02/receipt-supplied-42515df13232-e09d33dbe030.json",
+      "receipt_sha256": "87aef5bc7a0d70b4f62e9dcf5f1432584e1677eefd6b4057b0f4ed6358aba89a",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "03",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/03/source-e80c8bcf7a79624654cce9c027651aad3a5969d00e638017f914acf19da6b0e4.png",
+      "source_sha256": "e80c8bcf7a79624654cce9c027651aad3a5969d00e638017f914acf19da6b0e4",
+      "source_bytes": 2351784,
+      "source_width": 1024,
+      "source_height": 1536,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 3,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-03.jpg",
+      "jpeg_sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947",
+      "jpeg_bytes": 275085,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/03/receipt-supplied-e80c8bcf7a79-9dbe0a8f4bf8.json",
+      "receipt_sha256": "933f271e77c7ca4d0025944147a9753c4f47dcb309825f29e2b441e5560e1b8e",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "04",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/04/source-478ecd9503ec35569a1aa19df9d1a9305fdb1b275fb531b8bcf4e9438f1a1491.png",
+      "source_sha256": "478ecd9503ec35569a1aa19df9d1a9305fdb1b275fb531b8bcf4e9438f1a1491",
+      "source_bytes": 2433991,
+      "source_width": 1024,
+      "source_height": 1536,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 4,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-04.jpg",
+      "jpeg_sha256": "731eea9b9b4f8c202594318a7d7277350da33ff3d93d537df53b986604f43f98",
+      "jpeg_bytes": 276678,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/04/receipt-supplied-478ecd9503ec-731eea9b9b4f.json",
+      "receipt_sha256": "60593ca2613431f347d74da529d59a9c77bc38f49cef6c42b052ac1e48867f1c",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "05",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/05/source-13d30a0c86447856b72148110019e31857b57037d9f3fcebdfb2351c3b1058ff.png",
+      "source_sha256": "13d30a0c86447856b72148110019e31857b57037d9f3fcebdfb2351c3b1058ff",
+      "source_bytes": 2404154,
+      "source_width": 1024,
+      "source_height": 1536,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 5,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-05.jpg",
+      "jpeg_sha256": "de24a1b682f3b49c394ce1121f0e4d68989fbf19f71477ab680358e5e54ed13d",
+      "jpeg_bytes": 273080,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/05/receipt-supplied-13d30a0c8644-de24a1b682f3.json",
+      "receipt_sha256": "802af131d3c4dde4dbc626f364cd19210b93ba761bd17753bf856abb549fe85b",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "06",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/06/source-66a68c58dde8550f2c8c3cd0a4da856733eb7437e741c4fcd02e9083469e5d50.png",
+      "source_sha256": "66a68c58dde8550f2c8c3cd0a4da856733eb7437e741c4fcd02e9083469e5d50",
+      "source_bytes": 2167658,
+      "source_width": 1536,
+      "source_height": 1024,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 6,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-06.jpg",
+      "jpeg_sha256": "ce3f082f9d399a5a2535412130d48a473c9485cb88136cb325b0e7e07bea561d",
+      "jpeg_bytes": 234971,
+      "jpeg_width": 1200,
+      "jpeg_height": 800,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/06/receipt-supplied-66a68c58dde8-ce3f082f9d39.json",
+      "receipt_sha256": "4cff4a15c438bb5de8e4fb2381be19993ed03a56dd972fa3dce9cdc68f1cb1fb",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "07",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/07/source-cfddc29dd5350e4f74cb81e670e20bacf233f2ce604fce4088ca0cf1df6fad7a.png",
+      "source_sha256": "cfddc29dd5350e4f74cb81e670e20bacf233f2ce604fce4088ca0cf1df6fad7a",
+      "source_bytes": 2305660,
+      "source_width": 1024,
+      "source_height": 1536,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 7,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-07.jpg",
+      "jpeg_sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2",
+      "jpeg_bytes": 256846,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/07/receipt-supplied-cfddc29dd535-77e72dd4e8fd.json",
+      "receipt_sha256": "3b9b6b4ffcc812cda4ca988a4ce587204532fa053226c2d2e70ead96efb38500",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "08",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/08/source-e03da949bc6fe8fc39cf6beb8b329bb6767edd3321ea468b941965597d484af1.png",
+      "source_sha256": "e03da949bc6fe8fc39cf6beb8b329bb6767edd3321ea468b941965597d484af1",
+      "source_bytes": 2582059,
+      "source_width": 1024,
+      "source_height": 1536,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 8,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-08.jpg",
+      "jpeg_sha256": "ad2228fcc83b06bacefb4ed9f34307ccc26472fd97a9538f540cc9270a9e08f2",
+      "jpeg_bytes": 300515,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/08/receipt-supplied-e03da949bc6f-ad2228fcc83b.json",
+      "receipt_sha256": "ee3e0baf0a76b81570fdd881a6567571d0fa7d13d892c0f7483ff1075d043ed0",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "09",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/09/source-281330aa97469c1ed0d2036fe612928f0050208a5e478968a0df2c4419176c0d.png",
+      "source_sha256": "281330aa97469c1ed0d2036fe612928f0050208a5e478968a0df2c4419176c0d",
+      "source_bytes": 2438953,
+      "source_width": 1024,
+      "source_height": 1536,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 9,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-09.jpg",
+      "jpeg_sha256": "8c2153e0b862e3dc4e8b130171c097a336cea845aa08e49c2f972815ea0d4ab8",
+      "jpeg_bytes": 305192,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/09/receipt-supplied-281330aa9746-8c2153e0b862.json",
+      "receipt_sha256": "cfe43ee52de7071aa385850018ca10d007b641f42e8b85d942fd64cba92d4797",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    },
+    {
+      "cut_id": "10",
+      "source_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/10/source-a4445dc0675c3519d8249074516196fe126db1be7659d5ab4339e7c769457a4d.png",
+      "source_sha256": "a4445dc0675c3519d8249074516196fe126db1be7659d5ab4339e7c769457a4d",
+      "source_bytes": 2341202,
+      "source_width": 1536,
+      "source_height": 1024,
+      "source_delivery_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "source_series_image_ordinal": 10,
+      "generation_turn": "unknown",
+      "jpeg_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-10.jpg",
+      "jpeg_sha256": "b70936a9d0656955b54e0382b24e4c762be7275529131522480ed133d6be0911",
+      "jpeg_bytes": 271797,
+      "jpeg_width": 1200,
+      "jpeg_height": 800,
+      "receipt_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/10/receipt-supplied-a4445dc0675c-b70936a9d065.json",
+      "receipt_sha256": "4566c9b21bbab14b4bdad8892c9b6801c97494c6a46aa4fb8afd862294ac93cf",
+      "target_design_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "transform": {
+        "encoder": "macOS sips",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "status": "original_and_jpeg_retained_not_accepted"
+    }
+  ],
+  "producer_column": {
+    "path": "maintenance/photo-issue-plans/november-rooftop-pool-sumire-011/producer-column.json",
+    "sha256": "12a1c5693f919feabe0788e38a028f24d1f99694ae38456e09da27842f7f0a15"
+  },
+  "publication_state": "新号011を現在の通常朝枠向けに正式採用・公開用正本に追加。既存CI・公開検証まで未公開、実本番証拠なし。",
+  "editorial_review": {
+    "review_status": "all_10_candidate_cuts_accepted_for_next_daily_edit_not_published",
+    "reviewed_at_utc": "2026-11-18T13:58:50.922Z",
+    "fixed_source_commit": "9eaa836bdd9606bcb6b56f0344a644528b0f3339",
+    "reviewer_role": "existing_photo_issue_editor",
+    "image_access": "GitHub fetch_file base64 of actual final JPEG, displayed 01-10 in current editor run",
+    "source_provenance": "source_chat_url and source_delivery_turn per original handoff; generation_turn remains unknown",
+    "decision": "accepted_for_preparation",
+    "count": 10,
+    "cuts": [
+      {
+        "cut_id": "01",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-01.jpg",
+        "image_sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479",
+        "actual_jpeg_displayed": true,
+        "note": "01 室内温水プールの水面に両腕を置く横構図。花柄ビキニ。表情・手・水面の接続に重大な破綻なし。"
+      },
+      {
+        "cut_id": "02",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-02.jpg",
+        "image_sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca",
+        "actual_jpeg_displayed": true,
+        "note": "02 室内プール脇を歩く全身縦構図。青ビキニと羽織。01とは色・動作・距離が異なる。"
+      },
+      {
+        "cut_id": "03",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-03.jpg",
+        "image_sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947",
+        "actual_jpeg_displayed": true,
+        "note": "03 緑ビキニと白シャツで水面に触れる全身縦構図。手と水面、足元の見え方が自然。"
+      },
+      {
+        "cut_id": "04",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-04.jpg",
+        "image_sha256": "731eea9b9b4f8c202594318a7d7277350da33ff3d93d537df53b986604f43f98",
+        "actual_jpeg_displayed": true,
+        "note": "04 紫系ビキニと白いバスローブ。腕を上げる縦構図。室内・窓外の晩秋景色と一致。"
+      },
+      {
+        "cut_id": "05",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-05.jpg",
+        "image_sha256": "de24a1b682f3b49c394ce1121f0e4d68989fbf19f71477ab680358e5e54ed13d",
+        "actual_jpeg_displayed": true,
+        "note": "05 夕刻の屋上プールで柄ビキニとキャメルのコートを持って歩く全身。コラムとの直接の対応カット。"
+      },
+      {
+        "cut_id": "06",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-06.jpg",
+        "image_sha256": "ce3f082f9d399a5a2535412130d48a473c9485cb88136cb325b0e7e07bea561d",
+        "actual_jpeg_displayed": true,
+        "note": "06 温水プール脇の木製ベンチに橙色のバンドゥ水着で座り髪を結ぶ横構図。後述10とは異なる背景・衣装・場面。"
+      },
+      {
+        "cut_id": "07",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-07.jpg",
+        "image_sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2",
+        "actual_jpeg_displayed": true,
+        "note": "07 プール脇から背を向け歩き振り返る縦構図。茶系水着と黒いパレオ・タオル。水着を視認可能。"
+      },
+      {
+        "cut_id": "08",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-08.jpg",
+        "image_sha256": "ad2228fcc83b06bacefb4ed9f34307ccc26472fd97a9538f540cc9270a9e08f2",
+        "actual_jpeg_displayed": true,
+        "note": "08 夕方の海沿い遊歩道を濃紺ビキニと白シャツで歩く縦構図。11月の冷風を扱うコラムに適合。"
+      },
+      {
+        "cut_id": "09",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-09.jpg",
+        "image_sha256": "8c2153e0b862e3dc4e8b130171c097a336cea845aa08e49c2f972815ea0d4ab8",
+        "actual_jpeg_displayed": true,
+        "note": "09 雪の見える屋内温水プール脇で緑ビキニの立ち姿。03と同色系でもカメラ距離・ポーズ・背景が別。"
+      },
+      {
+        "cut_id": "10",
+        "decision": "accepted_for_preparation",
+        "image_path": "assets/generated/photo-issue-november-rooftop-pool-sumire-011-10.jpg",
+        "image_sha256": "b70936a9d0656955b54e0382b24e4c762be7275529131522480ed133d6be0911",
+        "actual_jpeg_displayed": true,
+        "note": "10 雪景色の露天温水施設の木縁でえんじのビキニ姿で腰掛け髪を結ぶ横構図。06と似た髪の動作だが姿勢・衣装・施設と季節表現が異なる。"
+      }
+    ],
+    "swimwear_count": 10,
+    "swimwear_classification": "All ten clearly show swimwear (including bandeau swimsuit cut06), not counting outerwear as swimwear",
+    "caption_column": {
+      "source_path": "maintenance/photo-issue-plans/november-rooftop-pool-sumire-011/producer-column.json",
+      "source_sha256": "12a1c5693f919feabe0788e38a028f24d1f99694ae38456e09da27842f7f0a15",
+      "source_turn": "45520a15-22b0-4d11-a4ed-b745038a1173",
+      "decision": "compatible",
+      "note": "November water, cold wind, old-color camel coat and swimsuit pairing; cut05 is the stated reference image, and autumn foliage/snow with warm-water facilities supports season"
+    },
+    "continuity": {
+      "model_id": "kiritani-sumire",
+      "adult_age": 26,
+      "body_profile_sha256": "bd106180d131a5a134b0f7df15f159cfefce669887a59730dd35c871cc12c696",
+      "facial_body_continuity": "qualitatively acceptable against within-series images and existing model snapshot; centimetre body measurements not inferred from images",
+      "duplicate_exact_sha_check": "No candidate JPEG SHA appears in current main content/photo_issues.json or assets/generated/manifest.json; all ten SHA distinct",
+      "near_duplicate_check": "10 displayed cuts reviewed; some similar poolside poses but clothing, position, season and framing differ sufficiently for editorial set"
+    },
+    "next_action": "Next regular 06:00 JST photo editor: recheck same branch/current main, issue-002 frozen order and already-published list; use accepted candidate review to prepare public content/photo_issues.json and photo_editions.json with actual JST timestamp, do required QA/guards, create a single normal PR and finalize only during permitted morning slot; do not publish tonight, do not repeat generation or visual review if files/SHA unchanged",
+    "published": false,
+    "publication_finalize_authorized": false,
+    "official_qa_path": "maintenance/photo-issues/november-rooftop-pool-sumire-011/final-jpeg-qa.json",
+    "official_qa_sha256": "275ca1259f493d4c9519b79673b17bc2b1acf6f644ddb739b4beccf3163b3ef0",
+    "formal_issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7"
+  }
+}

@@ -9514,7 +9514,183 @@
     "resize": "center-cover bilinear, alpha composited on white",
     "script": "scripts/native_image_bytes.js"
   }
-}
+},
+    "old-coat-recut-as-strangers-jacket": {
+      "article_sha256": "a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
+      "bytes": 203482,
+      "generated_at": "2026-11-18T22:49:44.626Z",
+      "generated_at_source": "First observation of the actual native tool result, as captured in receipt.generation.observed_at; not an inferred backend completion time.",
+      "generation_id": "0e9eddfe-898a-44da-bc89-d3c9460a8c35",
+      "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+      "generation_prompt": "An adult Japanese tailor cuts a worn black coat into reusable fabric panels on a tailoring worktable. A 58-year-old craftswoman in practical clothes works by window light, with the original coat, sewing scissors, a short finished black jacket on a dress form, and a quiet clothing shop in the background. Authentic documentary photography, naturally worn fabrics and realistic hands, no visible writing, labels, logos or brand, no real person's likeness, horizontal 16:9.",
+      "generation_prompt_source": "Exact unchanged article scene_prompt passed once to generateAndStage; backend-expanded prompt and backend job ID were not exposed.",
+      "generation_receipt": "xmp:iid:0e9eddfe-898a-44da-bc89-d3c9460a8c35",
+      "model": "ChatGPT ImageGen",
+      "origin": "chatgpt-imagegen",
+      "prompt_version": 3,
+      "sha256": "0ab43cfd952edf8b016994a0ac0965d2169755d4586de1027c1aaba0d50549ac",
+      "source_c2pa": {
+        "manifest_uri": "urn:c2pa:3cafb4fa-516d-42ae-a282-934ccd0f7e57",
+        "instanceID": "xmp:iid:0e9eddfe-898a-44da-bc89-d3c9460a8c35",
+        "claim_generator": null,
+        "claim_generator_info": {
+          "name": "OpenAI Media Service API",
+          "icon": {
+            "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+            "hash": [
+              232,
+              66,
+              218,
+              40,
+              171,
+              251,
+              94,
+              89,
+              134,
+              229,
+              137,
+              58,
+              161,
+              238,
+              95,
+              163,
+              122,
+              246,
+              32,
+              95,
+              165,
+              143,
+              224,
+              52,
+              248,
+              45,
+              248,
+              67,
+              187,
+              98,
+              161,
+              53
+            ]
+          },
+          "org.contentauth.c2pa_rs": "0.79.2",
+          "specVersion": "2.2.0"
+        },
+        "actions": [
+          {
+            "label": "c2pa.actions.v2",
+            "value": {
+              "actions": [
+                {
+                  "action": "c2pa.created",
+                  "when": "2026-11-18T22:49:42.411161169Z",
+                  "softwareAgent": {
+                    "name": "ChatGPT",
+                    "version": "gpt-image"
+                  },
+                  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+                },
+                {
+                  "action": "c2pa.converted",
+                  "when": "2026-11-18T22:49:42.411163846Z"
+                },
+                {
+                  "action": "c2pa.watermarked.unbound",
+                  "when": "2026-11-18T22:49:42.410154183Z"
+                }
+              ],
+              "allActionsIncluded": false
+            }
+          }
+        ],
+        "signature_validation": "not_performed",
+        "content_binding_validation": "not_performed"
+      },
+      "source_capture": {
+        "kind": "native_tool_result",
+        "method": "One generateAndStage call after transport preflight and a durable create-only generation claim; original PNG parts, candidate JPEG and receipt verified from the fixed candidate commit.",
+        "logical_run_id": "news-photo-v1:a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
+        "actual_output_hint": "Generated images are saved to /workspace/scratch/7a63683d923c/generated_images as /workspace/scratch/7a63683d923c/generated_images/exec-b1406321-c9e5-4466-878e-0c437619b799.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+        "actual_output_path": "/workspace/scratch/7a63683d923c/generated_images/exec-b1406321-c9e5-4466-878e-0c437619b799.png",
+        "output_filename_uuid": "b1406321-c9e5-4466-878e-0c437619b799",
+        "output_filename_uuid_source": "UUID in the actual image_gen output filename; distinct from the embedded C2PA asset instanceID and not a backend job ID.",
+        "observed_at": "2026-11-18T22:49:44.626Z",
+        "bytes": 2714487,
+        "width": 1672,
+        "height": 941,
+        "caBX_sha256": "9e39465d36f077c8c440ec9d1dc6d9487bece8bb02983fec81d9c2a5dd638e9b",
+        "candidate_branch": "native-image-candidate/old-coat-recut-as-strangers-jacket/a82721ee487d2dc7-db684c300c68",
+        "candidate_commit": "1f74d466444186eddf3420e3b64dec2e2b87b021",
+        "receipt_path": "maintenance/native-image-candidates/old-coat-recut-as-strangers-jacket/receipt.json",
+        "receipt_sha256": "d006b511e5f4b6ffbb1c785e071965a322efb388d7872c6e0b2b1612632e689b",
+        "original_png_parts": [
+          {
+            "path": "maintenance/native-image-candidates/old-coat-recut-as-strangers-jacket/source.png.part000",
+            "bytes": 524288,
+            "sha256": "d3607a4fc65fcc5a89bfcda191bd3bf7e64121697ebd057b1544ff23b44e100b",
+            "blob_sha": "9ff8346e514e0491b2358fe9b8e955451aa53db7"
+          },
+          {
+            "path": "maintenance/native-image-candidates/old-coat-recut-as-strangers-jacket/source.png.part001",
+            "bytes": 524288,
+            "sha256": "448565d7f7bdeaebc1bebae36227cbc24ac16e73663b67f222cea2c85917530d",
+            "blob_sha": "d31ad389615f85fb5954cd6f31c7d42e1440024f"
+          },
+          {
+            "path": "maintenance/native-image-candidates/old-coat-recut-as-strangers-jacket/source.png.part002",
+            "bytes": 524288,
+            "sha256": "baece72e1f21e507579cce87d363ed1b5f5a2e96e15beb12b9626a946928a35a",
+            "blob_sha": "7ad21289bce4870a8cc39000e0a7c27a2c5592fa"
+          },
+          {
+            "path": "maintenance/native-image-candidates/old-coat-recut-as-strangers-jacket/source.png.part003",
+            "bytes": 524288,
+            "sha256": "8270df7aeb98623f63019be71387b45045828530f5af44af010cb69986eb47bb",
+            "blob_sha": "62504ed166ffd0389b3d7070964bbc81e81f3541"
+          },
+          {
+            "path": "maintenance/native-image-candidates/old-coat-recut-as-strangers-jacket/source.png.part004",
+            "bytes": 524288,
+            "sha256": "234da4764a26b27d1e09dc092826aaf8913d43406582172d62173623318483bd",
+            "blob_sha": "28dc5e48f876cb579ec5579946f8c9628cca333b"
+          },
+          {
+            "path": "maintenance/native-image-candidates/old-coat-recut-as-strangers-jacket/source.png.part005",
+            "bytes": 93047,
+            "sha256": "57a381f14ea7acd5754e9e0b511c32c875e333af3e0c408886d523a45b7182f7",
+            "blob_sha": "facf473b3b78ecdc93a38bbff6a6b7526b9fa058"
+          }
+        ],
+        "transport_preflight": {
+          "kind": "native_image_transport_preflight",
+          "status": "passed",
+          "branch": "native-image-preflight/transport",
+          "commit_sha": "89794ff148442db19d48be27f5169840492a02fc",
+          "receipt_path": "maintenance/native-image-preflight/receipt.json",
+          "receipt_sha256": "b4b51bb6d462d94adecef28fd06035bdf8431cccbaff87efb938ecf52a76cdc2",
+          "observed_at": "2026-11-18T22:48:08.710Z",
+          "route": "PNG data URL in this code runtime to GitHub candidate storage",
+          "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+          "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+        },
+        "generation_claim": {
+          "kind": "native_image_generation_claim",
+          "status": "reserved_generation_unconfirmed",
+          "branch": "native-image-generation-claim/085941e437ec78c28bf2e8dffb7ec43f2f507b49e52cf2bf4054399bcf22040f",
+          "receipt_path": "maintenance/native-image-generation-claims/085941e437ec78c28bf2e8dffb7ec43f2f507b49e52cf2bf4054399bcf22040f.json",
+          "receipt_sha256": "b92c5008b06ae53ab288c8c13d52561dff20d28d73ef4d5c3732478ef4e22b27",
+          "commit_sha": "82cba37367242dc7b0c3cab9fc34c57580a25641"
+        }
+      },
+      "source_png_sha256": "53247b0873539c4066b7554795071332125215136e67c670f08630077906f91c",
+      "transform": {
+        "helper": "scripts/native_image_bytes.js",
+        "resize": "center-cover-bilinear",
+        "alpha_background": "white",
+        "width": 1200,
+        "height": 675,
+        "jpeg_quality": 84
+      }
+    }
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {

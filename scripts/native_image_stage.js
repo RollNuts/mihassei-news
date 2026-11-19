@@ -13,7 +13,7 @@ var NativeImageStage = (function () {
   const CLAIM_DIR="maintenance/native-image-generation-claims";
   const CLOUD_WORKFLOW="free-cpu-scenes.yml", JPEG_CAP=1536*1024*1024;
   const FUTURE_CLOCK_TOLERANCE_MS=1000;
-  function create({runtime,github,repository,readCloudWorkflow}) {
+  function create({runtime,github,repository,readCloudWorkflow,manifestPatch}) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
     for(const name of ["fetch_file","create_blob","create_tree","create_commit","create_branch"])if(typeof github[name]!=="function")throw Error("Missing GitHub callback: "+name);
     for(const name of ["convert","sha256","fromBase64","toBase64","utf8"])if(typeof runtime[name]!=="function")throw Error("Missing byte runtime: "+name);
@@ -128,8 +128,8 @@ var NativeImageStage = (function () {
       if(!SLUG.test(p.slug||"")||!SHA.test(p.articleSha256||"")||!GIT.test(p.baseCommitSha||"")||!GIT.test(p.baseTreeSha||"")||typeof p.prompt!=="string"||!p.prompt.trim()||typeof p.logicalRunId!=="string"||!p.logicalRunId.trim())throw Error("Invalid prepare input");
       return p;
     }
-    async function protectedSnapshot(ref){
-      const loaded=await Promise.allSettled(PROTECTED.map(path=>read(path,ref))),hashes={},raw={};
+    async function protectedSnapshot(ref,readFile=read){
+      const loaded=await Promise.allSettled(PROTECTED.map(path=>readFile(path,ref))),hashes={},raw={};
       for(let i=0;i<loaded.length;i++){const r=loaded[i];if(r.status!=="fulfilled")throw r.reason;raw[PROTECTED[i]]=r.value.content;hashes[PROTECTED[i]]=hashText(r.value.content);}
       const articles=JSON.parse(raw[PROTECTED[0]]);
       if(!Array.isArray(articles))throw Error("Invalid article list");
@@ -166,35 +166,142 @@ var NativeImageStage = (function () {
       return prepareSnapshot(prepareInput({slug:input.slug,baseCommitSha:input.baseCommitSha,baseTreeSha:commit.tree.sha,
         articleSha256,prompt:article.scene_prompt,logicalRunId:"news-photo-v1:"+articleSha256}),snapshot);
     }
-    async function verifyProtected(ref,hashes){
-      const loaded=await Promise.allSettled(PROTECTED.map(path=>read(path,ref)));
+    async function verifyProtected(ref,hashes,readFile=read){
+      const loaded=await Promise.allSettled(PROTECTED.map(path=>readFile(path,ref)));
       for(let i=0;i<loaded.length;i++){const r=loaded[i];if(r.status!=="fulfilled")throw r.reason;if(hashText(r.value.content)!==hashes[PROTECTED[i]])throw Error("Protected file changed: "+PROTECTED[i]);}
     }
     function equalMetadata(a,b){return JSON.stringify(a)===JSON.stringify(b);}
-    async function verifyCandidate(plan,ref,expectedSourceHash,includeBytes=false){
-      const raw=await read(plan.directory+"/receipt.json",ref),r=JSON.parse(raw.content);
+    async function verifyCandidate(plan,ref,expectedSourceHash,includeBytes=false,publication=false,readFile=read){
+      const raw=await readFile(plan.directory+"/receipt.json",ref),r=JSON.parse(raw.content);
       if(r.version!==1||r.kind!=="native_image_candidate"||r.status!=="awaiting_visual_review"||r.identity!==plan.identity||r.repository!==repository||r.slug!==plan.slug||r.article_sha256!==plan.articleSha256||r.logical_run_id!==plan.logicalRunId||r.generation?.prompt!==plan.prompt||r.generation.prompt_sha256!==hashText(plan.prompt))throw Error("Candidate identity conflict; refusing branch mutation");
       if(!SHA.test(r.source?.sha256||"")||!SHA.test(r.jpeg?.sha256||"")||r.jpeg.path!==plan.directory+"/candidate.jpg"||r.jpeg.width!==1200||r.jpeg.height!==675||r.jpeg.quality!==84||!Number.isSafeInteger(r.source.bytes)||r.source.bytes<33||r.source.bytes>32*1024*1024||!Number.isSafeInteger(r.jpeg.bytes)||r.jpeg.bytes<16000||r.jpeg.bytes>700*1024)throw Error("Invalid candidate receipt");
       if(expectedSourceHash&&r.source.sha256!==expectedSourceHash)throw Error("A different generated image already occupies this candidate identity");
       if(!Array.isArray(r.source.parts)||!r.source.parts.length||r.source.parts.length>64)throw Error("Invalid source parts");
       for(let i=0;i<r.source.parts.length;i++){const part=r.source.parts[i];if(part.path!==plan.directory+"/source.png.part"+String(i).padStart(3,"0")||!SHA.test(part.sha256||"")||!Number.isSafeInteger(part.bytes)||part.bytes<1||part.bytes>PART_SIZE)throw Error("Invalid source part record");}
       for(const path of PROTECTED)if(!SHA.test(r.baseline?.protected_hashes?.[path]||""))throw Error("Invalid candidate baseline");
-      const requests=[read(r.jpeg.path,ref,"base64"),...r.source.parts.map(p=>read(p.path,ref,"base64"))];
+      const requests=[readFile(r.jpeg.path,ref,"base64"),...r.source.parts.map(p=>readFile(p.path,ref,"base64"))];
       const loaded=await Promise.allSettled(requests),parts=[];let jpeg;
-      for(let i=0;i<loaded.length;i++){const item=loaded[i];if(item.status!=="fulfilled")throw item.reason;const b=runtime.fromBase64(item.value.content),record=i===0?r.jpeg:r.source.parts[i-1];if(b.length!==record.bytes||runtime.sha256(b)!==record.sha256)throw Error("Candidate byte readback mismatch: "+record.path);if(i===0)jpeg=b;else parts.push(b);}
+      for(let i=0;i<loaded.length;i++){const item=loaded[i];if(item.status!=="fulfilled")throw item.reason;const b=runtime.fromBase64(item.value.content),record=i===0?r.jpeg:r.source.parts[i-1];if(b.length!==record.bytes||runtime.sha256(b)!==record.sha256)throw Error("Candidate byte readback mismatch: "+record.path);if(publication&&(!GIT.test(record.blob_sha||"")||item.value.sha!==record.blob_sha))throw Error("Candidate Git blob readback mismatch: "+record.path);if(i===0)jpeg=b;else parts.push(b);}
       const source=new Uint8Array(r.source.bytes);let at=0;for(const b of parts){if(at+b.length>source.length)throw Error("Source part length overflow");source.set(b,at);at+=b.length;}
       if(at!==source.length||runtime.sha256(source)!==r.source.sha256)throw Error("Reconstructed source PNG SHA mismatch");
       // Re-run the pinned conversion and metadata parser; a stored declaration alone
       // cannot establish either the JPEG correspondence or the C2PA instance ID.
       const converted=runtime.convert(source);
       if(converted.sha256!==r.jpeg.sha256||runtime.sha256(jpeg)!==converted.sha256||converted.source_png_sha256!==r.source.sha256||!equalMetadata(serialReceipt(converted.receipt),r.source.c2pa))throw Error("Saved PNG/JPEG/provenance do not correspond");
-      await verifyProtected(ref,r.baseline.protected_hashes);
+      if(publication&&(r.source.width!==converted.sourceWidth||r.source.height!==converted.sourceHeight
+        ||r.baseline.commit_sha!==plan.baseCommitSha||r.baseline.tree_sha!==plan.baseTreeSha
+        ||PROTECTED.some(path=>r.baseline.protected_hashes[path]!==plan.protectedHashes[path])))
+        throw Error("Candidate source dimensions or baseline differ from the original plan");
+      await verifyProtected(ref,r.baseline.protected_hashes,readFile);
       const saved={status:"saved",branch:plan.branch,ref,receipt:r,receipt_sha256:hashText(raw.content),jpegPath:r.jpeg.path,sourceParts:r.source.parts.map(p=>p.path),reused:true};
       if(includeBytes){saved.sourcePngDataUrl="data:image/png;base64,"+runtime.toBase64(source);saved.jpegDataUrl="data:image/jpeg;base64,"+runtime.toBase64(jpeg);}
       return saved;
     }
     async function probe(plan){checkPlan(plan);try{return await verifyCandidate(plan,plan.branch);}catch(e){if(absentRef(e,plan.branch))return {status:"absent",branch:plan.branch};throw e;}}
     async function load(plan,ref=plan.branch){checkPlan(plan);if(ref!==plan.branch&&!GIT.test(ref||""))throw Error("Invalid candidate read ref");return await verifyCandidate(plan,ref,undefined,true);}
+    async function preparePublication(input){
+      // Read-only preparation for a new article photo. The candidate commit is
+      // provenance, never the publication tree or a merge parent. Acceptance
+      // must already have been recorded by the person who displayed the images.
+      const {plan:requestedPlan,candidateCommitSha,pullRequestNumber,expectedHeadSha,articleSha256,reviewSource}=input||{};
+      checkPlan(requestedPlan);
+      const plan={...requestedPlan,protectedHashes:{...requestedPlan.protectedHashes}};
+      if(typeof candidateCommitSha!=="string"||typeof expectedHeadSha!=="string"
+        ||!GIT.test(candidateCommitSha)||!GIT.test(expectedHeadSha)
+        ||candidateCommitSha===expectedHeadSha||!Number.isSafeInteger(pullRequestNumber)||pullRequestNumber<1
+        ||articleSha256!==plan.articleSha256||typeof reviewSource!=="string")
+        throw Error("Publication preparation requires fixed candidate/PR SHAs, the current article SHA and an actual review source");
+      if(typeof manifestPatch?.appendImage!=="function"||typeof manifestPatch?.appendReview!=="function")
+        throw Error("Publication preparation requires GeneratedManifestPatch appendImage and appendReview");
+      const cache=new Map();
+      function readFixed(path,ref,encoding="utf-8"){
+        if(!GIT.test(ref||""))throw Error("Publication data reads require immutable commits");
+        const key=JSON.stringify([ref,path,encoding]);
+        if(!cache.has(key))cache.set(key,read(path,ref,encoding));
+        return cache.get(key);
+      }
+      async function currentPR(){
+        const pr=await fetchJSON("/pulls/"+pullRequestNumber);
+        if(pr.number!==pullRequestNumber||pr.state!=="open"||pr.merged===true
+          ||pr.head?.sha!==expectedHeadSha||pr.head?.repo?.full_name!==repository
+          ||pr.base?.repo?.full_name!==repository||pr.base?.ref!=="main"
+          ||typeof pr.head.ref!=="string"||!pr.head.ref||pr.head.ref==="main"
+          ||pr.head.ref.startsWith("native-image-"))throw Error("Working publication PR changed or is not an open same-repository PR to main");
+        return pr;
+      }
+      const pr=await currentPR(),commit=await fetchJSON("/git/commits/"+expectedHeadSha);
+      if(commit.sha!==expectedHeadSha||!GIT.test(commit.tree?.sha||""))throw Error("Working PR commit/tree response mismatch");
+      const tree=await fetchJSON("/git/trees/"+commit.tree.sha+"?recursive=1");
+      if(tree.sha!==commit.tree.sha||tree.truncated!==false||!Array.isArray(tree.tree)
+        ||tree.tree.some(entry=>typeof entry.path!=="string"))throw Error("Incomplete working PR tree");
+      if(PROTECTED.some(path=>tree.tree.filter(entry=>entry.path===path&&entry.type==="blob"&&entry.mode==="100644").length!==1))
+        throw Error("Working publication inputs must be ordinary Git files");
+      const publishedPath="assets/generated/"+plan.slug+".jpg";
+      if(tree.tree.some(entry=>entry.path===plan.directory||entry.path.startsWith(plan.directory+"/")))
+        throw Error("Working PR contains duplicated candidate sources; retain them only at the fixed candidate commit");
+      if(tree.tree.some(entry=>entry.path===publishedPath))throw Error("Publication JPEG already exists; replacement is not supported");
+      const current=await protectedSnapshot(expectedHeadSha,readFixed),matches=current.articles.filter(article=>article.slug===plan.slug);
+      if(matches.length!==1||fingerprint(matches[0])!==articleSha256||matches[0].scene_prompt!==plan.prompt
+        ||(Object.prototype.hasOwnProperty.call(matches[0],"visual_strategy")&&matches[0].visual_strategy!=="cpu-photo"))
+        throw Error("Working article or scene changed; publication requires the current reviewed article");
+      // These appenders validate duplicate keys and preserve every pre-existing
+      // character, including integers beyond JavaScript Number's safe range.
+      const reviewsSource=manifestPatch.appendReview({reviewsSource:current.raw[PROTECTED[2]],slug:plan.slug,reviewSource});
+      const review=JSON.parse(reviewSource);
+      const has=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
+      const manifest=JSON.parse(current.raw[PROTECTED[1]]);
+      if(!manifest||typeof manifest!=="object"||Array.isArray(manifest)
+        ||!manifest.images||!manifest.rejected||has(manifest.images,plan.slug)||has(manifest.rejected,plan.slug))
+        throw Error("Existing image or rejection history requires the explicit recovery procedure");
+      if(!review||typeof review!=="object"||Array.isArray(review)||review.decision!=="accepted"
+        ||review.article_sha256!==articleSha256||!SHA.test(review.image_sha256||"")
+        ||typeof review.note!=="string"||!review.note.trim()||has(review,"reuse"))
+        throw Error("An actual accepted current-article/current-image visual review is required");
+      function stamp(value){
+        const match=typeof value==="string"&&/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})$/.exec(value);
+        if(!match)return NaN;
+        const [year,month,day,hour,minute,second]=match.slice(1,7).map(Number);
+        const days=[31,(year%4===0&&(year%100!==0||year%400===0))?29:28,31,30,31,30,31,31,30,31,30,31];
+        if(year<1||month<1||month>12||day<1||day>days[month-1]||hour>23||minute>59||second>59
+          ||(match[7]!=="Z"&&(Number(match[7].slice(1,3))>23||Number(match[7].slice(4,6))>59)))return NaN;
+        return Date.parse(value);
+      }
+      if(!Number.isFinite(stamp(review.reviewed_at))||stamp(review.reviewed_at)>Date.now()+FUTURE_CLOCK_TOLERANCE_MS)
+        throw Error("Visual review needs an actual timezone-qualified review time");
+      const saved=await verifyCandidate(plan,candidateCommitSha,undefined,false,true,readFixed),r=saved.receipt,g=r.generation,c2pa=r.source.c2pa;
+      const transform={helper:"scripts/native_image_bytes.js",resize:"center-cover-bilinear",alpha_background:"white",width:1200,height:675,jpeg_quality:84};
+      if(g.capture_kind!=="native_tool_result"||g.recovery!==null||!Number.isFinite(stamp(g.observed_at))
+        ||stamp(review.reviewed_at)<stamp(g.observed_at)||review.image_sha256!==r.jpeg.sha256
+        ||!equalMetadata(r.transform,transform)||!c2pa
+        ||!/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/.test(c2pa.generation_id||"")
+        ||c2pa.generation_receipt!=="xmp:iid:"+c2pa.generation_id
+        ||c2pa.source_c2pa?.instanceID!==c2pa.generation_receipt
+        ||typeof c2pa.generation_id_source!=="string"||!c2pa.generation_id_source.trim()
+        ||!SHA.test(c2pa.caBX_sha256||""))throw Error("Incomplete or mismatched native candidate provenance/review");
+      await verifyReserved(plan,{generationClaim:g.generation_claim,transportPreflight:g.transport_preflight,observedAt:g.observed_at},readFixed);
+      const record={article_sha256:articleSha256,bytes:r.jpeg.bytes,generated_at:g.observed_at,
+        generated_at_source:"First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+        generation_id:c2pa.generation_id,generation_id_source:c2pa.generation_id_source,generation_receipt:c2pa.generation_receipt,
+        generation_prompt:g.prompt,generation_prompt_source:"Exact generation prompt preserved in the fixed candidate receipt.",
+        model:"ChatGPT ImageGen",origin:"chatgpt-imagegen",prompt_version:3,sha256:r.jpeg.sha256,
+        source_c2pa:c2pa.source_c2pa,source_png_sha256:r.source.sha256,transform:r.transform,
+        source_capture:{kind:g.capture_kind,method:"Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+          logical_run_id:r.logical_run_id,actual_output_hint:g.actual_output_hint,observed_at:g.observed_at,
+          bytes:r.source.bytes,width:r.source.width,height:r.source.height,caBX_sha256:c2pa.caBX_sha256,
+          candidate_branch:plan.branch,candidate_commit:candidateCommitSha,receipt_path:plan.directory+"/receipt.json",
+          receipt_sha256:saved.receipt_sha256,original_png_parts:r.source.parts,
+          transport_preflight:g.transport_preflight,generation_claim:g.generation_claim}};
+      const manifestSource=manifestPatch.appendImage({manifestSource:current.raw[PROTECTED[1]],slug:plan.slug,imageSource:JSON.stringify(record,null,2)});
+      const latest=await currentPR();
+      if(latest.head.ref!==pr.head.ref)throw Error("Working publication branch changed during preparation");
+      return {status:"prepared_not_published",repository,pullRequestNumber,branch:pr.head.ref,
+        expectedHeadSha,baseTreeSha:commit.tree.sha,articleSha256,
+        candidate:{commitSha:candidateCommitSha,receiptPath:plan.directory+"/receipt.json",receiptSha256:saved.receipt_sha256,
+          sourcePngSha256:r.source.sha256,jpegSha256:r.jpeg.sha256,jpegBlobSha:r.jpeg.blob_sha},
+        files:[{path:publishedPath,mode:"100644",type:"blob",sha:r.jpeg.blob_sha},
+          {path:PROTECTED[1],mode:"100644",type:"blob",content:manifestSource},
+          {path:PROTECTED[2],mode:"100644",type:"blob",content:reviewsSource}]};
+    }
     function serialReceipt(receipt){
       if(receipt===null)return null;
       if(!receipt||typeof receipt.generation_id!=="string"||!receipt.caBX_bytes)throw Error("Invalid C2PA extraction result");
@@ -437,7 +544,7 @@ var NativeImageStage = (function () {
       try{return await reservePrepared(plan,options,false);}
       finally{activeGenerations.delete(plan.identity);}
     }
-    async function verifyReserved(plan,input) {
+    async function verifyReserved(plan,input,readFile=read) {
       const claim=input?.generationClaim,proof=input?.transportPreflight;
       const proofFields=["kind","status","branch","commit_sha","receipt_path","receipt_sha256",
         "observed_at","route","source_sha256","jpeg_sha256"];
@@ -449,14 +556,14 @@ var NativeImageStage = (function () {
         ||Object.keys(proof).length!==proofFields.length||proofFields.some(key=>typeof proof[key]!=="string")
         ||!GIT.test(proof.commit_sha||"")||!SHA.test(proof.receipt_sha256||""))throw Error("Invalid reservation preflight");
       if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation reservation branch changed");
-      const rawClaim=await read(claim.receipt_path,claim.commit_sha),record=JSON.parse(rawClaim.content);
+      const rawClaim=await readFile(claim.receipt_path,claim.commit_sha),record=JSON.parse(rawClaim.content);
       if(hashText(rawClaim.content)!==claim.receipt_sha256||record.version!==1||record.kind!==claim.kind||record.status!==claim.status
         ||record.repository!==repository||record.identity!==plan.identity||record.slug!==plan.slug
         ||record.article_sha256!==plan.articleSha256||record.logical_run_id!==plan.logicalRunId||record.prompt_sha256!==hashText(plan.prompt)
         ||record.baseline?.commit_sha!==plan.baseCommitSha||record.baseline.tree_sha!==plan.baseTreeSha
         ||PROTECTED.some(path=>record.baseline.protected_hashes?.[path]!==plan.protectedHashes[path])
         ||proofFields.some(key=>record.transport_preflight?.[key]!==proof[key]))throw Error("Generation reservation binding mismatch");
-      const rawProof=await read(proof.receipt_path,proof.commit_sha),receipt=JSON.parse(rawProof.content);
+      const rawProof=await readFile(proof.receipt_path,proof.commit_sha),receipt=JSON.parse(rawProof.content);
       if(hashText(rawProof.content)!==proof.receipt_sha256||receipt.version!==1||receipt.kind!==proof.kind
         ||receipt.status!=="probe_only_not_an_article_candidate"||receipt.repository!==repository
         ||receipt.candidate_identity!==plan.identity||receipt.logical_run_id!==plan.logicalRunId
@@ -466,7 +573,7 @@ var NativeImageStage = (function () {
         ||PROTECTED.some(path=>receipt.baseline.protected_hashes?.[path]!==plan.protectedHashes[path]))throw Error("Reservation preflight binding mismatch");
       if(!Number.isFinite(Date.parse(record.reserved_at))||!Number.isFinite(Date.parse(input.observedAt))
         ||Date.parse(input.observedAt)<Date.parse(record.reserved_at))throw Error("Generated output precedes reservation");
-      await verifyProtected(plan.baseCommitSha,plan.protectedHashes);
+      await verifyProtected(plan.baseCommitSha,plan.protectedHashes,readFile);
     }
     async function stageReserved(plan,input) {
       checkPlan(plan);
@@ -843,7 +950,7 @@ var NativeImageStage = (function () {
         }else throw Error("Unknown bounded reserved-stage phase");
       });
     }
-    return {prepare,prepareArticle,probe,stage,resume,load,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,
+    return {prepare,prepareArticle,probe,stage,resume,load,preparePublication,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,
       reserveExternalGenerationStep,stageReservedStep,cloudStatus};
   }
   return {create,PART_SIZE};

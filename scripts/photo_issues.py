@@ -537,12 +537,63 @@ def _supplied_source_reference(source, model_id):
     if not isinstance(source, dict):
         return False
     url = source.get("url")
+    library = re.fullmatch(r"https://chatgpt\.com/library\?file_id=(libfile_[A-Za-z0-9_-]+)&account_id=personal", str(url))
+    if library:
+        return (source.get("library_file_id") == library[1]
+                and not ({"turn_key", "image_number"} & source.keys())
+                and source.get("generation_turn_status") == "not_retained"
+                and "generation_turn" in source and source["generation_turn"] is None
+                and _supplied_library_archive(source))
+    # ZIP imports use the file-id route above; an old share/conversation URL
+    # cannot bypass the archive's identifier, format and member checks.
+    if "archive" in source:
+        return False
     if re.fullmatch(r"https://chatgpt\.com/library/share/libfile_[A-Za-z0-9_-]+(?:\?account_id=personal)?", str(url)):
         return not ({"turn_key", "image_number"} & source.keys())
     return (isinstance(model_id, str) and model_id in MODEL_CHAT_URLS and url == MODEL_CHAT_URLS[model_id]
             and bool(re.fullmatch(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}", str(source.get("turn_key", ""))))
             and source["turn_key"] != "00000000-0000-0000-0000-000000000000"
             and type(source.get("image_number")) is int and source["image_number"] >= 1)
+
+
+def _supplied_library_archive(source):
+    """Bind ZIP metadata to a safe original member, without claiming generation."""
+    if "archive" not in source:
+        return True  # The Library file may itself be an original PNG/JPEG.
+    archive = source["archive"]
+    if not isinstance(archive, dict) or set(archive) != {"format", "filename", "sha256", "bytes", "member"}:
+        return False
+    def basename(value, extensions):
+        return (isinstance(value, str) and 1 <= len(value) <= 255 and value == value.strip()
+                and not value.startswith(".") and not re.search(r"[/\\:\x00-\x1f\x7f]", value)
+                and value.lower().endswith(extensions))
+    source_format = source.get("format", "png")
+    extensions = ({"png": (".png",), "jpeg": (".jpg", ".jpeg")}.get(source_format, ())
+                  if isinstance(source_format, str) else ())
+    return (archive.get("format") == "zip" and bool(SHA.fullmatch(str(archive.get("sha256", ""))))
+            and type(archive.get("bytes")) is int and archive["bytes"] > 0
+            and basename(archive.get("filename"), (".zip",))
+            and basename(archive.get("member"), extensions))
+
+
+def _supplied_transform(receipt):
+    """Keep the existing geometry/quality contract and record the actual encoder."""
+    transform = receipt.get("transform")
+    if not isinstance(transform, dict):
+        return False
+    encoder = transform.get("encoder")
+    if (transform != {"encoder": encoder, "max_edge": 1200, "jpeg_quality": 84, "geometry": "preserve-aspect"}
+            or type(transform.get("max_edge")) is not int or type(transform.get("jpeg_quality")) is not int):
+        return False
+    if encoder == "macOS sips":
+        return "encoding_details" not in receipt
+    details = receipt.get("encoding_details")
+    return (encoder == "Pillow" and isinstance(details, dict)
+            and set(details) == {"pillow_version", "resample", "mode", "optimize", "progressive", "subsampling"}
+            and bool(re.fullmatch(r"[1-9][0-9]*\.[0-9]+\.[0-9]+", str(details.get("pillow_version", ""))))
+            and details.get("resample") == "LANCZOS" and details.get("mode") == "RGB"
+            and details.get("optimize") is True and details.get("progressive") is False
+            and type(details.get("subsampling")) is int and details["subsampling"] == 0)
 
 
 def _validate_supplied_photo(issue, cut, image, data, *, root, now):
@@ -574,8 +625,7 @@ def _validate_supplied_photo(issue, cut, image, data, *, root, now):
             or not _supplied_source_reference(source, issue["model_id"])
             or source.get("generation_prompt_status") != "not_retained"
             or source.get("generation_prompt") is not None
-            or receipt.get("transform") != {"encoder": "macOS sips", "max_edge": 1200,
-                                            "jpeg_quality": 84, "geometry": "preserve-aspect"}):
+            or not _supplied_transform(receipt)):
         raise ValueError("Invalid owner-supplied photo provenance")
     original = _local(root, source["path"]).read_bytes()
     if source_format == "png":
@@ -772,6 +822,20 @@ def validate_published_issue(issue, *, root=ROOT, now=None):
 
 def published_issues(data, *, root=ROOT, now=None):
     result = [validate_published_issue(issue, root=root, now=now) for issue in data["issues"] if issue["state"] == "published"]
+    # A different JPEG encoding does not make an already-published original new.
+    # Only validated feature cuts participate; drafts, references and stories do not.
+    seen_sources = {}
+    for issue in result:
+        for shot in issue["shots"]:
+            cut = shot["id"]
+            image = issue["images"][cut]
+            supplied = image["provenance"].get("kind") == "user_supplied_photo"
+            source_sha = image["source_sha256" if supplied else "source_png_sha256"]
+            previous = seen_sources.get(source_sha)
+            if previous is not None and previous[0] != issue["slug"]:
+                raise ValueError("Photo original " + source_sha + " is reused across published features: "
+                                 + previous[0] + "/" + previous[1] + " and " + issue["slug"] + "/" + cut)
+            seen_sources.setdefault(source_sha, (issue["slug"], cut))
     return sorted(result, key=lambda issue: issue["published_at"], reverse=True)
 
 

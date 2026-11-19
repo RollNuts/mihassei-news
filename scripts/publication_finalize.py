@@ -7,6 +7,7 @@ No PR code/artifact is executed and no credentials are provisioned here.
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import json
 import os
 from pathlib import Path
@@ -45,6 +46,7 @@ EDITORIAL_DOCS = frozenset({"docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDE
 MEDIA = re.compile(r"assets/(?:generated|editorial-scenes|article-diagrams|photos)/[a-z0-9][a-z0-9-]*\.(?:jpg|jpeg|png|svg)")
 SOURCE = re.compile(r"maintenance/(?:native-image-candidates|photo-issues|editorial-scenes|article-diagrams)/[a-z0-9][a-z0-9/._-]*\.(?:json|png|jpg|jpeg|txt|part-[0-9]+)")
 PLAN = re.compile(r"maintenance/photo-issue-plans/[a-z0-9]+(?:-[a-z0-9]+)*/[a-z0-9][a-z0-9-]*\.json")
+DAILY_SNAPSHOT = re.compile(r"analytics/daily/([0-9]{4}-[0-9]{2}-[0-9]{2})\.json")
 KIND_DATA = {
     "news": {"content/articles.json"},
     "market": {"content/articles.json", "content/serials.json", "content/market_outlook.json",
@@ -177,10 +179,20 @@ def validate_story_append(path, before, after):
             or newer[-1].get("model_id") == Path(path).stem), "Story does not belong to its model file")
 
 
+def daily_snapshot_day(path):
+    match = DAILY_SNAPSHOT.fullmatch(path) if isinstance(path, str) else None
+    if match:
+        try:
+            return date.fromisoformat(match[1]).isoformat()
+        except ValueError:
+            pass
+    return None
+
+
 def validate_merge(api, pr, run, root):
     """Merge only data into a temporary tree and freshly run trusted source guards.
 
-    Harmless content/docs updates on main do not require repeating the long CI.
+    Content/docs and new valid daily metrics on main do not repeat the long CI.
     Changed executable/config/test code since that CI does require fresh CI.
     """
     current = sha(api.get("/git/ref/heads/main")["object"]["sha"])
@@ -190,8 +202,13 @@ def validate_merge(api, pr, run, root):
     git(root, "merge-base", "--is-ancestor", tested, current)
     changed = git(root, "diff", "--name-only", tested + "..." + head).splitlines()
     require(changed and all(allowed(p) for p in changed), "PR includes code/configuration or unsupported publication paths")
-    later = git(root, "diff", "--name-only", tested + ".." + current).splitlines()
-    require(all(allowed(p) or p == "README.md" or p.startswith("docs/") and p.endswith(".md") for p in later),
+    later = git(root, "diff", "--name-only", "--no-renames", tested + ".." + current).splitlines()
+    # The recorder only adds immutable snapshots. This main-only exception must
+    # not expand allowed()/allowed_for() or permit edits to metric history.
+    added = git(root, "diff", "--name-only", "--no-renames", "--diff-filter=A", tested + ".." + current).splitlines()
+    metrics = {p: day for p in added if (day := daily_snapshot_day(p)) is not None}
+    require(all(allowed(p) or p in metrics or p == "README.md"
+                or p.startswith("docs/") and p.endswith(".md") for p in later),
             "Main runtime changed since CI; fresh CI is required")
     with tempfile.TemporaryDirectory(prefix="publication-finalize-") as folder:
         checkout = Path(folder) / "merged"
@@ -204,6 +221,15 @@ def validate_merge(api, pr, run, root):
             for path in changed:
                 target = checkout / path
                 require(target.is_file() and not target.is_symlink(), "Publication path is not an ordinary file")
+            if metrics:
+                try:
+                    from .record_metrics import validate_snapshot
+                except ImportError:
+                    from record_metrics import validate_snapshot
+                for path, day in metrics.items():
+                    target = checkout / path
+                    require(target.is_file() and not target.is_symlink(), "Daily snapshot is not an ordinary file")
+                    validate_snapshot(json.loads(target.read_text(encoding="utf-8")), day)
             attestation = approval(pr)
             if attestation["kind"] == "cast_story":
                 require(len(changed) == 1 and changed[0] in STORY_FILES, "Expected one story source file")

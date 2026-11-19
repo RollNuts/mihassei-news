@@ -68,5 +68,18 @@ test("loads in plain V8 without CommonJS or Node globals and never mutates its i
   const pure = new Function(source + "\nreturn GeneratedManifestPatch;")();
   const args = Object.freeze(input('{"version":1,"images":{},"rejected":{}}'));
   assert.equal(pure.appendImage(args), patch.appendImage(args));
-  assert.deepEqual(Object.keys(pure), ["appendImage"]);
+  assert.deepEqual(Object.keys(pure), ["appendImage", "appendReview"]);
+});
+
+test("review append preserves old and new literal integers and refuses replacement or duplicate members", () => {
+  const reviewsSource = '{"version":1,"reviews":{"old":{"counter":937335361030604073}},"extra":8233372666452194521}\n';
+  const reviewSource = '{"decision":"accepted","observation":18446744073709551615}';
+  const args = {reviewsSource, slug, reviewSource};
+  const result = patch.appendReview(args);
+  assert.equal(result.replace(',\n    "new-photo": ' + reviewSource + '\n  ', ""), reviewsSource);
+  assert.throws(() => patch.appendReview({...args, slug: "old"}), /already exists/);
+  assert.throws(() => patch.appendReview({...args, reviewSource: '{"decision":"accepted","decision":"rejected"}'}), /Duplicate/);
+  assert.throws(() => patch.appendReview({...args, reviewsSource: '{"version":1,"reviews":{},"reviews":{}}'}), /Duplicate/);
+  for (const reviewsSource of ['[]', '{}', '{"version":2,"reviews":{}}', '{"version":1,"reviews":[]}'])
+    assert.throws(() => patch.appendReview({...args, reviewsSource}));
 });

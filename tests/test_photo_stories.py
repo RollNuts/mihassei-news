@@ -82,14 +82,27 @@ class PhotoStoryTests(unittest.TestCase):
 
     def test_default_loader_validates_current_published_catalog(self):
         all_posts = stories.read_story_document(ROOT)["stories"]
-        snapshot = max(NOW, *(datetime.fromisoformat(post["published_at"]) for post in all_posts))
-        result = stories.load_photo_stories(ROOT, now=snapshot)
-        self.assertEqual(len(result), len(all_posts))
-        newest = max(all_posts, key=lambda post: datetime.fromisoformat(post["published_at"]))
-        self.assertEqual(result[0]["modelId"], newest["model_id"])
-        self.assertEqual({post["modelId"] for post in result}, {model["id"] for model in self.catalog["models"]})
-        self.assertEqual(sum("motion" in post for post in result),
-                         sum("motion" in post for post in all_posts))
+        released_at = [datetime.fromisoformat(issue["published_at"])
+                       for issue in self.catalog["issues"] if issue["state"] == "published"]
+        # Photo features and daily stories publish independently. A real, released
+        # feature can be newer than every story without making the catalog invalid.
+        earlier_posts = [post for post in all_posts
+                         if datetime.fromisoformat(post["published_at"]) < max(released_at)]
+        for name, posts in (("current", all_posts), ("new_photo_without_new_story", earlier_posts)):
+            with self.subTest(name=name):
+                self.assertTrue(posts)
+                snapshot = max(NOW, *released_at,
+                               *(datetime.fromisoformat(post["published_at"]) for post in posts))
+                with patch.object(stories, "read_story_document",
+                                  return_value={"schema_version": 1, "stories": posts}):
+                    result = stories.load_photo_stories(ROOT, now=snapshot)
+                self.assertEqual(len(result), len(posts))
+                newest = max(posts, key=lambda post: datetime.fromisoformat(post["published_at"]))
+                self.assertEqual(result[0]["modelId"], newest["model_id"])
+                self.assertEqual({post["modelId"] for post in result},
+                                 {model["id"] for model in self.catalog["models"]})
+                self.assertEqual(sum("motion" in post for post in result),
+                                 sum("motion" in post for post in posts))
 
     def test_same_person_cannot_repost_exact_text_under_another_id_or_date(self):
         original = copy.deepcopy(self.data["stories"][0])
