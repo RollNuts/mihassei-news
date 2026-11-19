@@ -1,17 +1,98 @@
 """Evidence guards for manual mobile capture; these are not browser-render tests."""
 import copy
 import json
+import os
 from pathlib import Path
 import subprocess
+import sys
+import tempfile
 import textwrap
 from types import SimpleNamespace
 import unittest
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock, patch
 
+from scripts import capture_live_mobile
 from scripts.capture_live_mobile import SITE, TARGETS, live_revision, measurement_errors, read_only_route
 
 
 class MobileCaptureEvidenceTests(unittest.TestCase):
+    def test_runner_setup_installs_only_missing_japanese_fonts_once(self):
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/verify-public-photos.yml").read_text()
+        step = workflow.split("      - name: Use runner Chrome with the pinned library and Japanese fonts\n", 1)[1].split("      - name: Capture the two live pages", 1)[0]
+        source = textwrap.dedent(step.split("        run: |\n", 1)[1])
+        # Execute the real step with harmless command stubs: no package install,
+        # browser launch, network request or sudo is performed by this test.
+        harness = r"""
+        google-chrome() { printf 'CHROME %s\n' "$*"; return "$CHROME_STATUS"; }
+        python3() { printf 'PYTHON %s\n' "$*"; }
+        command() { [[ "$*" == '-v fc-list' && "$FONTCONFIG" == present ]]; }
+        fc-list() { [[ "$FONT_READY" == yes ]]; }
+        sudo() { printf 'APT %s\n' "$*"; FONT_READY="$AFTER_INSTALL"; }
+        """
+        for name, fontconfig, ready, after, chrome, packages, success in (
+            ("already available", "present", "yes", "yes", "0", [], True),
+            ("missing Japanese", "present", "no", "yes", "0", ["fonts-ipafont-gothic", "fonts-ipafont-mincho"], True),
+            ("missing fontconfig", "missing", "no", "yes", "0", ["fontconfig", "fonts-ipafont-gothic", "fonts-ipafont-mincho"], True),
+            ("still unavailable", "present", "no", "no", "0", ["fonts-ipafont-gothic", "fonts-ipafont-mincho"], False),
+            ("Chrome missing", "present", "yes", "yes", "1", [], False),
+        ):
+            with self.subTest(case=name):
+                result = subprocess.run(["bash", "-e", "-o", "pipefail", "-c", textwrap.dedent(harness) + source],
+                    env={**os.environ, "FONTCONFIG": fontconfig, "FONT_READY": ready,
+                         "AFTER_INSTALL": after, "CHROME_STATUS": chrome},
+                    text=True, capture_output=True, timeout=10)
+                self.assertEqual(result.returncode == 0, success, result.stderr)
+                calls = result.stdout.splitlines()
+                self.assertEqual([call for call in calls if call.startswith("APT ")],
+                    ["APT apt-get install --no-install-recommends -y " + " ".join(packages)] if packages else [])
+                self.assertEqual([call for call in calls if call.startswith("PYTHON ")],
+                    ["PYTHON -m pip install --no-cache-dir playwright==1.65.2"] if chrome == "0" else [])
+
+    def test_installed_chrome_and_japanese_font_evidence_must_be_real_outputs(self):
+        with patch.object(capture_live_mobile.shutil, "which", return_value="/usr/bin/google-chrome"), \
+                patch.object(capture_live_mobile.subprocess, "run") as run:
+            run.side_effect = [SimpleNamespace(stdout="156.0.8000.100\n"),
+                               SimpleNamespace(stdout="IPAMincho\nIPAGothic\nIPAGothic\n")]
+            evidence = capture_live_mobile.installed_browser_evidence()
+            self.assertEqual(evidence, {"chrome_command": "/usr/bin/google-chrome",
+                "chrome_cli_version": "156.0.8000.100", "japanese_font_families": ["IPAGothic", "IPAMincho"]})
+            self.assertEqual(run.call_args_list[0].args[0], ["/usr/bin/google-chrome", "--product-version"])
+            self.assertEqual(run.call_args_list[1].args[0], ["fc-list", ":lang=ja", "family"])
+            run.side_effect = [SimpleNamespace(stdout="156.0.8000.100\n"), SimpleNamespace(stdout="")]
+            with self.assertRaisesRegex(RuntimeError, "Japanese font support is required"):
+                capture_live_mobile.installed_browser_evidence()
+        with patch.object(capture_live_mobile.shutil, "which", return_value=None):
+            with self.assertRaisesRegex(RuntimeError, "preinstalled Google Chrome is required"):
+                capture_live_mobile.installed_browser_evidence()
+
+    def test_capture_uses_the_system_channel_and_reports_actual_runner_and_versions(self):
+        expected = "a" * 40
+        for browser_version, success in (("156.0.8000.100", True), ("157.0.8103.50", False)):
+            with self.subTest(browser_version=browser_version), tempfile.TemporaryDirectory() as directory:
+                manager = MagicMock()
+                browser = manager.__enter__.return_value.chromium.launch.return_value
+                browser.version = browser_version
+                api = SimpleNamespace(sync_playwright=lambda: manager)
+                evidence = {"chrome_command": "/usr/bin/google-chrome", "chrome_cli_version": "156.0.8000.100",
+                            "japanese_font_families": ["IPAGothic", "IPAMincho"]}
+                with patch.dict(sys.modules, {"playwright.sync_api": api}), \
+                        patch.dict(os.environ, {"ImageOS": "ubuntu24", "ImageVersion": "20261111.127.1", "GITHUB_STEP_SUMMARY": ""}), \
+                        patch.object(capture_live_mobile, "installed_browser_evidence", return_value=evidence), \
+                        patch.object(capture_live_mobile, "version", return_value="1.65.2"), \
+                        patch.object(capture_live_mobile, "live_revision", return_value=expected), \
+                        patch.object(capture_live_mobile, "capture_page", side_effect=lambda context, target, output: {"name": target[0], "status": "captured"}) as capture, \
+                        patch("builtins.print"):
+                    status = capture_live_mobile.main(["--expected-sha", expected, "--output", directory])
+                report = json.loads((Path(directory) / "report.json").read_text())
+                self.assertEqual(status == 0, success, report)
+                self.assertEqual(report["runner_image"], {"os": "ubuntu24", "version": "20261111.127.1"})
+                self.assertEqual(report["chrome_cli_version"], "156.0.8000.100")
+                self.assertEqual(report["browser_version"], browser_version)
+                self.assertEqual(report["browser_channel"], "chrome")
+                manager.__enter__.return_value.chromium.launch.assert_called_once_with(channel="chrome")
+                self.assertEqual(capture.call_count, 2 if success else 0)
+                browser.close.assert_called_once_with()
+
     def test_actual_pr_request_gate_rejects_untrusted_stale_or_unverified_requests(self):
         workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/verify-public-photos.yml").read_text()
         step = workflow.split("      - name: Authorize only a current-main manual capture request\n", 1)[1].split("      - uses: actions/checkout", 1)[0]

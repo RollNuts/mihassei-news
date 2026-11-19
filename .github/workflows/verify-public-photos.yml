@@ -110,7 +110,7 @@ jobs:
           retention-days: 3
 
   mobile_capture:
-    # Opt-in evidence only: no browser installation on normal publication runs.
+    # Opt-in evidence only: reuse runner Chrome; no setup on normal publication runs.
     needs: check
     if: ${{ !cancelled() && github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_dispatch' && inputs.capture_mobile && inputs.finalize_pr == '' && needs.check.result == 'success') || (github.event_name == 'pull_request_target' && github.event.action == 'edited' && github.event.pull_request.merged == true && contains(github.event.pull_request.body, '<!-- mobile-capture') && !contains(github.event.pull_request.body, '<!-- publication-finalize'))) }}
     runs-on: ubuntu-24.04
@@ -203,12 +203,19 @@ jobs:
         if: steps.request.outputs.capture == 'true'
         with:
           python-version: '3.12'
-      - name: Install the pinned browser library and Japanese fonts
+      - name: Use runner Chrome with the pinned library and Japanese fonts
         if: steps.request.outputs.capture == 'true'
         run: |
+          google-chrome --product-version
           python3 -m pip install --no-cache-dir playwright==1.65.2
-          python3 -m playwright install --with-deps --only-shell chromium
-          sudo apt-get install --no-install-recommends -y fonts-noto-cjk
+          font_packages=()
+          if ! command -v fc-list >/dev/null; then
+            font_packages+=(fontconfig)
+          fi
+          if (( ${#font_packages[@]} )) || ! fc-list -q ':lang=ja'; then
+            sudo apt-get install --no-install-recommends -y "${font_packages[@]}" fonts-ipafont-gothic fonts-ipafont-mincho
+          fi
+          fc-list -q ':lang=ja'
       - name: Capture the two live pages without analytics or write requests
         id: capture
         if: steps.request.outputs.capture == 'true'

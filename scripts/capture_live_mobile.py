@@ -13,6 +13,8 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
+import subprocess
 from urllib.parse import urlsplit
 
 
@@ -37,6 +39,24 @@ MEASURE = """selector => {
     images: images.map(image),
     required_images: [...document.querySelectorAll(selector)].map(image)};
 }"""
+
+
+def installed_browser_evidence():
+    """Read the runner's installed software; never install a browser here."""
+    chrome = shutil.which("google-chrome")
+    if not chrome:
+        raise RuntimeError("The runner's preinstalled Google Chrome is required")
+    chrome_version = subprocess.run([chrome, "--product-version"], check=True,
+        capture_output=True, text=True, timeout=10).stdout.strip()
+    if not re.fullmatch(r"\d+\.\d+\.\d+\.\d+", chrome_version):
+        raise RuntimeError("Could not detect the installed Google Chrome version")
+    fonts = subprocess.run(["fc-list", ":lang=ja", "family"], check=True,
+        capture_output=True, text=True, timeout=10).stdout.splitlines()
+    fonts = sorted({family.strip() for family in fonts if family.strip()})
+    if not fonts:
+        raise RuntimeError("Japanese font support is required before capture")
+    return {"chrome_command": chrome, "chrome_cli_version": chrome_version,
+            "japanese_font_families": fonts}
 
 
 def read_only_route(route, blocked):
@@ -130,16 +150,21 @@ def main(argv=None):
     report = {"expected_revision": args.expected_sha, "viewport": VIEWPORT,
               "request": os.environ.get("CAPTURE_REQUEST"),
               "public_check_run": os.environ.get("PUBLIC_CHECK_RUN"),
-              "render_mode": "Chromium mobile emulation; not a physical device",
+              "render_mode": "Google Chrome mobile emulation; not a physical device",
+              "browser_channel": "chrome",
+              "runner_image": {"os": os.environ.get("ImageOS"), "version": os.environ.get("ImageVersion")},
               "started_at": datetime.now(timezone.utc).isoformat(),
               "pages": [], "blocked_write_requests": [], "errors": []}
     try:
+        report.update(installed_browser_evidence())
         from playwright.sync_api import sync_playwright
         report["playwright_version"] = version("playwright")
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch()
+            browser = playwright.chromium.launch(channel="chrome")
             try:
                 report["browser_version"] = browser.version
+                if browser.version != report["chrome_cli_version"]:
+                    raise RuntimeError("Launched Chrome version differs from the installed Chrome CLI")
                 context = browser.new_context(viewport=VIEWPORT, screen=VIEWPORT,
                     is_mobile=True, has_touch=True, device_scale_factor=1,
                     locale="ja-JP", timezone_id="Asia/Tokyo", accept_downloads=False,
@@ -160,7 +185,9 @@ def main(argv=None):
                         and all(page["status"] == "captured" for page in report["pages"]) else "failed")
     (args.output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     summary = ["## Manual 390px capture", f"Revision: `{args.expected_sha}`", f"Capture: **{report['status']}**",
-               "Chromium mobile emulation. Screenshots still require human visual review."]
+               "Google Chrome mobile emulation. Screenshots still require human visual review.",
+               f"Runner image: `{report['runner_image']['os']}` / `{report['runner_image']['version']}`; "
+               f"Chrome CLI: `{report.get('chrome_cli_version')}`; browser: `{report.get('browser_version')}`."]
     for page in report["pages"]:
         measured = page.get("measured", {})
         summary.append(f"- {page['name']}: {page['status']}; client width {measured.get('client_width')}; "
