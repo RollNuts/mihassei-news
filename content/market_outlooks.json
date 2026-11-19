@@ -690,5 +690,81 @@
       "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
       "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-am-20th-us-risk",
+    "at": "2026-11-20T08:40:23+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "判断材料不足",
+    "observed_value": 3822.47,
+    "observed_on": "2026-11-19",
+    "reason": "11月20日の東証寄り前で当日のTOPIX現物途中値・終値はまだ存在しない。確認済み19日JPX公式終値3,822.47は固定基準18日3,824.00とほぼ同じだが、米国19日のS&P500 2.00%安・ナスダック約2.25%安という新材料から20日の下振れリスクを強く警戒する。これは当初の横ばい予測の正式な判定ではない。",
+    "change_reason": "直前19日18:46の中立・暫定整合から弱気・判断材料不足に変更。19日TOPIX終値の新旧差はなく、米国19日通常取引終了後の広範囲な売りが新材料。元予想の基準・期日・方法は変更しない。",
+    "source": {
+      "title": "AP：米国11月19日主要指数の確定下落",
+      "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2f178054aea79d282e5ccf8d62f26a28",
+      "published_on": "2026-11-19",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611191659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "forecast",
+    "id": "2026-11-20-topix",
+    "at": "2026-11-20T08:40:23+09:00",
+    "subject": "TOPIX",
+    "direction": "下落",
+    "stance": "弱気",
+    "reviewed_on": "2026-11-24",
+    "statement": "2026年11月24日（火）のTOPIX公式終値は、11月19日の確定終値3,822.47ポイントから0.5%を超えて下落すると予測する。",
+    "method": "2026年11月19日JPX公式TOPIX終値3,822.47ポイントを基準に固定する。11月24日（火）公式終値との騰落率（24日終値÷3,822.47−1）×100が+0.5%超なら上昇、-0.5%未満なら下落、それ以外（±0.5%境界を含む）なら横ばいとする。11月23日は日本市場休場のため判定日とせず、20日の東京・米国の追加材料や24日の途中値で基準・期日・方法を変更しない。JPX公式終値が取得不可なら未検証とする。",
+    "reason": "米国11月19日通常取引はS&P500が2.00%安、ナスダックが約2.25%安で、S&P500の9割超が下落。Anthropic上場初日株価は公募価格を上回る一方、成長株全体には買いが広がらなかった。日本19日TOPIX 3,822.47は前日比0.04%安で、米株安が複数業種に波及する弱気シナリオを採用。ただし20日東京・米国の反発や週末ニュースは反証となり得る。",
+    "invalidated_if": "11月24日JPX公式TOPIX終値が3,822.47に対して0.5%を超えて下落しなければ外れ。20日・23日の見立てや24日途中値は正式結果にしない。",
+    "scenarios": {
+      "強気": "24日公式終値が19日の3,822.47より0.5%超上昇。20日米国相場の反発や国内の広い買戻しが優勢だったか確認する。",
+      "中立": "24日公式終値が19日の3,822.47から±0.5%以内。米株安と国内買戻し、休日を挟んだ需給が拮抗したか確認する。",
+      "弱気": "24日公式終値が19日の3,822.47から0.5%を超えて下落。米国19日の広範な下落やAI関連評価見直しが国内に波及したか確認する。"
+    },
+    "baseline": {
+      "date": "2026-11-19",
+      "value": 3822.47,
+      "unit": "ポイント",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "method": "JPX指数公開ファイルの19日16:59 JST更新（qcode=151 TOPIX）で19日15:30大引け終値3,822.47を確認。更新時刻ファイルを取得前後に読み、同一202611191659を照合。"
+    },
+    "sources": [
+      {
+        "title": "JPX：2026年11月19日TOPIX公式終値3,822.47",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：11月19日の更新時刻202611191659",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "AP：米国11月19日市場終値",
+        "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2f178054aea79d282e5ccf8d62f26a28",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：2026年11月23日の日本株休場日",
+        "url": "https://www.jpx.co.jp/calendar/",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      }
+    ]
   }
 ]
