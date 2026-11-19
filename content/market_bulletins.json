@@ -2407,5 +2407,242 @@
         "checked_on": "2026-11-18"
       }
     ]
+  },
+  {
+    "slug": "2026-11-19-open",
+    "day": "2026-11-19",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-19T09:41:49+09:00",
+    "title": "19日寄り後：TOPIXと新興株が下落、REIT・不動産は逆行高",
+    "summary": "19日9:28 JST更新のTOPIXは0.44%安、グロース250は2.27%安。一方、東証REIT指数は0.54%高。不動産・銀行・情報通信で値動きが分かれ、19日判定のTOPIX上昇予想には逆風です。",
+    "lead": "11月19日（木）の東京市場は、寄り付き後の買いが市場全体へ広がっていません。日本取引所グループ（JPX）の9:28 JST更新値ではTOPIXが3,807.20ポイント、前日比0.44%安。グロース250は2.27%安なのに対し、東証REIT指数は0.54%高でした。いずれも取引途中の値で、19日の終値ではありません。前日の米国市場概況とは分け、国内の持ち株と検討銘柄をどの業種から確認するかを考えます。",
+    "sections": [
+      {
+        "heading": "市場全体が小幅安でも、新興株の下げは大きい",
+        "paragraphs": [
+          "JPXの19日9:28 JST更新データでは、TOPIXが3,807.20ポイント（前日終値3,824.00から16.80ポイント安、0.44%安）。東証グロース市場250指数は662.99ポイントで、前日678.41から15.42ポイント安、2.27%安です。19日の大引けまではこの差が続くか分かりません。",
+          "同じ更新時点の銀行業指数は664.40で2.19%安、鉱業指数は968.81で3.49%安。保有銘柄が大型株か新興株かだけでなく、銀行・資源など景気や金融環境に敏感な業種への売りも確認する必要があります。最新の日経平均の現物途中値は今回同時刻の確かな一次資料を取得できず、18日終値59,024.28円を19日の現在値としては表示しません。"
+        ]
+      },
+      {
+        "heading": "REIT・不動産は逆行高、投資判断は価格と資金調達を分ける",
+        "paragraphs": [
+          "JPXの同時刻の東証REIT指数は1,682.68ポイントで0.54%高、不動産業指数は2,580.18で1.15%高。グロース株や銀行株が売られる一方、土地・賃貸収益に関わる市場は逆方向へ動いています。ただし、指数上昇だけを金利低下や賃料増加の証拠とはしません。今後の金利と各社の調達条件・稼働率を確認したいところです。",
+          "物流施設を保有するGLP投資法人（3281）は19日9:30 JST時点で1口136,500円、18日終値135,800円から0.52%高。昨日から反発していますが、REIT指数の上昇とGLPの稼働率・分配金の変化は別です。投資口価格の動きを手掛かりに、次の運用報告と分配金見通しを比較します。"
+        ]
+      },
+      {
+        "heading": "プレイド続落と銀行安、理由を一律にしない",
+        "paragraphs": [
+          "顧客分析サービスのプレイド（4165）は19日9:34 JST時点381円で、18日終値449円から15.14%安。16日に公表されたKARTEへの不正アクセス・情報漏えいの影響が引き続き懸念材料です。同じ材料を新たな事件が起きたように書き換えず、被害範囲やサービスの復旧、会社の業績への影響に関する追加開示を確認します。",
+          "三井住友FG（8316）は9:35 JST時点3,066円、18日終値3,101円から1.13%安。同時刻ではないJPX9:28の銀行業指数2.19%安と方向は同じですが、下落率は異なります。金融政策や決算への思惑を個別材料と断定せず、今後の金利動向、信用コスト、決算資料で見直します。"
+        ]
+      },
+      {
+        "heading": "19日判定のTOPIX予想はまだ結論を出さない",
+        "paragraphs": [
+          "18日朝に固定した予想は『19日のTOPIX公式終値が17日終値3,840.02ポイントから0.5%を超えて上昇』です。19日9:28の3,807.20は固定基準より約0.85%低く、現時点では強気予想に逆風。ただしまだ場中なので、的中・外れを判定しません。19日の大引けとJPX公式最終値が出てから確認します。",
+          "11月18日を判定日とした別のTOPIX下落予想は既に公式値で的中と確認済み。確定した日次TOPIX予想は3件中1件的中、2件外れ（33.3%）のままです。今日の途中値はその成績に加えません。後場はグロースの下げ幅と、REIT・銀行との業種差が縮むかを追います。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov19-open",
+        "kind": "bars",
+        "title": "TOPIX：18日終値と19日9:28の途中値",
+        "note": "11月18日のJPX確定終値と11月19日9:28 JST更新の場中値。更新時刻ファイルを照合し、19日の終値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 3824,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 9:28",
+            "value": 3807.2,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth250-nov19-open",
+        "kind": "bars",
+        "title": "グロース250：19日朝は2.27%安",
+        "note": "JPX19日9:28 JST更新。18日の確定終値678.41と19日の途中値662.99の別時点比較。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 678.41,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 9:28",
+            "value": 662.99,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "reit-nov19-open",
+        "kind": "bars",
+        "title": "東証REIT指数：新興株と逆方向の上昇",
+        "note": "JPX19日9:28 JST更新。前日値1,673.72は当日の値1,682.68から公表前日比8.96を差し引いて復元した値。19日値は途中値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 1673.72,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 9:28",
+            "value": 1682.68,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "新興株と銀行に売り",
+        "signal": "逆風",
+        "meaning": "JPX19日9:28更新でグロース250は2.27%安、銀行業は2.19%安。市場全体の0.44%安より下げ幅が大きい。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00"
+      },
+      {
+        "name": "REITと不動産が逆行高",
+        "signal": "追い風",
+        "meaning": "JPXの東証REIT指数は0.54%高、不動産業は1.15%高。金利や企業の利益変化を株価だけから確定しない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00"
+      },
+      {
+        "name": "19日TOPIX予想には逆風",
+        "signal": "逆風",
+        "meaning": "9:28途中値3,807.20は11/17固定基準3,840.02を約0.85%下回るが、判定対象は19日終値なので未確定。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T09:28:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "3281",
+        "name": "GLP投資法人",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 135800,
+        "close": 136500,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T09:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/3281.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!ファイナンスで11月18日の通常終値と調整後終値が一致することを確認。11月19日の取引途中値と同じ単位・円建てで比較し、独自の分割調整なし。",
+        "context": "東証REIT指数と方向が同じ0.52%高。今後は稼働率・分配金・調達金利の開示を確認。"
+      },
+      {
+        "code": "4165",
+        "name": "プレイド",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 449,
+        "close": 381,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T09:34:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/4165.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!ファイナンスで11月18日の通常終値と調整後終値が一致することを確認。11月19日の取引途中値と同じ単位・円建てで比較し、独自の分割調整なし。",
+        "context": "16日公表の情報漏えいを受けた売り圧力の継続。今後は追加開示の内容と業績影響の具体化を確認。"
+      },
+      {
+        "code": "8316",
+        "name": "三井住友フィナンシャルグループ",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 3101,
+        "close": 3066,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T09:35:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!ファイナンスで11月18日の通常終値と調整後終値が一致することを確認。11月19日の取引途中値と同じ単位・円建てで比較し、独自の分割調整なし。",
+        "context": "銀行業指数2.19%安に対し当該株は1.13%安。信用コスト・金利・業績を別々に確認。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月19日9:28 JST更新のTOPIX・グロース250・REIT・業種別指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数更新時刻の公式ファイル（202611190928）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数値一覧（更新方式の公式案内）",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：3281 11月19日東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/3281.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：3281 11月18日通常/調整後終値履歴",
+        "url": "https://finance.yahoo.co.jp/quote/3281.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：4165 11月19日東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/4165.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：4165 11月18日通常/調整後終値履歴",
+        "url": "https://finance.yahoo.co.jp/quote/4165.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：8316 11月19日東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "Yahoo!ファイナンス：8316 11月18日通常/調整後終値履歴",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T/history",
+        "published_on": "2026-11-18",
+        "checked_on": "2026-11-19"
+      }
+    ]
   }
 ]
