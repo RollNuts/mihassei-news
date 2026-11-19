@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "model_id": "hanase-mio",
+  "issue": "november-city-evening-mio-012",
+  "source_kind": "new_editorial_column",
+  "author": "ChatGPT運用代替・編集担当/root",
+  "written_at_utc": "2026-11-19T00:17:57Z",
+  "source_chat_turn": null,
+  "source_chat_turn_status": "not_recorded",
+  "recovered_from_producer_chat": false,
+  "fictional_setting": "2031年11月、暖かい海辺への小旅行と街に戻った夜。実在の撮影地・撮影日の確定ではない。",
+  "reference_main_commit": "179a82cc8d2c5ad654a8d28acc55eb83734ad074",
+  "reference_model_fields": [
+    "character",
+    "biography"
+  ],
+  "reference_prior_issue": "november-first-detour-mio-004",
+  "reference_source_sha256": [
+    "9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188",
+    "494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06",
+    "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+    "0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004",
+    "9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff",
+    "dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996",
+    "68713cd866887092c8e90d220e92384fda8e934582d349b1cf0c35bfe88b4f58",
+    "0516b7aead08a965e51a623394ed3cdd90f289f6d3e112cfac035f63e480b6da",
+    "6204b1ec9a40aeafd3a7be866b0911b7230ed38e559dd9bb7927e1f0fb3e11df",
+    "2b4d6a882512ed045822bf02b2bbb55130365e43e5945e4d40f48d752bc9bf0d"
+  ],
+  "paragraphs": [
+    "コートを置いて、2031年11月の小旅行へ。まだ水着で過ごせる南の海を選びました。波打ち際で振り向いたら、次の波が足元まで。シャツの裾が濡れて、泳ぐ前から洗濯物が一枚増えました。",
+    "宿のプールでは、まず足だけ水に。冷たくないとわかると、そのまま入りたくなります。でも帰る日は、荷物をまとめてから。先に水辺へ行くと「あと五分」が何度も続くので、今回はバッグを閉じてから座りました。",
+    "街に戻ると、夕方の窓の向こうに灯りが増えていきました。コートを羽織って出た道も、雨上がりでぴかぴか。砂浜のつもりで大股に歩きかけて、ヒールだったことを思い出します。今夜は少し小さな歩幅で、予約した食事の席へ。"
+  ],
+  "editorial_readback": {
+    "status": "passed",
+    "reviewer": "ChatGPT運用代替・写真編集担当/photo_recovery",
+    "reviewed_at_utc": "2026-11-19T00:20:39.926236Z",
+    "note": "3段落の動作・帰り支度・窓光と夜の帰路を実写真、現model.character/biographyに照合。新しい編集原稿として採用し、元制作チャットの過去稿回収と扱わない。"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "partial_awaiting_originals",
+  "status": "assets_and_new_editorial_column_prepared_awaiting_fixed_commit_readback",
   "target": {
     "slug": "november-city-evening-mio-012",
     "model_id": "hanase-mio"
@@ -26,7 +26,9 @@
     "verification": "All 20 saved parts and all four reassembled PNG SHA-256 values, original byte counts and 1122x1402 dimensions verified; originals unchanged."
   },
   "missing_originals": {
-    "source_ordinals": [
+    "count": 0,
+    "status": "resolved_with_other_unpublished_originals",
+    "previous_source_ordinals": [
       2,
       3,
       4,
@@ -34,12 +36,98 @@
       9,
       10
     ],
-    "count": 6,
-    "status": "not_received_generation_unknown"
+    "previous_source_ordinals_resolution": "all_published_in_mio004_not_reused",
+    "audit_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/delivered-originals-audit.json",
+    "audit_sha256": "58ccd20fa2a9b4c299da8eb46af4091db47aa6175d723a2d204d676a031faafa"
   },
   "producer_column": {
-    "status": "not_received"
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/producer-column.json",
+    "sha256": "7c3c9a6b33b0d247c74e1c5739c355384b77d004c0d529a36a6a40edca787b8e",
+    "status": "new_editorial_column_prepared",
+    "source_kind": "new_editorial_column",
+    "not_recovered_producer_text": true
   },
-  "publication_state": "未公開。掲載JPEGの作成・正式採用は未了。受領した4原本はすべて服姿で、水着6枚以上の基本条件は未充足。",
-  "next_action": "既存本人制作チャットで残6原本と本人コラムの有無・実参照を確認し、存在する原本だけを同候補branchへ保存して固定commitから再読照合する。受領済み4原本・receiptは再転送や変更をせず、再生成や別人差替えで補わない。素材・本人コラムがそろうまで公開しない。"
+  "publication_state": "未公開。旧未掲載4原本・receiptは不変、別アーカイブの未掲載水着6原本を追加し、元比率JPEG10枚の実目視と新規editorialコラム準備を完了。PR885版validatorで全10組の原本・JPEG・来歴と草稿をローカル検証済み。固定commit読戻しとPR885の通常統合後のmain gate確認は保存後に行う。",
+  "next_action": "この同候補の固定commitを読み戻す。旧ce467納品の2/3/4/5/9/10は既刊004なので再探索・再転送しない。Pillow/実Library URL対応PR885の通常統合後、11/20通常06:00枠で固定順・既刊重複を確認し、同素材を通常公開手順へ採用する。新生成・別候補branch・本日の2人目公開はしない。",
+  "planned_publication_date": "2026-11-20",
+  "publication_not_before": "2026-11-20T06:00:00+09:00",
+  "published": false,
+  "publication_finalize_authorized": false,
+  "stock_recovery": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+    "sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c",
+    "verified_count": 6,
+    "source_kind": "existing_library_archive_originals",
+    "generation_performed": false
+  },
+  "prepared_jpegs": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/receipt.json",
+    "sha256": "ab2a96f793ffe27d734fe5e8fa2612e272022cb1afbdabce0cc4e41ffe765b40",
+    "count": 10,
+    "visual_review": "passed_for_preparation"
+  },
+  "draft_issue": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/draft-issue.json",
+    "sha256": "b9afdc2bec223824f6aa4a515881636847eaf2a05cd295361e561538b6c5da57",
+    "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5"
+  },
+  "original_selection_review": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/original-selection-review.json",
+    "sha256": "c335e1bbe5a212b0f0845d32a437a7245cc814d2a9591fb6c4e0f74f5145826d"
+  },
+  "final_jpeg_qa": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/final-jpeg-qa.json",
+    "sha256": "2b0dc298ba46b360c11d1dc5e8322dfc8f96c04896caeffe0a6219025f063539"
+  },
+  "prepared_receipt_validation": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-receipt-validation.json",
+    "sha256": "c331c9f05082699fa2b3c24f93ff681b70e0667ab51069312c369778d6842d28",
+    "status": "passed_local_pr885_validator",
+    "main_gate_passed": false
+  },
+  "publication_slot": {
+    "original_scheduled_date": "2026-11-19",
+    "earliest_eligible_date": "2026-11-20",
+    "existing_editorial_task_time_jst": "06:00",
+    "reason": "11/19は遅延したすみれ011を公開済みのため、同日1人1号を守り、次の既存朝編集枠へ繰越。",
+    "schedule_modified": false,
+    "actual_publication_time": null
+  },
+  "adoption_instructions": [
+    {
+      "step": 1,
+      "action": "元4は既存原本receiptを変更せず回収する。最新mainから通常初期化した scripts/photo_original_handoff.js の readOriginal({issue,commit,receipt_sha256,source_sha256}) を使い、20 partsから原PNGを再構成・SHA照合する。",
+      "original_fixed_commit": "f8aa437d4933a4e52d8fd50b00d78474017eccd9",
+      "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/originals/receipt.json",
+      "receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff",
+      "source_ordinals": [
+        1,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "step": 2,
+      "action": "追加6は stock-recovery/receipt.json が列挙する同候補の stock-recovery/originals/<sha>.png を直接読み、archiveのLibrary file ID・ZIP SHA・memberと原PNG SHAを保持する。生成turn/promptのnot_retained/nullは補完しない。",
+      "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json"
+    },
+    {
+      "step": 3,
+      "action": "prepared-jpegs/receipt.json の images[].publication_target に従い、検証済10JPEGと同じ原PNGを通常public/canonical pathへ採用し、そのreceiptを各cutのreceipt-supplied-<source12>-<jpeg12>.jsonとして保存・SHA結合する。再変換せずPillow実設定を保持し、旧4をsips生成へ偽装しない。",
+      "prepared_receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/receipt.json"
+    },
+    {
+      "step": 4,
+      "action": "draft-issue.json のissue本文・順序・291字columnを使い、producer-column.jsonをnew_editorial_columnとして保持する。final-jpeg-qa.jsonの実目視・衣装・構図と各image/source SHAをissue_sha256/master/body_profileへ結合し、通常のaccepted reviewを作る。旧producer稿の回収とは扱わない。",
+      "draft_issue_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/draft-issue.json",
+      "column_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/producer-column.json",
+      "qa_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/final-jpeg-qa.json",
+      "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5"
+    },
+    {
+      "step": 5,
+      "action": "PR885の通常統合後に現mainのvalidatorで確認し、元予定11/19と繰越後最早11/20の既存06:00編集枠を区別する。同日1人1号と既刊重複を再確認して通常PR/CI/機械承認/本番確認へ進み、実際に公開する時のJST published_atだけを付与する。現候補のpublished_atはnull、公開済み扱いにしない。"
+    }
+  ]
 }

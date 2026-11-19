@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "status": "prepared_editorial_draft_not_published",
+  "planned_publication_date": "2026-11-20",
+  "publication_not_before": "2026-11-20T06:00:00+09:00",
+  "published": false,
+  "publication_finalize_authorized": false,
+  "issue": {
+    "slug": "november-city-evening-mio-012",
+    "number": 12,
+    "title": "海のあと、街の灯り。",
+    "summary": "暖かい海辺への小旅行から、コートを羽織る街の夜へ。花瀬みおの、足取りが変わる休日の10枚。",
+    "column": [
+      "コートを置いて、2031年11月の小旅行へ。まだ水着で過ごせる南の海を選びました。波打ち際で振り向いたら、次の波が足元まで。シャツの裾が濡れて、泳ぐ前から洗濯物が一枚増えました。",
+      "宿のプールでは、まず足だけ水に。冷たくないとわかると、そのまま入りたくなります。でも帰る日は、荷物をまとめてから。先に水辺へ行くと「あと五分」が何度も続くので、今回はバッグを閉じてから座りました。",
+      "街に戻ると、夕方の窓の向こうに灯りが増えていきました。コートを羽織って出た道も、雨上がりでぴかぴか。砂浜のつもりで大股に歩きかけて、ヒールだったことを思い出します。今夜は少し小さな歩幅で、予約した食事の席へ。"
+    ],
+    "model_id": "hanase-mio",
+    "source_article": null,
+    "cover_cut_id": "01",
+    "setting": {
+      "year": 2031,
+      "month": 11,
+      "location": "暖かい海辺の旅先と、帰ってきた街",
+      "aspect_ratio": "original",
+      "visual_direction": "元PNGと全画面の縦横比を保持。水着6枚と街の服姿4枚。座り・歩き・振り返り・正面の違いを使い、架空の成人として顔と自然な比例の連続性を確認。実在の撮影地・撮影日は特定しない。"
+    },
+    "shots": [
+      {
+        "id": "01",
+        "description": "花瀬みお（20歳、架空の成人）。花柄のビキニで、波打ち際に立つ。",
+        "caption": "花柄のビキニで、波打ち際に立つ。",
+        "alt": "花瀬みお（20歳、架空の成人）。花柄のビキニで、波打ち際に立つ。"
+      },
+      {
+        "id": "02",
+        "description": "花瀬みお（20歳、架空の成人）。白いシャツを羽織り、波打ち際で振り返る。",
+        "caption": "白いシャツを羽織り、波打ち際で振り返る。",
+        "alt": "花瀬みお（20歳、架空の成人）。白いシャツを羽織り、波打ち際で振り返る。"
+      },
+      {
+        "id": "03",
+        "description": "花瀬みお（20歳、架空の成人）。紺の水着でプールの縁に座り、水へ足を伸ばす。",
+        "caption": "紺の水着でプールの縁に座り、水へ足を伸ばす。",
+        "alt": "花瀬みお（20歳、架空の成人）。紺の水着でプールの縁に座り、水へ足を伸ばす。"
+      },
+      {
+        "id": "04",
+        "description": "花瀬みお（20歳、架空の成人）。青いビキニで、髪に手を添えながら浜辺を歩く。",
+        "caption": "青いビキニで、髪に手を添えながら浜辺を歩く。",
+        "alt": "花瀬みお（20歳、架空の成人）。青いビキニで、髪に手を添えながら浜辺を歩く。"
+      },
+      {
+        "id": "05",
+        "description": "花瀬みお（20歳、架空の成人）。海を望む堤防で、風に吹かれた髪を押さえる。",
+        "caption": "海を望む堤防で、風に吹かれた髪を押さえる。",
+        "alt": "花瀬みお（20歳、架空の成人）。海を望む堤防で、風に吹かれた髪を押さえる。"
+      },
+      {
+        "id": "06",
+        "description": "花瀬みお（20歳、架空の成人）。青い水着と白いシャツで、プールサイドの椅子に腰掛ける。",
+        "caption": "青い水着と白いシャツで、プールサイドの椅子に腰掛ける。",
+        "alt": "花瀬みお（20歳、架空の成人）。青い水着と白いシャツで、プールサイドの椅子に腰掛ける。"
+      },
+      {
+        "id": "07",
+        "description": "花瀬みお（20歳、架空の成人）。夕方の街を見下ろす窓辺で、ソファに座る。",
+        "caption": "夕方の街を見下ろす窓辺で、ソファに座る。",
+        "alt": "花瀬みお（20歳、架空の成人）。夕方の街を見下ろす窓辺で、ソファに座る。"
+      },
+      {
+        "id": "08",
+        "description": "花瀬みお（20歳、架空の成人）。コートを羽織り、雨上がりの夜の通りを歩く。",
+        "caption": "コートを羽織り、雨上がりの夜の通りを歩く。",
+        "alt": "花瀬みお（20歳、架空の成人）。コートを羽織り、雨上がりの夜の通りを歩く。"
+      },
+      {
+        "id": "09",
+        "description": "花瀬みお（20歳、架空の成人）。夜景の見える食事の席で、頬に手を添える。",
+        "caption": "夜景の見える食事の席で、頬に手を添える。",
+        "alt": "花瀬みお（20歳、架空の成人）。夜景の見える食事の席で、頬に手を添える。"
+      },
+      {
+        "id": "10",
+        "description": "花瀬みお（20歳、架空の成人）。バーでグラスを手に、振り返る。",
+        "caption": "バーでグラスを手に、振り返る。",
+        "alt": "花瀬みお（20歳、架空の成人）。バーでグラスを手に、振り返る。"
+      }
+    ],
+    "model_snapshot": {
+      "id": "hanase-mio",
+      "name": "花瀬みお",
+      "age": 20,
+      "fictional": true,
+      "appearance": "20歳の架空の成人。活発な雰囲気、肩までの髪。さやと異なる顔立ち。",
+      "character": {
+        "version": 1,
+        "first_person": "私",
+        "occupation": "体験型バラエティアイドル",
+        "casting_specialty": "体を動かす体験ロケや実験企画。失敗も含めて動作と結果を伝える。",
+        "personality": "好奇心でまず体を動かす。失敗も楽しんで話す。",
+        "voice": "動作から始める率直な文章。元気でも過剰な感嘆符を並べない。",
+        "likes": [
+          "海",
+          "遠出",
+          "初めての乗り物"
+        ],
+        "weakness": "勢いで出かけて、帰りの支度を忘れがち。"
+      },
+      "master": {
+        "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+        "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+        "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50",
+        "provenance": "assets/generated/photo-reference-hanase-mio-3f2d8cb3b6f5.json"
+      },
+      "body_profile": {
+        "version": 1,
+        "basis": "authored_fictional_design_cm",
+        "height_cm": 160,
+        "bust_cm": 85,
+        "waist_cm": 60,
+        "hip_cm": 88,
+        "shoulder_width_cm": 37,
+        "inseam_cm": 74,
+        "heads_tall": 7.2
+      },
+      "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+      "face_reference": {
+        "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+        "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+        "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50"
+      },
+      "body_reference": {
+        "state": "accepted_reference",
+        "path": "assets/generated/photo-body-hanase-mio-17a677d5988e.jpg",
+        "sha256": "17a677d5988e882e89c6fdc4d56d0c39161faeaf445cf307c165d5636874b89f",
+        "source_png_sha256": "489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec",
+        "provenance": "assets/generated/photo-reference-hanase-mio-17a677d5988e.json"
+      }
+    },
+    "state": "draft",
+    "published_at": null,
+    "images": {},
+    "generation_holds": {},
+    "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5"
+  },
+  "producer_column": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/producer-column.json",
+    "sha256": "7c3c9a6b33b0d247c74e1c5739c355384b77d004c0d529a36a6a40edca787b8e"
+  },
+  "prepared_jpegs": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/receipt.json",
+    "sha256": "ab2a96f793ffe27d734fe5e8fa2612e272022cb1afbdabce0cc4e41ffe765b40"
+  },
+  "remaining_publication_steps": [
+    "Read back this candidate bundle at an immutable saved commit; preserve the existing four original PNGs and original receipt byte for byte.",
+    "Merge the normal PR885 Pillow/native Library archive provenance validator change and confirm the current-main gate; the local PR885 check is recorded separately.",
+    "At the regular permitted 2026-11-20 06:00 JST slot, confirm daily order/no published duplicate, adopt these exact original/JPEG bytes into ordinary public paths, bind the observed reviews to this editorial fingerprint, set the actual JST publication time, run required checks and one normal publication PR."
+  ],
+  "no_new_generation": true,
+  "final_jpeg_qa": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/final-jpeg-qa.json",
+    "sha256": "2b0dc298ba46b360c11d1dc5e8322dfc8f96c04896caeffe0a6219025f063539"
+  },
+  "prepared_receipt_validation": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-receipt-validation.json",
+    "sha256": "c331c9f05082699fa2b3c24f93ff681b70e0667ab51069312c369778d6842d28"
+  },
+  "publication_slot": {
+    "original_scheduled_date": "2026-11-19",
+    "earliest_eligible_date": "2026-11-20",
+    "existing_editorial_task_time_jst": "06:00",
+    "reason": "11/19は遅延したすみれ011を公開済みのため、同日1人1号を守り、次の既存朝編集枠へ繰越。",
+    "schedule_modified": false,
+    "actual_publication_time": null
+  }
+}

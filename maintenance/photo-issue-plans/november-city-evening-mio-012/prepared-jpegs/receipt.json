@@ -1,0 +1,930 @@
+{
+  "schema_version": 1,
+  "kind": "prepared_photo_issue_jpegs",
+  "status": "actual_final_jpegs_reviewed_for_preparation",
+  "issue": "november-city-evening-mio-012",
+  "model_id": "hanase-mio",
+  "converted_at_utc": "2026-11-19T00:20:39.926236Z",
+  "transform": {
+    "encoder": "Pillow",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  },
+  "encoding_details": {
+    "pillow_version": "13.0.0",
+    "resample": "LANCZOS",
+    "mode": "RGB",
+    "optimize": true,
+    "progressive": false,
+    "subsampling": 0
+  },
+  "source_receipts": [
+    {
+      "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/originals/receipt.json",
+      "sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff"
+    },
+    {
+      "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+      "sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c"
+    }
+  ],
+  "images": [
+    {
+      "cut_id": "01",
+      "source_sha256": "9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188",
+      "source_bytes": 2126448,
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "source_binding": {
+        "kind": "library_archive",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+        "receipt_sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c",
+        "original_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188.png",
+        "archive_member": "hanase_mio_08_beach_flower.png",
+        "git_blob_sha": "923a70f1ea3d129ec08885cf842d0329b85b7767"
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/01.jpg",
+      "jpeg_sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3",
+      "jpeg_bytes": 140858,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "02d7fa4d34ee3ce837f699b74f19e22fe8aa7713",
+      "swimwear_visible": true,
+      "garment_kind": "bikini",
+      "framing": "full_body",
+      "caption": "花柄のビキニで、波打ち際に立つ。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/01/source-9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-01.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "01",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+            "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+            "archive": {
+              "format": "zip",
+              "filename": "hanase_mio_highres_19.zip",
+              "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+              "bytes": 41555760,
+              "member": "hanase_mio_08_beach_flower.png"
+            },
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/01/source-9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188.png",
+            "sha256": "9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188",
+            "bytes": 2126448,
+            "width": 1024,
+            "height": 1536,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "generation_turn_status": "not_retained",
+            "generation_turn": null
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-01.jpg",
+            "sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3",
+            "bytes": 140858,
+            "width": 800,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "02",
+      "source_sha256": "494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06",
+      "source_bytes": 2352712,
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "source_binding": {
+        "kind": "library_archive",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+        "receipt_sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c",
+        "original_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06.png",
+        "archive_member": "hanase_mio_extra_01.png",
+        "git_blob_sha": "e81de78c08474dfd7c3eedf517f2f2d3c409fc3a"
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/02.jpg",
+      "jpeg_sha256": "9f1c9a37177dd542b69d000d453d03124bbc456bf4487087fdbd923da90fa543",
+      "jpeg_bytes": 193817,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "5ab7f3785210f005a6a60bfe8109b965ef8b94ab",
+      "swimwear_visible": true,
+      "garment_kind": "one_piece_swimsuit",
+      "framing": "full_body",
+      "caption": "白いシャツを羽織り、波打ち際で振り返る。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/02/source-494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-02.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "02",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+            "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+            "archive": {
+              "format": "zip",
+              "filename": "hanase_mio_continued_20_images.zip",
+              "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+              "bytes": 45887598,
+              "member": "hanase_mio_extra_01.png"
+            },
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/02/source-494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06.png",
+            "sha256": "494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06",
+            "bytes": 2352712,
+            "width": 1024,
+            "height": 1536,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "generation_turn_status": "not_retained",
+            "generation_turn": null
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-02.jpg",
+            "sha256": "9f1c9a37177dd542b69d000d453d03124bbc456bf4487087fdbd923da90fa543",
+            "bytes": 193817,
+            "width": 800,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "03",
+      "source_sha256": "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+      "source_bytes": 2568973,
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "source_binding": {
+        "kind": "library_archive",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+        "receipt_sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c",
+        "original_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a.png",
+        "archive_member": "hanase_mio_05_poolside.png",
+        "git_blob_sha": "7e95777a36d806a3fd04bed48108cffe1692c91f"
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/03.jpg",
+      "jpeg_sha256": "fd6687727c6b8844ec849bd8ea0134a1b8de682b6cf5d4b69e48ec1c21c2dc34",
+      "jpeg_bytes": 255883,
+      "jpeg_width": 1200,
+      "jpeg_height": 800,
+      "jpeg_git_blob_sha": "889419572ab6c2e98eaaf4856eb418ee2f4d81d6",
+      "swimwear_visible": true,
+      "garment_kind": "one_piece_swimsuit",
+      "framing": "three_quarter",
+      "caption": "紺の水着でプールの縁に座り、水へ足を伸ばす。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/03/source-cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-03.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "03",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+            "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+            "archive": {
+              "format": "zip",
+              "filename": "hanase_mio_highres_19.zip",
+              "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+              "bytes": 41555760,
+              "member": "hanase_mio_05_poolside.png"
+            },
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/03/source-cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a.png",
+            "sha256": "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+            "bytes": 2568973,
+            "width": 1536,
+            "height": 1024,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "generation_turn_status": "not_retained",
+            "generation_turn": null
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-03.jpg",
+            "sha256": "fd6687727c6b8844ec849bd8ea0134a1b8de682b6cf5d4b69e48ec1c21c2dc34",
+            "bytes": 255883,
+            "width": 1200,
+            "height": 800
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "04",
+      "source_sha256": "0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004",
+      "source_bytes": 2138767,
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "source_binding": {
+        "kind": "library_archive",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+        "receipt_sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c",
+        "original_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004.png",
+        "archive_member": "hanase_mio_10_beach_blue_bikini.png",
+        "git_blob_sha": "15cb8823d93e561b09ba87e7d47dfba042874b21"
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/04.jpg",
+      "jpeg_sha256": "a8b549f231ae8d2ea7b4ccfdaceb717178efa85d8ffbc508a1b3911d70814b8f",
+      "jpeg_bytes": 160476,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "1572887b3986ac44225bc0244890e4cb462d24b2",
+      "swimwear_visible": true,
+      "garment_kind": "bikini",
+      "framing": "full_body",
+      "caption": "青いビキニで、髪に手を添えながら浜辺を歩く。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/04/source-0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-04.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "04",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+            "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+            "archive": {
+              "format": "zip",
+              "filename": "hanase_mio_highres_19.zip",
+              "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+              "bytes": 41555760,
+              "member": "hanase_mio_10_beach_blue_bikini.png"
+            },
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/04/source-0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004.png",
+            "sha256": "0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004",
+            "bytes": 2138767,
+            "width": 1024,
+            "height": 1536,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "generation_turn_status": "not_retained",
+            "generation_turn": null
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-04.jpg",
+            "sha256": "a8b549f231ae8d2ea7b4ccfdaceb717178efa85d8ffbc508a1b3911d70814b8f",
+            "bytes": 160476,
+            "width": 800,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "05",
+      "source_sha256": "9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff",
+      "source_bytes": 2541913,
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "source_binding": {
+        "kind": "library_archive",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+        "receipt_sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c",
+        "original_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff.png",
+        "archive_member": "hanase_mio_extra_02.png",
+        "git_blob_sha": "9e80ed57d6bf4b25e1d005801b136944490828f0"
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/05.jpg",
+      "jpeg_sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305",
+      "jpeg_bytes": 203054,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "4993a551adc8ff3cbf98ff009056ea31842835cf",
+      "swimwear_visible": true,
+      "garment_kind": "one_piece_swimsuit",
+      "framing": "full_body",
+      "caption": "海を望む堤防で、風に吹かれた髪を押さえる。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/05/source-9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-05.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "05",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+            "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+            "archive": {
+              "format": "zip",
+              "filename": "hanase_mio_continued_20_images.zip",
+              "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+              "bytes": 45887598,
+              "member": "hanase_mio_extra_02.png"
+            },
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/05/source-9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff.png",
+            "sha256": "9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff",
+            "bytes": 2541913,
+            "width": 1024,
+            "height": 1536,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "generation_turn_status": "not_retained",
+            "generation_turn": null
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-05.jpg",
+            "sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305",
+            "bytes": 203054,
+            "width": 800,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "06",
+      "source_sha256": "dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996",
+      "source_bytes": 2305631,
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "source_binding": {
+        "kind": "library_archive",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+        "receipt_sha256": "28958ca9792b2c2a460de68132e82e5cdb156d7eeab9fc046d2858abfb6e4a1c",
+        "original_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996.png",
+        "archive_member": "hanase_mio_extra_15.png",
+        "git_blob_sha": "75f4bdc81765ba14b05efc2775c5145f73e5cbed"
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/06.jpg",
+      "jpeg_sha256": "a5d73dd13d950383ee2e354728393dd0efb833083ccc809f4951c314853b0c42",
+      "jpeg_bytes": 201572,
+      "jpeg_width": 800,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "49f97ea2b171737425b08b30dc5917f35a0b6398",
+      "swimwear_visible": true,
+      "garment_kind": "one_piece_swimsuit",
+      "framing": "three_quarter",
+      "caption": "青い水着と白いシャツで、プールサイドの椅子に腰掛ける。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/06/source-dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-06.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "06",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+            "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+            "archive": {
+              "format": "zip",
+              "filename": "hanase_mio_continued_20_images.zip",
+              "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+              "bytes": 45887598,
+              "member": "hanase_mio_extra_15.png"
+            },
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/06/source-dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996.png",
+            "sha256": "dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996",
+            "bytes": 2305631,
+            "width": 1024,
+            "height": 1536,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "generation_turn_status": "not_retained",
+            "generation_turn": null
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-06.jpg",
+            "sha256": "a5d73dd13d950383ee2e354728393dd0efb833083ccc809f4951c314853b0c42",
+            "bytes": 201572,
+            "width": 800,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "07",
+      "source_sha256": "68713cd866887092c8e90d220e92384fda8e934582d349b1cf0c35bfe88b4f58",
+      "source_bytes": 2563238,
+      "source_dimensions": [
+        1122,
+        1402
+      ],
+      "source_binding": {
+        "kind": "existing_original_parts",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/originals/receipt.json",
+        "receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff",
+        "fixed_source_commit": "f8aa437d4933a4e52d8fd50b00d78474017eccd9",
+        "source_ordinal": 8,
+        "parts": [
+          {
+            "index": 0,
+            "blob": "4179f7e8f9a316392f585190fdf6daa466b9d5ee",
+            "sha256": "174101481179f34c3118415008c11f3b6fadd2cba490edd515af824a3a56584f"
+          },
+          {
+            "index": 1,
+            "blob": "e065e6bff508ee3651953f92f81edf7ce25b7296",
+            "sha256": "dafbe129acc02e53db3a326820baabbb9bca4e9974663153262702164be6a30c"
+          },
+          {
+            "index": 2,
+            "blob": "ee4764e0c38dde5bff40cd7ca90995cc8267547e",
+            "sha256": "c95d23cf97b7531576318b155f910d1066665b0e5f87ec5f0c7a56348d0fbf04"
+          },
+          {
+            "index": 3,
+            "blob": "dfe6883481ef1c4adb835a600f27fab7576c079a",
+            "sha256": "1f11c7838438478a0b00e1e788a8257a1d6e9655c09db2dc460ec3d9ba7923b5"
+          },
+          {
+            "index": 4,
+            "blob": "3beb6f789ae132e78ac33cc1e5aea3f0e503c8a2",
+            "sha256": "db59ffa24414b64d55123f1da252eb02bd9a8eb76baea4ebae5ac043a349b7a7"
+          }
+        ]
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/07.jpg",
+      "jpeg_sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2",
+      "jpeg_bytes": 267314,
+      "jpeg_width": 960,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "0e122ede3adee8571539921560909bda61821254",
+      "swimwear_visible": false,
+      "garment_kind": "dress",
+      "framing": "three_quarter",
+      "caption": "夕方の街を見下ろす窓辺で、ソファに座る。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/07/source-68713cd866887092c8e90d220e92384fda8e934582d349b1cf0c35bfe88b4f58.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-07.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "07",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+            "turn_key": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+            "image_number": 8,
+            "sha256": "68713cd866887092c8e90d220e92384fda8e934582d349b1cf0c35bfe88b4f58",
+            "bytes": 2563238,
+            "width": 1122,
+            "height": 1402,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/07/source-68713cd866887092c8e90d220e92384fda8e934582d349b1cf0c35bfe88b4f58.png"
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-07.jpg",
+            "sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2",
+            "bytes": 267314,
+            "width": 960,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "08",
+      "source_sha256": "0516b7aead08a965e51a623394ed3cdd90f289f6d3e112cfac035f63e480b6da",
+      "source_bytes": 2585102,
+      "source_dimensions": [
+        1122,
+        1402
+      ],
+      "source_binding": {
+        "kind": "existing_original_parts",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/originals/receipt.json",
+        "receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff",
+        "fixed_source_commit": "f8aa437d4933a4e52d8fd50b00d78474017eccd9",
+        "source_ordinal": 7,
+        "parts": [
+          {
+            "index": 0,
+            "blob": "eb1e4d2330dc635d1ef93effa447011d8611bd45",
+            "sha256": "ca12d295f5d75fb32815c173980639ca30db56adeec926b085b11daa4a9c0327"
+          },
+          {
+            "index": 1,
+            "blob": "7fea93485ef926ef8a0fdde866d6b129ec5bb783",
+            "sha256": "54423ff9adff3bdf0d570e6194cda62440109c2d19185b669c3fa59acd4e603a"
+          },
+          {
+            "index": 2,
+            "blob": "34c810bf8485eba32dcd4cf65bcd03dd21bb9375",
+            "sha256": "28cc1b2000c3d4d234150b10767bec066f5aeb5f6d8f62f4ff1c55bacb13056f"
+          },
+          {
+            "index": 3,
+            "blob": "a18138a0a4d011f2073b1f5ac09eec549a27451f",
+            "sha256": "35b5ad8d94fa8265971de5a8cb4615a03f0a7dd496018552e7ea0b7812aa8b3e"
+          },
+          {
+            "index": 4,
+            "blob": "5d6310e77dc1633fe72d46142ac0cec998faac76",
+            "sha256": "8a59a8dda8456dcbb79130f69fda72ffd434f879649ae32d5f985f4480ced00f"
+          }
+        ]
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/08.jpg",
+      "jpeg_sha256": "4ff2c49fa617cc7ad84a5fa306a75dab6edc73739bbb67bb1fe0f7a97c3c29d0",
+      "jpeg_bytes": 318324,
+      "jpeg_width": 960,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "b3857edf876152adaa283d32bf5bb1572e5b2215",
+      "swimwear_visible": false,
+      "garment_kind": "coat_and_dress",
+      "framing": "full_body",
+      "caption": "コートを羽織り、雨上がりの夜の通りを歩く。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/08/source-0516b7aead08a965e51a623394ed3cdd90f289f6d3e112cfac035f63e480b6da.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-08.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "08",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+            "turn_key": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+            "image_number": 7,
+            "sha256": "0516b7aead08a965e51a623394ed3cdd90f289f6d3e112cfac035f63e480b6da",
+            "bytes": 2585102,
+            "width": 1122,
+            "height": 1402,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/08/source-0516b7aead08a965e51a623394ed3cdd90f289f6d3e112cfac035f63e480b6da.png"
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-08.jpg",
+            "sha256": "4ff2c49fa617cc7ad84a5fa306a75dab6edc73739bbb67bb1fe0f7a97c3c29d0",
+            "bytes": 318324,
+            "width": 960,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "09",
+      "source_sha256": "6204b1ec9a40aeafd3a7be866b0911b7230ed38e559dd9bb7927e1f0fb3e11df",
+      "source_bytes": 2134471,
+      "source_dimensions": [
+        1122,
+        1402
+      ],
+      "source_binding": {
+        "kind": "existing_original_parts",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/originals/receipt.json",
+        "receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff",
+        "fixed_source_commit": "f8aa437d4933a4e52d8fd50b00d78474017eccd9",
+        "source_ordinal": 1,
+        "parts": [
+          {
+            "index": 0,
+            "blob": "bf986f29add2b50016f3140ad04970475e174223",
+            "sha256": "fda0d6743e520605267f8ff3dbfc3eee88e098ee7c03bac011df25fdb9ebd938"
+          },
+          {
+            "index": 1,
+            "blob": "dae223733e06d5b3d2a39de10168208ecfc1a214",
+            "sha256": "ddc1d7b7a94768e4eabf172607c16d183e199467eefa0c3a08ae24a8e9700c10"
+          },
+          {
+            "index": 2,
+            "blob": "1e00c4d2add601f66876a1115c60aa19a99d4f2d",
+            "sha256": "7056417efd193af00331a78b50242ecce7fbb3142c7362f736284b25b4ac90c6"
+          },
+          {
+            "index": 3,
+            "blob": "b1baf7ce7b23258103f064056854804a86c5abcb",
+            "sha256": "b45d77471d5bafc21c349824adeb858366a38ef1ea58377d58b81b1c3d40e56d"
+          },
+          {
+            "index": 4,
+            "blob": "88488b1fada3bcd304a2bb7cc0d19d8acfb65e3b",
+            "sha256": "bc4d536fc8170d039edbeed46e94324383c5e3e300711134fb1dfb36f5f42579"
+          }
+        ]
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/09.jpg",
+      "jpeg_sha256": "67e82c597cbcbaefa757a7bf9028da950f58f75c3b5ddead88597b60ea8b39ed",
+      "jpeg_bytes": 198488,
+      "jpeg_width": 960,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "9c548f01e7dd41575f6b24a63f16cbfe90a98923",
+      "swimwear_visible": false,
+      "garment_kind": "dress",
+      "framing": "three_quarter",
+      "caption": "夜景の見える食事の席で、頬に手を添える。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/09/source-6204b1ec9a40aeafd3a7be866b0911b7230ed38e559dd9bb7927e1f0fb3e11df.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-09.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "09",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+            "turn_key": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+            "image_number": 1,
+            "sha256": "6204b1ec9a40aeafd3a7be866b0911b7230ed38e559dd9bb7927e1f0fb3e11df",
+            "bytes": 2134471,
+            "width": 1122,
+            "height": 1402,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/09/source-6204b1ec9a40aeafd3a7be866b0911b7230ed38e559dd9bb7927e1f0fb3e11df.png"
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-09.jpg",
+            "sha256": "67e82c597cbcbaefa757a7bf9028da950f58f75c3b5ddead88597b60ea8b39ed",
+            "bytes": 198488,
+            "width": 960,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    },
+    {
+      "cut_id": "10",
+      "source_sha256": "2b4d6a882512ed045822bf02b2bbb55130365e43e5945e4d40f48d752bc9bf0d",
+      "source_bytes": 2181906,
+      "source_dimensions": [
+        1122,
+        1402
+      ],
+      "source_binding": {
+        "kind": "existing_original_parts",
+        "receipt_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/originals/receipt.json",
+        "receipt_sha256": "59f3b636264a1929b44563bf4f5caf2dd2ef6eca90487fec0c9f4581810715ff",
+        "fixed_source_commit": "f8aa437d4933a4e52d8fd50b00d78474017eccd9",
+        "source_ordinal": 6,
+        "parts": [
+          {
+            "index": 0,
+            "blob": "cfb15849373845c0d3d1351c24894b39666fa3c8",
+            "sha256": "94ce9372588f0d4aa70297be2d4a11f351cc18e3ad0a320daf2d90264703125e"
+          },
+          {
+            "index": 1,
+            "blob": "1cc0f01c0eadfe1b72d1566fb2b51fc6e7214c63",
+            "sha256": "999935066895abc9e4891579d3badb0d9e983e9441c02cc7caaf0b3bb649bd7b"
+          },
+          {
+            "index": 2,
+            "blob": "c1d47b9691afeffdd9b405581e2072ee562ba3a7",
+            "sha256": "0d53414755a6f77c290f7aef59919974695e9fd0651fef25734722181e7cfbeb"
+          },
+          {
+            "index": 3,
+            "blob": "4f121460f2260e952e8b93c383af1501216c3f66",
+            "sha256": "6ba4f642ad37b46488b83988dbde055115919d964a252106bd021dda510fead1"
+          },
+          {
+            "index": 4,
+            "blob": "6e554ec92527d72fc3f22db385747334337331fd",
+            "sha256": "e24f1f4d0c6a328df8148aeed1fd96851fb45ddfedfa8736ca4d3f96eb09150b"
+          }
+        ]
+      },
+      "jpeg_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-jpegs/10.jpg",
+      "jpeg_sha256": "c361bbf25ceeeaecdf1af5d99b6490ba95ead0ee60adef4d1343845d5ff2934a",
+      "jpeg_bytes": 225229,
+      "jpeg_width": 960,
+      "jpeg_height": 1200,
+      "jpeg_git_blob_sha": "e7fca1bbb5ad92745ca87f2387bdf446c1f49bb6",
+      "swimwear_visible": false,
+      "garment_kind": "dress",
+      "framing": "three_quarter",
+      "caption": "バーでグラスを手に、振り返る。",
+      "publication_target": {
+        "source_path": "maintenance/photo-issues/november-city-evening-mio-012/10/source-2b4d6a882512ed045822bf02b2bbb55130365e43e5945e4d40f48d752bc9bf0d.png",
+        "jpeg_path": "assets/generated/photo-issue-november-city-evening-mio-012-10.jpg",
+        "receipt": {
+          "version": 1,
+          "kind": "user_supplied_photo",
+          "issue_slug": "november-city-evening-mio-012",
+          "cut_id": "10",
+          "model_id": "hanase-mio",
+          "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "imported_at": "2026-11-19T00:20:39.926236Z",
+          "source": {
+            "url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+            "turn_key": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+            "image_number": 6,
+            "sha256": "2b4d6a882512ed045822bf02b2bbb55130365e43e5945e4d40f48d752bc9bf0d",
+            "bytes": 2181906,
+            "width": 1122,
+            "height": 1402,
+            "format": "png",
+            "generation_prompt_status": "not_retained",
+            "generation_prompt": null,
+            "path": "maintenance/photo-issues/november-city-evening-mio-012/10/source-2b4d6a882512ed045822bf02b2bbb55130365e43e5945e4d40f48d752bc9bf0d.png"
+          },
+          "jpeg": {
+            "path": "assets/generated/photo-issue-november-city-evening-mio-012-10.jpg",
+            "sha256": "c361bbf25ceeeaecdf1af5d99b6490ba95ead0ee60adef4d1343845d5ff2934a",
+            "bytes": 225229,
+            "width": 960,
+            "height": 1200
+          },
+          "transform": {
+            "encoder": "Pillow",
+            "max_edge": 1200,
+            "jpeg_quality": 84,
+            "geometry": "preserve-aspect"
+          },
+          "encoding_details": {
+            "pillow_version": "13.0.0",
+            "resample": "LANCZOS",
+            "mode": "RGB",
+            "optimize": true,
+            "progressive": false,
+            "subsampling": 0
+          }
+        }
+      }
+    }
+  ],
+  "visual_review": {
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/final-jpeg-qa.json",
+    "sha256": "2b0dc298ba46b360c11d1dc5e8322dfc8f96c04896caeffe0a6219025f063539"
+  }
+}

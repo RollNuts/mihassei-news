@@ -1,0 +1,118 @@
+{
+  "main_commit": "179a82cc8d2c5ad654a8d28acc55eb83734ad074",
+  "published_issue": "november-first-detour-mio-004",
+  "published_at": "2026-11-15T11:23:10.362912+09:00",
+  "library_set_count": 10,
+  "existing_candidate_count": 4,
+  "recovered_unavailable_as_new_count": 6,
+  "duplicate_mapping": [
+    {
+      "source_ordinal": 2,
+      "published_cut": "04",
+      "source_sha256": "489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec",
+      "bytes": 2604194,
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "main_source_path": "maintenance/photo-issues/november-first-detour-mio-004/04/source-489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec.png",
+      "main_source_blob": "023b6f298e03e16f28236379d30370d8e28e5b5e",
+      "main_original_bytes_match_library": true,
+      "main_receipt_sha256": "5565d49df24b14d538080ff0e9b1c113515a17a5ae2e1b8f3d4e8fe72aac286c",
+      "receipt_hash_matches_catalog": true,
+      "source_turn": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+      "source_image_number": 2
+    },
+    {
+      "source_ordinal": 3,
+      "published_cut": "10",
+      "source_sha256": "b930343752beb19c7f5d8ed20e9936c0b65cf9dccd5a653fa511481b739d31f6",
+      "bytes": 2387223,
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "main_source_path": "maintenance/photo-issues/november-first-detour-mio-004/10/source-b930343752beb19c7f5d8ed20e9936c0b65cf9dccd5a653fa511481b739d31f6.png",
+      "main_source_blob": "56f345d119ed3dc535be6870ed2057ab808430e2",
+      "main_original_bytes_match_library": true,
+      "main_receipt_sha256": "7de5d2c753b79eb41007e11bfcafa6cb88a3d3a71d6e8a4d294dbe5a30017a54",
+      "receipt_hash_matches_catalog": true,
+      "source_turn": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+      "source_image_number": 3
+    },
+    {
+      "source_ordinal": 4,
+      "published_cut": "09",
+      "source_sha256": "d61827a5601bee22aabe170b1960c9c52ea23090902803b0333197170194b665",
+      "bytes": 2401994,
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "main_source_path": "maintenance/photo-issues/november-first-detour-mio-004/09/source-d61827a5601bee22aabe170b1960c9c52ea23090902803b0333197170194b665.png",
+      "main_source_blob": "2c09b36b1ded6b1b541d132eb5022f10d385a35e",
+      "main_original_bytes_match_library": true,
+      "main_receipt_sha256": "3dd45b47720f88213dbb8518e6b1efce33f825d6346a5741c6cdabdf2ff4b803",
+      "receipt_hash_matches_catalog": true,
+      "source_turn": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+      "source_image_number": 4
+    },
+    {
+      "source_ordinal": 5,
+      "published_cut": "03",
+      "source_sha256": "e1203208bf72d6a94c1ae725f968f023ca2e6416b8c3d2b8472476c535df4cbf",
+      "bytes": 2222627,
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "main_source_path": "maintenance/photo-issues/november-first-detour-mio-004/03/source-e1203208bf72d6a94c1ae725f968f023ca2e6416b8c3d2b8472476c535df4cbf.png",
+      "main_source_blob": "aec2bbc7bd5f386a18548ad0a8bae4f1275204b6",
+      "main_original_bytes_match_library": true,
+      "main_receipt_sha256": "df1f0978c380279f80226334f757d2b14d11306b09ace47b5ee91a45252cf6c9",
+      "receipt_hash_matches_catalog": true,
+      "source_turn": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+      "source_image_number": 5
+    },
+    {
+      "source_ordinal": 9,
+      "published_cut": "06",
+      "source_sha256": "bfa7d30d56244b5880ba03c1a59957addb99605bf65dae61efbc9b50894be15f",
+      "bytes": 2194156,
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "main_source_path": "maintenance/photo-issues/november-first-detour-mio-004/06/source-bfa7d30d56244b5880ba03c1a59957addb99605bf65dae61efbc9b50894be15f.png",
+      "main_source_blob": "63fec9df13b92028b62c2487f0732a4d01072de7",
+      "main_original_bytes_match_library": true,
+      "main_receipt_sha256": "3e415db53fa86a41ce5c045ce301947a8b8fadc0627d5be4da19c76d9a92f563",
+      "receipt_hash_matches_catalog": true,
+      "source_turn": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+      "source_image_number": 9
+    },
+    {
+      "source_ordinal": 10,
+      "published_cut": "01",
+      "source_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50",
+      "bytes": 2350040,
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "main_source_path": "maintenance/photo-issues/november-first-detour-mio-004/01/source-4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50.png",
+      "main_source_blob": "ede0f32801a9034ba4eba8e90c3bdcf3798254a2",
+      "main_original_bytes_match_library": true,
+      "main_receipt_sha256": "78a316b32ae91331e2b7fd0e05366e2b84a593f4e5e4960184cc75501f8c5d49",
+      "receipt_hash_matches_catalog": true,
+      "source_turn": "ce467b2a-2d93-482a-90c4-6e3f0347947d",
+      "source_image_number": 10
+    }
+  ],
+  "schema_version": 1,
+  "verified_at_utc": "2026-11-19T00:20:39.926236Z",
+  "issue": "november-city-evening-mio-012",
+  "resolution": "旧納品turn ce467b2aのordinal 2/3/4/5/9/10 は6枚とも既刊mio004で採用済み。欠落原本として捜索・再転送・新作再掲しない。旧未採用4枚と別のLibraryアーカイブ由来未掲載6枚で新号を準備する。",
+  "current_new_originals": 6,
+  "previous_receipt_unchanged": true
+}

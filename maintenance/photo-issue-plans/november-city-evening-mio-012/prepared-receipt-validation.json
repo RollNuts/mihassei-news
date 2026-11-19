@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "status": "passed_local_pr885_validator",
+  "validated_at_utc": "2026-11-19T00:25:51.722179Z",
+  "validator_pr": 885,
+  "validator_commit": "0550f0bf81926a9f17325bf5d38721a49c1ca8d9",
+  "validator_path": "scripts/photo_issues.py",
+  "validator_git_blob_sha": "e359e8cdf3b290d36e638a860f9ee93cdcd05657",
+  "main_commit_checked": "179a82cc8d2c5ad654a8d28acc55eb83734ad074",
+  "main_gate_passed": false,
+  "scope": "Actual original and JPEG bytes plus exact future per-cut supplied receipts; current catalog plus unpublished draft; full published-issue validator in an isolated temporary filesystem using a synthetic release state/time and visual-acceptance wrapper only for validation.",
+  "source_byte_integrity_verified": true,
+  "png_crc_verified": true,
+  "jpeg_ratio_and_limits_verified": true,
+  "editorial_fingerprint_verified": true,
+  "ten_unique_jpegs_verified": true,
+  "six_swimwear_and_near_full_framing_verified": true,
+  "main_or_publication_branch_changed": false,
+  "checks": [
+    {
+      "cut_id": "01",
+      "source_sha256": "9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188",
+      "jpeg_sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "result": "passed"
+    },
+    {
+      "cut_id": "02",
+      "source_sha256": "494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06",
+      "jpeg_sha256": "9f1c9a37177dd542b69d000d453d03124bbc456bf4487087fdbd923da90fa543",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "result": "passed"
+    },
+    {
+      "cut_id": "03",
+      "source_sha256": "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+      "jpeg_sha256": "fd6687727c6b8844ec849bd8ea0134a1b8de682b6cf5d4b69e48ec1c21c2dc34",
+      "framing": "three_quarter",
+      "swimwear_visible": true,
+      "result": "passed"
+    },
+    {
+      "cut_id": "04",
+      "source_sha256": "0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004",
+      "jpeg_sha256": "a8b549f231ae8d2ea7b4ccfdaceb717178efa85d8ffbc508a1b3911d70814b8f",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "result": "passed"
+    },
+    {
+      "cut_id": "05",
+      "source_sha256": "9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff",
+      "jpeg_sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "result": "passed"
+    },
+    {
+      "cut_id": "06",
+      "source_sha256": "dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996",
+      "jpeg_sha256": "a5d73dd13d950383ee2e354728393dd0efb833083ccc809f4951c314853b0c42",
+      "framing": "three_quarter",
+      "swimwear_visible": true,
+      "result": "passed"
+    },
+    {
+      "cut_id": "07",
+      "source_sha256": "68713cd866887092c8e90d220e92384fda8e934582d349b1cf0c35bfe88b4f58",
+      "jpeg_sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2",
+      "framing": "three_quarter",
+      "swimwear_visible": false,
+      "result": "passed"
+    },
+    {
+      "cut_id": "08",
+      "source_sha256": "0516b7aead08a965e51a623394ed3cdd90f289f6d3e112cfac035f63e480b6da",
+      "jpeg_sha256": "4ff2c49fa617cc7ad84a5fa306a75dab6edc73739bbb67bb1fe0f7a97c3c29d0",
+      "framing": "full_body",
+      "swimwear_visible": false,
+      "result": "passed"
+    },
+    {
+      "cut_id": "09",
+      "source_sha256": "6204b1ec9a40aeafd3a7be866b0911b7230ed38e559dd9bb7927e1f0fb3e11df",
+      "jpeg_sha256": "67e82c597cbcbaefa757a7bf9028da950f58f75c3b5ddead88597b60ea8b39ed",
+      "framing": "three_quarter",
+      "swimwear_visible": false,
+      "result": "passed"
+    },
+    {
+      "cut_id": "10",
+      "source_sha256": "2b4d6a882512ed045822bf02b2bbb55130365e43e5945e4d40f48d752bc9bf0d",
+      "jpeg_sha256": "c361bbf25ceeeaecdf1af5d99b6490ba95ead0ee60adef4d1343845d5ff2934a",
+      "framing": "three_quarter",
+      "swimwear_visible": false,
+      "result": "passed"
+    }
+  ]
+}

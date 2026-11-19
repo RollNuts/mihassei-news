@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "kind": "library_archive_original_recovery",
+  "status": "verified_unpublished_originals_for_preparation",
+  "issue": "november-city-evening-mio-012",
+  "model_id": "hanase-mio",
+  "verified_at_utc": "2026-11-19T00:20:39.926236Z",
+  "main_commit_checked": "179a82cc8d2c5ad654a8d28acc55eb83734ad074",
+  "generation_performed": false,
+  "source_bytes_modified": false,
+  "assets": [
+    {
+      "archive_member": "hanase_mio_05_poolside.png",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_05_poolside.png"
+        },
+        "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a.png",
+        "sha256": "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+        "bytes": 2568973,
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "generation_turn_status": "not_retained",
+        "generation_turn": null
+      },
+      "git_blob_sha": "7e95777a36d806a3fd04bed48108cffe1692c91f",
+      "status": "verified_original_not_publicly_adopted"
+    },
+    {
+      "archive_member": "hanase_mio_08_beach_flower.png",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_08_beach_flower.png"
+        },
+        "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188.png",
+        "sha256": "9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188",
+        "bytes": 2126448,
+        "width": 1024,
+        "height": 1536,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "generation_turn_status": "not_retained",
+        "generation_turn": null
+      },
+      "git_blob_sha": "923a70f1ea3d129ec08885cf842d0329b85b7767",
+      "status": "verified_original_not_publicly_adopted"
+    },
+    {
+      "archive_member": "hanase_mio_10_beach_blue_bikini.png",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_10_beach_blue_bikini.png"
+        },
+        "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004.png",
+        "sha256": "0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004",
+        "bytes": 2138767,
+        "width": 1024,
+        "height": 1536,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "generation_turn_status": "not_retained",
+        "generation_turn": null
+      },
+      "git_blob_sha": "15cb8823d93e561b09ba87e7d47dfba042874b21",
+      "status": "verified_original_not_publicly_adopted"
+    },
+    {
+      "archive_member": "hanase_mio_extra_01.png",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_01.png"
+        },
+        "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06.png",
+        "sha256": "494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06",
+        "bytes": 2352712,
+        "width": 1024,
+        "height": 1536,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "generation_turn_status": "not_retained",
+        "generation_turn": null
+      },
+      "git_blob_sha": "e81de78c08474dfd7c3eedf517f2f2d3c409fc3a",
+      "status": "verified_original_not_publicly_adopted"
+    },
+    {
+      "archive_member": "hanase_mio_extra_02.png",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_02.png"
+        },
+        "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff.png",
+        "sha256": "9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff",
+        "bytes": 2541913,
+        "width": 1024,
+        "height": 1536,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "generation_turn_status": "not_retained",
+        "generation_turn": null
+      },
+      "git_blob_sha": "9e80ed57d6bf4b25e1d005801b136944490828f0",
+      "status": "verified_original_not_publicly_adopted"
+    },
+    {
+      "archive_member": "hanase_mio_extra_15.png",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_15.png"
+        },
+        "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996.png",
+        "sha256": "dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996",
+        "bytes": 2305631,
+        "width": 1024,
+        "height": 1536,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "generation_turn_status": "not_retained",
+        "generation_turn": null
+      },
+      "git_blob_sha": "75f4bdc81765ba14b05efc2775c5145f73e5cbed",
+      "status": "verified_original_not_publicly_adopted"
+    }
+  ]
+}

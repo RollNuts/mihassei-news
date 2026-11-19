@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "status": "approved_for_preparation_not_publication",
+  "reviewed_at_utc": "2026-11-19T00:20:39.926236Z",
+  "model_id": "hanase-mio",
+  "canonical_adult_age": 20,
+  "fictional": true,
+  "references": {
+    "main_commit": "179a82cc8d2c5ad654a8d28acc55eb83734ad074",
+    "face": {
+      "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+      "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+      "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50"
+    },
+    "body": {
+      "state": "accepted_reference",
+      "path": "assets/generated/photo-body-hanase-mio-17a677d5988e.jpg",
+      "sha256": "17a677d5988e882e89c6fdc4d56d0c39161faeaf445cf307c165d5636874b89f",
+      "source_png_sha256": "489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec",
+      "provenance": "assets/generated/photo-reference-hanase-mio-17a677d5988e.json"
+    },
+    "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+  },
+  "selected_new_originals": [
+    {
+      "filename": "hanase_mio_05_poolside.png",
+      "source_sha256": "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+      "source_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a.png",
+      "original_png_displayed": true
+    },
+    {
+      "filename": "hanase_mio_08_beach_flower.png",
+      "source_sha256": "9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188",
+      "source_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188.png",
+      "original_png_displayed": true
+    },
+    {
+      "filename": "hanase_mio_10_beach_blue_bikini.png",
+      "source_sha256": "0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004",
+      "source_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004.png",
+      "original_png_displayed": true
+    },
+    {
+      "filename": "hanase_mio_extra_01.png",
+      "source_sha256": "494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06",
+      "source_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06.png",
+      "original_png_displayed": true
+    },
+    {
+      "filename": "hanase_mio_extra_02.png",
+      "source_sha256": "9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff",
+      "source_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff.png",
+      "original_png_displayed": true
+    },
+    {
+      "filename": "hanase_mio_extra_15.png",
+      "source_sha256": "dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996",
+      "source_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/originals/dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996.png",
+      "original_png_displayed": true
+    }
+  ],
+  "selected_swimwear_count": 6,
+  "selected_bikini_count": 2,
+  "selected_one_piece_swimsuit_count": 4,
+  "received_four_originals_retained": true,
+  "continuity_note": "肩までの髪・前髪・目元・笑顔と成人としての自然な比例を実PNGと004参照で照合。数値体型を画像から実測した保証ではない。",
+  "non_explicit_note": "6枚とも水着を視認できる単写真。露骨な性描写なし。",
+  "near_duplicate_note": "highres07/08/09/12の近い後ろ手立ち群から08だけ、10/11/13の近い歩き群から10だけを選ぶ。追加01は背面歩き、02は堤防で腕を上げた立ち、15は白シャツで椅子座り。座り/髪の動作は複数あるが衣装・方向・距離・場所の差を使う。6種類の完全に異なる動作とは主張しない。",
+  "not_selected": {
+    "highres15_16": "服姿なので水着に数えない。",
+    "highres17": "胸/裾に目立つロゴ・文字があり保留。",
+    "continued17": "既成コラージュ、単写真の切出しで新カットとして使わない。"
+  },
+  "duplicate_check": {
+    "main_commit": "179a82cc8d2c5ad654a8d28acc55eb83734ad074",
+    "stock_source_sha_count": 39,
+    "source_sha_matches_in_main": [],
+    "highres_pixel_count": 19,
+    "main_weekly_originals_compared": 114,
+    "exact_pixel_matches": [],
+    "method": "Exact stock source SHA over current main assets/content/maintenance text; RGB pixel SHA+dimensions against every current weekly original PNG; no identity or semantic-equivalence guarantee."
+  },
+  "season_note": "暖地への小旅行として編集し、11月の国内撮影地や実撮影日を画像から断定しない。"
+}
