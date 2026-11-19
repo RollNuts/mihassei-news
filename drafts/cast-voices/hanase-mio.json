@@ -2,15 +2,15 @@
   "schema_version": 1,
   "model_id": "hanase-mio",
   "name": "花瀬みお",
-  "created_date": "2026-11-18",
+  "created_date": "2026-11-19",
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "photo_reference": {
     "issue_slug": "november-first-detour-mio-004",
-    "cut_id": "03",
-    "image_sha256": "9be88c05dbf1243896a6f4e36c4e3335e44f2b5f7c5fa7de8e1267417f3824d7",
-    "description": "2031年11月の既刊検品済みカット。カフェでアイスコーヒーを手に窓辺へ笑顔を向ける花瀬みお。画像原本のSHA-256を検証済み。"
+    "cut_id": "07",
+    "image_sha256": "a4120101838a8004be11e8969a249cc758cc5ded46601ef2aeb624f2bfde1d5e",
+    "description": "2031年11月の既刊検品済みカット。白いロングスカートで日中のテラスを振り返る花瀬みお。既存カタログにaccepted記録あり（今回の画像bytesは未読）。"
   },
-  "post_text": "朝、港の見学船に乗ったら、風が予想以上で前髪が全部持っていかれた。せっかく整えたのに。降りてから鏡を見て、思わず笑った。",
-  "spoken_line": "ちょっと、前髪が飛んだ！",
-  "future_idea": "2031年、無人旅客船の事故時の責任分担をめぐり運航事業者と自治体が対立。利用者は有人便を選ぶ権利と補償基準を要求。"
+  "post_text": "昼、川沿いで初めてキックボードに乗った。下りはすいすい、帰りの上り坂はずっと押して歩いた。乗った時間より押した時間のほうが長い。",
+  "spoken_line": "帰りはずっと押してた！",
+  "future_idea": "2031年、乗り物の返却地点が坂の上に偏り、利用者の移動負担を減らす配置見直しが始まる。"
 }
