@@ -1,5 +1,6 @@
 """Evidence guards for manual mobile capture; these are not browser-render tests."""
 import copy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -12,7 +13,7 @@ import unittest
 from unittest.mock import MagicMock, Mock, patch
 
 from scripts import capture_live_mobile
-from scripts.capture_live_mobile import SITE, TARGETS, live_revision, measurement_errors, read_only_route
+from scripts.capture_live_mobile import SITE, TARGETS, expected_image_urls, live_revision, measurement_errors, read_only_route
 
 
 class MobileCaptureEvidenceTests(unittest.TestCase):
@@ -225,19 +226,43 @@ class MobileCaptureEvidenceTests(unittest.TestCase):
             self.assertEqual(request.get.call_args.kwargs["max_redirects"], 0)
 
     def test_configured_width_cannot_hide_actual_overflow_or_missing_photographs(self):
-        image = {"src": "/image.jpg", "complete": True, "natural_width": 1200, "natural_height": 675}
+        expected = [SITE + "/generated/example.jpg?v=123456789abc"]
+        image = {"src": expected[0], "complete": True, "natural_width": 1200, "natural_height": 675}
         valid = {"inner_width": 390, "client_width": 390, "visual_width": 390,
                  "scroll_width": 390, "title": "記事", "images": [image], "required_images": [image]}
-        self.assertEqual(measurement_errors(valid, 1), [])
+        self.assertEqual(measurement_errors(valid, expected), [])
         for changes, message in (({"inner_width": 980}, "390 CSS pixels"),
                                  ({"visual_width": 980}, "390 CSS pixels"),
                                  ({"scroll_width": 406}, "horizontal overflow"),
                                  ({"required_images": []}, "main photographs")):
             with self.subTest(changes=changes):
-                self.assertTrue(any(message in error for error in measurement_errors({**valid, **changes}, 1)))
+                self.assertTrue(any(message in error for error in measurement_errors({**valid, **changes}, expected)))
         broken = copy.deepcopy(valid)
         broken["images"][0]["natural_width"] = 0
-        self.assertTrue(any("did not load" in error for error in measurement_errors(broken, 1)))
+        self.assertTrue(any("did not load" in error for error in measurement_errors(broken, expected)))
+
+    def test_loaded_svg_wrong_jpeg_and_old_version_cannot_pass_as_the_expected_photograph(self):
+        expected = [SITE + "/generated/example.jpg?v=123456789abc"]
+        for src in (SITE + "/images/example.svg", SITE + "/generated/other.jpg?v=123456789abc",
+                    SITE + "/generated/example.jpg?v=ffffffffffff", "https://other.example/example.jpg"):
+            image = {"src": src, "complete": True, "natural_width": 1200, "natural_height": 675}
+            measured = {"inner_width": 390, "client_width": 390, "visual_width": 390,
+                        "scroll_width": 390, "title": "記事", "images": [image], "required_images": [image]}
+            with self.subTest(src=src):
+                self.assertTrue(any("identity differs" in error for error in measurement_errors(measured, expected)))
+
+    def test_fixed_targets_use_actual_checkout_jpeg_hashes_in_display_order(self):
+        root = Path(__file__).resolve().parents[1]
+        article = expected_image_urls(TARGETS[0])
+        digest = hashlib.sha256((root / "assets/generated/old-coat-recut-as-strangers-jacket.jpg").read_bytes()).hexdigest()
+        self.assertEqual(article, [SITE + "/generated/old-coat-recut-as-strangers-jacket.jpg?v=" + digest[:12]])
+        photo = expected_image_urls(TARGETS[1])
+        self.assertEqual(len(photo), 10)
+        for url, cut in zip(photo, ["05", "01", "02", "03", "04", "06", "07", "08", "09", "10"]):
+            digest = hashlib.sha256((root / ("assets/generated/photo-issue-november-rooftop-pool-sumire-011-" + cut + ".jpg")).read_bytes()).hexdigest()
+            self.assertEqual(url, SITE + "/photo/weekly/november-rooftop-pool-sumire-011/" + cut + ".jpg?v=" + digest[:12])
+        with self.assertRaisesRegex(ValueError, "fixed capture targets"):
+            expected_image_urls(("article", "/arbitrary/", "img", 1))
 
 
 if __name__ == "__main__":

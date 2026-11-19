@@ -1,4 +1,4 @@
-/* Append one image record without reserializing any existing JSON number.
+/* Append one image or review record without reserializing existing JSON numbers.
  * Pure V8 / code-mode: new Function(source + '\nreturn GeneratedManifestPatch;')().
  * This only edits text; it does not save, verify provenance, approve or publish.
  */
@@ -76,6 +76,20 @@ var GeneratedManifestPatch = (function () {
     const close = images.end - 1;
     return manifestSource.slice(0, close) + insertion + manifestSource.slice(close);
   }
-  return Object.freeze({ appendImage });
+  function appendReview({ reviewsSource, slug, reviewSource } = {}) {
+    if (typeof slug !== "string" || !SLUG.test(slug)) throw Error("Invalid article slug");
+    const reviews = inspect(reviewsSource, "reviews"), review = inspect(reviewSource, "review");
+    if (!object(reviews.parsed) || reviews.parsed.version !== 1 || !object(reviews.parsed.reviews))
+      throw Error("Expected a version-1 visual review document");
+    if (!object(review.parsed)) throw Error("Review record must be a JSON object");
+    const entries = reviews.node.members.find(member => member.key === "reviews").node;
+    if (entries.members.some(member => member.key === slug))
+      throw Error("Review record already exists; append cannot replace it");
+    const insertion = (entries.members.length ? "," : "")
+      + "\n    " + JSON.stringify(slug) + ": " + reviewSource + "\n  ";
+    const close = entries.end - 1;
+    return reviewsSource.slice(0, close) + insertion + reviewsSource.slice(close);
+  }
+  return Object.freeze({ appendImage, appendReview });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = GeneratedManifestPatch;

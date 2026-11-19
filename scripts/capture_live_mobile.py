@@ -69,7 +69,41 @@ def read_only_route(route, blocked):
         route.abort("blockedbyclient")
 
 
-def measurement_errors(measured, image_count):
+def expected_image_urls(target, root=Path(__file__).resolve().parents[1]):
+    """Bind the browser's main images to this trusted checkout's exact JPEGs."""
+    try:
+        from .generated_photos import generated_url
+        from .photo_issues import cover_shot, photo_image_url
+        from .visual_review import reviewed_generated_scene
+    except ImportError:
+        from generated_photos import generated_url
+        from photo_issues import cover_shot, photo_image_url
+        from visual_review import reviewed_generated_scene
+    name, path, _selector, image_count = target
+    slug = path.rstrip("/").rsplit("/", 1)[-1]
+    if target not in TARGETS:
+        raise ValueError("Only the two fixed capture targets are allowed")
+    if name == "article":
+        articles = json.loads((root / "content/articles.json").read_text(encoding="utf-8"))
+        article = next(article for article in articles if article["slug"] == slug)
+        if not reviewed_generated_scene(article, root=root):
+            raise ValueError("The capture article must have a current accepted JPEG")
+        urls = [SITE + generated_url(article, root=root)]
+    else:
+        catalog = json.loads((root / "content/photo_issues.json").read_text(encoding="utf-8"))
+        issue = next(issue for issue in catalog["issues"] if issue["slug"] == slug)
+        if issue.get("state") != "published":
+            raise ValueError("The capture photo issue must be published")
+        first = cover_shot(issue)
+        shots = [first] + [shot for shot in issue["shots"] if shot["id"] != first["id"]]
+        urls = [SITE + photo_image_url(issue, shot["id"]) for shot in shots]
+    if (len(urls) != image_count or len(set(urls)) != image_count
+            or any(not re.fullmatch(r"https://veripsa\.com/.+\.jpg\?v=[a-f0-9]{12}", url) for url in urls)):
+        raise ValueError("Expected main photographs need distinct versioned JPEG URLs")
+    return urls
+
+
+def measurement_errors(measured, expected_sources):
     errors = []
     if (measured["inner_width"] != 390 or measured["client_width"] != 390
             or abs(measured["visual_width"] - 390) > 1):
@@ -78,8 +112,10 @@ def measurement_errors(measured, image_count):
         errors.append("Page has horizontal overflow")
     if not measured["title"]:
         errors.append("The main page heading is missing")
-    if len(measured["required_images"]) != image_count:
-        errors.append(f"Expected {image_count} main photographs")
+    if len(measured["required_images"]) != len(expected_sources):
+        errors.append(f"Expected {len(expected_sources)} main photographs")
+    if [image["src"] for image in measured["required_images"]] != expected_sources:
+        errors.append("Main photograph identity differs from the expected checkout JPEGs")
     for img in measured["images"] + measured["required_images"]:
         if not img["complete"] or min(img["natural_width"], img["natural_height"]) <= 0:
             errors.append("A displayed photograph did not load: " + img["src"])
@@ -97,9 +133,11 @@ def live_revision(request, expected):
 
 
 def capture_page(context, target, output):
-    name, path, selector, image_count = target
+    name, path, selector, _image_count = target
+    expected_sources = expected_image_urls(target)
     url = SITE + path + "?analytics=off"
-    result = {"name": name, "url": url, "errors": [], "screenshots": []}
+    result = {"name": name, "url": url, "expected_image_sources": expected_sources,
+              "errors": [], "screenshots": []}
     page = context.new_page()
     page.set_default_timeout(20000)
     try:
@@ -126,7 +164,7 @@ def capture_page(context, target, output):
         result["errors"].append(str(exc))
     try:
         result["measured"] = page.evaluate(MEASURE, selector)
-        result["errors"].extend(measurement_errors(result["measured"], image_count))
+        result["errors"].extend(measurement_errors(result["measured"], expected_sources))
         for label, full_page in (("viewport", False), ("full", True)):
             filename = f"{name}-{label}-390.png"
             page.screenshot(path=str(output / filename), full_page=full_page, scale="css")
