@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "amane-hikari",
   "name": "天音ひかり",
-  "created_date": "2026-11-18",
+  "created_date": "2026-11-19",
   "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
   "photo_reference": {
     "issue_slug": "november-city-lights-hikari-006",
-    "cut_id": "06",
-    "image_sha256": "22b6bcde3a24639f6ab6e5f63e9fa49ce6a30d7da14e6ced5fa061ddc4c242eb"
+    "cut_id": "08",
+    "image_sha256": "2b493c0fc5e7a41091de6a977e9ff6cf79b8f2acc393d8ab5348300c8921c948"
   },
-  "post_text": "衣装合わせで袖を動かしたら、思ったより大きく広がってびっくり！ さっきから鏡の前で何度もターンしてる。帰る時間、また忘れそう😂",
-  "spoken_line": "袖、ふわっとした！",
-  "future_idea": "2031年、AIが学習した舞台衣装のデザインをめぐり、制作者への使用料分配が義務化。小さな衣装工房と大手興行会社で負担のあり方が争点に。"
+  "post_text": "差し入れの焼き栗をみんなで分けて、最後のひとつはじゃんけん。勝ったのに、みんなに見られてちょっと食べづらかった😂",
+  "spoken_line": "え、私が勝った！",
+  "future_idea": "2031年、ライブ配信収益の出演者・楽曲制作者への直接分配が義務化。小規模会場と大手興行会社で取り分を巡る交渉が始まる。"
 }
