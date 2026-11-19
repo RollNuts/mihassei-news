@@ -511,6 +511,31 @@
   },
   {
     "type": "review",
+    "id": "2026-11-19-open-01",
+    "at": "2026-11-19T09:41:49+09:00",
+    "forecast_id": "2026-11-18-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3807.2,
+    "observed_on": "2026-11-19",
+    "reason": "JPX11月19日9:28 JST更新のTOPIX現物途中値3,807.20は、18日朝の固定基準17日終値3,840.02から約0.85%安で、19日終値が0.5%超上昇する強気予測には現時点で逆風。ただし正式判定は19日大引け後のJPX公式値のみ。",
+    "change_reason": "18日15:30公式終値3,824.00から19日9:28には3,807.20へ下落。グロース250は2.27%安、銀行業2.19%安で、REIT0.54%高と業種差が拡大した。元の予測方法・期日・基準値は不変。",
+    "source": {
+      "title": "JPX：2026年11月19日9:28更新TOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-19",
+      "checked_on": "2026-11-19"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611190928",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "review",
     "id": "2026-11-19-noon-19th-target",
     "at": "2026-11-19T12:44:18+09:00",
     "forecast_id": "2026-11-18-topix",
@@ -519,7 +544,7 @@
     "observed_value": 3813.9,
     "observed_on": "2026-11-19",
     "reason": "JPXの19日12:39更新TOPIXは3,813.90。17日公式終値3,840.02から約0.68%安で、19日終値が0.5%超上昇する元予想と場中時点では逆方向。ただし19日公式終値の判定前であり、外れとは確定しない。",
-    "change_reason": "18日終値3,824.00に続き、19日12:39も元の3,840.02を下回る。決算前の保険株安があり強気から弱気の暫定判断へ変更。判定条件・期日・基準は不変。",
+    "change_reason": "18日終値3,824.00に続き、19日12:39も元の3,840.02を下回る。決算前の保険株安があり、寄り後からの弱気の暫定判断を継続。判定条件・期日・基準は不変。",
     "source": {
       "title": "JPX：2026年11月19日12:39 JST更新のTOPIX現物途中値",
       "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
