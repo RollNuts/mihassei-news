@@ -75,7 +75,7 @@ jobs:
       - name: Verify image workflow control and bounded candidate file transport
         run: |
           node --test tests/image-control.test.cjs tests/image-control-mcp.test.cjs tests/image-candidate-mcp.test.cjs tests/image-candidate-png.test.cjs
-          node --test scripts/cast_story_context_test.js scripts/photo_original_handoff_test.js
+          node --test scripts/cast_story_context_test.js scripts/publication_review_context_test.js scripts/photo_original_handoff_test.js
           node --test scripts/generated_manifest_patch_test.js
       - name: Verify native image bytes and retry-safe candidate staging
         # Exact existing data-only PR scopes cannot change this synthetic engine.

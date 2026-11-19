@@ -582,6 +582,25 @@ def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
         if page.count(required) != 1:
             raise RuntimeError(path + ": market dispatch HTML/OGP mismatch: " + required[:90])
 
+    markup = _RecommendationMarkup()
+    markup.feed(page)
+    bodies = [element for element in markup.elements
+              if element["tag"] == "div"
+              and "serial-article-body" in (element["attrs"].get("class") or "").split()]
+    if len(bodies) != 1:
+        raise RuntimeError(path + ": market body missing or duplicated")
+    leads = [child for child in bodies[0]["children"] if child["tag"] == "p"
+             and "market-dispatch-lead" in (child["attrs"].get("class") or "").split()]
+    if len(leads) != 1 or "".join(leads[0]["text"]) != report["lead"]:
+        raise RuntimeError(path + ": market lead mismatch")
+    paragraphs = ["".join(child["text"])
+                  for section in bodies[0]["children"] if section["tag"] == "section"
+                  and "serial-prose-section" in (section["attrs"].get("class") or "").split()
+                  for child in section["children"] if child["tag"] == "p"]
+    expected = [text for section in report["sections"] for text in section["paragraphs"]]
+    if paragraphs != expected:
+        raise RuntimeError(path + ": market body paragraphs mismatch")
+
     for figure in report["figures"]:
         fragment = chart_html(report, figure)
         if page.count(fragment) != 1:
