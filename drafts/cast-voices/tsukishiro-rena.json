@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "tsukishiro-rena",
   "name": "月城れな",
-  "created_date": "2026-11-18",
+  "created_date": "2026-11-19",
   "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
   "photo_reference": {
     "issue_slug": "november-city-pause-rena-008",
-    "cut_id": "06",
-    "image_sha256": "191bfec8db71db8a88860b4e0dc4220c4226827f21e922547c3caae34dfa1523"
+    "cut_id": "07",
+    "image_sha256": "dfc39a6be18dfdb61c7cf5cb16e003984a50e69fc54a8044cbbc9e8c6fbdcfdc"
   },
-  "post_text": "帰り道、閉店間際の花屋で白い花を一本買った。名前も聞いたのに、もう思い出せない。花瓶がないので、今は台所のコップを借りている。",
+  "post_text": "帰りに小さな映画館へ寄ったら、最終回はもう始まっていた。ポスターだけ見て帰るつもりが、明日の予定をひとつ増やしてしまった。",
   "spoken_line": null,
   "future_idea": null
 }
