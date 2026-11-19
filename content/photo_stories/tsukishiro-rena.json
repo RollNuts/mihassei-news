@@ -1,4 +1,20 @@
 {
   "schema_version": 1,
-  "stories": []
+  "stories": [
+    {
+      "id": "tsukishiro-rena-post-20261119205938883000",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-19T20:59:38.883+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "帰りに小さな映画館へ寄ったら、最終回はもう始まっていた。ポスターだけ見て帰るつもりが、明日の予定をひとつ増やしてしまった。",
+      "source": {
+        "issue_slug": "november-city-pause-rena-008",
+        "cut_id": "07",
+        "image_sha256": "dfc39a6be18dfdb61c7cf5cb16e003984a50e69fc54a8044cbbc9e8c6fbdcfdc"
+      }
+    }
+  ]
 }
