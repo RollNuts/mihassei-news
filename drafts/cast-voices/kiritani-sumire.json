@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-18",
+  "created_date": "2026-11-19",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
-    "issue_slug": "november-favorite-colors-sumire-007",
-    "cut_id": "06",
-    "image_sha256": "f934f64fb03eaf2b8f4ed4717c7b5e78d1d60197296acf9aec9660256d6ff8a0"
+    "issue_slug": "november-rooftop-pool-sumire-011",
+    "cut_id": "05",
+    "image_sha256": "de24a1b682f3b49c394ce1121f0e4d68989fbf19f71477ab680358e5e54ed13d"
   },
-  "post_text": "午後、薄い青のニットに古い銀色のブローチを合わせてみた。どちらの位置がいいか鏡の前で迷って、結局まだ決まらない。こういう時間、案外好き。",
-  "spoken_line": "今日はこっちかな。",
-  "future_idea": "2031年、歴史ある街並みの保存費用を誰が負担するのか。古い建物の所有者と地域の利用者が新制度を巡って対立。"
+  "post_text": "昼休みに古い画集を開いたら、ページの間から小さな展覧会の半券が出てきた。誰の思い出か分からないのに、ちょっと嬉しい。",
+  "spoken_line": "これ、取っておこう。",
+  "future_idea": "2031年、過去の美術作品をAIで再構成した展覧会が拡大。作品の権利と展示収益の分配を巡り、遺族・美術館・制作者が対立。"
 }
