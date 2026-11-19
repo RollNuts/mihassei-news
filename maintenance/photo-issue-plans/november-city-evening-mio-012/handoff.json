@@ -47,8 +47,8 @@
     "source_kind": "new_editorial_column",
     "not_recovered_producer_text": true
   },
-  "publication_state": "未公開。旧未掲載4原本・receiptは不変、別アーカイブから未掲載水着6原本を追加。元比率JPEG10枚の実目視、新規editorial本人コラム291字、草稿を準備し、固定commit 2dc9c91d405eedc515154feccd6d7e72e72b57ae から全25候補ファイルと旧4原本を読み戻して実バイト・SHA・寸法を確認済み。PR885版validatorによる全10組のローカル検証は成功、PR885通常統合後のmain gate確認と日次枠での公開採用は未実施。",
-  "next_action": "素材や旧producer稿を再探索しない。PR885の通常統合後、次の既存06:00編集枠（最早11/20）で下記adoption_instructionsに従って同候補の10枚と新規editorialコラムを通常採用する。元予定は11/19、実published_atは公開時に付ける。同日1人1号・固定順・既刊重複を確認し、新生成・別候補branch・本日2人目の公開をしない。",
+  "publication_state": "未公開。旧未掲載4原本・receiptは不変、別アーカイブから未掲載水着6原本を追加。元比率JPEG10枚の実目視、新規editorial本人コラム291字、草稿を準備し、固定commit 2dc9c91d405eedc515154feccd6d7e72e72b57ae から全25候補ファイルと旧4原本を読み戻して実バイト・SHA・寸法を確認済み。準備時のPR885版validatorによる全10組のdry-runは成功。必要なvalidatorはmain e3ccc92bd4a2de537c469a5484b16cf3797cede1へ統合され、CIと既存サイトの本番commit検証も成功した。みお012の通常adoption・current-main公開gate・日次枠での公開は未来の実出版時に行う。",
+  "next_action": "最新mainで通常採用・PR・公開確認。",
   "planned_publication_date": "2026-11-20",
   "publication_not_before": "2026-11-20T06:00:00+09:00",
   "published": false,
@@ -127,7 +127,7 @@
     },
     {
       "step": 5,
-      "action": "PR885の通常統合後に現mainのvalidatorで確認し、元予定11/19と繰越後最早11/20の既存06:00編集枠を区別する。同日1人1号と既刊重複を再確認して通常PR/CI/機械承認/本番確認へ進み、実際に公開する時のJST published_atだけを付与する。現候補のpublished_atはnull、公開済み扱いにしない。"
+      "action": "最新mainのvalidatorで通常採用を確認し、元予定11/19と繰越後最早11/20の既存06:00編集枠を区別する。同日1人1号と既刊重複を再確認して通常PR/CI/機械承認/本番確認へ進み、実際に公開する時のJST published_atだけを付与する。現候補のpublished_atはnull、公開済み扱いにしない。"
     }
   ],
   "candidate_readback": {
@@ -144,10 +144,42 @@
     "method": "Immutable GitHub commit fetched from origin; all 25 file byte lengths, SHA-256 and Git blob IDs matched the local manifest, all 16 image dimensions verified, all 20 old original parts and receipt unchanged versus f8aa, all four old originals reconstructed and full SHA/dimensions matched."
   },
   "publication_gate": {
-    "status": "awaiting_pr885_merge_and_current_main_validation",
+    "status": "ready_for_normal_adoption_publication_gate_not_yet_run",
     "pr": 885,
     "tested_pr_head": "0550f0bf81926a9f17325bf5d38721a49c1ca8d9",
-    "observed_main": "4cb84e1db1ef400f6229cf0d55c62ff2e9ce3c96",
-    "observed_main_contains_pr885": false
+    "observed_main": "e3ccc92bd4a2de537c469a5484b16cf3797cede1",
+    "observed_main_contains_pr885": true,
+    "main_gate_passed": false
+  },
+  "main_support": {
+    "status": "merged_validator_support_confirmed",
+    "pull_request": 885,
+    "merged_main_commit": "e3ccc92bd4a2de537c469a5484b16cf3797cede1",
+    "validator": {
+      "path": "scripts/photo_issues.py",
+      "git_blob_sha": "e359e8cdf3b290d36e638a860f9ee93cdcd05657",
+      "matches_locally_tested_pr_blob": true
+    },
+    "ci": {
+      "run_id": 44428347854,
+      "conclusion": "success"
+    },
+    "public_verification": {
+      "run_id": 44430031041,
+      "check_id": 135244747762,
+      "conclusion": "success",
+      "verified_at_jst": "2026-11-19T09:35:42+09:00",
+      "live_commit": "e3ccc92bd4a2de537c469a5484b16cf3797cede1",
+      "expected_commit": "e3ccc92bd4a2de537c469a5484b16cf3797cede1"
+    },
+    "evidence_verified_by": "ChatGPT運用代替・編集担当/root",
+    "preparation_validation": {
+      "kind": "local_dry_run_on_pr885",
+      "report_path": "maintenance/photo-issue-plans/november-city-evening-mio-012/prepared-receipt-validation.json",
+      "report_sha256": "c331c9f05082699fa2b3c24f93ff681b70e0667ab51069312c369778d6842d28",
+      "report_unchanged": true
+    },
+    "boundary": "PR885の統合・CI・既存サイト本番commit検証と、準備時のPR版validator dry-runを記録する。みお012自体の通常adoptionとcurrent-main公開gateは未来の実出版時に行う。候補の公開完了やmain gate成功を意味しない。",
+    "main_gate_passed": false
   }
 }
