@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-18",
+  "created_date": "2026-11-19",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
     "issue_slug": "november-off-clock-rio-002",
-    "cut_id": "04",
-    "image_sha256": "7c5454b0b39e7ce1bcb6eec8c1615181642ce0baa2a53e89b4d91996952f6f1a"
+    "cut_id": "07",
+    "image_sha256": "4bf65213b6322e65144f079e73e33d4d18e20b9a2416aa2dc4f351d7eb83c167"
   },
-  "post_text": "「気になる本を一冊だけ」と決めていたのに、棚の奥で別の版を見つけました。帰りの時間は確認したはずなのに、もう少し比べていたいです。",
-  "spoken_line": "もう少し、見比べたいな。",
+  "post_text": "朝の散歩で、花屋の前に赤い実のついた枝を見つけました。名前を調べようと立ち止まったら、もう取材の集合時間。手帳には「赤い実」とだけ書いてあります。",
+  "spoken_line": "あ、名前を聞きそびれました。",
   "future_idea": "2031年、公共施設のAI管理契約に住民の異議申立権を義務化。決定の理由を尋ねても、委託先は『仕様上お答えできません』。"
 }
