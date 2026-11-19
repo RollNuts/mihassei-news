@@ -15,6 +15,21 @@
         "cut_id": "05",
         "image_sha256": "6bf38d8d89f4ed72a1907cabda30b30e98594a9c8a2fd652ea51e5e2bf25d639"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261120071916744000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-20T07:19:16.744+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昨夜のごはんで教わったソースが気になって、朝から台所の棚を開けたり閉めたり。材料は足りないけど、もう作る気でいます。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "06",
+        "image_sha256": "2f368cd24ac5a3be4ae3c5e7c9d24dc4a3a6206500bbfe20795d0f374afa0033"
+      }
     }
   ]
 }
