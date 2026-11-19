@@ -2869,5 +2869,218 @@
         "checked_on": "2026-11-19"
       }
     ]
+  },
+  {
+    "slug": "2026-11-19-noon",
+    "day": "2026-11-19",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-19T13:50:37+09:00",
+    "title": "19日後場：保険株は決算前に下落、TOPIX小幅安との温度差を確認",
+    "summary": "19日12:39 JSTのTOPIXは0.26%安、保険業指数は1.65%安。午後に決算を予定する大手損保ではMS&ADとSOMPOも下落。株価の先行反応と決算で確認する業績・還元を分けます。",
+    "lead": "11月19日（木）後場に入り、TOPIX全体の下げ幅は小さい一方、保険株にはより強い売りが出ています。JPXの12:39 JST更新による場中の暫定値で、15:30の終値ではありません。きょう予定される損保の決算が出る前に、株価の動きだけで業績悪化や割安を判断しないための確認点を整理します。",
+    "sections": [
+      {
+        "heading": "保険業は1.65%安、TOPIXの0.26%安より弱い",
+        "paragraphs": [
+          "JPXの19日12:39 JST更新値は、TOPIXが3,813.90ポイントで18日終値3,824.00から10.10ポイント安（0.26%安）、保険業指数が4,155.27ポイントで前日比69.76ポイント安（1.65%安）。保険業の前日値4,225.03は公表された当日値と前日比から逆算した値です。保険業の下げは指数全体より大きい一方、これだけでは特定の決算数字を市場が予測した証拠にはなりません。",
+          "同じJPXファイルでは銀行業指数も1.14%安ですが、小売業指数は1.14%高と方向が分かれます。市場全体が一様に下げているという説明ではなく、決算前の保険株が他業種より弱い事実と、決算後に確認すべき内容を分けて読みます。"
+        ]
+      },
+      {
+        "heading": "MS&ADとSOMPOはともに下落、決算前の値動き",
+        "paragraphs": [
+          "MS&AD（8725）は19日12:37 JSTの東証途中値が5,075円。18日終値5,161円から1.67%下落しました。SOMPO（8630）は同じく12:37時点で6,893円、前日7,057円から2.32%安です。いずれも同一銘柄の前日終値と19日の途中値の比較であり、19日の終値ではありません。",
+          "SOMPOは公式IRで19日15:30に2027年3月期第2四半期決算、東京海上HDは19日16:30に2026年度第2四半期決算の発表を予定しています。大手損保を比較する際は、正味収入保険料や保険引受利益、自然災害関連の支払、運用損益、通期見通し、株主還元が実際にどう開示されるかを確認したいところです。発表前に増益・減益や自社株買いを決めつけません。"
+        ]
+      },
+      {
+        "heading": "19日判定と20日判定のTOPIX予想はまだ確定しない",
+        "paragraphs": [
+          "18日朝に固定した『19日のTOPIX公式終値が17日終値3,840.02ポイントから0.5%超上昇』という予想に対し、12:39の3,813.90は基準から約0.68%安で暫定的に逆行しています。ただし判定は19日大引け後の公式終値であり、今の数値は外れの確定ではありません。",
+          "19日朝に別途固定した『20日のTOPIX公式終値が18日終値3,824.00から±0.5%以内』という横ばい予想に対し、19日12:39の値は基準から約0.26%安で一時的には範囲内です。しかし20日の市場は未到来で、こちらも結果待ち。短期予想の確定成績は引き続き1勝2敗（母数3件）です。次は19日の大引けと保険会社の実際の決算資料を確認します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov19-noon",
+        "kind": "bars",
+        "title": "TOPIX：18日終値と19日12:39途中値",
+        "note": "18日はJPX公式大引け終値、19日は12:39更新の場中暫定値。19日の確定終値ではありません。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 3824,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 12:39",
+            "value": 3813.9,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "insurance-nov19-noon",
+        "kind": "bars",
+        "title": "保険業指数：19日12:39時点で1.65%安",
+        "note": "18日値は19日JPX公表の4,155.27と前日比-69.76から逆算。19日は場中の暫定値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00",
+        "values": [
+          {
+            "label": "11/18値(逆算)",
+            "value": 4225.03,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/19 12:39",
+            "value": 4155.27,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "sompo-nov19-noon",
+        "kind": "bars",
+        "title": "SOMPO：前日終値と19日途中値",
+        "note": "18日終値は同一配信元で調整後値も7,057円。19日12:37は東証の途中値で決算結果反映後の終値ではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "observed_at": "2026-11-19T12:37:00+09:00",
+        "values": [
+          {
+            "label": "11/18終値",
+            "value": 7057,
+            "state": "実績"
+          },
+          {
+            "label": "11/19 12:37",
+            "value": 6893,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "保険株への売りが優勢",
+        "signal": "逆風",
+        "meaning": "JPX12:39の保険業指数は1.65%安で、TOPIXの0.26%安より下げ幅が大きい。決算未発表の時点では業績悪化の確定ではない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00"
+      },
+      {
+        "name": "東京海上の決算発表予定",
+        "signal": "中立",
+        "meaning": "東京海上HDは19日16:30の第2四半期決算を予定。保険引受・自然災害・通期見通し・還元の開示を確認したい。",
+        "source_url": "https://www.tokiomarinehd.com/ir/",
+        "observed_at": "2026-11-19T12:39:00+09:00"
+      },
+      {
+        "name": "TOPIX20日横ばい予想は結果待ち",
+        "signal": "中立",
+        "meaning": "19日12:39のTOPIXは18日固定基準3,824.00比0.26%安だが、20日の公式終値でしか判定しない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-19T12:39:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "8725",
+        "name": "MS&ADインシュアランスグループHD",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 5161,
+        "close": 5075,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T12:37:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8725.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11/18時系列の通常終値・調整後終値はいずれも5,161円。19日12:37の東証途中値5,075円と同じ株式・JPY建てで比較。独自の分割換算なし。",
+        "context": "同日発表予定の決算前に1.67%下落。実際の保険引受利益・通期予想・株主還元の開示を確認する。"
+      },
+      {
+        "code": "8630",
+        "name": "SOMPOホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 7057,
+        "close": 6893,
+        "price_kind": "intraday",
+        "market_date": "2026-11-19",
+        "previous_market_date": "2026-11-18",
+        "observed_at": "2026-11-19T12:37:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11/18時系列の通常終値・調整後終値はいずれも7,057円。19日12:37の東証途中値6,893円と同一銘柄で比較。独自補正なし。",
+        "context": "決算発表予定日の12:37に前日比2.32%安。会社の実績が出る前の株価変動と保険引受・運用損益を分けて確認。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月19日12:39 JST更新のTOPIX・保険業指数（取引中の暫定値）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数ファイル12:39 JST更新日時",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "JPX：指数値は平日9時〜15時30分に1分間隔更新",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "東京海上HD：11月19日16:30予定の2026年度第2四半期決算",
+        "url": "https://www.tokiomarinehd.com/ir/",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "MS&AD：11月19日12:37東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8725.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "MS&AD：11月18日通常/調整後終値5,161円",
+        "url": "https://finance.yahoo.co.jp/quote/8725.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月19日12:37東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO：11月18日通常/調整後終値7,057円",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T/history",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      },
+      {
+        "title": "SOMPO公式IRカレンダー：11月19日15:30予定の2027年3月期第2四半期決算",
+        "url": "https://www.sompo-hd.com/ir/event",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-19"
+      }
+    ]
   }
 ]
