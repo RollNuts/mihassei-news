@@ -15,6 +15,21 @@
         "cut_id": "08",
         "image_sha256": "2b493c0fc5e7a41091de6a977e9ff6cf79b8f2acc393d8ab5348300c8921c948"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261120155620361000",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-20T15:56:20.361+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "控室でマフラーを巻いたら、左右の長さが全然合わなくて三回やり直し。もう出発しなきゃなのに、あと一回だけ😂",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "09",
+        "image_sha256": "ea128664af1643d1179c74fe75e4473f30e8385a752c10b0fe6bd097201d8c35"
+      }
     }
   ]
 }
