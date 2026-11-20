@@ -9859,6 +9859,180 @@
     }
   }
 }
+  ,
+    "bicycle-network-reopens-backstreet-deliveries": {
+  "article_sha256": "4e3f651ee088895cfaca4dd5f3269b25f12d9b62ac9db75e60cb1a90267ec046",
+  "bytes": 267151,
+  "generated_at": "2026-11-20T03:07:10.430Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "2f95ef21-4a25-4885-9c7f-eaf3166a9e4c",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:2f95ef21-4a25-4885-9c7f-eaf3166a9e4c",
+  "generation_prompt": "A natural candid documentary news photograph in a modest Japanese neighborhood shopping district in late November 2031. At a shared goods-receiving point occupying a small paved corner of a former parking lot on a backstreet, a 63-year-old Japanese greengrocer in practical autumn work clothes and a worn apron is lifting a crate of red tomatoes onto a small battery-powered utility trolley to take the goods to his shop himself. The man, crate and trolley are the clear foreground subject and fully visible, with realistic hands and working posture. An unmarked delivery truck and a few separately grouped flower crates and bakery boxes in the background suggest several neighboring shops use this common pickup point. Ordinary low-rise shopping-street buildings, cool late-November morning daylight, natural skin, fabric, cardboard and metal textures, a believable unstaged local news snapshot, horizontal 16:9, no captions, no legible signs or labels, no logos, no real-person likeness, everyday photographic realism.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "d78542a3004aac770b1376ca4ed0675a331ffbc6a7cb8e2538fa51deac306a53",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:b729be4d-4891-4372-ace8-0354d5586ebc",
+    "instanceID": "xmp:iid:2f95ef21-4a25-4885-9c7f-eaf3166a9e4c",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          210,
+          239,
+          34,
+          39,
+          9,
+          243,
+          4,
+          106,
+          146,
+          88,
+          92,
+          17,
+          202,
+          140,
+          4,
+          241,
+          37,
+          237,
+          163,
+          213,
+          86,
+          100,
+          57,
+          246,
+          191,
+          44,
+          38,
+          137,
+          77,
+          230,
+          23,
+          71
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-20T03:07:06.202130046Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-20T03:07:06.202132250Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-20T03:07:06.201581526Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "47eb0ce9f21657314dfc4a4c09295d128547546faff78f2f9405a0569b9a86cd",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:4e3f651ee088895cfaca4dd5f3269b25f12d9b62ac9db75e60cb1a90267ec046",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/5d2fb206f28f/generated_images as /workspace/scratch/5d2fb206f28f/generated_images/exec-59bf3a30-d51e-4cba-b5cf-386fff59fc1c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-20T03:07:10.430Z",
+    "bytes": 3141509,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "7d1a86a33a04602eb4d1d7d0b5fd29dab0e054645d24e66f6aa1995acf06481c",
+    "candidate_branch": "native-image-candidate/bicycle-network-reopens-backstreet-deliveries/4e3f651ee088895c-c584342de965",
+    "candidate_commit": "f76e1013b55a7d10de575262a5ac9e44c8378eff",
+    "receipt_path": "maintenance/native-image-candidates/bicycle-network-reopens-backstreet-deliveries/receipt.json",
+    "receipt_sha256": "fdc817bf59385aa095c768400c79fb7e4aa6d5370a3b0e50a6588bcabab3b4eb",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/bicycle-network-reopens-backstreet-deliveries/source.png.part000",
+        "bytes": 524288,
+        "sha256": "40b7513ea3636b71374962759d7e37ecec1a79a119f2c1b746b577ddab62f12d",
+        "blob_sha": "e15f39ad75804d8018b3da3ad401b19afdd3ba99"
+      },
+      {
+        "path": "maintenance/native-image-candidates/bicycle-network-reopens-backstreet-deliveries/source.png.part001",
+        "bytes": 524288,
+        "sha256": "e4a89e958c003d662b333c4222dedfcc2bc823b51df201150563111bb116d136",
+        "blob_sha": "7c1378702ac7fbecf19831db9d8e227c8558810d"
+      },
+      {
+        "path": "maintenance/native-image-candidates/bicycle-network-reopens-backstreet-deliveries/source.png.part002",
+        "bytes": 524288,
+        "sha256": "2dde5b4cd7ef1d5f005ed044281855343f1b2156319c4d9257b75c055f96b6ea",
+        "blob_sha": "0b83d6088b8e9c9c9ce6c2b6c7e0ca58862876dc"
+      },
+      {
+        "path": "maintenance/native-image-candidates/bicycle-network-reopens-backstreet-deliveries/source.png.part003",
+        "bytes": 524288,
+        "sha256": "49b96b380d3e88be387603f2627f38642491d351776f483cabb8e8506a5e4e47",
+        "blob_sha": "25d35b224cd923b45e09da243d9481f1ba9b458c"
+      },
+      {
+        "path": "maintenance/native-image-candidates/bicycle-network-reopens-backstreet-deliveries/source.png.part004",
+        "bytes": 524288,
+        "sha256": "f947ced78712e859e1fe92af9ede4e06f2042bbdd1ba1723c6591560a6b24ca0",
+        "blob_sha": "dccacaa6694c7c654e380ea916d30763e23947ac"
+      },
+      {
+        "path": "maintenance/native-image-candidates/bicycle-network-reopens-backstreet-deliveries/source.png.part005",
+        "bytes": 520069,
+        "sha256": "a4cf004736a1f06fd6cb610ee43c54efdb685f493fa8e6dd6f49794d5a4d1d85",
+        "blob_sha": "362b3233d47e8238a3aa249362030a73d711a282"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "65c0e5f2b9325a85d092c3e73878231f5bdbe86d",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "2b223253901e25e99855f7ec78742bc5ed7999d93b73d7f5deba54e670a70bde",
+      "observed_at": "2026-11-20T03:05:27.965Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/68ca2d19a8d90eca4b9f6a7dea666aa60e2fd215494b43f48811b5c738c8a836",
+      "receipt_path": "maintenance/native-image-generation-claims/68ca2d19a8d90eca4b9f6a7dea666aa60e2fd215494b43f48811b5c738c8a836.json",
+      "receipt_sha256": "e690e5a1aef471670ce1c511edfe224df4a5170f6418f1a7e1d6a728d4847778",
+      "commit_sha": "cee2e7582818f87aa2ca37892990915255b58708"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
