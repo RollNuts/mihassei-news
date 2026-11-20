@@ -2,15 +2,15 @@
   "schema_version": 1,
   "model_id": "hanase-mio",
   "name": "花瀬みお",
-  "created_date": "2026-11-19",
+  "created_date": "2026-11-20",
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "photo_reference": {
-    "issue_slug": "november-first-detour-mio-004",
-    "cut_id": "07",
-    "image_sha256": "a4120101838a8004be11e8969a249cc758cc5ded46601ef2aeb624f2bfde1d5e",
-    "description": "2031年11月の既刊検品済みカット。白いロングスカートで日中のテラスを振り返る花瀬みお。既存カタログにaccepted記録あり（今回の画像bytesは未読）。"
+    "issue_slug": "november-city-evening-mio-012",
+    "cut_id": "05",
+    "image_sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305",
+    "description": "2031年11月の本人既刊012、検品済みcut05。堤防で風に吹かれた髪を押さえる写真。catalog review accepted。今回の画像実byteは未取得。"
   },
-  "post_text": "昼、川沿いで初めてキックボードに乗った。下りはすいすい、帰りの上り坂はずっと押して歩いた。乗った時間より押した時間のほうが長い。",
-  "spoken_line": "帰りはずっと押してた！",
-  "future_idea": "2031年、乗り物の返却地点が坂の上に偏り、利用者の移動負担を減らす配置見直しが始まる。"
+  "post_text": "昼、陶芸体験でろくろを回した。小鉢のつもりが、指を当てるたび横に広がってお皿になった。縁だけはきれいにできたから、帰ったら何を乗せようかな。",
+  "spoken_line": "小鉢がお皿になっちゃった。",
+  "future_idea": "2031年、体験教室で完成予定と違った器に、あとから用途を選べる展示会が広まる。"
 }
