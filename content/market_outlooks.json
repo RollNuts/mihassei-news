@@ -792,5 +792,61 @@
       "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
       "observed_at": "2026-11-20T09:17:00+09:00"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-noon-20th-review",
+    "at": "2026-11-20T12:51:03+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3703.3,
+    "observed_on": "2026-11-20",
+    "reason": "JPXが20日12:24 JSTに更新したTOPIX現物途中値は3,703.30。19日寄り前に固定した20日横ばい予想の基準18日終値3,824.00から約3.16%安で、事前の±0.5%の範囲を大きく外れる。ただし引け前のため正式な外れ判定にしない。",
+    "change_reason": "直前の20日9:17途中値3,749.51から12:24の3,703.30へさらに46.21ポイント下落し、非鉄金属9.74%安など売りが拡大。直前レビューの弱気判断・暫定的逆行を継続。元の基準日・方向・方法・期日は不変。",
+    "source": {
+      "title": "JPX：2026年11月20日12:24 JST更新TOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201224",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201224",
+      "time_after": "202611201224",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,702.33\", \"currentPrice\":\"3,703.30\", \"previousDayComparison\":\"-119.17\", \"previousDayRatio\":\"-3.12\""
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-noon-24th-review",
+    "at": "2026-11-20T12:51:03+09:00",
+    "forecast_id": "2026-11-20-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3703.3,
+    "observed_on": "2026-11-20",
+    "reason": "20日朝に新たに固定した24日TOPIX下落予想の基準19日3,822.47に対し、20日12:24のTOPIX途中値3,703.30は約3.12%安。下落シナリオを現時点で支持するものの、判定日は休場明け11月24日であり20日途中値を正式な的中にしない。",
+    "change_reason": "20日朝の新しい下落予想後に現物の値動きを初観測。非鉄金属9.74%安、電気機器5.38%安と下落が広がり、元の弱気想定を継続。ただし24日の公式終値で反転すれば予測は外れる。",
+    "source": {
+      "title": "JPX：2026年11月20日12:24 JST更新TOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201224",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201224",
+      "time_after": "202611201224",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,702.33\", \"currentPrice\":\"3,703.30\", \"previousDayComparison\":\"-119.17\", \"previousDayRatio\":\"-3.12\""
+    }
   }
 ]
