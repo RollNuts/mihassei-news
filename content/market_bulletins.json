@@ -3754,5 +3754,224 @@
         "checked_on": "2026-11-20"
       }
     ]
+  },
+  {
+    "slug": "2026-11-20-noon",
+    "day": "2026-11-20",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-20T12:51:03+09:00",
+    "title": "20日後場：ほぼ全面安の中で保険株は上昇、SOMPO決算と医薬品の違いを見る",
+    "summary": "20日12:24更新のTOPIXは3.12%安、非鉄金属は9.74%安。一方で保険業は1.25%高、医薬品は0.05%高。SOMPOの中間利益減と株主還元、医薬品株の相対的な強さを切り分けます。",
+    "lead": "11月20日（金）の東京市場は、半導体や非鉄金属を中心に広く下落する一方、保険と医薬品は値を保っています。東証プライムの前場では値下がり銘柄が9割超となり、指数の下落だけでなく保有業種の違いを見る必要があります。JPX指数は12:24 JST更新の前場後データで、12:30以降の後場値や大引け値ではありません。SOMPOと大塚ホールディングスを具体例に、決算の中身と株価の反応を分けて確認します。",
+    "sections": [
+      {
+        "heading": "前場は31業種が下落、保険・医薬品だけプラス",
+        "paragraphs": [
+          "JPXの20日12:24 JST更新値では、TOPIXは3,703.30ポイントで19日確定終値3,822.47から3.12%安、東証グロース市場250指数は642.23で4.86%安でした。日経平均は11:30前引けで56,775.04円（2,669.17円安、4.49%安）。日経平均とTOPIXは別時刻・別配信元のため、同時刻の値としては比較していません。",
+          "33業種のうち31業種が下落しました。JPX12:24更新の非鉄金属は9.74%安、電気機器は5.38%安でしたが、保険業は1.25%高、医薬品は0.05%高と逆方向です。値下がりが広いなかでも、事業内容と決算材料によって持ち株の反応は異なります。午後の途中値や引け値も同じ方向になるとは限りません。"
+        ]
+      },
+      {
+        "heading": "SOMPOは保険収益増と利益減、株主還元を別々に読む",
+        "paragraphs": [
+          "SOMPOホールディングス（8630）が11月19日に公表した2027年3月期中間決算では、保険収益は前年同期比28.4%増の3兆3,967億円でした。一方、親会社の所有者に帰属する中間利益は2,138億円で40.7%減。保険サービスの規模拡大と最終利益の変化は同じ方向ではありません。会社が示した通期の親会社帰属利益予想は4,600億円で、直近予想から修正があったと記載されています。",
+          "同社は19日に自己株式取得・消却に関する決定も公表し、年間配当予想は1株200円で据え置きました。20日12:38の東証途中値は6,973円で、19日終値6,856円比1.71%高。株主還元の材料は確認できますが、この上昇が自社株買いだけで生じたと断定はできません。投資判断では、中間の利益減が下期にどう変わるか、通期予想の根拠と取得条件を追加で点検します。"
+        ]
+      },
+      {
+        "heading": "医薬品の小幅高と週末越え、次に確認すること",
+        "paragraphs": [
+          "大塚ホールディングス（4578）は20日12:37の東証途中値で12,270円、19日終値12,155円から0.95%高でした。医薬品業種指数自体は0.05%高にとどまり、大塚HDの値動きを業種全体の強さとそのまま置き換えることはできません。本稿では同社固有の新たな適時開示による上昇とは確認していないため、値動きだけで利益成長や割安さを判断しません。",
+          "20日判定のTOPIX横ばい予想は19日の3,824.00ポイントを基準とするもので、12:24の3,703.30は暫定的に逆行しています。24日判定の下落予想も現時点では支持材料ですが、20日途中値で正式判定はしません。確定した日次TOPIX予想は1勝3敗（的中率25%、母数4件）のままです。日本の現物市場は23日（月・祝）休場で次の通常営業日は24日。まず20日大引けで業種差が保たれるかを確認します。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov20-noon",
+        "kind": "bars",
+        "title": "TOPIX：19日終値と20日前場後",
+        "note": "19日3,822.47はJPX最終値、20日3,703.30は12:24 JST更新の前場後途中値。後場・終値ではなく、-3.12%はJPX公表の前日比。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T12:24:00+09:00",
+        "values": [
+          {
+            "label": "11/19終値",
+            "value": 3822.47,
+            "state": "実績"
+          },
+          {
+            "label": "11/20前場",
+            "value": 3703.3,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "insurance-nov20-noon",
+        "kind": "bars",
+        "title": "保険業：前日比1.25%高",
+        "note": "20日12:24 JST更新の保険業指数4,183.73と前日比+51.58。前日値4,132.15は当日値から前日比を引いた公開資料からの計算。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T12:24:00+09:00",
+        "values": [
+          {
+            "label": "11/19逆算",
+            "value": 4132.15,
+            "state": "公開資料から計算"
+          },
+          {
+            "label": "11/20前場",
+            "value": 4183.73,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "sompo-nov20-noon",
+        "kind": "bars",
+        "title": "SOMPO：決算翌日の株価反応",
+        "note": "19日はYahoo時系列の通常・調整後終値6,856円、20日は12:38 JSTの東証途中値6,973円。終値確定ではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "observed_at": "2026-11-20T12:38:00+09:00",
+        "values": [
+          {
+            "label": "11/19終値",
+            "value": 6856,
+            "state": "実績"
+          },
+          {
+            "label": "11/20 12:38",
+            "value": 6973,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "非鉄金属・電気機器安",
+        "signal": "逆風",
+        "meaning": "JPX12:24更新の非鉄金属9.74%安、電気機器5.38%安。TOPIXの3.12%安を上回る売り。後場の継続は未確定。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T12:24:00+09:00"
+      },
+      {
+        "name": "保険業・医薬品はプラス",
+        "signal": "追い風",
+        "meaning": "同時点の保険業は1.25%高、医薬品は0.05%高。株価の方向差だけで企業の長期利益や割安さを断定しない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T12:24:00+09:00"
+      },
+      {
+        "name": "SOMPOの利益と還元",
+        "signal": "中立",
+        "meaning": "11/19公表の中間決算は保険収益28.4%増でも親会社帰属中間利益40.7%減。自己株取得決定と通期見通しを別々に確認。",
+        "source_url": "https://www.sompo-hd.com/-/media/hd/files/doc/pdf/news2026/20261119_1.pdf?la=ja-JP",
+        "observed_at": "2026-11-20T12:51:03+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "8630",
+        "name": "SOMPOホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 6856,
+        "close": 6973,
+        "price_kind": "intraday",
+        "market_date": "2026-11-20",
+        "previous_market_date": "2026-11-19",
+        "observed_at": "2026-11-20T12:38:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo時系列で11/19通常終値・調整後終値とも6,856円を確認。20日12:38の東証途中値6,973円と同一市場で比較し、独自の分割補正は行わない。",
+        "context": "前日比1.71%高。ただし11/19公表の中間利益は40.7%減。自己株取得決定・通期見通しと株価反応を別々に判断する。"
+      },
+      {
+        "code": "4578",
+        "name": "大塚ホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 12155,
+        "close": 12270,
+        "price_kind": "intraday",
+        "market_date": "2026-11-20",
+        "previous_market_date": "2026-11-19",
+        "observed_at": "2026-11-20T12:37:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/4578.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo時系列で11/19通常終値・調整後終値とも12,155円を確認。20日12:37の東証途中値12,270円と比較、独自の分割補正なし。",
+        "context": "前日比0.95%高、医薬品指数は0.05%高。同社固有の当日新開示を原因として確認していないため、相対的な値動きとして点検する。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：20日12:24更新のTOPIX、グロース250、保険業・非鉄金属・医薬品・電気機器指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：11月20日指数ファイル更新時刻（採用時点12:24 JST）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "株探：20日11:31配信の日経平均前引けと東証プライム騰落、業種",
+        "url": "https://s.kabutan.jp/news/n202611200648/",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "SOMPO：11月19日公表の2027年3月期中間決算短信（IFRS）",
+        "url": "https://www.sompo-hd.com/-/media/hd/files/doc/pdf/news2026/20261119_1.pdf?la=ja-JP",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "SOMPO：11月19日決算・自己株式取得開示のIR一覧",
+        "url": "https://www.sompo-hd.com/ir/",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!：SOMPO 11月20日12:38東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!：SOMPO 11月19日の通常・調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T/history",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!：大塚HD 11月20日12:37東証途中値",
+        "url": "https://finance.yahoo.co.jp/quote/4578.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!：大塚HD 11月19日の通常・調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/4578.T/history",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：2026年11月の東証休場日カレンダー（20日確認）",
+        "url": "https://www.jpx.co.jp/calendar/",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      }
+    ]
   }
 ]
