@@ -378,11 +378,18 @@ var PublicationReviewContext = (function () {
       check(latest.id === ci_run_id && positive(latest.run_attempt), "newer_or_unrelated_ci_run");
       return [latest.id, latest.run_attempt];
     }
-    async function run(id, workflow, events, sha, branch, label) {
+    async function run(id, workflow, events, sha, branch, label, allowMain = false) {
       check(positive(id), label + "_run_id_required");
       const value = await get("/actions/runs/" + id);
+      const exactHead = value.head_sha === sha && value.head_branch === branch;
+      // GitHub reports workflow_run on trusted main. Its PR/CI identity must
+      // come from the completed finalizer result, never from main alone.
+      const boundMetadata = allowMain
+        ? value.event === "pull_request_target" && exactHead
+          || value.head_branch === "main" && matches(GIT, value.head_sha)
+        : exactHead;
       check(value.id === id && value.path === workflow && events.includes(value.event)
-        && value.head_sha === sha && value.head_branch === branch
+        && boundMetadata
         && value.repository?.full_name === REPOSITORY && value.head_repository?.full_name === REPOSITORY
         && positive(value.run_attempt), label + "_run_unbound");
       runs.push(value);
@@ -500,9 +507,13 @@ var PublicationReviewContext = (function () {
       completed(ci, ciJob, "ci");
       result.stage = "finalizer";
       const finalizer = await run(finalizer_run_id, VERIFY, ["pull_request_target", "workflow_run"],
-        head, snapshot.head.ref, "finalizer");
+        head, snapshot.head.ref, "finalizer", true);
+      const mainFinalizer = finalizer.head_branch === "main";
       const finalizerJob = await job(finalizer, "finalize", "finalizer");
-      if (ACTIVE_RUN.has(finalizer.status) && (ACTIVE_RUN.has(finalizerJob.status) || finalizerJob.conclusion === "success")) return await finish("finalizer_pending");
+      if (ACTIVE_RUN.has(finalizer.status) && (ACTIVE_RUN.has(finalizerJob.status) || finalizerJob.conclusion === "success")) {
+        check(!mainFinalizer, "finalizer_handoff_not_yet_bound");
+        return await finish("finalizer_pending");
+      }
       completed(finalizer, finalizerJob, "finalizer");
       const execution = step(finalizerJob, FINALIZE);
       const finalizerLines = within(await log(finalizerJob), execution);
@@ -515,6 +526,16 @@ var PublicationReviewContext = (function () {
       const outcome = outcomes[0];
       check(outcome.status === "verification_dispatched" && snapshot.merged
         && outcome.merge_sha === result.merge_sha, "finalizer_merge_unverified");
+      const binding = ["pr", "head", "ci_run_id", "ci_run_attempt"];
+      if (mainFinalizer || binding.some(key => Object.hasOwn(outcome, key))) {
+        check(outcome.pr === number && outcome.head === head && outcome.ci_run_id === ci.id
+          && outcome.ci_run_attempt === ci.run_attempt, "finalizer_handoff_binding_unverified");
+      }
+      if (mainFinalizer) {
+        const ancestry = await get("/compare/" + finalizer.head_sha + "..." + ref);
+        check(["ahead", "identical"].includes(ancestry.status)
+          && ancestry.merge_base_commit?.sha === finalizer.head_sha, "finalizer_not_on_fixed_main");
+      }
       result.stage = "live";
       check(positive(verification_run_id), "verification_run_id_required");
       const live = await run(verification_run_id, VERIFY, ["push", "workflow_dispatch"], result.merge_sha, "main", "live");
