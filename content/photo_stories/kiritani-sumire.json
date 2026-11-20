@@ -15,6 +15,21 @@
         "cut_id": "05",
         "image_sha256": "de24a1b682f3b49c394ce1121f0e4d68989fbf19f71477ab680358e5e54ed13d"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261120143022174",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-20T14:30:22.174+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後、古い建物の窓枠がきれいな青緑で、手帳に「少し灰色」と書き足した。新しい服の差し色にできそう。帰りにもう一度見比べたい。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "01",
+        "image_sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479"
+      }
     }
   ]
 }
