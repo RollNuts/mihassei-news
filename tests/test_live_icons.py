@@ -110,6 +110,7 @@ class LiveIconTests(unittest.TestCase):
 
     def test_full_release_checker_invokes_the_icon_probe(self):
         with patch.object(check_live, "verify_public_revision", return_value="a" * 40) as revision, \
+             patch.object(check_live, "verify_latest_photo_issue_delivery", return_value=10), \
              patch.object(check_live, "get", return_value=(self.markup.encode(), "text/html")), \
              patch.object(check_live, "verify_site_icons", side_effect=RuntimeError("icon probe")) as probe:
             with self.assertRaisesRegex(RuntimeError, "icon probe"):

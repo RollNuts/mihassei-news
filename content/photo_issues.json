@@ -9346,6 +9346,446 @@
         }
       },
       "issue_sha256": "d1d8a390fe81d2258209dbbcad96d97d448ab2388724505a533ff37861051ad7"
+    },
+    {
+      "slug": "november-city-evening-mio-012",
+      "number": 12,
+      "title": "海のあと、街の灯り。",
+      "summary": "暖かい海辺への小旅行から、コートを羽織る街の夜へ。花瀬みおの、足取りが変わる休日の10枚。",
+      "column": [
+        "コートを置いて、2031年11月の小旅行へ。まだ水着で過ごせる南の海を選びました。波打ち際で振り向いたら、次の波が足元まで。シャツの裾が濡れて、泳ぐ前から洗濯物が一枚増えました。",
+        "宿のプールでは、まず足だけ水に。冷たくないとわかると、そのまま入りたくなります。でも帰る日は、荷物をまとめてから。先に水辺へ行くと「あと五分」が何度も続くので、今回はバッグを閉じてから座りました。",
+        "街に戻ると、夕方の窓の向こうに灯りが増えていきました。コートを羽織って出た道も、雨上がりでぴかぴか。砂浜のつもりで大股に歩きかけて、ヒールだったことを思い出します。今夜は少し小さな歩幅で、予約した食事の席へ。"
+      ],
+      "model_id": "hanase-mio",
+      "source_article": null,
+      "cover_cut_id": "01",
+      "setting": {
+        "year": 2031,
+        "month": 11,
+        "location": "暖かい海辺の旅先と、帰ってきた街",
+        "aspect_ratio": "original",
+        "visual_direction": "元PNGと全画面の縦横比を保持。水着6枚と街の服姿4枚。座り・歩き・振り返り・正面の違いを使い、架空の成人として顔と自然な比例の連続性を確認。実在の撮影地・撮影日は特定しない。"
+      },
+      "shots": [
+        {
+          "id": "01",
+          "description": "花瀬みお（20歳、架空の成人）。花柄のビキニで、波打ち際に立つ。",
+          "caption": "花柄のビキニで、波打ち際に立つ。",
+          "alt": "花瀬みお（20歳、架空の成人）。花柄のビキニで、波打ち際に立つ。"
+        },
+        {
+          "id": "02",
+          "description": "花瀬みお（20歳、架空の成人）。白いシャツを羽織り、波打ち際で振り返る。",
+          "caption": "白いシャツを羽織り、波打ち際で振り返る。",
+          "alt": "花瀬みお（20歳、架空の成人）。白いシャツを羽織り、波打ち際で振り返る。"
+        },
+        {
+          "id": "03",
+          "description": "花瀬みお（20歳、架空の成人）。紺の水着でプールの縁に座り、水へ足を伸ばす。",
+          "caption": "紺の水着でプールの縁に座り、水へ足を伸ばす。",
+          "alt": "花瀬みお（20歳、架空の成人）。紺の水着でプールの縁に座り、水へ足を伸ばす。"
+        },
+        {
+          "id": "04",
+          "description": "花瀬みお（20歳、架空の成人）。青いビキニで、髪に手を添えながら浜辺を歩く。",
+          "caption": "青いビキニで、髪に手を添えながら浜辺を歩く。",
+          "alt": "花瀬みお（20歳、架空の成人）。青いビキニで、髪に手を添えながら浜辺を歩く。"
+        },
+        {
+          "id": "05",
+          "description": "花瀬みお（20歳、架空の成人）。海を望む堤防で、風に吹かれた髪を押さえる。",
+          "caption": "海を望む堤防で、風に吹かれた髪を押さえる。",
+          "alt": "花瀬みお（20歳、架空の成人）。海を望む堤防で、風に吹かれた髪を押さえる。"
+        },
+        {
+          "id": "06",
+          "description": "花瀬みお（20歳、架空の成人）。青い水着と白いシャツで、プールサイドの椅子に腰掛ける。",
+          "caption": "青い水着と白いシャツで、プールサイドの椅子に腰掛ける。",
+          "alt": "花瀬みお（20歳、架空の成人）。青い水着と白いシャツで、プールサイドの椅子に腰掛ける。"
+        },
+        {
+          "id": "07",
+          "description": "花瀬みお（20歳、架空の成人）。夕方の街を見下ろす窓辺で、ソファに座る。",
+          "caption": "夕方の街を見下ろす窓辺で、ソファに座る。",
+          "alt": "花瀬みお（20歳、架空の成人）。夕方の街を見下ろす窓辺で、ソファに座る。"
+        },
+        {
+          "id": "08",
+          "description": "花瀬みお（20歳、架空の成人）。コートを羽織り、雨上がりの夜の通りを歩く。",
+          "caption": "コートを羽織り、雨上がりの夜の通りを歩く。",
+          "alt": "花瀬みお（20歳、架空の成人）。コートを羽織り、雨上がりの夜の通りを歩く。"
+        },
+        {
+          "id": "09",
+          "description": "花瀬みお（20歳、架空の成人）。夜景の見える食事の席で、頬に手を添える。",
+          "caption": "夜景の見える食事の席で、頬に手を添える。",
+          "alt": "花瀬みお（20歳、架空の成人）。夜景の見える食事の席で、頬に手を添える。"
+        },
+        {
+          "id": "10",
+          "description": "花瀬みお（20歳、架空の成人）。バーでグラスを手に、振り返る。",
+          "caption": "バーでグラスを手に、振り返る。",
+          "alt": "花瀬みお（20歳、架空の成人）。バーでグラスを手に、振り返る。"
+        }
+      ],
+      "model_snapshot": {
+        "id": "hanase-mio",
+        "name": "花瀬みお",
+        "age": 20,
+        "fictional": true,
+        "appearance": "20歳の架空の成人。活発な雰囲気、肩までの髪。さやと異なる顔立ち。",
+        "character": {
+          "version": 1,
+          "first_person": "私",
+          "occupation": "体験型バラエティアイドル",
+          "casting_specialty": "体を動かす体験ロケや実験企画。失敗も含めて動作と結果を伝える。",
+          "personality": "好奇心でまず体を動かす。失敗も楽しんで話す。",
+          "voice": "動作から始める率直な文章。元気でも過剰な感嘆符を並べない。",
+          "likes": [
+            "海",
+            "遠出",
+            "初めての乗り物"
+          ],
+          "weakness": "勢いで出かけて、帰りの支度を忘れがち。"
+        },
+        "master": {
+          "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+          "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50",
+          "provenance": "assets/generated/photo-reference-hanase-mio-3f2d8cb3b6f5.json"
+        },
+        "body_profile": {
+          "version": 1,
+          "basis": "authored_fictional_design_cm",
+          "height_cm": 160,
+          "bust_cm": 85,
+          "waist_cm": 60,
+          "hip_cm": 88,
+          "shoulder_width_cm": 37,
+          "inseam_cm": 74,
+          "heads_tall": 7.2
+        },
+        "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+        "face_reference": {
+          "path": "assets/generated/photo-master-hanase-mio-3f2d8cb3b6f5.jpg",
+          "sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+          "source_png_sha256": "4b026ea6129e2e6cc495f039ce889e4ede4ff2c800337131cff90c7a5170ec50"
+        },
+        "body_reference": {
+          "state": "accepted_reference",
+          "path": "assets/generated/photo-body-hanase-mio-17a677d5988e.jpg",
+          "sha256": "17a677d5988e882e89c6fdc4d56d0c39161faeaf445cf307c165d5636874b89f",
+          "source_png_sha256": "489b3725c6479ee4ff296424a9c99067218237c3b7167bdab89375dbb7462cec",
+          "provenance": "assets/generated/photo-reference-hanase-mio-17a677d5988e.json"
+        }
+      },
+      "state": "published",
+      "published_at": "2026-11-20T06:07:08.425+09:00",
+      "images": {
+        "10": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-10.jpg",
+          "sha256": "c361bbf25ceeeaecdf1af5d99b6490ba95ead0ee60adef4d1343845d5ff2934a",
+          "bytes": 225229,
+          "width": 960,
+          "height": 1200,
+          "source_sha256": "2b4d6a882512ed045822bf02b2bbb55130365e43e5945e4d40f48d752bc9bf0d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/10/receipt-supplied-2b4d6a882512-c361bbf25cee.json",
+            "receipt_sha256": "eda13d83b4d6f8886ef2f7cf6dcbc03163496ddbc6e739a7e84e351b2cf469a0",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "c361bbf25ceeeaecdf1af5d99b6490ba95ead0ee60adef4d1343845d5ff2934a",
+            "cut_id": "10",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "three_quarter",
+            "swimwear_visible": false,
+            "note": "紺のドレス、バーでグラスを持つ振り返り。手・グラス・肩・背中の接合に目立つ破綻なし。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "01": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-01.jpg",
+          "sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3",
+          "bytes": 140858,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "9259e8c01602b16abbb0c2d2b1b8c431fc73881758fa7680e13c640116220188",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/01/receipt-supplied-9259e8c01602-9b601339697f.json",
+            "receipt_sha256": "6f8208f76e89ae456e7dc3a1c3652b5a4dd90e6a59d816a1895cf89ac516f2c1",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3",
+            "cut_id": "01",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "花柄ビキニ、正面全身の浜辺。表情・四肢・足先・水着の形に目立つ破綻なし。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "02": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-02.jpg",
+          "sha256": "9f1c9a37177dd542b69d000d453d03124bbc456bf4487087fdbd923da90fa543",
+          "bytes": 193817,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "494ab515f119396f7068dd0feeed4cc2c090ba66bebcdf19569978721317be06",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/02/receipt-supplied-494ab515f119-9f1c9a37177d.json",
+            "receipt_sha256": "b3024757d731920d25cf5f0140c59d17d72bb09202403216967851fddcf49714",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "9f1c9a37177dd542b69d000d453d03124bbc456bf4487087fdbd923da90fa543",
+            "cut_id": "02",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "淡青ワンピースと白シャツ、波打ち際の全身振り返り歩き。肩・腕・手・足の接合に目立つ破綻なし。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "03": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-03.jpg",
+          "sha256": "fd6687727c6b8844ec849bd8ea0134a1b8de682b6cf5d4b69e48ec1c21c2dc34",
+          "bytes": 255883,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/03/receipt-supplied-cd68ce821193-fd6687727c6b.json",
+            "receipt_sha256": "c7da092d87ccb5612b700a5873e50badc5bee2e33d1581c87840f15efee812be",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "fd6687727c6b8844ec849bd8ea0134a1b8de682b6cf5d4b69e48ec1c21c2dc34",
+            "cut_id": "03",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "three_quarter",
+            "swimwear_visible": true,
+            "note": "紺のワンピース、横位置のプール縁座り。手と脚の接合を確認。頭上の余白や水面は元構図のまま。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "04": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-04.jpg",
+          "sha256": "a8b549f231ae8d2ea7b4ccfdaceb717178efa85d8ffbc508a1b3911d70814b8f",
+          "bytes": 160476,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "0196845f2ac27534b9e29e53c11be4d049897547d09428c2af8fa6a12de93004",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/04/receipt-supplied-0196845f2ac2-a8b549f231ae.json",
+            "receipt_sha256": "035fb95f6bf106e1af987c81402b10882fab3da5b5e8e9036baa19535963797f",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "a8b549f231ae8d2ea7b4ccfdaceb717178efa85d8ffbc508a1b3911d70814b8f",
+            "cut_id": "04",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "青ビキニ、浜辺の全身歩きと髪へ手を添えた姿。手・脚・足先に目立つ破綻なし。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "05": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-05.jpg",
+          "sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305",
+          "bytes": 203054,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "9161c4f0caca13cdc31f93515e39564adf3d36a266ca034cb7b20a47d882bbff",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/05/receipt-supplied-9161c4f0caca-16397e09b410.json",
+            "receipt_sha256": "4d5cb46c9b57e51185f640f892ec4b6af4929bb0eff0f883d248bb366a25e48c",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305",
+            "cut_id": "05",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "full_body",
+            "swimwear_visible": true,
+            "note": "紺のワンピース、堤防で髪に手を添える全身。水着・手・腕・白サンダルに目立つ破綻やロゴなし。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "06": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-06.jpg",
+          "sha256": "a5d73dd13d950383ee2e354728393dd0efb833083ccc809f4951c314853b0c42",
+          "bytes": 201572,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "dd46f5f492cf5798260c722212036a1a4e279b9cbf257ecab9794f11eab6d996",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/06/receipt-supplied-dd46f5f492cf-a5d73dd13d95.json",
+            "receipt_sha256": "90a8cfb136fdebe490d229260490bffa43fa2109b193e7cf68bff17be7d75153",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "a5d73dd13d950383ee2e354728393dd0efb833083ccc809f4951c314853b0c42",
+            "cut_id": "06",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "three_quarter",
+            "swimwear_visible": true,
+            "note": "青のワンピースと白シャツ、プール椅子座り。両手と両足の水中部分を確認し、目立つ接合破綻なし。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "07": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-07.jpg",
+          "sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2",
+          "bytes": 267314,
+          "width": 960,
+          "height": 1200,
+          "source_sha256": "68713cd866887092c8e90d220e92384fda8e934582d349b1cf0c35bfe88b4f58",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/07/receipt-supplied-68713cd86688-272956cb85b3.json",
+            "receipt_sha256": "1096dba0e4d90cbaf1ddc63e5ed19128538a939c0a839f9935021bce186eb902",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2",
+            "cut_id": "07",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "three_quarter",
+            "swimwear_visible": false,
+            "note": "ベージュのドレスで窓辺のソファに座る。夕方の窓光。頭・手・腕・脚の接合に目立つ破綻なし。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "08": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-08.jpg",
+          "sha256": "4ff2c49fa617cc7ad84a5fa306a75dab6edc73739bbb67bb1fe0f7a97c3c29d0",
+          "bytes": 318324,
+          "width": 960,
+          "height": 1200,
+          "source_sha256": "0516b7aead08a965e51a623394ed3cdd90f289f6d3e112cfac035f63e480b6da",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/08/receipt-supplied-0516b7aead08-4ff2c49fa617.json",
+            "receipt_sha256": "7cf26d225369cbd429da2d85a4b9d1c873804a7a20a8a8748b39194c79b6a75f",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "4ff2c49fa617cc7ad84a5fa306a75dab6edc73739bbb67bb1fe0f7a97c3c29d0",
+            "cut_id": "08",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "full_body",
+            "swimwear_visible": false,
+            "note": "コートとワイン色のドレス、濡れた夜道の全身歩き。バッグを持つ手・コートを押さえる手・ヒールを確認。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        },
+        "09": {
+          "path": "assets/generated/photo-issue-november-city-evening-mio-012-09.jpg",
+          "sha256": "67e82c597cbcbaefa757a7bf9028da950f58f75c3b5ddead88597b60ea8b39ed",
+          "bytes": 198488,
+          "width": 960,
+          "height": 1200,
+          "source_sha256": "6204b1ec9a40aeafd3a7be866b0911b7230ed38e559dd9bb7927e1f0fb3e11df",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-city-evening-mio-012/09/receipt-supplied-6204b1ec9a40-67e82c597cbc.json",
+            "receipt_sha256": "2d4c3c8b899637572d23f3776f62846a45d41aaa7ec1e67b0ee7b1a31ed4f583",
+            "target_design_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a"
+          },
+          "review": {
+            "decision": "accepted",
+            "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5",
+            "image_sha256": "67e82c597cbcbaefa757a7bf9028da950f58f75c3b5ddead88597b60ea8b39ed",
+            "cut_id": "09",
+            "master_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+            "body_profile_sha256": "71675b4e6190d0125065f8a1c10e0daf434ce0d5c400cc278a19c58dad3b2d1a",
+            "reviewed_at": "2026-11-19T00:25:51.722179Z",
+            "framing": "three_quarter",
+            "swimwear_visible": false,
+            "note": "ワイン色のドレス、夜景の見える食事の席。頬に添える手と顔の形、料理・グラスの自然さを確認。 元PNGと掲載JPEGの縦横比・本人の印象・衣装・季節・説明を既存の実目視QAで確認。cm実測を主張しない。",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-city-evening-mio-012/final-jpeg-qa.json",
+              "sha256": "c4a9165e88d9add9f76165c470311d16c20223f2796ab1f1ea4c00491ab4d1f4"
+            }
+          }
+        }
+      },
+      "generation_holds": {},
+      "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5"
     }
   ]
 }

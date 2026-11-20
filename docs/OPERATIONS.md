@@ -71,7 +71,7 @@ const R = new Function(helperSource + "\nreturn PublicationReviewContext;")();
 text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 ```
 
-`fetchFile` はGitHubの `fetch_file`、`fetchRepository` は同じ接続の `fetch({url})` へ束縛する。helperはDraftを含むopen PRを列挙し、PRの分岐点と固定headから対象の公開文だけを返す。上限外の対象、未対応の変更、古い承認や取得失敗を対象0件へ置き換えない。画像だけの未完や公開後の本文差分は従来の担当手順で別途確認する。
+`fetchFile` はGitHubの `fetch_file`、`fetchRepository` は同じ接続の `fetch({url})` へ束縛する。helperはDraftを含むopen PRを列挙し、PRの分岐点と固定headから対象の公開文だけを返す。上限外の対象、未対応の変更、古い承認や取得失敗を対象0件へ置き換えない。承認済みのCIは同じPR・headの `check.yml` 実行へ結び付ける。CI成功でも未統合なら公開処理の確認対象として残し、独立初読を重ねず、既存finalizerの進行・失敗・未確認を区別して同じ引継ぎから続ける。進行中の処理へ重複着手せず、確認なしに再実行しない。画像だけの未完や公開後の本文差分は従来の担当手順で別途確認する。
 
 これは読み取り入力の整理であり、独立初読の合格・画像採否・所有権・公開許可を代行しない。公開文を実際に初読した後で同PRの作者説明と元runを照合し、下記の既存guardと公開手順へ進む。headが動いた場合は新しいheadで取得し直す。結果だけから「今回のreviewer定期実行が成功した」とは判断せず、実際のrunと公開処理の結果を確認する。
 
@@ -110,7 +110,7 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 | 白峰ゆき | 18:15 |
 | 月城れな | 20:30 |
 
-当日の本人既刊または担当PRがあれば新規作成せず、未完了の同じPRだけを継続する。元の本人原文と正確な既刊カット参照が必要で、説明しかない画像参照を推測で埋めない。日次近況のための画像・動画生成は行わない。
+当日の本人既刊または担当PRがあれば新規作成せず、未完了の同じPRだけを継続する。近況の完了と、月曜の写真ストック・明示未完の既存原本の保存や受渡しは別に判定し、近況が公開済みという理由だけで写真作業まで終了しない。追加生成の曜日・週上限と、受領済み候補の再転送禁止は維持する。元の本人原文と正確な既刊カット参照が必要で、説明しかない画像参照を推測で埋めない。日次近況のための画像・動画生成は行わない。
 ## 着手と公開
 
 1. 最新main、`AGENTS.md`、自分と関連担当の直近結果、未統合PR・実行中CIを確認する。前回の未完了作業を先に片付け、同じ記事・ファイルの重複PRを作らない。コマンドを使う前に、下記「実行環境の準備」で今回の実行環境へ入力ファイルを用意する。
@@ -139,12 +139,12 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 
 タスクの実行環境から本番へ直接接続できない場合は、既存の読み取り専用 `.github/workflows/verify-public-photos.yml` の実行結果をGitHub接続から回収できる。新しい監視タスクを作らず、次の証拠をそろえる。
 
-- 対象main SHAのrunは `https://api.github.com/repos/RollNuts/mihassei-news/actions/runs?head_sha=<完全なSHA>&event=push&per_page=20` から探し、workflow path・head SHA・jobを照合する。`fetch_commit_workflow_runs` はPR実行限定のため、この本番push確認には使わない。既知の手動runがある場合もその実SHAを確認する。
+- 対象main SHAのrunは `https://api.github.com/repos/RollNuts/mihassei-news/actions/runs?head_sha=<完全なSHA>&per_page=20` からeventを限定せず探す。通常pushと、既存finalizerからの `workflow_dispatch` を含め、workflow pathが `.github/workflows/verify-public-photos.yml` であること、head SHA、実際の `check` jobを照合する。`fetch_commit_workflow_runs` はPR実行限定のため、この本番確認には使わない。先頭のrunやskipped実行だけを公開の証拠にしない。
 - jobの実stepが成功し、ログの本番revisionが対象SHAと一致することを確認する。docs-only祖先を許容した結果なら、その差分証明も残す。run全体のsuccessやPRのCI成功だけで完了にしない。
 - 対象slugの `Public article OK`、変更した画像・図の検証結果、必要な共有画像の対象を確認する。現行 `check_live.py` の本文確認は最新10記事、`check_share_cards.py` は選抜したカードの確認であり、対象外まで検証済みにしない。ログに含まれない対象や変更素材は、直接の取得・対象を指定した検証・次担当での確認を未完として残す。
 - 結果は「Actionsで実配信検証済み」と「今回のブラウザ目視」を分けて記録する。取得不能・実行中・対象外を0件や本番障害へ読み替えない。取得不能なら失敗した取得操作を残し、実行中なら同じrunの完了を確認する。対象外は対象を指定した検証へ引き継ぐ。
 
-同じworkflowの末尾にある `Report photograph completion separately from delivery checks` は、checkout SHAに対応する画像選択・写真待ち件数・対象slugと次の操作をSummaryと `live-photo-health-<run_id>` artifactへ出す。記事・共有カードの配信結果と写真の完了を別々に読む。`photo_followup_counts` は写真向け記事だけの未完了で、意図的なイラストも含むJPEG全件の `missing` とは異なる。これは現素材の選択結果であり、新しい目視採用や全記事の本番表示確認ではない。正常な代替画像での公開は継続し、写真待ちは既存の回収担当が引き取る。
+同じworkflowの末尾にある `Report photograph completion separately from delivery checks` は、checkout SHAに対応する画像選択・写真待ち件数・対象slugと次の操作をSummaryと `live-photo-health-<run_id>` artifactへ出す。記事・共有カードの配信結果と写真の完了を別々に読む。`photo_followup_counts` は写真向け記事だけの未完了で、意図的なイラストも含むJPEG全件の `missing` とは異なる。現在の記事SHAに一致する保存済み不採用理由は、簡潔なJSONとartifactの `photo_followup[].rejection_evidence`、またはSummary・jobログの `Saved rejection` から画像SHA・確認日時・元runと合わせて引き継ぐ。これは現素材の選択結果であり、新しい目視採用や全記事の本番表示確認ではない。正常な代替画像での公開は継続し、写真待ちは既存の回収担当が引き取る。
 
 ## 画像・動画の担当を重ねない
 

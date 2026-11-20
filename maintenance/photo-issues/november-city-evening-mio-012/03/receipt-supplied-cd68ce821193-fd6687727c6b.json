@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-city-evening-mio-012",
+  "cut_id": "03",
+  "model_id": "hanase-mio",
+  "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+  "imported_at": "2026-11-19T00:20:39.926236Z",
+  "source": {
+    "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+    "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+    "archive": {
+      "format": "zip",
+      "filename": "hanase_mio_highres_19.zip",
+      "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+      "bytes": 41555760,
+      "member": "hanase_mio_05_poolside.png"
+    },
+    "path": "maintenance/photo-issues/november-city-evening-mio-012/03/source-cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a.png",
+    "sha256": "cd68ce821193433ba07048cb4ee3cbad5ca346fbccb43ac4aebc912e1a93d92a",
+    "bytes": 2568973,
+    "width": 1536,
+    "height": 1024,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "generation_turn_status": "not_retained",
+    "generation_turn": null
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-city-evening-mio-012-03.jpg",
+    "sha256": "fd6687727c6b8844ec849bd8ea0134a1b8de682b6cf5d4b69e48ec1c21c2dc34",
+    "bytes": 255883,
+    "width": 1200,
+    "height": 800
+  },
+  "transform": {
+    "encoder": "Pillow",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  },
+  "encoding_details": {
+    "pillow_version": "13.0.0",
+    "resample": "LANCZOS",
+    "mode": "RGB",
+    "optimize": true,
+    "progressive": false,
+    "subsampling": 0
+  }
+}

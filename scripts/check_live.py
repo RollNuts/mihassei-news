@@ -31,6 +31,7 @@ if __package__:
     from .social_cards import reviewed_scene_png
     from .motion_clips import clip_url
     from .photo_stories import load_photo_stories
+    from .photo_issues import load_photo_issues, published_issues, issue_url, photo_image_url, cover_shot
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
     from .serials import public_serials
@@ -51,6 +52,7 @@ else:
     from social_cards import reviewed_scene_png
     from motion_clips import clip_url
     from photo_stories import load_photo_stories
+    from photo_issues import load_photo_issues, published_issues, issue_url, photo_image_url, cover_shot
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
     from serials import public_serials
@@ -551,6 +553,96 @@ def verify_article_diagram(article: dict, markup: str, *, fetch=None, root=ROOT)
     return True
 
 
+def verify_latest_photo_issue_delivery(issues, *, fetch=None):
+    """Verify the newest validated, latest-first photo feature with eleven GETs.
+
+    The share-card check only reads its cover. Check all ten body photographs
+    against their accepted bytes, in the renderer's cover-first reading order,
+    and the column between the first and second groups of five photographs.
+    An empty published catalog needs no reads; any delivery failure propagates.
+    """
+    if not issues:
+        return 0
+    issue = issues[0]
+    path = issue_url(issue)
+    fetch = fetch or get
+    try:
+        page, mime = fetch(path)
+    except (urllib.error.URLError, TimeoutError) as exc:
+        raise RuntimeError(path + ": photo feature is unreachable") from exc
+    if mime.split(";", 1)[0].strip().lower() != "text/html":
+        raise RuntimeError(path + ": photo feature is not served as HTML")
+    markup = _RecommendationMarkup()
+    markup.feed(page.decode("utf-8"))
+    markup.close()
+    bodies = [element for element in markup.elements
+              if "photo-issue-page" in (element["attrs"].get("class") or "").split()]
+    if (len(bodies) != 1 or bodies[0]["tag"] != "article"
+            or bodies[0]["attrs"].get("data-engagement-key") != "photo-issue:" + issue["slug"]):
+        raise RuntimeError(path + ": photo feature body missing, duplicated or stale")
+    elements = list(_descendants(bodies[0]))
+    headings = ["".join(element["text"]) for element in elements if element["tag"] == "h1"]
+    summaries = ["".join(element["text"]) for element in elements
+                 if element["tag"] == "p"
+                 and "photo-issue-dek" in (element["attrs"].get("class") or "").split()]
+    if headings != [issue["title"]] or summaries != [issue["summary"]]:
+        raise RuntimeError(path + ": photo feature title or summary mismatch")
+
+    first = cover_shot(issue)
+    shots = [first] + [shot for shot in issue["shots"] if shot["id"] != first["id"]]
+    figures = [element for element in elements
+               if "photo-issue-shot" in (element["attrs"].get("class") or "").split()]
+    if (len(shots) != 10 or len(figures) != 10
+            or [figure["attrs"].get("id") for figure in figures]
+            != ["photo-" + shot["id"] for shot in shots]):
+        raise RuntimeError(path + ": photo feature needs ten cuts in cover-first order")
+    columns = [element for element in elements
+               if "photo-issue-column" in (element["attrs"].get("class") or "").split()]
+    if len(columns) != 1 or columns[0]["tag"] != "section":
+        raise RuntimeError(path + ": photo feature column missing or duplicated")
+    reading_blocks = [element for element in elements
+                      if {"photo-issue-shot", "photo-issue-column"}
+                      & set((element["attrs"].get("class") or "").split())]
+    if reading_blocks != figures[:5] + columns + figures[5:]:
+        raise RuntimeError(path + ": photo feature column reading position mismatch")
+    paragraphs = ["".join(child["text"]) for child in columns[0]["children"]
+                  if child["tag"] == "p"
+                  and "photo-issue-eyebrow" not in (child["attrs"].get("class") or "").split()]
+    if paragraphs != issue["column"]:
+        raise RuntimeError(path + ": photo feature column paragraphs mismatch")
+
+    for figure, shot in zip(figures, shots):
+        cut = shot["id"]
+        label = path + " cut " + cut
+        if (figure["tag"] != "figure"
+                or [child["tag"] for child in figure["children"]] != ["img", "figcaption"]):
+            raise RuntimeError(label + ": photo image or caption missing or duplicated")
+        picture, caption = figure["children"]
+        image = issue["images"][cut]
+        supplied = image.get("provenance", {}).get("kind") == "user_supplied_photo"
+        dimensions = (image["width"], image["height"]) if supplied else (1200, 675)
+        url = photo_image_url(issue, cut)
+        for name, value in (("src", url), ("alt", shot["alt"]),
+                            ("width", str(dimensions[0])), ("height", str(dimensions[1]))):
+            if picture["attrs"].get(name) != value:
+                raise RuntimeError(label + ": photo " + name + " differs from the reviewed cut")
+        if (picture["attrs"].get("srcset")
+                or [child["tag"] for child in caption["children"]] != ["span", "span"]
+                or ["".join(child["text"]) for child in caption["children"]] != [cut, shot["caption"]]):
+            raise RuntimeError(label + ": photo caption or image selection mismatch")
+        try:
+            payload, mime = fetch(url)
+        except (urllib.error.URLError, TimeoutError) as exc:
+            raise RuntimeError(label + ": photo JPEG is unreachable") from exc
+        if mime.split(";", 1)[0].strip().lower() != "image/jpeg":
+            raise RuntimeError(label + ": photo JPEG Content-Type mismatch")
+        if len(payload) != image["bytes"] or hashlib.sha256(payload).hexdigest() != image["sha256"]:
+            raise RuntimeError(label + ": published photo JPEG bytes differ from the reviewed cut")
+        if jpeg_dimensions(payload) != dimensions:
+            raise RuntimeError(label + ": published photo JPEG dimensions mismatch")
+    return len(figures)
+
+
 def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
     """GET-only proof for the newest real market dispatch, figures and RSS.
 
@@ -809,6 +901,12 @@ def verify_pageview_contract(payload: dict, article_slug: str) -> None:
 def check():
     # A docs-only descendant need not rebuild, but all public-byte checks remain.
     verify_public_revision()
+    issues = published_issues(load_photo_issues(ROOT), root=ROOT)
+    checked_photo_cuts = verify_latest_photo_issue_delivery(issues)
+    if issues:
+        print("Public latest photo feature, JPEGs and column OK:", issues[0]["slug"], checked_photo_cuts)
+    else:
+        print("Public photo feature check skipped: no published photo issues")
     articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
     sorted_articles=latest_articles(articles, limit=None)
     recent=sorted_articles[:10]

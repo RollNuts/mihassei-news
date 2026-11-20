@@ -15,6 +15,8 @@ var PublicationReviewContext = (function () {
   const PHOTO_INPUT = /^(?:content\/photo_(?:issues|editions|stories)(?:\.json|\/)|maintenance\/photo-)/;
   const ARTICLE_IMAGE = /^(?:assets\/(?:generated|editorial-scenes|article-diagrams)\/|maintenance\/(?:native-image-candidates|editorial-scenes|article-diagrams)\/|content\/(?:visual_reviews|approved_photos)\.json$)/;
   const OPEN = "/pulls?state=open&base=main&sort=created&direction=asc";
+  const CI_WORKFLOW = ".github/workflows/check.yml";
+  const ACTIVE_RUN = new Set(["queued", "in_progress", "waiting", "pending", "requested"]);
   const MAX_PAGES = 10, PAGE_SIZE = 100;
 
   function object(value) { return value !== null && typeof value === "object" && !Array.isArray(value); }
@@ -212,18 +214,35 @@ var PublicationReviewContext = (function () {
       return prs.sort((a, b) => a.number - b.number);
     }
     async function ciState(pr) {
-      if (pr.mergeable === false || ["dirty", "blocked"].includes(pr.mergeable_state)) return "merge_blocked";
-      if (pr.mergeable !== true || !["clean", "unstable"].includes(pr.mergeable_state)) return "mergeability_unknown";
-      const checks = await pages("/commits/" + pr.head.sha + "/check-runs?filter=latest", "check_runs");
-      require(checks.every(c => c.head_sha === pr.head.sha && typeof c.name === "string"
-        && ["queued", "in_progress", "completed"].includes(c.status)), "Invalid current-head checks");
-      const failed = checks.some(c => c.status === "completed"
-        && !["success", "neutral", "skipped"].includes(c.conclusion));
-      if (failed) return "ci_failed";
-      const tests = checks.filter(c => c.name === "test");
-      if (!tests.length || tests.some(c => c.status === "completed" && c.conclusion !== "success"))
-        return "ci_unverified";
-      return checks.some(c => c.status !== "completed") ? "ci_pending" : "ci_success";
+      if (pr.mergeable === false || ["dirty", "blocked"].includes(pr.mergeable_state)) return { state: "merge_blocked" };
+      if (pr.mergeable !== true || !["clean", "unstable"].includes(pr.mergeable_state)) return { state: "mergeability_unknown" };
+      // A check called "test" does not identify the required workflow or this PR.
+      // Use the repository runs route supported by the existing GitHub reader.
+      const runs = await pages("/actions/runs?event=pull_request&head_sha=" + pr.head.sha, "workflow_runs");
+      const candidates = runs.filter(run => run.path === CI_WORKFLOW
+        && run.event === "pull_request" && run.head_sha === pr.head.sha);
+      if (!candidates.length) return { state: "ci_unverified" };
+      require(candidates.every(run => Number.isSafeInteger(run.id) && run.id > 0), "Invalid CI run identity");
+      const latest = candidates.reduce((a, b) => a.id > b.id ? a : b);
+      const run = await get("/actions/runs/" + latest.id);
+      const binding = { ci_run_id: latest.id };
+      if (run.id !== latest.id || run.path !== CI_WORKFLOW || run.event !== "pull_request"
+          || run.head_sha !== pr.head.sha || run.head_repository?.full_name !== REPOSITORY
+          || !Number.isSafeInteger(run.run_attempt) || run.run_attempt < 1
+          || !Array.isArray(run.pull_requests)
+          || run.pull_requests.filter(p => p.number === pr.number && p.head?.sha === pr.head.sha
+            && p.base?.ref === "main" && matches(GIT, p.base?.sha)).length !== 1)
+        return { ...binding, state: "ci_unverified" };
+      binding.ci_run_attempt = run.run_attempt;
+      if (ACTIVE_RUN.has(run.status)) return { ...binding, state: "ci_pending" };
+      if (run.status !== "completed") return { ...binding, state: "ci_unverified" };
+      if (run.conclusion !== "success") return { ...binding, state: "ci_failed" };
+      const jobs = await pages("/actions/runs/" + run.id + "/jobs?filter=latest", "jobs");
+      const tests = jobs.filter(job => job.name === "test");
+      if (tests.length !== 1 || tests[0].run_id !== run.id || tests[0].head_sha !== pr.head.sha
+          || tests[0].run_attempt !== run.run_attempt || tests[0].status !== "completed"
+          || tests[0].conclusion !== "success") return { ...binding, state: "ci_unverified" };
+      return { ...binding, state: "ci_success" };
     }
 
     await main();
@@ -275,11 +294,15 @@ var PublicationReviewContext = (function () {
       const state = handoff(pr), references = targets.map(({ reader, ...target }) => target);
       if (state === "current_head_claim" && pr.draft === false) {
         const ci = await ciState(pr);
-        if (["ci_pending", "ci_success"].includes(ci)) {
-          machine.push({ ...binding, state: ci, verification: "self_reported_handoff_only", paths, targets: references });
+        if (ci.state === "ci_pending") {
+          machine.push({ ...binding, ...ci, verification: "self_reported_handoff_only", paths, targets: references });
           continue;
         }
-        attention.push({ ...binding, reason: ci, handoff: state, paths, targets: references });
+        attention.push({ ...binding, ...ci, reason: ci.state === "ci_success" ? "publication_unverified" : ci.state,
+          handoff: state, paths, targets: references,
+          ...(ci.state === "ci_success" ? { next_operation: "Inspect the existing finalizer for this PR/head. "
+            + "If it is active, leave it running. If blocked or missing, the current owner must recover this same "
+            + "handoff after checking current main. Do not repeat first read, create another PR, or rerun blindly." } : {}) });
         // A current-head claimed first read needs gate recovery, not a duplicate
         // first read. This row is explicitly unresolved, never a normal zero.
         continue;
