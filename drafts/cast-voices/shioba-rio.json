@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-19",
+  "created_date": "2026-11-20",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
     "issue_slug": "november-off-clock-rio-002",
-    "cut_id": "07",
-    "image_sha256": "4bf65213b6322e65144f079e73e33d4d18e20b9a2416aa2dc4f351d7eb83c167"
+    "cut_id": "05",
+    "image_sha256": "478b66fdad4f70de78b934d0c53b9b4f095dc5f1c4f16e6585f0ae48c5c59d3a"
   },
-  "post_text": "朝の散歩で、花屋の前に赤い実のついた枝を見つけました。名前を調べようと立ち止まったら、もう取材の集合時間。手帳には「赤い実」とだけ書いてあります。",
-  "spoken_line": "あ、名前を聞きそびれました。",
-  "future_idea": "2031年、公共施設のAI管理契約に住民の異議申立権を義務化。決定の理由を尋ねても、委託先は『仕様上お答えできません』。"
+  "post_text": "朝、傘を畳んだ途端にまた小雨。駅までの短い道で、開いて閉じてを三回繰り返しました。取材の段取りより、今朝の空のほうが気まぐれです。",
+  "spoken_line": "また雨ですか。",
+  "future_idea": "2031年、公共施設のAI問い合わせ窓口に『人間への取次ぎ時間』の表示を義務化。表示は『ただいま算出中』のまま。"
 }
