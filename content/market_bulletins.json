@@ -3553,5 +3553,206 @@
         "checked_on": "2026-11-20"
       }
     ]
+  },
+  {
+    "slug": "2026-11-20-open",
+    "day": "2026-11-20",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-20T12:08:03+09:00",
+    "title": "20日寄り後：TOPIXは1.91%安、グロース株は3.39%安―半導体と銀行の下げ幅を比較",
+    "summary": "20日9:17更新のTOPIXは前日比1.91%安、グロース250は3.39%安。アドバンテスト9.00%安と三井住友FG1.59%安には差があり、米国株安を受けた国内の売りの広がりを確認します。",
+    "lead": "11月20日（金）9時17分から9時31分までに確認した、東京市場の寄り付き後の観測です。JPXが9:17 JSTに更新したTOPIXは3,749.51ポイント（前日比1.91%安）、グロース250は652.16ポイント（3.39%安）。前日の米国19日の株安を受けた動きとみられますが、9時台の途中値であり、引け後の結果ではありません。保有銘柄の業種によって下げ方がどれほど違うかを比べます。",
+    "sections": [
+      {
+        "heading": "19日の日経平均高から20日は寄り付きで急反落",
+        "paragraphs": [
+          "前日19日は日経平均が59,444.21円と0.71%上昇した一方でTOPIXは3,822.47ポイントと小幅安でした。20日9:00の日経平均の寄り付きは、DZHによると58,551.56円（前日比892.65円安）。JPXのTOPIXは3,767.40ポイント（前日比55.07ポイント安）で始まりました。これは寄り付きの値であり、現在値ではありません。",
+          "JPXの20日9:17更新ではTOPIXがさらに3,749.51（前日比72.96ポイント安、1.91%安）、グロース250は652.16（22.86ポイント安、3.39%安）でした。新興株の下げがTOPIXを上回っています。米国19日のS&P500・ナスダック下落という逆風はありますが、各社の業績が同率で悪化したと意味する数字ではありません。"
+        ]
+      },
+      {
+        "heading": "アドバンテストは9%安、銀行は1.6%安",
+        "paragraphs": [
+          "アドバンテスト（6857）は20日9:31の東証途中値24,610円、19日終値27,045円比9.00%安。米国ハイテク株への売りから国内の半導体関連にも警戒が広がっているとみられます。ただし同社自身の受注・利益の新しい下方修正を本稿で確認したわけではなく、寄り後の下落が終値でも続くかがまず確認点です。",
+          "三井住友FG（8316）は20日9:30の途中値3,028円、前日3,077円比1.59%安。JPXの9:17銀行業指数も1.54%安でした。半導体と銀行では下げ幅が違います。銀行を保有・比較する際は日銀の政策見通しや次の決算と、株価全体の地合いを分けて考えます。"
+        ]
+      },
+      {
+        "heading": "TOPIX横ばい予想は寄り後の暫定値では逆風",
+        "paragraphs": [
+          "19日寄り前に公表した『20日のTOPIX公式終値が18日終値3,824.00ポイントに対し±0.5%以内』という横ばい予想に対して、20日9:17の3,749.51は基準から約1.95%安と範囲を外れています。ただし予想の判定は20日大引けの公式終値であり、この時点では的中・外れは決まりません。",
+          "確定済みの日次TOPIX予想は1勝3敗（的中率25.0%、母数4件）のままです。引け後に確認するのはTOPIXが下げ幅を縮めるか、グロース250や銀行業・情報通信業の弱さが続くか、そして指数と個別銘柄の動きに新しい会社材料が出るかです。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov20-open",
+        "kind": "bars",
+        "title": "TOPIX：19日終値から20日9:17は1.91%安",
+        "note": "JPX20日09:17更新の場中暫定値。前日の3,822.47は19日16:59最終更新の確定値。終値同士の比較ではなく、20日の正式判定に使わない。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T09:17:00+09:00",
+        "values": [
+          {
+            "label": "11/19終値",
+            "value": 3822.47,
+            "state": "実績"
+          },
+          {
+            "label": "11/20 9:17",
+            "value": 3749.51,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth-nov20-open",
+        "kind": "bars",
+        "title": "グロース250：20日9:17は前日比3.39%安",
+        "note": "前日の675.02はJPX20日09:17更新行のcurrentPrice652.16とpreviousDayComparison -22.86から再計算し、既刊19日終値とも照合。20日値は暫定。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T09:17:00+09:00",
+        "values": [
+          {
+            "label": "11/19終値",
+            "value": 675.02,
+            "state": "実績"
+          },
+          {
+            "label": "11/20 9:17",
+            "value": 652.16,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "advantest-nov20-open",
+        "kind": "bars",
+        "title": "アドバンテスト：11/19終値と11/20 9:31途中値",
+        "note": "Yahoo!同一東証株価の前日通常終値と20日9:31途中値の比較。株式分割の調整後終値も前日27,045円と確認した。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "observed_at": "2026-11-20T09:31:00+09:00",
+        "values": [
+          {
+            "label": "11/19終値",
+            "value": 27045,
+            "state": "実績"
+          },
+          {
+            "label": "11/20 9:31",
+            "value": 24610,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "広い範囲での売り",
+        "signal": "逆風",
+        "meaning": "TOPIXは9:17に1.91%安、グロース250は3.39%安。指数間の差があり、前日終値だけでは現在の保有株の動きが分からない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T09:17:00+09:00"
+      },
+      {
+        "name": "半導体株の下落率が大きい",
+        "signal": "逆風",
+        "meaning": "アドバンテストは20日9:31に9.00%安。NVIDIAや米国AI株の市場反応を確認しつつ、会社の受注・利益の実績と分ける。",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "observed_at": "2026-11-20T09:31:00+09:00"
+      },
+      {
+        "name": "銀行業の下落は相対的に小さい",
+        "signal": "中立",
+        "meaning": "JPX銀行業指数は9:17に1.54%安、三井住友FGは9:30に1.59%安。半導体と同一の原因・下落率とはしない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T09:17:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "6857",
+        "name": "アドバンテスト",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "急落",
+        "previous_close": 27045,
+        "close": 24610,
+        "price_kind": "intraday",
+        "market_date": "2026-11-20",
+        "previous_market_date": "2026-11-19",
+        "observed_at": "2026-11-20T09:31:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11月19日の通常終値と調整後終値がともに27,045円と一致。20日9:31の同じ東証・JPYの途中値24,610円と比較し、独自の分割補正なし。",
+        "context": "20日9:31は前日比9.00%安。米国19日の半導体を含む売りが国内へ波及した可能性があるが、株価下落だけで同社の受注や利益が9%減ったとはいえない。"
+      },
+      {
+        "code": "8316",
+        "name": "三井住友フィナンシャルグループ",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 3077,
+        "close": 3028,
+        "price_kind": "intraday",
+        "market_date": "2026-11-20",
+        "previous_market_date": "2026-11-19",
+        "observed_at": "2026-11-20T09:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!11月19日通常終値・調整後終値がともに3,077円と一致。20日9:30の東証途中値3,028円と比較。独自の株式分割・併合補正なし。",
+        "context": "20日9:30は前日比1.59%安。JPX銀行業指数も9:17に1.54%安で、半導体ほどの下げではない。利ざやと金利・企業決算の次の確認が必要。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX公式：11月20日09:17更新のTOPIX・グロース250・業種別指数（場中速報値）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX公式：指数ファイルの更新時刻（09:17 JST）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "DZHフィナンシャルリサーチ：11月20日09:00東京株式市場の寄り付き",
+        "url": "https://fxplus.xmtrading.com/market-report/dzh261120089.html",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト（11/20 09:31途中値・11/19終値）",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：アドバンテスト11/19調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/6857.T/history",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：三井住友FG（11/20 09:30途中値・11/19終値）",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：三井住友FG11/19調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/8316.T/history",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      }
+    ]
   }
 ]
