@@ -1,5 +1,74 @@
 [
   {
+    "slug": "groundwater-meters-shared-well-pump-stops",
+    "category": "政治",
+    "flash": "地下水を共同管理、工場のポンプ停止",
+    "art": "cards",
+    "fiction_at": "2031-11-21T07:34:51+09:00",
+    "published_at": "2026-11-21T07:34:51+09:00",
+    "publication_slot": "2026-11-21T07:30:00+09:00",
+    "title": "地下水の取水量を町が共同公開　部品工場が大型ポンプを止めた2031年の朝",
+    "summary": "2031年、水鳥町は同じ地下水を使う部品工場と園芸施設の取水記録を共同公開した。井戸の水位が下がった週、工場は冷却水を循環させて大型ポンプ1基を止め、園芸施設は雨水の貯水槽から苗へ水を送った。水を先に汲んだ側が得をする仕組みを改める一方、設備費の負担には差が残る。",
+    "paragraphs": [
+      "2031年11月21日の朝、水鳥町の部品工場で、56歳の設備責任者が井戸の大型ポンプ1基を停止した。冷却水を循環させる設備を動かし、機械の温度を確かめてから止めたのだ。同じ地下水を使う近くの園芸施設では、苗への散水を井戸から雨水の貯水槽へ切り替えた。町が公開した前週の取水記録と観測井の水位が、二つの現場の朝の作業を変えた。",
+      "町は2031年、同じ地下の水の層を利用する井戸の流量計と、離れた場所に設けた観測井の水位を一つの台帳で公開する方式を始めた。各事業者の使用量だけでは、隣の施設も同じ水を汲んでいることが見えにくかった。水位が一定の注意水準に近づく週は、あらかじめ合意した節水手順を実行し、その日の取水実績を翌朝に共有する。台帳が示すのは汲んだ量と観測地点の水位で、地下水全体の正確な残量ではない。",
+      "部品工場は製造機械を冷やすため、これまで井戸水を取り入れては排出していた。井戸を使えば水道から買うより費用を抑えられるが、同じ地下水に頼る園芸施設の苗が乾けば町全体の仕事に影響する。工場は操業時間を縮める方法も検討した。しかし出荷予定を守りながら取水を減らすため、費用を自社で負担して冷却水の循環装置を増設した。装置には電気代と点検の仕事が増えるが、朝から加工ラインを止めずに済む。",
+      "園芸施設は工場ほど大きな設備投資ができない。41歳の栽培責任者は井戸を掘り足す案を退け、屋根から集めた雨水を保管する槽を拡張した。渇水が続けば槽だけでは足りず、苗の種類や栽培量を調整する負担も残る。町は測定器と公開台帳の整備費を引き受けたが、工場の循環設備や園芸施設の貯水槽まで一律に無料にはしなかった。それぞれの節水方法と費用を協議の記録に残した。",
+      "話し合いでは、使った量に関係なく各施設の井戸を同じ時間だけ止める案も出た。だが冷却設備を途中で止められない工場と、苗に水を与える時間が限られる園芸施設では、同じ停止時間が同じ負担にならない。町は一律停止の代わりに、観測井の水位に応じて必要な取水削減量を共有し、各施設が実際の削減方法を選ぶ協定にした。約束した削減に届かなければ再協議する。大きな工場が先に汲めば小さな施設の番がなくなるという従来の争いを、取水量と費用の公開で扱うためだ。",
+      "この朝、工場の取水計は大型ポンプを止めた後の低い流量を記録し、園芸施設の苗には貯水槽から水が届いた。どちらも仕事を終えたわけではない。工場には装置の維持費が、園芸施設には次の少雨に備える負担が残る。水位がすぐ回復したと断定する数字もない。それでも、誰がどれだけ汲み、どの設備を動かさずに済ませたかは、町の同じ記録で確かめられるようになった。"
+    ],
+    "source": {
+      "kind": "国土交通省・地下水部会設置の報道発表",
+      "publisher": "国土交通省",
+      "published_at": "2026-11-20T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/water01_hh_000193.html",
+      "topic": "国土交通省は2026年11月20日、国土審議会水資源開発分科会に地下水部会を設置し、地下水採取の実態把握と適正な保全・利用の仕組みの検討開始を発表した。全国一律の取水規制が施行されたという発表ではない。2031年の水鳥町、共通台帳・協定・工場の冷却水循環・園芸施設の雨水槽・人物と出来事は創作。"
+    },
+    "scene_prompt": "Natural realistic horizontal 16:9 documentary news photograph in a modest Japanese industrial parts factory utility room on a cool November morning in the fictional year 2031. A 56-year-old Japanese male plant maintenance manager wearing ordinary workwear and safety boots carefully operates the stop control of one large industrial groundwater pump, while a newly installed closed-loop cooling water system with believable pipes, gauges, coolant return line and heat exchanger is visibly running nearby. His colleague checks the factory equipment temperature with a small handheld gauge. Focus on the machinery and the manager's deliberate action; no captions, no legible text or symbols, no logos, no sci-fi projections, no real-person likeness, natural factory lighting and physically plausible industrial pipe layout.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "地下水",
+      "工業用水",
+      "水資源"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "地下水",
+      "水資源"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "地下水をたくさん汲んだ企業が得をする町で、取水量が隣の施設にも見えるようになった。最初に止まったのは、工場の大きなポンプだった。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "quiet_aftertaste",
+    "editorial_signature": {
+      "present": "2026年11月20日、国土交通省が地下水採取の実態把握と保全・利用の制度検討へ向けた地下水部会設置を発表した",
+      "target": "2031年の町が同じ地下水を使う事業者の取水量と水位を共同公開する",
+      "action": "部品工場は冷却水の循環装置を動かして井戸ポンプを止め、園芸施設は雨水槽から散水する",
+      "outcome": "工場の取水計の使用量が下がり、園芸施設の苗に雨水が届き、各施設の負担を共有台帳と協定で確認できる"
+    },
+    "reader_clarity": {
+      "who": "同じ地下水を使う町の部品工場と園芸施設",
+      "action": "工場が冷却水循環へ切り替え大型井戸ポンプを止め、園芸施設は雨水槽から苗に散水した",
+      "oddity": "2031年は事業者をまたいだ取水量・観測井の水位を共通記録で確認でき、先に汲む競争を協定に置き換える"
+    },
+    "behavior_basis": {
+      "motive": "地下水を使い続けながら工場の出荷と苗の栽培を両立し、取水制限の負担を事業者で見えるようにする",
+      "ordinary_alternative": "工場は操業を短縮する、園芸施設は井戸を増設する、または両者の井戸を同じ時間だけ止める",
+      "why_not": "機械停止と散水の時間的制約が異なるため一律停止より、工場の冷却水循環と園芸施設の雨水貯留を組み合わせる方が実際の取水を減らせる",
+      "evidence_quote": "工場は操業時間を縮める方法も検討した。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月20日、国土交通省が地下水の実態把握と保全・利用の仕組みを検討する地下水部会を設置",
+      "continuation_force": "同じ地下水を使う事業者の取水と水位の共同把握、費用分担、節水設備には長期の調整と投資が必要",
+      "future_result": "2031年、町と事業者が測定・公開・取水削減の協定を運用し、大型ポンプ停止と雨水槽への切替が実際に行われる"
+    },
+    "body": "",
+    "fiction_company": "水鳥町および町内の部品工場・園芸施設（架空）"
+  },
+  {
     "slug": "airport-autonomous-carts-stop-despite-clear-crossing",
     "broadcast_feature": true,
     "category": "事件",
