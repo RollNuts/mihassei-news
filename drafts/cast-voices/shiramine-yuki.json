@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shiramine-yuki",
   "name": "白峰ゆき",
-  "created_date": "2026-11-19",
+  "created_date": "2026-11-20",
   "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
   "photo_reference": {
     "issue_slug": "november-warm-water-and-riverside-yuki-009",
-    "cut_id": "07",
-    "image_sha256": "2838ebf61dd4b3a84f206911357b811d68e1938b6ff7a060830997de2c3df30f"
+    "cut_id": "08",
+    "image_sha256": "e963105934c0c59dd61b86ccc2992943e8c06f236337c3df6cccf6d72e306aa1"
   },
-  "post_text": "夕方、手袋のほつれを見つけて、久しぶりに針を出しました。細い糸を通すのに少し苦戦したけれど、手首のあたりがまたやわらかくなりました。",
-  "spoken_line": "手首が、あたたかい。",
-  "future_idea": "2031年、観光地の住宅を短期宿泊向けに転用する際の住民同意を義務化する条例案が浮上。宿泊業と居住希望者の利害が対立。"
+  "post_text": "夕方、宿の廊下を歩いていたら、窓の向こうで庭の灯りがひとつ点きました。もう少し眺めたくて、荷物を置いたあと同じ窓辺に戻ってきました。",
+  "spoken_line": "あの灯り、もう少し見たい。",
+  "future_idea": "2031年、観光路線の運行枠を旅行者と住民で配分する新制度案。観光収入を支える事業者と、通院や通学の足を守りたい住民の間で議論が広がる。"
 }
