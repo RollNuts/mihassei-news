@@ -1,6 +1,26 @@
 {
   "version": 1,
   "stories": {
+    "old-coat-recut-as-strangers-jacket": {
+      "article_sha256": "a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
+      "cues": [
+        {
+          "at": 0,
+          "label": "古いコートをほどく",
+          "text": "黒いコートの使える布を切り、別の客用のジャケットに"
+        },
+        {
+          "at": 4,
+          "label": "右肩を仕立て直す",
+          "text": "試着で右肩が引っ張られ、職人が袖を外して布を足した"
+        },
+        {
+          "at": 8,
+          "label": "昔の縫い線を発見",
+          "text": "元の持ち主は縫い線を発見し、次の服を預けると伝えた"
+        }
+      ]
+    },
     "ai-night-standby-not-free-time": {
       "article_sha256": "5c087e5a26d95effdaa72c20f24fbca275c2f343adbd0c93f17c4a416537f7ab",
       "cues": [
