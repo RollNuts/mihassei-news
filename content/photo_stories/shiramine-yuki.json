@@ -15,6 +15,21 @@
         "cut_id": "07",
         "image_sha256": "2838ebf61dd4b3a84f206911357b811d68e1938b6ff7a060830997de2c3df30f"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261120181750629000",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-20T18:17:50.629+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夕方、宿の廊下を歩いていたら、窓の向こうで庭の灯りがひとつ点きました。もう少し眺めたくて、荷物を置いたあと同じ窓辺に戻ってきました。",
+      "source": {
+        "issue_slug": "november-warm-water-and-riverside-yuki-009",
+        "cut_id": "08",
+        "image_sha256": "e963105934c0c59dd61b86ccc2992943e8c06f236337c3df6cccf6d72e306aa1"
+      }
     }
   ]
 }

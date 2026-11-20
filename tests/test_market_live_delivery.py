@@ -56,6 +56,37 @@ class LatestMarketLiveDeliveryTests(unittest.TestCase):
         self.assertEqual(set(paths), set(files))
         self.assertEqual(len(paths), 2 + len(self.latest["figures"]) * 2)
 
+    def same_publication_and_observation_fixture(self):
+        self.reports = copy.deepcopy(self.reports)
+        self.latest = self.reports[-1]
+        self.latest["figures"][0]["observed_at"] = self.latest["published_at"]
+        return self.fixture()
+
+    def test_publication_and_observation_may_share_the_same_timestamp(self):
+        files = self.same_publication_and_observation_fixture()
+        page, _ = files[self.url]
+        timestamp = ('<time datetime="' + self.latest["published_at"] + '">').encode()
+        self.assertGreaterEqual(page.count(timestamp), 2)
+        self.assertEqual(verify_latest_market_bulletin_delivery(self.reports, fetch=files.__getitem__),
+                         len(self.latest["figures"]))
+
+    def test_missing_stale_or_duplicate_publication_fails_despite_matching_observation(self):
+        files = self.same_publication_and_observation_fixture()
+        page, mime = files[self.url]
+        stamp = self.latest["published_at"]
+        publication = ('<p class="serial-pub">実公開：<time datetime="' + stamp + '">'
+                       + html.escape(stamp) + '</time></p>').encode()
+        self.assertEqual(page.count(publication), 1)
+        stale = publication.replace(stamp.encode(), b"2000-01-01T00:00:00+09:00")
+        for replacement in (b"", stale, publication + publication):
+            with self.subTest(replacement=replacement):
+                changed_page = page.replace(publication, replacement, 1)
+                # The valid observation remains; it cannot substitute for publication.
+                self.assertIn(('<time datetime="' + stamp + '">').encode(), changed_page)
+                files[self.url] = (changed_page, mime)
+                with self.assertRaisesRegex(RuntimeError, "market dispatch HTML/OGP mismatch"):
+                    verify_latest_market_bulletin_delivery(self.reports, fetch=files.__getitem__)
+
     def test_stale_mobile_svg_and_modified_rss_fail_closed(self):
         files = self.fixture()
         mobile = next(path for path in files if path.endswith(".svg") is False

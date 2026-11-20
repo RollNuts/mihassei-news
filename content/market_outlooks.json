@@ -690,5 +690,219 @@
       "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
       "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-am-20th-us-risk",
+    "at": "2026-11-20T08:40:23+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "判断材料不足",
+    "observed_value": 3822.47,
+    "observed_on": "2026-11-19",
+    "reason": "11月20日の東証寄り前で当日のTOPIX現物途中値・終値はまだ存在しない。確認済み19日JPX公式終値3,822.47は固定基準18日3,824.00とほぼ同じだが、米国19日のS&P500 2.00%安・ナスダック約2.25%安という新材料から20日の下振れリスクを強く警戒する。これは当初の横ばい予測の正式な判定ではない。",
+    "change_reason": "直前19日18:46の中立・暫定整合から弱気・判断材料不足に変更。19日TOPIX終値の新旧差はなく、米国19日通常取引終了後の広範囲な売りが新材料。元予想の基準・期日・方法は変更しない。",
+    "source": {
+      "title": "AP：米国11月19日主要指数の確定下落",
+      "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2f178054aea79d282e5ccf8d62f26a28",
+      "published_on": "2026-11-19",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611191659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    }
+  },
+  {
+    "type": "forecast",
+    "id": "2026-11-20-topix",
+    "at": "2026-11-20T08:40:23+09:00",
+    "subject": "TOPIX",
+    "direction": "下落",
+    "stance": "弱気",
+    "reviewed_on": "2026-11-24",
+    "statement": "2026年11月24日（火）のTOPIX公式終値は、11月19日の確定終値3,822.47ポイントから0.5%を超えて下落すると予測する。",
+    "method": "2026年11月19日JPX公式TOPIX終値3,822.47ポイントを基準に固定する。11月24日（火）公式終値との騰落率（24日終値÷3,822.47−1）×100が+0.5%超なら上昇、-0.5%未満なら下落、それ以外（±0.5%境界を含む）なら横ばいとする。11月23日は日本市場休場のため判定日とせず、20日の東京・米国の追加材料や24日の途中値で基準・期日・方法を変更しない。JPX公式終値が取得不可なら未検証とする。",
+    "reason": "米国11月19日通常取引はS&P500が2.00%安、ナスダックが約2.25%安で、S&P500の9割超が下落。Anthropic上場初日株価は公募価格を上回る一方、成長株全体には買いが広がらなかった。日本19日TOPIX 3,822.47は前日比0.04%安で、米株安が複数業種に波及する弱気シナリオを採用。ただし20日東京・米国の反発や週末ニュースは反証となり得る。",
+    "invalidated_if": "11月24日JPX公式TOPIX終値が3,822.47に対して0.5%を超えて下落しなければ外れ。20日・23日の見立てや24日途中値は正式結果にしない。",
+    "scenarios": {
+      "強気": "24日公式終値が19日の3,822.47より0.5%超上昇。20日米国相場の反発や国内の広い買戻しが優勢だったか確認する。",
+      "中立": "24日公式終値が19日の3,822.47から±0.5%以内。米株安と国内買戻し、休日を挟んだ需給が拮抗したか確認する。",
+      "弱気": "24日公式終値が19日の3,822.47から0.5%を超えて下落。米国19日の広範な下落やAI関連評価見直しが国内に波及したか確認する。"
+    },
+    "baseline": {
+      "date": "2026-11-19",
+      "value": 3822.47,
+      "unit": "ポイント",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "method": "JPX指数公開ファイルの19日16:59 JST更新（qcode=151 TOPIX）で19日15:30大引け終値3,822.47を確認。更新時刻ファイルを取得前後に読み、同一202611191659を照合。"
+    },
+    "sources": [
+      {
+        "title": "JPX：2026年11月19日TOPIX公式終値3,822.47",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：11月19日の更新時刻202611191659",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "AP：米国11月19日市場終値",
+        "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-2f178054aea79d282e5ccf8d62f26a28",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：2026年11月23日の日本株休場日",
+        "url": "https://www.jpx.co.jp/calendar/",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      }
+    ]
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-open-01",
+    "at": "2026-11-20T09:42:02+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3749.51,
+    "observed_on": "2026-11-20",
+    "reason": "JPXが11月20日09:17 JSTに更新したTOPIX現物途中値は3,749.51。19日に固定した11月18日終値3,824.00を約1.95%下回り、20日終値横ばい±0.5%の元予想には途中時点では逆風。ただし正式判定日は20日大引けであり未確定。",
+    "change_reason": "20日8:40の寄り前レビューは、米国株安を受けて弱気・判断材料不足としていた。20日9:17のTOPIX3,749.51を確認し、弱気の見方を維持したまま、元予想に対する途中経過を暫定的に逆行へ更新する。元予想の基準・期日・方法は変更しない。",
+    "source": {
+      "title": "JPX：2026年11月20日09:17 JST更新TOPIX現物指数（場中暫定）",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611200917",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "observed_at": "2026-11-20T09:17:00+09:00"
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-noon-20th-review",
+    "at": "2026-11-20T12:51:03+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3703.3,
+    "observed_on": "2026-11-20",
+    "reason": "JPXが20日12:24 JSTに更新したTOPIX現物途中値は3,703.30。19日寄り前に固定した20日横ばい予想の基準18日終値3,824.00から約3.16%安で、事前の±0.5%の範囲を大きく外れる。ただし引け前のため正式な外れ判定にしない。",
+    "change_reason": "直前の20日9:17途中値3,749.51から12:24の3,703.30へさらに46.21ポイント下落し、非鉄金属9.74%安など売りが拡大。直前レビューの弱気判断・暫定的逆行を継続。元の基準日・方向・方法・期日は不変。",
+    "source": {
+      "title": "JPX：2026年11月20日12:24 JST更新TOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201224",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201224",
+      "time_after": "202611201224",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,702.33\", \"currentPrice\":\"3,703.30\", \"previousDayComparison\":\"-119.17\", \"previousDayRatio\":\"-3.12\""
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-noon-24th-review",
+    "at": "2026-11-20T12:51:03+09:00",
+    "forecast_id": "2026-11-20-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3703.3,
+    "observed_on": "2026-11-20",
+    "reason": "20日朝に新たに固定した24日TOPIX下落予想の基準19日3,822.47に対し、20日12:24のTOPIX途中値3,703.30は約3.12%安。下落シナリオを現時点で支持するものの、判定日は休場明け11月24日であり20日途中値を正式な的中にしない。",
+    "change_reason": "20日朝の新しい下落予想後に現物の値動きを初観測。非鉄金属9.74%安、電気機器5.38%安と下落が広がり、元の弱気想定を継続。ただし24日の公式終値で反転すれば予測は外れる。",
+    "source": {
+      "title": "JPX：2026年11月20日12:24 JST更新TOPIX現物途中値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201224",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201224",
+      "time_after": "202611201224",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,702.33\", \"currentPrice\":\"3,703.30\", \"previousDayComparison\":\"-119.17\", \"previousDayRatio\":\"-3.12\""
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-close-20th-provisional",
+    "at": "2026-11-20T15:50:28+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3681.15,
+    "observed_on": "2026-11-20",
+    "reason": "JPXが20日15:29に更新した現物TOPIX観測値3,681.15は、20日判定の横ばい予想に固定した18日終値3,824.00から約3.74%安で、±0.5%の範囲を大幅に下回る。終了後のJPX最終更新をまだ照合できず、正式結果は未付与。",
+    "change_reason": "前場12:24の3,703.30から15:29に3,681.15へ22.15ポイント下落。前回の弱気・暫定的に逆行を継続。原予想・判定期日・基準を変えず最終更新待ち。",
+    "source": {
+      "title": "JPX：11月20日15:29更新のTOPIX現物観測値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201529",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201529",
+      "time_after": "202611201529",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,672.25\", \"currentPrice\":\"3,681.15\", \"previousDayComparison\":\"-141.32\", \"previousDayRatio\":\"-3.70\""
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-close-24th-provisional",
+    "at": "2026-11-20T15:50:28+09:00",
+    "forecast_id": "2026-11-20-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3681.15,
+    "observed_on": "2026-11-20",
+    "reason": "11月24日判定の下落予想は固定基準19日公式終値3,822.47。20日15:29のJPX TOPIX3,681.15は約3.70%安で弱気見通しを暫定的に支持。ただし20日値で24日の正式結果を判定しない。",
+    "change_reason": "20日12:24の3,703.30から15:29の3,681.15へ下落幅拡大。前回の弱気・暫定的整合を継続し、24日判定を保持。",
+    "source": {
+      "title": "JPX：11月20日15:29更新のTOPIX現物観測値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201529",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201529",
+      "time_after": "202611201529",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,672.25\", \"currentPrice\":\"3,681.15\", \"previousDayComparison\":\"-141.32\", \"previousDayRatio\":\"-3.70\""
+    }
   }
 ]

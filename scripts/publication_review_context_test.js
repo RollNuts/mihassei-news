@@ -393,3 +393,237 @@ test("provider error wrappers, incomplete run job inventory and changed head/mai
     await assert.rejects(w.read(), /Failed|Incomplete|changed/);
   }
 });
+
+// Synthetic records follow the full REST shapes observed on PR #914. In
+// particular, merged CI loses pull_requests and only REST jobs retain attempts.
+function handoffWorld({ merged = true } = {}) {
+  const head = GIT(14), merge = GIT(15), branch = "market/test-close", number = 14;
+  const w = { calls: [], logCalls: [], hook: null, wrap: value => value, runs: new Map(), jobs: new Map(), logs: new Map() };
+  w.pr = { number, head: { sha: head, ref: branch, repo: { full_name: REPO } },
+    base: { sha: BASE, ref: "main", repo: { full_name: REPO } }, draft: false,
+    merged, state: merged ? "closed" : "open", merge_commit_sha: merge,
+    body: "AUTHOR_BODY_SECRET\n" + marker(head, { kind: "market", article_sha256: {} }) };
+  w.commit = { sha: merge, parents: [{ sha: BASE }, { sha: head }] };
+  w.ancestry = { status: "ahead", merge_base_commit: { sha: merge } };
+  w.main = REF;
+  const makeStep = (name, start, end) => ({ name, status: "completed", conclusion: "success",
+    started_at: "2026-11-20T00:" + start + "Z", completed_at: "2026-11-20T00:" + end + "Z" });
+  function add(id, name, workflow, event, sha, ref, steps) {
+    const run = { id, path: workflow, event, head_sha: sha, head_branch: ref, run_attempt: 1,
+      repository: { full_name: REPO }, head_repository: { full_name: REPO },
+      status: "completed", conclusion: "success", updated_at: "2026-11-20T00:08:00Z", pull_requests: [] };
+    const job = { id: id + 1000, name, run_id: id, run_attempt: 1, head_sha: sha,
+      head_branch: ref, status: "completed", conclusion: "success", steps };
+    w.runs.set(id, run); w.jobs.set(id, [job]); return run;
+  }
+  const ci = add(101, "test", ".github/workflows/check.yml", "pull_request", head, branch, []);
+  if (!merged) ci.pull_requests = [{ number, head: { sha: head }, base: { ref: "main", sha: BASE } }];
+  add(102, "finalize", ".github/workflows/verify-public-photos.yml", "pull_request_target", head, branch,
+    [makeStep("Finalize only the exact explicitly approved publication head", "03:00", "03:59")]);
+  add(103, "check", ".github/workflows/verify-public-photos.yml", "workflow_dispatch", merge, "main", [
+    makeStep("Bind verification to a full main revision before selecting its files", "04:00", "04:04"),
+    makeStep("Wait for the public revision or a proven docs-only ancestor", "04:05", "04:59"),
+    makeStep("Verify the published revision and live stories without generating traffic", "05:00", "05:59"),
+    makeStep("Verify that Twitterbot can fetch each first-party image card", "06:00", "06:59")]);
+  w.ciInventory = [ci];
+  w.logs.set(1102, "2026-11-20T00:03:20.0000001Z "
+    + JSON.stringify({ status: "verification_dispatched", merge_sha: merge }) + "\n");
+  w.logs.set(1103, "2026-11-20T00:04:20.0000001Z Public site confirmed serving requested commit: " + merge
+    + "\n2026-11-20T00:05:20.0000001Z Public revision verified: live=" + merge + " expected=" + merge
+    + "\n2026-11-20T00:06:20.0000001Z Verified 8 first-party share images with Twitterbot UA.\nLOG_SECRET\n");
+  w.fetchRepository = async args => {
+    assert.deepEqual(Object.keys(args), ["url"], "GET reader only, no writes or dispatch");
+    const url = new URL(args.url), prefix = "/repos/" + REPO;
+    assert.equal(url.origin, "https://api.github.com"); assert(url.pathname.startsWith(prefix + "/"));
+    const route = url.pathname.slice(prefix.length);
+    w.calls.push(route);
+    let response;
+    if (w.hook) response = await w.hook({ route, url, count: w.calls.filter(value => value === route).length });
+    if (response === undefined) {
+      if (route === "/git/ref/heads/main") response = { object: { sha: w.main } };
+      else if (route === "/pulls/14") response = w.pr;
+      else if (route === "/git/commits/" + merge) response = w.commit;
+      else if (route === "/compare/" + merge + "..." + REF) response = w.ancestry;
+      else if (route === "/actions/runs") {
+        assert.equal(url.searchParams.get("event"), "pull_request");
+        assert.equal(url.searchParams.get("head_sha"), head);
+        assert.equal(url.searchParams.get("per_page"), "100");
+        response = { total_count: w.ciInventory.length, workflow_runs: w.ciInventory };
+      } else if (/^\/actions\/runs\/\d+\/jobs$/.test(route)) {
+        assert.equal(url.searchParams.get("filter"), "latest");
+        assert.equal(url.searchParams.get("per_page"), "100");
+        const jobs = w.jobs.get(Number(route.split("/")[3])); response = { total_count: jobs.length, jobs };
+      } else if (/^\/actions\/runs\/\d+$/.test(route)) response = w.runs.get(Number(route.split("/")[3]));
+      else throw Error("Unexpected request " + route);
+    }
+    return w.wrap(clone(response));
+  };
+  w.fetchJobLogs = async args => {
+    assert.deepEqual(Object.keys(args).sort(), ["job_id", "repo_full_name"]);
+    assert.equal(args.repo_full_name, REPO); w.logCalls.push(args.job_id);
+    return { content: w.logs.get(args.job_id) };
+  };
+  w.read = (extra = {}, api = context) => api.readHandoffStatus({ fetchRepository: w.fetchRepository,
+    fetchJobLogs: w.fetchJobLogs, ref: REF, pr: number, head, ci_run_id: 101,
+    finalizer_run_id: 102, verification_run_id: 103, ...extra });
+  return w;
+}
+
+test("handoff status proves merged delivery once with real job shapes, not photo adoption", async () => {
+  const w = handoffWorld(), before = JSON.stringify([w.pr, [...w.runs], [...w.jobs]]);
+  const photos = { ...w.jobs.get(103)[0], id: 1203, name: "Photograph completion", conclusion: "failure", steps: [] };
+  w.jobs.get(103).push(photos);
+  w.wrap = value => ({ structuredContent: { content: JSON.stringify(value) } });
+  const result = await w.read();
+  assert.equal(result.status, "verified"); assert.equal(result.stage, "delivery");
+  assert.equal(result.expected_sha, w.pr.merge_commit_sha); assert.equal(result.live_sha, result.expected_sha);
+  assert.equal(result.verified_at, "2026-11-20T00:06:20.0000001Z");
+  assert.equal(result.photo_adoption, "not_assessed"); assert.equal(result.photograph_completion_check, undefined);
+  assert.equal(result.publication_authorized, false); assert.equal(result.review_completed, false);
+  assert.deepEqual(w.logCalls, [1102, 1103]); assert(w.calls.length <= 22);
+  assert(Object.values(result.evidence).every(value => value.run_attempt === 1 && value.url.includes("/job/")));
+  assert(!JSON.stringify(result).includes("SECRET")); assert(JSON.stringify(result).length < 2500);
+  w.jobs.get(103).pop(); assert.equal(JSON.stringify([w.pr, [...w.runs], [...w.jobs]]), before);
+  const plain = new Function(fs.readFileSync(path.join(__dirname, "publication_review_context.js"), "utf8")
+    + "\nreturn PublicationReviewContext;")();
+  assert.equal((await handoffWorld().read({}, plain)).status, "verified");
+});
+
+test("known active CI, finalizer and live jobs return pending without waiting or reading active logs", async () => {
+  for (const [id, expected, logCount] of [[101, "ci_pending", 0], [102, "finalizer_pending", 0], [103, "verification_pending", 1]]) {
+    const w = handoffWorld({ merged: id === 103 }), run = w.runs.get(id), selected = w.jobs.get(id)[0];
+    run.status = selected.status = "in_progress"; run.conclusion = selected.conclusion = null;
+    const result = await w.read(id === 101 ? { finalizer_run_id: undefined, verification_run_id: undefined } : {});
+    assert.equal(result.status, expected); assert.equal(w.logCalls.length, logCount);
+    assert.equal(result.stage, id === 101 ? "ci" : id === 102 ? "finalizer" : "live");
+    assert.equal(w.calls.filter(path => path === "/actions/runs/" + id).length, 2, "one snapshot plus stability check, no polling");
+  }
+});
+
+test("missing run IDs, unarmed/draft PRs and a normal code merge stay explicit attention", async () => {
+  for (const [extra, reason] of [[{ ci_run_id: undefined }, "invalid_status_input"],
+    [{ finalizer_run_id: undefined }, "finalizer_run_id_required"],
+    [{ verification_run_id: undefined }, "verification_run_id_required"]]) {
+    const result = await handoffWorld().read(extra); assert.equal(result.status, "attention"); assert.equal(result.reason, reason);
+  }
+  for (const edit of [w => { w.pr.body = "Code-only merge with no opt-in"; },
+    w => { w.pr.draft = true; }, w => { w.pr.head.sha = GIT(999); },
+    w => { w.pr.base.repo.full_name = "other/repo"; }]) {
+    const w = handoffWorld(); edit(w); assert.equal((await w.read()).status, "attention"); assert.equal(w.logCalls.length, 0);
+  }
+});
+
+test("an open PR's provisional merge SHA, wrong merge parent or non-main commit cannot prove publication", async () => {
+  for (const edit of [w => { w.pr.merged = false; w.pr.state = "open";
+    w.runs.get(101).pull_requests = [{ number: 14, head: w.pr.head, base: w.pr.base }]; },
+  w => { w.commit.parents[1].sha = GIT(99); }, w => { w.commit.parents.pop(); },
+  w => { w.ancestry.status = "diverged"; }, w => { w.ancestry.merge_base_commit.sha = GIT(99); }]) {
+    const w = handoffWorld(); edit(w); assert.equal((await w.read()).status, "attention");
+  }
+});
+
+test("latest exact-head CI and all run job attempts remain mandatory", async () => {
+  const newer = handoffWorld(); newer.ciInventory.push({ ...clone(newer.runs.get(101)), id: 104, conclusion: "failure" });
+  assert.equal((await newer.read()).reason, "newer_or_unrelated_ci_run");
+  const listingAttempt = handoffWorld(); listingAttempt.ciInventory = [{ ...listingAttempt.runs.get(101), run_attempt: 2 }];
+  assert.equal((await listingAttempt.read()).reason, "ci_attempt_unbound");
+  for (const id of [101, 102, 103]) {
+    for (const field of ["run_attempt", "run_id", "head_sha", "head_branch"]) {
+      const w = handoffWorld(); w.jobs.get(id)[0][field] = field.startsWith("head_") ? "unrelated" : 999;
+      assert.equal((await w.read()).status, "attention", id + " " + field);
+    }
+  }
+});
+
+test("wrong workflow, event, repository, PR link, branch or head cannot replace the known run", async () => {
+  for (const id of [101, 102, 103]) {
+    for (const edit of [run => { run.path = ".github/workflows/unrelated.yml"; },
+      run => { run.event = "schedule"; }, run => { run.repository.full_name = "other/repo"; },
+      run => { run.head_repository.full_name = "other/repo"; }, run => { run.head_branch = "other-branch"; },
+      run => { run.head_sha = GIT(999); }]) {
+      const w = handoffWorld(); edit(w.runs.get(id)); assert.equal((await w.read()).status, "attention");
+    }
+  }
+  const w = handoffWorld(); w.runs.get(101).pull_requests = [{ number: 15, head: w.pr.head, base: w.pr.base }];
+  assert.equal((await w.read()).reason, "ci_pr_binding_unverified");
+  for (const event of ["workflow_run", "workflow_dispatch"]) {
+    const baseRun = handoffWorld(); Object.assign(baseRun.runs.get(102), { event, head_sha: REF, head_branch: "main" });
+    assert.equal((await baseRun.read()).reason, "finalizer_run_unbound", "base-main run does not identify this handoff");
+  }
+});
+
+test("successful finalizer jobs returning not_armed, pending, unrelated merge or duplicate outcomes are not publication", async () => {
+  for (const outcome of [{ status: "not_armed", pr: 14 }, { status: "ci_pending", pr: 14 },
+    { status: "unverified_pr" }, { status: "verification_dispatched", merge_sha: GIT(999) }]) {
+    const w = handoffWorld(); w.logs.set(1102, "2026-11-20T00:03:20Z " + JSON.stringify(outcome));
+    assert.equal((await w.read()).status, "attention"); assert.deepEqual(w.logCalls, [1102]);
+  }
+  const w = handoffWorld(); w.logs.set(1102, w.logs.get(1102).repeat(2));
+  assert.equal((await w.read()).reason, "finalizer_result_unverified");
+});
+
+test("green runs cannot hide skipped, failed, duplicate or missing actual jobs", async () => {
+  for (const id of [101, 102, 103]) {
+    for (const edit of [jobs => { jobs[0].conclusion = "skipped"; }, jobs => { jobs[0].conclusion = "failure"; },
+      jobs => { jobs.push({ ...jobs[0], id: 9999 }); }, jobs => { jobs.length = 0; }]) {
+      const w = handoffWorld(); edit(w.jobs.get(id)); assert.equal((await w.read()).status, "attention");
+    }
+  }
+});
+
+test("the public revision line does not bypass later live failures or missing required steps", async () => {
+  for (const index of [0, 1, 2, 3]) {
+    for (const conclusion of ["skipped", "failure"]) {
+      const w = handoffWorld(); w.jobs.get(103)[0].steps[index].conclusion = conclusion;
+      assert.equal((await w.read()).reason, "required_step_not_successful");
+    }
+  }
+  const failed = handoffWorld(); failed.jobs.get(103)[0].conclusion = "failure";
+  assert.equal((await failed.read()).reason, "live_not_successful");
+});
+
+test("live proof must use the exact merged revision in the actual step and attempt", async () => {
+  for (const edit of [text => text.replace(/expected=[a-f0-9]+/, "expected=" + GIT(999)),
+    text => text.replace(/live=[a-f0-9]+/, "live=" + GIT(999)),
+    text => text.replace("Public revision verified:", "echo Public revision verified:"),
+    text => text.replace("00:05:20.0000001Z", "00:03:20.0000001Z"),
+    text => text.replace("2026-11-20T00:05", "2026-11-19T00:05"),
+    text => text.replace(/(Public revision verified:[^\n]+)/, "$1 (docs-only difference; public files unchanged)"),
+    text => text.replace(/Verified 8[^\n]+\n/, ""), text => text + text]) {
+    const w = handoffWorld(); w.logs.set(1103, edit(w.logs.get(1103)));
+    assert.equal((await w.read()).reason, "exact_live_revision_or_cards_unverified");
+  }
+});
+
+test("fetch errors, truncated wrappers, oversized logs and incomplete inventories are never zero or verified", async () => {
+  for (const response of [{ isError: true, structuredContent: {} }, { truncated: true },
+    { content: "a".repeat(1024 * 1024 + 1) }, { content: "" }]) {
+    const w = handoffWorld(); w.fetchJobLogs = async () => response;
+    assert.equal((await w.read({ fetchJobLogs: w.fetchJobLogs })).status, "attention");
+  }
+  for (const route of ["/actions/runs", "/actions/runs/101/jobs"]) {
+    const w = handoffWorld(); w.hook = ({ route: actual }) => actual === route
+      ? route.endsWith("jobs") ? { total_count: 2, jobs: w.jobs.get(101) } : { total_count: 101, workflow_runs: w.ciInventory }
+      : undefined;
+    assert.equal((await w.read()).status, "attention");
+    assert.equal(w.calls.filter(value => value === route).length, 1, "no extra pagination or retry");
+  }
+  const w = handoffWorld(); w.hook = ({ route }) => { if (route === "/actions/runs/101") throw Error("NETWORK_SECRET"); };
+  const result = await w.read(); assert.equal(result.reason, "github_get_failed");
+  assert.equal(result.operation, "/actions/runs/101"); assert(!JSON.stringify(result).includes("NETWORK_SECRET"));
+});
+
+test("changed PR, main, latest CI or run attempt during the snapshot keeps the result unverified", async () => {
+  for (const mutation of ["pr", "main", "ci", "attempt"]) {
+    const w = handoffWorld(); w.hook = ({ route, count }) => {
+      if (mutation === "pr" && route === "/pulls/14" && count === 2)
+        return { ...w.pr, head: { ...w.pr.head, sha: GIT(999) } };
+      if (mutation === "main" && route === "/git/ref/heads/main" && count === 2) return { object: { sha: GIT(999) } };
+      if (mutation === "ci" && route === "/actions/runs" && count === 2)
+        return { total_count: 1, workflow_runs: [{ ...w.runs.get(101), id: 999 }] };
+      if (mutation === "attempt" && route === "/actions/runs/103" && count === 2)
+        return { ...w.runs.get(103), run_attempt: 2 };
+    };
+    const result = await w.read(); assert.equal(result.status, "attention", mutation); assert.equal(result.stage, "snapshot");
+  }
+});

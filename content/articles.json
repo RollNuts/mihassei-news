@@ -1,11 +1,78 @@
 [
   {
+    "slug": "airport-autonomous-carts-stop-despite-clear-crossing",
+    "category": "事件",
+    "flash": "空港の無人車、事故ゼロでも荷物止まる",
+    "art": "cards",
+    "fiction_at": "2031-11-21T00:24:19+09:00",
+    "published_at": "2026-11-21T00:24:19+09:00",
+    "publication_slot": "2026-11-20T19:30:00+09:00",
+    "title": "空港の無人荷物車が一斉停止、2便の準備に遅れ　「事故ゼロ」は達成",
+    "summary": "2031年、凪浦空港で航空機の通り道を横断できる無人荷物車3台が、機体の通過後も停止した。二つの安全記録の時刻が一致せず、車が横断許可を受け取れなかったためだ。衝突は防げた一方、地上作業班は人が運転する別経路へ荷物を移し、空港側は「事故ゼロ」の評価に遅延と人件費を加えることになった。",
+    "paragraphs": [
+      "2031年11月20日夕方、凪浦空港の地上作業班長（45）は、荷物を積んだ無人運搬車3台が停止線に並んだまま動かないのを見た。目の前の航空機はすでに横断を終えていたが、車は進まない。預け荷物が駐機場へ届かず、出発前の2便で積み込み準備が遅れ始めた。",
+      "この空港では2031年から、手荷物を運ぶ無人車が航空機の地上走行路を横切れるようになった。それまでは人が運転する車が遠回りしていたが、短い経路を使えば荷物を運ぶ時間と人手を減らせる。ただし無人車は、航空機側の通過予定と路面の安全確認がともに「通行可」になった時だけ進む。今回は航空機の通過後に予定の記録だけが更新され、路面側の記録には古い時刻が残っていた。安全確認がそろわず、3台とも停止を続けた。",
+      "班長は車を手動で発進させる操作を見送った。航空機が見えなくても、次に別の機体が入る可能性を路面から判断できないためだ。代わりに、車を横断させない外周の作業道路から有人車で運ぶよう指示した。ただ、予備の運転手と車は一組しかない。班長は出発時刻が近い便の荷物を先に積み替え、もう一便の地上係員には遅れを知らせた。",
+      "空港の運営側は、無人車が疑わしい信号で停止したことを安全装置の正しい動作と捉えた。実際、航空機と車がぶつかる事態は起きていない。一方で、荷物を積み替える人員と外周道路の移動時間は地上作業会社の負担になった。航空会社には出発時刻を調整する仕事が増える。運営側が『事故ゼロ』を発表しても、遅れを引き受ける人たちには運行の成功とは言えなかった。",
+      "夜の協議では、無人車の安全条件を緩めて再び通す案は退けられた。二つの確認が食い違う時に止まる仕組みをなくせば、短縮した時間の代わりに航空機との交差リスクを抱えるからだ。空港は横断路の監視を続ける一方、無人車が止まった時だけ外周道路を使う有人搬送の待機枠を確保すると決めた。空港側がその待機費用の一部を持ち、地上作業会社だけに予備要員を背負わせない形へ改める。",
+      "翌日の勤務表には、無人車の運行担当の隣に、外周道路を走る有人車の待機担当が記された。管理画面も『衝突なし』だけでなく、『荷物が予定に間に合ったか』を併記することになった。無人車はこれまでどおり停止線で安全を確かめる。止まった時に誰が次の一手を担うかまで決めたことが、この空港の新しい自動運転の運用になった。"
+    ],
+    "source": {
+      "kind": "国土交通省の報道発表（空港制限区域内の自動運転検討）",
+      "publisher": "国土交通省",
+      "published_at": "2026-11-19T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/kouku09_hh_000343.html",
+      "topic": "国土交通省は2026年11月19日、11月24日に空港制限区域内の自動運転技術検討委員会を開き、航空機が交差する経路へ自動走行範囲を広げる実証実験の検討を行うと発表した。航空機を横断する無人荷物車の2031年実運用、安全信号の不一致、3台停止、2便への影響、有人搬送の費用分担、架空の凪浦空港と登場人物は全て創作。国土交通省や実在の空港で起きた事件ではない。"
+    },
+    "scene_prompt": "A candid realistic documentary news photograph at a fictional Japanese airport ground handling area at cool dusk in late November 2031. A 45-year-old Japanese female ground operations supervisor in practical reflective workwear stands near a clearly painted stop line and gestures toward three small unattended autonomous baggage carts carrying luggage crates, parked safely one behind another and not moving. In the far background an airliner has already cleared the intersection and is taxiing away, with ample realistic distance; the scene focuses on the supervisor and the parked carts, a temporary pause without collision or emergency. Airport pavement, low service buildings, overcast evening light, subtle wet patches, believable wheels, luggage restraints, natural hands and faces, realistic press photography, horizontal 16:9. No logos, no brand names, no captions, no legible signs, no sci-fi holograms or real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "空港",
+      "自動運転",
+      "地上業務"
+    ],
+    "satire_tags": [
+      "事故ゼロ",
+      "効率化"
+    ],
+    "x_tags": [
+      "空港",
+      "自動運転"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "「事故は起きませんでした」。確かに。でも荷物が飛行機に間に合わなかったら、それは成功なんだろうか。2031年の空港。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "satire",
+    "editorial_tone": "comic_exaggeration",
+    "editorial_payoff": "ironic_success",
+    "editorial_signature": {
+      "present": "2026年11月19日、国土交通省は航空機と交差する経路まで空港の自動運転の実証範囲を拡大する検討会を告知した",
+      "target": "2031年、無人荷物車が航空機の走行路を横断できる空港で安全判定の不一致が起きる",
+      "action": "地上作業班長が停止した無人車から有人車へ荷物を移し、空港側と待機人員の費用を交渉する",
+      "outcome": "無事故のまま2便の準備が遅れ、空港は有人代替経路と費用分担を決め安全・定時の両方を測る"
+    },
+    "reader_clarity": {
+      "who": "空港の無人荷物車",
+      "action": "無人荷物車3台が一斉に停止して2便の積み込み準備が遅れた",
+      "oddity": "2031年に航空機の走行路を横断できる自動運転でも、事故ゼロの成功と定時運行は別"
+    },
+    "behavior_basis": {
+      "motive": "空港は航空機との交差を安全に管理しつつ手荷物運搬の時間と人手を減らしたい",
+      "ordinary_alternative": "無人車を遠回りさせるか、人が運転する車で外周道路を使う",
+      "why_not": "短い経路を無人車が走れるメリットは大きいが、確認が食い違う場合は横断を止め、有人の予備経路を残す方が安全と定時性を両立できる",
+      "evidence_quote": "班長は車を手動で発進させる操作を見送った。"
+    },
+    "body": "",
+    "fiction_company": "架空の凪浦空港および地上作業会社"
+  },
+  {
     "slug": "bicycle-network-reopens-backstreet-deliveries",
     "category": "暮らし",
     "flash": "自転車道がつながり、配達は裏へ",
     "art": "cards",
-    "fiction_at": "2031-11-20T07:35:43+09:00",
-    "published_at": "2026-11-20T07:35:43+09:00",
+    "fiction_at": "2031-11-20T12:35:12+09:00",
+    "published_at": "2026-11-20T12:35:12+09:00",
     "publication_slot": "2026-11-20T07:30:00+09:00",
     "title": "自転車道が一本につながった朝、青果店の荷下ろしは裏通りへ　2031年の街の選択",
     "summary": "2031年、枝河市は分断されていた自転車道を交差点でつなぎ、店先の荷下ろし場所を廃止した。通勤の自転車は車の車線へ出ずに走れるようになった一方、青果店主は共同荷受け所へ仕入れを取りに通う。商店街は安全になった道路の裏側で、荷受け所の費用と各店への運搬を分け合うことになった。",
@@ -139,6 +206,7 @@
   },
   {
     "slug": "old-coat-recut-as-strangers-jacket",
+    "broadcast_feature": true,
     "category": "暮らし",
     "flash": "古着から、別の人の一着",
     "fiction_company": "架空の衣料品店",
