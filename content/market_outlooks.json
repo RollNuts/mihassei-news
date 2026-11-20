@@ -690,5 +690,31 @@
       "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
       "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-open-01",
+    "at": "2026-11-20T09:42:02+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3749.51,
+    "observed_on": "2026-11-20",
+    "reason": "JPXが11月20日09:17 JSTに更新したTOPIX現物途中値は3,749.51。19日に固定した11月18日終値3,824.00を約1.95%下回り、20日終値横ばい±0.5%の元予想には途中時点では逆風。ただし正式判定日は20日大引けであり未確定。",
+    "change_reason": "11月19日16:59最終更新のTOPIX3,822.47は基準の3,824.00にほぼ一致したが、20日寄り付き後の09:17途中値は3,749.51まで下落。直前の中立判断から弱気へ変更するが、元予想の基準・期日・方法は変更しない。",
+    "source": {
+      "title": "JPX：2026年11月20日09:17 JST更新TOPIX現物指数（場中暫定）",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611200917",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "observed_at": "2026-11-20T09:17:00+09:00"
+    }
   }
 ]
