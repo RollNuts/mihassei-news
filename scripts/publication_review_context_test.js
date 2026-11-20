@@ -405,6 +405,7 @@ function handoffWorld({ merged = true } = {}) {
     body: "AUTHOR_BODY_SECRET\n" + marker(head, { kind: "market", article_sha256: {} }) };
   w.commit = { sha: merge, parents: [{ sha: BASE }, { sha: head }] };
   w.ancestry = { status: "ahead", merge_base_commit: { sha: merge } };
+  w.finalizerAncestry = { status: "ahead", merge_base_commit: { sha: BASE } };
   w.main = REF;
   const makeStep = (name, start, end) => ({ name, status: "completed", conclusion: "success",
     started_at: "2026-11-20T00:" + start + "Z", completed_at: "2026-11-20T00:" + end + "Z" });
@@ -444,6 +445,7 @@ function handoffWorld({ merged = true } = {}) {
       else if (route === "/pulls/14") response = w.pr;
       else if (route === "/git/commits/" + merge) response = w.commit;
       else if (route === "/compare/" + merge + "..." + REF) response = w.ancestry;
+      else if (route === "/compare/" + BASE + "..." + REF) response = w.finalizerAncestry;
       else if (route === "/actions/runs") {
         assert.equal(url.searchParams.get("event"), "pull_request");
         assert.equal(url.searchParams.get("head_sha"), head);
@@ -468,6 +470,76 @@ function handoffWorld({ merged = true } = {}) {
     finalizer_run_id: 102, verification_run_id: 103, ...extra });
   return w;
 }
+
+function trustedMainFinalizer(w, event = "workflow_run") {
+  Object.assign(w.runs.get(102), { event, head_sha: BASE, head_branch: "main" });
+  Object.assign(w.jobs.get(102)[0], { head_sha: BASE, head_branch: "main" });
+  w.finalizerOutcome = { status: "verification_dispatched", merge_sha: w.pr.merge_commit_sha,
+    pr: w.pr.number, head: w.pr.head.sha, ci_run_id: 101, ci_run_attempt: w.runs.get(101).run_attempt };
+  w.setFinalizerOutcome = value => w.logs.set(1102, "2026-11-20T00:03:20.0000001Z " + JSON.stringify(value) + "\n");
+  w.setFinalizerOutcome(w.finalizerOutcome);
+  return w;
+}
+
+test("trusted-main finalization binds news and market delivery to its actual PR, head and CI attempt", async () => {
+  // PR #905's successful workflow_run finalizer has main metadata, while its
+  // CI identifies the news branch. Only the new result adds their exact binding.
+  for (const event of ["workflow_run", "pull_request_target"]) {
+    for (const kind of ["news", "market"]) {
+      const w = trustedMainFinalizer(handoffWorld(), event);
+      w.pr.body = marker(w.pr.head.sha, { kind, article_sha256: kind === "news" ? { "new-story": "a".repeat(64) } : {} });
+      const result = await w.read();
+      assert.equal(result.status, "verified", event + " " + kind + ": " + result.reason);
+      assert.equal(result.merge_sha, w.pr.merge_commit_sha);
+      assert.equal(result.photo_adoption, "not_assessed");
+      assert.equal(result.publication_authorized, false); assert.equal(result.review_completed, false);
+      assert.deepEqual(w.logCalls, [1102, 1103]); assert(w.calls.length <= 22);
+      assert.equal(w.calls.filter(route => route === "/compare/" + BASE + "..." + REF).length, 1);
+    }
+  }
+});
+
+test("trusted-main finalization never borrows legacy, partial, unrelated or older-attempt success", async () => {
+  for (const field of ["pr", "head", "ci_run_id", "ci_run_attempt"]) {
+    for (const remove of [false, true]) {
+      const w = trustedMainFinalizer(handoffWorld()), outcome = { ...w.finalizerOutcome };
+      if (remove) delete outcome[field];
+      else outcome[field] = field === "head" ? GIT(99) : 999;
+      w.setFinalizerOutcome(outcome);
+      assert.equal((await w.read()).reason, "finalizer_handoff_binding_unverified", field);
+      assert.deepEqual(w.logCalls, [1102]);
+    }
+  }
+  const legacy = trustedMainFinalizer(handoffWorld());
+  legacy.setFinalizerOutcome({ status: "verification_dispatched", merge_sha: legacy.pr.merge_commit_sha });
+  assert.equal((await legacy.read()).reason, "finalizer_handoff_binding_unverified");
+  const target = trustedMainFinalizer(handoffWorld(), "pull_request_target");
+  Object.assign(target.runs.get(102), { head_sha: target.pr.head.sha, head_branch: target.pr.head.ref });
+  Object.assign(target.jobs.get(102)[0], { head_sha: target.pr.head.sha, head_branch: target.pr.head.ref });
+  target.setFinalizerOutcome({ ...target.finalizerOutcome, ci_run_attempt: 999 });
+  assert.equal((await target.read()).reason, "finalizer_handoff_binding_unverified");
+});
+
+test("an active main finalizer cannot be assigned to this PR before bound completion evidence", async () => {
+  const w = trustedMainFinalizer(handoffWorld({ merged: false }));
+  w.runs.get(102).status = w.jobs.get(102)[0].status = "in_progress";
+  w.runs.get(102).conclusion = w.jobs.get(102)[0].conclusion = null;
+  const result = await w.read();
+  assert.equal(result.status, "attention"); assert.equal(result.reason, "finalizer_handoff_not_yet_bound");
+  assert.equal(result.stage, "finalizer"); assert.deepEqual(w.logCalls, []);
+});
+
+test("trusted-main finalizer code must belong to the fixed main history", async () => {
+  for (const ancestry of [{ status: "diverged", merge_base_commit: { sha: BASE } },
+    { status: "ahead", merge_base_commit: { sha: GIT(99) } }, {}]) {
+    const w = trustedMainFinalizer(handoffWorld()); w.finalizerAncestry = ancestry;
+    assert.equal((await w.read()).reason, "finalizer_not_on_fixed_main");
+    assert.deepEqual(w.logCalls, [1102]);
+  }
+  const unavailable = trustedMainFinalizer(handoffWorld());
+  unavailable.hook = ({ route }) => { if (route === "/compare/" + BASE + "..." + REF) throw Error("unavailable"); };
+  assert.equal((await unavailable.read()).reason, "github_get_failed");
+});
 
 test("handoff status proves merged delivery once with real job shapes, not photo adoption", async () => {
   const w = handoffWorld(), before = JSON.stringify([w.pr, [...w.runs], [...w.jobs]]);
@@ -546,10 +618,8 @@ test("wrong workflow, event, repository, PR link, branch or head cannot replace 
   }
   const w = handoffWorld(); w.runs.get(101).pull_requests = [{ number: 15, head: w.pr.head, base: w.pr.base }];
   assert.equal((await w.read()).reason, "ci_pr_binding_unverified");
-  for (const event of ["workflow_run", "workflow_dispatch"]) {
-    const baseRun = handoffWorld(); Object.assign(baseRun.runs.get(102), { event, head_sha: REF, head_branch: "main" });
-    assert.equal((await baseRun.read()).reason, "finalizer_run_unbound", "base-main run does not identify this handoff");
-  }
+  const dispatch = trustedMainFinalizer(handoffWorld(), "workflow_dispatch");
+  assert.equal((await dispatch.read()).reason, "finalizer_run_unbound", "manual finalization is outside this reader's supported events");
 });
 
 test("successful finalizer jobs returning not_armed, pending, unrelated merge or duplicate outcomes are not publication", async () => {

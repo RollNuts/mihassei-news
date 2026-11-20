@@ -39,11 +39,12 @@ class API:
                    "user": {"login": "RollNuts"},
                    "head": {"sha": H, "repo": {"full_name": f.REPO}},
                    "base": {"ref": "main", "sha": B, "repo": {"full_name": f.REPO}}}
-        self.run = {"path": f.WORKFLOW, "event": "pull_request", "status": "completed",
+        self.run = {"id": 123, "run_attempt": 1, "path": f.WORKFLOW, "event": "pull_request", "status": "completed",
                     "conclusion": "success", "head_sha": H, "head_repository": {"full_name": f.REPO},
                     "pull_requests": [{"number": 819, "head": {"sha": H}, "base": {"sha": B, "ref": "main"}}]}
         self.files = [{"filename": "content/articles.json", "status": "modified"}]
-        self.jobs = [{"name": "test", "conclusion": "success"}]
+        self.jobs = [{"name": "test", "status": "completed", "conclusion": "success",
+                      "run_id": 123, "run_attempt": 1, "head_sha": H}]
         self.permission = "write"
         self.main = B
         self.calls = []
@@ -123,13 +124,42 @@ class FinalizationTests(unittest.TestCase):
 
     def test_success_merges_only_reviewed_head_then_dispatches_exact_returned_sha(self):
         api = API()
-        self.assertEqual(self.go(api), {"status": "verification_dispatched", "merge_sha": M})
+        self.assertEqual(self.go(api), {"status": "verification_dispatched", "merge_sha": M,
+                                       "pr": 819, "head": H, "ci_run_id": 123, "ci_run_attempt": 1})
         self.assertEqual(api.writes, [
             ("PUT", "/pulls/819/merge", {"sha": H, "merge_method": "merge"}),
             ("POST", f.VERIFY, {"ref": "main", "inputs": {"expected_sha": M}})])
         self.assertLess(api.calls.index(("LOCAL", "fresh merged source/history checks")),
                         api.calls.index(("GET", "fresh owner check")))
         self.assertLess(api.calls.index(("GET", "fresh owner check")), api.calls.index(("PUT", "/pulls/819/merge")))
+
+    def test_success_result_binds_the_ci_attempt_that_was_actually_checked(self):
+        api = API(); api.run["run_attempt"] = 3
+        api.jobs[0]["run_attempt"] = 3
+        result = self.go(api, body_edit=True)
+        self.assertEqual({key: result[key] for key in ("pr", "head", "ci_run_id", "ci_run_attempt")},
+                         {"pr": 819, "head": H, "ci_run_id": 123, "ci_run_attempt": 3})
+
+    def test_missing_or_invalid_ci_identity_cannot_be_attested(self):
+        for field, value in [("id", 124), ("run_attempt", None), ("run_attempt", 0), ("run_attempt", True)]:
+            with self.subTest(field=field, value=value):
+                api = API(); api.run[field] = value
+                with self.assertRaises(ValueError): self.go(api)
+                self.assertEqual(api.writes, [])
+
+    def test_ci_attestation_requires_one_completed_test_job_bound_to_that_run_head_and_attempt(self):
+        for field, value in [("run_id", 999), ("head_sha", M), ("run_attempt", 1),
+                             ("run_attempt", True), ("status", "in_progress")]:
+            with self.subTest(field=field, value=value):
+                api = API(); api.run["run_attempt"] = 3; api.jobs[0]["run_attempt"] = 3
+                api.jobs[0][field] = value
+                with self.assertRaises(ValueError): self.go(api)
+                self.assertEqual(api.writes, [])
+        for change in (lambda jobs: jobs.append(copy.deepcopy(jobs[0])),
+                       lambda jobs: jobs[0].pop("run_attempt")):
+            api = API(); change(api.jobs)
+            with self.assertRaises(ValueError): self.go(api)
+            self.assertEqual(api.writes, [])
 
     def test_missing_optin_does_not_mutate_or_validate(self):
         api = API(); api.pr["body"] = "Initial read pending"
@@ -345,6 +375,8 @@ class FinalizationTests(unittest.TestCase):
         for mutate in [lambda a: a.pr["head"].update(sha=M), lambda a: setattr(a, "main", M),
                        lambda a: a.pr["base"].update(ref="other-branch"),
                        lambda a: a.run.update(status="in_progress"),
+                       lambda a: a.run.update(run_attempt=2),
+                       lambda a: a.run.update(id=124),
                        lambda a: a.pr.update(body=body({**handoff(), "reviewer_run": "other-review-789"}))]:
             api = API(); api.race = mutate
             with self.assertRaises(ValueError): self.go(api)
@@ -475,6 +507,15 @@ class FinalizationTests(unittest.TestCase):
                 else: api.get = lambda path, original=api.get: {"status": "diverged"} if path.startswith("/compare/") else original(path)
                 with self.assertRaises(ValueError): self.go(api, body_edit=True)
                 self.assertEqual(api.writes, [])
+
+    def test_merged_retry_does_not_attest_an_unchecked_ci_run_or_attempt(self):
+        api = API(); api.pr.update(state="closed", merged=True, merge_commit_sha=M)
+        api.run.update(status="in_progress", conclusion=None, run_attempt=2)
+        result = self.go(api)
+        self.assertEqual(result, {"status": "verification_dispatched", "merge_sha": M})
+        self.assertFalse(any(key in result for key in ("pr", "head", "ci_run_id", "ci_run_attempt")))
+        self.assertNotIn(("GET", "/actions/runs/123"), api.calls)
+        self.assertEqual(api.writes, [("POST", f.VERIFY, {"ref": "main", "inputs": {"expected_sha": M}})])
 
     def test_photo_editor_self_read_is_allowed_but_cannot_relabel_news(self):
         for kind, path in [("cast_story", "content/photo_stories.json"), ("photo_issue", "content/photo_issues.json")]:
