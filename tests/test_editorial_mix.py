@@ -326,6 +326,7 @@ class EditorialMixTests(unittest.TestCase):
     def test_wildcard_future_car_counts_as_a_product_without_a_realism_gate(self):
         item = form_story("floating-family-car", "product_launch", tone="wildcard")
         item.update({
+            "fiction_company": "雲間モーター",
             "title": "雲間モーター、車輪を畳んで浮かぶ家族向けの新型車を発表",
             "summary": "雲間モーターは、停車場で車輪を畳み、地面から浮かんで移動する家族向けの新型車を発表した。乗員は座ったまま離陸できる。",
             "paragraphs": ["雲間モーターは、車輪を畳んで地面から浮かぶ家族向けの新型車を発表した。",
@@ -375,6 +376,7 @@ class EditorialMixTests(unittest.TestCase):
             tone="plausible_future", payoff="visible_result", reader_interest="family_home",
         )
         item.update({
+            "fiction_company": "つづみ野市",
             "title": "つづみ野市、図書館の机を15分単位で予約できる制度を発表",
             "summary": "つづみ野市は図書館の机を15分単位で予約できる制度を始める。短い空き時間にも席を使えるよう、当日の空席を窓口と端末で案内する。",
             "paragraphs": [
@@ -419,6 +421,7 @@ class EditorialMixTests(unittest.TestCase):
             tone="plausible_future", payoff="action", reader_interest="family_home",
         )
         item.update({
+            "fiction_company": "雨森道具店",
             "title": "雨森道具店、片手で傘の水を切れる持ち歩きケースを発売",
             "summary": "雨森道具店は、折りたたみ傘を差し込んで片手で水を切れるケースを発売する。外側を押すと底の受け皿へ水が集まり、室内で捨てられる。",
             "paragraphs": [

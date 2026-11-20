@@ -350,9 +350,10 @@ def load():
         raise ValueError("Articles must be a list")
     seen = set()
     for a in articles:
-        required = ("slug", "title", "summary", "category", "fiction_at", "published_at", "paragraphs", "source", "art", "tags")
-        if any(k not in a for k in required):
-            raise ValueError("Missing article field")
+        required = ("slug", "title", "summary", "category", "fiction_company", "fiction_at", "published_at", "paragraphs", "source", "art", "tags")
+        missing = [key for key in required if key not in a]
+        if missing:
+            raise ValueError(f"Missing article field: {', '.join(missing)} ({a.get('slug', '<unknown>')})")
         if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", a["slug"]) or a["slug"] in seen:
             raise ValueError("Invalid or duplicate slug: " + a["slug"])
         seen.add(a["slug"])
