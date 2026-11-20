@@ -208,6 +208,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-17T21:19:03.098636+00:00"
+    },
+    "old-coat-recut-as-strangers-jacket": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
+      "image_sha256": "0ab43cfd952edf8b016994a0ac0965d2169755d4586de1027c1aaba0d50549ac",
+      "sha256": "3afe55aaf17de51b272f3596e15a0f36290298e5811c0d1a25a2ada0b1fd4d82",
+      "bytes": 144291,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-20T03:21:56.180399+00:00"
     }
   }
 }
