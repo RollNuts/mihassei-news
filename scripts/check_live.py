@@ -668,7 +668,8 @@ def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
         '<meta name="twitter:image" content="' + preview + '">',
         '<meta name="twitter:card" content="summary_large_image">',
         '<h1>' + html.escape(report["title"]) + '</h1>',
-        '<time datetime="' + report["published_at"] + '">',
+        '<p class="serial-pub">実公開：<time datetime="' + report["published_at"] + '">'
+        + html.escape(report["published_at"]) + '</time></p>',
         '"datePublished": "' + report["published_at"] + '"',
     ):
         if page.count(required) != 1:
