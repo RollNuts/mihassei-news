@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "968d511238a6ab9c2b9f3ad2389609b519316756de9dee6f756b354797646382",
+  "slug": "airport-autonomous-carts-stop-despite-clear-crossing",
+  "article_sha256": "8067ac19cbaa97b1398c36e007d66114fd3c8c8bdea301d3ae9755f1a34fbff7",
+  "logical_run_id": "news-photo-v1:8067ac19cbaa97b1398c36e007d66114fd3c8c8bdea301d3ae9755f1a34fbff7",
+  "prompt_sha256": "cb8bef65675402a632483279b887090f8776735d1691619dafb4bbbccddfe8e3",
+  "reserved_at": "2026-11-20T15:26:04.043Z",
+  "baseline": {
+    "commit_sha": "c1de26cf23adf2e4861feb342936c0d43b415a87",
+    "tree_sha": "b1a8f6462a4ff4c5d03ceb67c8aac64883dd22f1",
+    "protected_hashes": {
+      "content/articles.json": "78089dc033bc20b45a3dbc4863bc08f5a3895cbc74be3fccf7e2d2d982033182",
+      "assets/generated/manifest.json": "d7fd89f0419874f5c78b1f4a43a7f09ca13675757b4e2a551931cf5b3511b6e1",
+      "content/visual_reviews.json": "58535d7cb7cd161b5b43a484303c4c049cbbf68819ed87ae1adaa9b783058a9b"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "a780ebcd1f1c9e45f07ae9a786b7009177ac1b6e",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "665a8537c383633a637298ee9323cc65ebaac836e59ab086ea69ef32dc08ee31",
+    "observed_at": "2026-11-20T15:25:30.003Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
