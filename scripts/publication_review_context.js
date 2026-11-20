@@ -333,6 +333,212 @@ var PublicationReviewContext = (function () {
         + "This snapshot is not a lock; existing guards still decide ownership and publication. "
         + "Main-only changes and market outlook/serial widgets need their existing review." };
   }
-  return Object.freeze({ read });
+  // One bounded observation of an existing handoff, not a watcher or a new
+  // approval. Run IDs must come from its real handoff; never search by title.
+  async function readHandoffStatus({ fetchRepository, fetchJobLogs, ref, pr: number, head,
+    ci_run_id, finalizer_run_id, verification_run_id } = {}) {
+    const positive = value => Number.isSafeInteger(value) && value > 0;
+    const result = { schema_version: 1, verification: "handoff_status_only",
+      publication_authorized: false, review_completed: false, photo_adoption: "not_assessed",
+      source: { repository: REPOSITORY, ref: matches(GIT, ref) ? ref : null },
+      pr: positive(number) ? number : null, head: matches(GIT, head) ? head : null,
+      status: "attention", stage: "input", evidence: {} };
+    const VERIFY = ".github/workflows/verify-public-photos.yml";
+    const FINALIZE = "Finalize only the exact explicitly approved publication head";
+    const LIVE_STEPS = ["Bind verification to a full main revision before selecting its files",
+      "Wait for the public revision or a proven docs-only ancestor",
+      "Verify the published revision and live stories without generating traffic",
+      "Verify that Twitterbot can fetch each first-party image card"];
+    const runs = [], maxLog = 1024 * 1024;
+    let snapshot, ciListing, reads = 0, logReads = 0;
+    function check(ok, reason) { if (!ok) throw Error(reason); }
+    async function get(path) {
+      check(++reads <= 22, "request_bound_exceeded");
+      let reply;
+      try { reply = await fetchRepository({ url: API + path }); }
+      catch (_) { const error = Error("github_get_failed"); error.operation = path; throw error; }
+      try { return unwrap(reply, path, false); }
+      catch (_) { const error = Error("github_response_unverified"); error.operation = path; throw error; }
+    }
+    const prIdentity = value => [value.number, value.state, value.draft, value.merged,
+      value.head?.sha, value.head?.ref, value.head?.repo?.full_name, value.base?.ref,
+      value.base?.repo?.full_name, value.merge_commit_sha, value.body];
+    const runIdentity = value => [value.id, value.path, value.event, value.head_sha,
+      value.head_branch, value.repository?.full_name, value.head_repository?.full_name,
+      value.run_attempt, value.status, value.conclusion, value.updated_at];
+    async function latestCI() {
+      const listing = await get("/actions/runs?event=pull_request&head_sha=" + head + "&per_page=100");
+      check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
+        && listing.total_count <= 100, "ci_inventory_incomplete");
+      const candidates = listing.workflow_runs.filter(run => run.path === CI_WORKFLOW
+        && run.event === "pull_request" && run.head_sha === head);
+      check(candidates.length > 0 && candidates.every(run => positive(run.id))
+        && new Set(candidates.map(run => run.id)).size === candidates.length, "ci_inventory_unverified");
+      const latest = candidates.reduce((a, b) => a.id > b.id ? a : b);
+      check(latest.id === ci_run_id && positive(latest.run_attempt), "newer_or_unrelated_ci_run");
+      return [latest.id, latest.run_attempt];
+    }
+    async function run(id, workflow, events, sha, branch, label) {
+      check(positive(id), label + "_run_id_required");
+      const value = await get("/actions/runs/" + id);
+      check(value.id === id && value.path === workflow && events.includes(value.event)
+        && value.head_sha === sha && value.head_branch === branch
+        && value.repository?.full_name === REPOSITORY && value.head_repository?.full_name === REPOSITORY
+        && positive(value.run_attempt), label + "_run_unbound");
+      runs.push(value);
+      result.evidence[label] = { run_id: id, run_attempt: value.run_attempt,
+        status: value.status, conclusion: value.conclusion,
+        url: "https://github.com/" + REPOSITORY + "/actions/runs/" + id };
+      return value;
+    }
+    async function job(value, name, label) {
+      // The dedicated connector jobs wrapper omits head/attempt and total_count.
+      // Read the complete REST object rather than accepting that lossy wrapper.
+      const listing = await get("/actions/runs/" + value.id + "/jobs?filter=latest&per_page=100");
+      check(Array.isArray(listing.jobs) && listing.total_count === listing.jobs.length
+        && listing.total_count <= 100 && listing.jobs.every(item => object(item) && positive(item.id))
+        && new Set(listing.jobs.map(item => item.id)).size === listing.jobs.length, label + "_jobs_incomplete");
+      const matching = listing.jobs.filter(item => item.name === name);
+      check(matching.length === 1, label + "_job_unverified");
+      const selected = matching[0];
+      check(selected.run_id === value.id && selected.head_sha === value.head_sha
+        && selected.head_branch === value.head_branch && selected.run_attempt === value.run_attempt,
+      label + "_job_attempt_unbound");
+      Object.assign(result.evidence[label], { job_id: selected.id, job_status: selected.status,
+        job_conclusion: selected.conclusion,
+        url: result.evidence[label].url + "/job/" + selected.id });
+      check(selected.conclusion !== "skipped", label + "_job_skipped");
+      return selected;
+    }
+    function completed(value, selected, label) {
+      check(value.status === "completed" && value.conclusion === "success"
+        && selected.status === "completed" && selected.conclusion === "success", label + "_not_successful");
+    }
+    function step(selected, name) {
+      check(Array.isArray(selected.steps) && selected.steps.length <= 100, "steps_unverified");
+      const found = selected.steps.filter(item => item.name === name);
+      check(found.length === 1 && found[0].status === "completed" && found[0].conclusion === "success"
+        && Number.isFinite(Date.parse(found[0].started_at)) && Number.isFinite(Date.parse(found[0].completed_at))
+        && Date.parse(found[0].started_at) <= Date.parse(found[0].completed_at), "required_step_not_successful");
+      return found[0];
+    }
+    async function log(selected) {
+      check(typeof fetchJobLogs === "function" && ++logReads <= 2, "job_log_reader_required");
+      let value;
+      try { value = await fetchJobLogs({ repo_full_name: REPOSITORY, job_id: selected.id }); }
+      catch (_) { throw Error("job_log_fetch_failed"); }
+      for (let depth = 0; depth < 7; depth++) {
+        check(!object(value) || !(value.isError || value.error || value.error_code
+          || value.status === "ERROR" || value.truncated || value.content_truncated || value.incomplete_results), "job_log_incomplete");
+        if (object(value) && value.structuredContent !== undefined) { value = value.structuredContent; continue; }
+        if (object(value) && value.result !== undefined) { value = value.result; continue; }
+        const content = typeof value === "string" ? value : value?.content;
+        check(typeof content === "string" && content.length > 0 && content.length <= maxLog, "job_log_unverified_or_too_large");
+        return content.split(/\r?\n/).flatMap(line => {
+          const match = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z) (.*)$/.exec(line);
+          return match && Number.isFinite(Date.parse(match[1])) ? [{ at: match[1], ms: Date.parse(match[1]), text: match[2] }] : [];
+        });
+      }
+      throw Error("job_log_wrapper_unverified");
+    }
+    function within(lines, execution) {
+      const start = Date.parse(execution.started_at), end = Date.parse(execution.completed_at) + 1000;
+      return lines.filter(line => line.ms >= start && line.ms < end);
+    }
+    async function finish(status) {
+      // A stability recheck, with no sleep or retry, prevents old attempts/logs
+      // from becoming a success if this handoff changes during the snapshot.
+      result.stage = "snapshot";
+      const fresh = await get("/pulls/" + number);
+      check(JSON.stringify(prIdentity(fresh)) === JSON.stringify(prIdentity(snapshot)), "pr_changed_during_snapshot");
+      for (const value of runs) {
+        const latest = await get("/actions/runs/" + value.id);
+        check(JSON.stringify(runIdentity(latest)) === JSON.stringify(runIdentity(value)), "run_changed_during_snapshot");
+      }
+      check(JSON.stringify(await latestCI()) === JSON.stringify(ciListing), "ci_changed_during_snapshot");
+      check((await get("/git/ref/heads/main")).object?.sha === ref, "main_changed_during_snapshot");
+      result.status = status;
+      result.stage = status === "verified" ? "delivery" : status === "verification_pending" ? "live" : status.replace(/_pending$/, "");
+      result.reads = { repository: reads, logs: logReads };
+      return result;
+    }
+    try {
+      check(typeof fetchRepository === "function" && matches(GIT, ref) && positive(number)
+        && matches(GIT, head) && positive(ci_run_id), "invalid_status_input");
+      check((await get("/git/ref/heads/main")).object?.sha === ref, "main_changed");
+      result.stage = "pr";
+      snapshot = await get("/pulls/" + number);
+      check(snapshot.number === number && snapshot.head?.sha === head
+        && typeof snapshot.head?.ref === "string" && snapshot.head.ref.length > 0
+        && snapshot.head.repo?.full_name === REPOSITORY && snapshot.base?.repo?.full_name === REPOSITORY
+        && snapshot.base.ref === "main" && snapshot.draft === false
+        && ((snapshot.state === "open" && snapshot.merged === false)
+          || (snapshot.state === "closed" && snapshot.merged === true)), "pr_head_or_state_unbound");
+      check(handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
+      if (snapshot.merged) {
+        check(matches(GIT, snapshot.merge_commit_sha), "merge_sha_unverified");
+        const commit = await get("/git/commits/" + snapshot.merge_commit_sha);
+        check(commit.sha === snapshot.merge_commit_sha && Array.isArray(commit.parents) && commit.parents.length === 2
+          && matches(GIT, commit.parents[0]?.sha) && commit.parents[1]?.sha === head, "approved_head_not_merge_parent");
+        const ancestry = await get("/compare/" + snapshot.merge_commit_sha + "..." + ref);
+        check(["ahead", "identical"].includes(ancestry.status)
+          && ancestry.merge_base_commit?.sha === snapshot.merge_commit_sha, "merge_not_on_fixed_main");
+        result.merge_sha = snapshot.merge_commit_sha;
+      }
+      result.stage = "ci";
+      ciListing = await latestCI();
+      const ci = await run(ci_run_id, CI_WORKFLOW, ["pull_request"], head, snapshot.head.ref, "ci");
+      check(ci.run_attempt === ciListing[1], "ci_attempt_unbound");
+      check(Array.isArray(ci.pull_requests), "ci_pr_binding_unverified");
+      const linked = ci.pull_requests.filter(item => item.number === number && item.head?.sha === head
+        && item.base?.ref === "main" && matches(GIT, item.base?.sha));
+      // GitHub removes pull_requests after merge. The exact normal-merge parent,
+      // repository, branch and CI head above preserve the historical binding.
+      check(linked.length === 1 || (snapshot.merged && ci.pull_requests.length === 0), "ci_pr_binding_unverified");
+      const ciJob = await job(ci, "test", "ci");
+      if (ACTIVE_RUN.has(ci.status) && (ACTIVE_RUN.has(ciJob.status) || ciJob.conclusion === "success")) return await finish("ci_pending");
+      completed(ci, ciJob, "ci");
+      result.stage = "finalizer";
+      const finalizer = await run(finalizer_run_id, VERIFY, ["pull_request_target", "workflow_run"],
+        head, snapshot.head.ref, "finalizer");
+      const finalizerJob = await job(finalizer, "finalize", "finalizer");
+      if (ACTIVE_RUN.has(finalizer.status) && (ACTIVE_RUN.has(finalizerJob.status) || finalizerJob.conclusion === "success")) return await finish("finalizer_pending");
+      completed(finalizer, finalizerJob, "finalizer");
+      const execution = step(finalizerJob, FINALIZE);
+      const finalizerLines = within(await log(finalizerJob), execution);
+      const outcomes = finalizerLines.flatMap(line => {
+        if (!line.text.startsWith("{")) return [];
+        try { const value = JSON.parse(line.text); return object(value) && typeof value.status === "string" ? [value] : []; }
+        catch (_) { return []; }
+      });
+      check(outcomes.length === 1, "finalizer_result_unverified");
+      const outcome = outcomes[0];
+      check(outcome.status === "verification_dispatched" && snapshot.merged
+        && outcome.merge_sha === result.merge_sha, "finalizer_merge_unverified");
+      result.stage = "live";
+      check(positive(verification_run_id), "verification_run_id_required");
+      const live = await run(verification_run_id, VERIFY, ["push", "workflow_dispatch"], result.merge_sha, "main", "live");
+      const liveJob = await job(live, "check", "live");
+      if (ACTIVE_RUN.has(live.status) && (ACTIVE_RUN.has(liveJob.status) || liveJob.conclusion === "success")) return await finish("verification_pending");
+      completed(live, liveJob, "live");
+      const steps = LIVE_STEPS.map(name => step(liveJob, name)), lines = await log(liveJob);
+      const waited = within(lines, steps[1]).filter(line => line.text.startsWith("Public site confirmed serving"));
+      const verified = within(lines, steps[2]).filter(line => line.text.startsWith("Public revision verified:"));
+      const cards = within(lines, steps[3]).filter(line => /^Verified [1-9][0-9]* first-party share images with Twitterbot UA\.$/.test(line.text));
+      check(waited.length === 1 && waited[0].text === "Public site confirmed serving requested commit: " + result.merge_sha
+        && verified.length === 1 && verified[0].text === "Public revision verified: live=" + result.merge_sha + " expected=" + result.merge_sha
+        && cards.length === 1, "exact_live_revision_or_cards_unverified");
+      result.expected_sha = result.merge_sha;
+      result.live_sha = result.merge_sha;
+      result.verified_at = cards[0].at;
+      return await finish("verified");
+    } catch (error) {
+      result.reason = error.message;
+      if (error.operation) result.operation = error.operation;
+      result.reads = { repository: reads, logs: logReads };
+      return result;
+    }
+  }
+  return Object.freeze({ read, readHandoffStatus });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = PublicationReviewContext;

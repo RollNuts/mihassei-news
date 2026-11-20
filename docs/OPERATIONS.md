@@ -54,6 +54,14 @@
 
 定期タスクの予定時刻はAutomationsを正とし、文書やプロンプトへ同じ時刻表を重ねて保守しない。時刻変更が必要な場合だけAutomationsとこの表を同時に更新する。
 
+### 入力の再利用と利用上限
+
+前回結果はCodeMode内で捕捉し、対象PR/slug・head・実行状態・現担当を先に抽出する。過去の結果全文や会話を追加で遡読・再掲しない。公開文の独立初読が必要な対象では作者説明を伏せ、初読後に必要な未完工程・次操作・実エラーだけを取得する。今回の実行で読了した同じ記事SHAの公開本文は後段の比較・要約・図の判断でも再利用する。前日全記事の全文確認など担当に必要な確認範囲は減らさず、変更された本文は読み直す。
+
+資料は最新mainの担当・権限と未完了の確認から始め、これから行う工程の正本・必要節を読む。画像対象や図の判断へ進む前に画像規則を確認し、候補を更新する時に候補台帳を読む。全資料・全履歴を毎回入力する手順にしない。これは追加の取得・表示を減らす運用であり、会話に自動付与される文脈量や利用枠を変更する機能ではない。
+
+利用上限を実表示・実返却で確認した場合だけ、観測時刻JST・対象run（特定できなければ不明）・実表示・実施済み/未着手の工程・保存できたheadや候補・同担当の次操作を既存結果または既存引継ぎへ残す。保存を確認できなければ未保存とする。`no_update`や結果欠落だけで上限と断定せず、未実施を0件・完了や過去runの停止原因へ置き換えない。起動前の上限で処理も保存もできない実行は、この手順で復旧したとは扱わない。追加課金・上限確認のための追加起動・新規タスクや会話への移し替えをせず、同じ対象から再開する。Chatへの移行は対応する設定変更と読戻しを確認できた時だけ成立とし、プロンプトの呼び名や設定保存だけで切替・上限解消を主張しない。
+
 ### 初読移譲後に停止したPRの回収
 
 初読待ちPRが残る場合だけ、既存サイト日次担当はreviewerの実行記録と同PRを照合する。Automations応答とPR本文はCodeMode内で捕捉し、`last_run.id`と`latest_result.run_id`が一致しない結果本文は過去の記録として扱う。`no_update`・`failed`・結果欠落だけで停止と判断せず、次のすべてを実確認する。
@@ -89,6 +97,22 @@ text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 
 これは読み取り入力の整理であり、独立初読の合格・画像採否・所有権・公開許可を代行しない。公開文を実際に初読した後で同PRの作者説明と元runを照合し、下記の既存guardと公開手順へ進む。headが動いた場合は新しいheadで取得し直す。結果だけから「今回のreviewer定期実行が成功した」とは判断せず、実際のrunと公開処理の結果を確認する。
 
+### 既存PRの公開状態の確認
+
+同headの初読・公開許可を保存済みの`news`・`market` PRは、同じhelperの`readHandoffStatus`でCI・finalizer・本番検証を1回照合する。明示された未完の引継ぎや`publication_unverified`がある時だけ使い、公開済みの過去PRを毎回調べ直さない。コード・放送室など通常統合のPRや、近況・写真特集へこの補助確認を必須化しない。
+
+```js
+text(await R.readHandoffStatus({
+  fetchRepository, fetchJobLogs, ref: mainSha,
+  pr, head, ci_run_id,
+  finalizer_run_id, verification_run_id,
+}));
+```
+
+`fetchRepository`は前節と同じGitHubの`fetch({url})`、`fetchJobLogs`は`fetch_workflow_job_logs`へ束縛する。`ref`と`head`は実取得した完全SHA、各run IDは対象PRの既存CI・引継ぎ・実workflowから取得した値を使い、推測しない。CIが進行中なら`finalizer_run_id`は省略できるが、CI成功後は実finalizerが必要で、統合後の配信確認には実`verification_run_id`も必要。IDを特定できなければ`attention`のまま現担当へ残す。
+
+helperはGitHubの生応答と完了ログをCodeMode内で処理し、対象PR/head、実CI・最新attemptのjobs、統合結果、merge SHAと本番revisionの対応を小さな状態と実run/job参照にまとめる。`ci_pending`・`finalizer_pending`・`verification_pending`は待機段階、`attention`は失敗または未確認の具体段階を示す。`verified`はこの引継ぎの配信検証に限り、写真の新しい目視採否や定期タスクの復旧を意味しない。`photo_adoption: not_assessed`を保持し、写真の採否・完了は既存の別確認へ残す。未取得・古いattempt・skipped・無関係な成功を公開完了へ置き換えない。1回のsnapshotから待機・書込み・再起動・自動承認は行わず、必要な確認と現担当の次操作だけを既存結果に残す。
+
 ### CI・公開待機の引継ぎ
 
 長いCIをGPTが繰り返し照会しない。現在の変更担当が必要な本文・実画像の確認を終えた後、同じPR本文の既存引継ぎへ、`scripts/publication_finalize.py --print-handoff`が出す`publication-finalize`ブロックを1つだけ保存する。CLIがない場合も同じJSON形式をGitHub接続で保存できる。
@@ -99,7 +123,7 @@ text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 
 既存の公開検証workflowが、CI成功とPR本文の許可の両方が揃った時だけ処理する。公開repo・書込担当・同一repoのmain向けPR・現在head・成功CI・所有権・最新mainとの整合・履歴保護を再確認し、同じheadを通常統合する。コード・workflow・未対応ファイルを含むPRは対象外。headが変われば旧許可は失効し、再確認するまで進めない。通常CIはread-onlyのままで、既存公開検証とは並行制御を分ける。
 
-GPTは許可の保存と再読後に「CI・公開検証へ移譲済み」として終了できる。定例のCI再実行、短いpoll、待機だけのCodex依頼をしない。統合後は返却されたmerge SHAに対して既存の本番検証を明示実行する。受付・統合・実配信は別状態であり、実配信の証拠がない時は公開完了と書かない。失敗は同じPR・workflowの失敗箇所と現担当を次の既存枠で回収し、新しい監視タスクを作らない。
+GPTは許可の保存と再読後に「CI・公開検証へ移譲済み」として終了できる。定例のCI再実行、短いpoll、待機だけのCodex依頼をしない。統合後は返却されたmerge SHAに対し、finalizerやmain更新が起動した既存の本番検証を先に照合し、同SHAの検証が進行中または成功済みなら重ねて起動しない。必要な検証が未起動と実確認できた場合だけ、既存の本番検証をそのmerge SHAで明示実行する。取得失敗・無関係なrun・skippedは未起動の証拠にしない。受付・統合・実配信は別状態であり、実配信の証拠がない時は公開完了と書かない。失敗は同じPR・workflowの失敗箇所と現担当を次の既存枠で回収し、新しい監視タスクを作らない。
 
 ### 7人の近況
 
