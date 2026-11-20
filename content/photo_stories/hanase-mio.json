@@ -15,6 +15,21 @@
         "cut_id": "07",
         "image_sha256": "a4120101838a8004be11e8969a249cc758cc5ded46601ef2aeb624f2bfde1d5e"
       }
+    },
+    {
+      "id": "hanase-mio-post-20261120122522-227",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-20T12:25:22.227+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼、陶芸体験でろくろを回した。小鉢のつもりが、指を当てるたび横に広がってお皿になった。縁だけはきれいにできたから、帰ったら何を乗せようかな。",
+      "source": {
+        "issue_slug": "november-city-evening-mio-012",
+        "cut_id": "05",
+        "image_sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305"
+      }
     }
   ]
 }
