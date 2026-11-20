@@ -30,6 +30,21 @@
         "cut_id": "06",
         "image_sha256": "2f368cd24ac5a3be4ae3c5e7c9d24dc4a3a6206500bbfe20795d0f374afa0033"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261121072023757000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-21T07:20:23.757+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、庭の小道で近道を教えてもらったのに、紅葉がきれいで反対へ。戻ったら、さっきの人にまた会って笑われちゃいました。寄り道って、すぐばれるな。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "07",
+        "image_sha256": "1fb0df010c906a44400b884557d85298d35a11df7d5c62b878a71a2da1ebf65b"
+      }
     }
   ]
 }
