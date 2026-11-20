@@ -15,6 +15,21 @@
         "cut_id": "07",
         "image_sha256": "4bf65213b6322e65144f079e73e33d4d18e20b9a2416aa2dc4f351d7eb83c167"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261120092310034000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-20T09:23:10.034+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、傘を畳んだ途端にまた小雨。駅までの短い道で、開いて閉じてを三回繰り返しました。取材の段取りより、今朝の空のほうが気まぐれです。",
+      "source": {
+        "issue_slug": "november-off-clock-rio-002",
+        "cut_id": "05",
+        "image_sha256": "478b66fdad4f70de78b934d0c53b9b4f095dc5f1c4f16e6585f0ae48c5c59d3a"
+      }
     }
   ]
 }
