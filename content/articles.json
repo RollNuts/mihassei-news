@@ -1,6 +1,7 @@
 [
   {
     "slug": "airport-autonomous-carts-stop-despite-clear-crossing",
+    "broadcast_feature": true,
     "category": "事件",
     "flash": "空港の無人車、事故ゼロでも荷物止まる",
     "art": "cards",

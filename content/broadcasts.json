@@ -1,6 +1,14 @@
 {
   "version": 1,
   "stories": {
+    "airport-autonomous-carts-stop-despite-clear-crossing": {
+      "article_sha256": "8067ac19cbaa97b1398c36e007d66114fd3c8c8bdea301d3ae9755f1a34fbff7",
+      "cues": [
+        {"at": 0, "label": "無人荷物車3台が停止", "text": "航空機が通り過ぎても無人車3台は停止線から動かなかった"},
+        {"at": 4, "label": "2便の荷物が遅れる", "text": "地上班は有人車で外周道路を回り、近い便から積み替えた"},
+        {"at": 8, "label": "事故ゼロだけでは測らない", "text": "翌日の勤務表には無人車の隣に予備の運転手が並んだ"}
+      ]
+    },
     "old-coat-recut-as-strangers-jacket": {
       "article_sha256": "a82721ee487d2dc714b2c60c5105d722923c1172b892861a894dca8d2ce5a078",
       "cues": [
