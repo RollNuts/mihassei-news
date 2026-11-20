@@ -848,5 +848,61 @@
       "time_after": "202611201224",
       "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,702.33\", \"currentPrice\":\"3,703.30\", \"previousDayComparison\":\"-119.17\", \"previousDayRatio\":\"-3.12\""
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-close-20th-provisional",
+    "at": "2026-11-20T15:50:28+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3681.15,
+    "observed_on": "2026-11-20",
+    "reason": "JPXが20日15:29に更新した現物TOPIX観測値3,681.15は、20日判定の横ばい予想に固定した18日終値3,824.00から約3.74%安で、±0.5%の範囲を大幅に下回る。終了後のJPX最終更新をまだ照合できず、正式結果は未付与。",
+    "change_reason": "前場12:24の3,703.30から15:29に3,681.15へ22.15ポイント下落。前回の弱気・暫定的に逆行を継続。原予想・判定期日・基準を変えず最終更新待ち。",
+    "source": {
+      "title": "JPX：11月20日15:29更新のTOPIX現物観測値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201529",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201529",
+      "time_after": "202611201529",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,672.25\", \"currentPrice\":\"3,681.15\", \"previousDayComparison\":\"-141.32\", \"previousDayRatio\":\"-3.70\""
+    }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-20-close-24th-provisional",
+    "at": "2026-11-20T15:50:28+09:00",
+    "forecast_id": "2026-11-20-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3681.15,
+    "observed_on": "2026-11-20",
+    "reason": "11月24日判定の下落予想は固定基準19日公式終値3,822.47。20日15:29のJPX TOPIX3,681.15は約3.70%安で弱気見通しを暫定的に支持。ただし20日値で24日の正式結果を判定しない。",
+    "change_reason": "20日12:24の3,703.30から15:29の3,681.15へ下落幅拡大。前回の弱気・暫定的整合を継続し、24日判定を保持。",
+    "source": {
+      "title": "JPX：11月20日15:29更新のTOPIX現物観測値",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-20"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201529",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "time_before": "202611201529",
+      "time_after": "202611201529",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,672.25\", \"currentPrice\":\"3,681.15\", \"previousDayComparison\":\"-141.32\", \"previousDayRatio\":\"-3.70\""
+    }
   }
 ]
