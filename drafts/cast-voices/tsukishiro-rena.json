@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "tsukishiro-rena",
   "name": "月城れな",
-  "created_date": "2026-11-19",
+  "created_date": "2026-11-20",
   "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
   "photo_reference": {
     "issue_slug": "november-city-pause-rena-008",
-    "cut_id": "07",
-    "image_sha256": "dfc39a6be18dfdb61c7cf5cb16e003984a50e69fc54a8044cbbc9e8c6fbdcfdc"
+    "cut_id": "08",
+    "image_sha256": "6631f953da5671ae3d3f34320c3d9de3d96884afea48caffdaed718b9f95eb5b"
   },
-  "post_text": "帰りに小さな映画館へ寄ったら、最終回はもう始まっていた。ポスターだけ見て帰るつもりが、明日の予定をひとつ増やしてしまった。",
+  "post_text": "帰りに買った焼き栗が、思ったより熱かった。駅のベンチで一つずつ冷ましていたら、電車を二本見送った。最後の一粒は、まだ温かい。",
   "spoken_line": null,
   "future_idea": null
 }
