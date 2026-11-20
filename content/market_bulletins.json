@@ -3979,5 +3979,265 @@
         "checked_on": "2026-11-20"
       }
     ]
+  },
+  {
+    "slug": "2026-11-20-close",
+    "day": "2026-11-20",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-20T15:50:28+09:00",
+    "title": "20日引け後：TOPIXは約4%安、非鉄が急落―食品・保険には買い",
+    "summary": "TOPIXの20日15:30速報値は3.88%安。JPX15:29観測では非鉄金属9.94%安、保険業1.10%高。JX金属・山崎製パン・SOMPOの株価を比較し、20日判定の予想は公式最終値待ちとします。",
+    "lead": "11月20日（金）、東京株は幅広く下げました。ただし、値下がりした銘柄と上昇した銘柄では、投資家が確認すべき材料が異なります。20日15:30のTOPIX速報値は3,674.22ポイント（前営業日比3.88%安）。一方、JPX一次資料の今回取得時点は15:29更新の3,681.15ポイントで、16:59などの最終更新はまだ確認できていません。速報値と公式確定値を混同せず、週明けの判断に必要な変化を整理します。",
+    "sections": [
+      {
+        "heading": "指数の急落は、半導体だけの下げではない",
+        "paragraphs": [
+          "Yahoo!ファイナンスが20日15:30の東証TOPIX速報値として表示したのは3,674.22ポイント。19日確定終値3,822.47から3.88%安です。JPXが15:29に更新した一次資料ではTOPIXは3,681.15（3.70%安）、グロース250は639.09（5.32%安）。15:29と15:30の値は別の時点なので同じ終値として扱いません。",
+          "日経平均はYahoo!ファイナンスの15分遅延配信で、表示15:26時点に56,576.41円（4.82%安）を確認しました。こちらも大引けの確定値ではありません。米国19日通常取引の株安・AI関連株への警戒が日本市場の逆風になりましたが、すべての銘柄の下落を同じ要因で説明することはできません。"
+        ]
+      },
+      {
+        "heading": "非鉄の下落と食品・保険の逆行高",
+        "paragraphs": [
+          "JPX15:29時点の非鉄金属指数は2,945.28、前日比9.94%安でした。JX金属（5016）は20日15:30の東証株価1,820.5円で、19日終値2,012.5円から9.54%安。業種全体の売りが大きいなか、同社の次の業績見通し・需要と株価評価は別に確かめたいところです。",
+          "これに対し山崎製パン（2212）は15:30の東証株価4,322円、前日4,247円から1.77%高。同社10月27日公表の第3四半期決算では累計売上高が前年同期比4.5%増と確認できます。安全資産という意味ではなく、実際の売上・利益と株価評価を分けて比較する候補です。保険業指数もJPX15:29に1.10%高。SOMPO（8630）は15:30に6,994円で前日6,856円から2.01%高でした。同社が19日に公表した決算・自己株式取得の内容と、その後の資本政策を確認します。"
+        ]
+      },
+      {
+        "heading": "20日判定の横ばい予想は速報値で逆行、24日判定は継続",
+        "paragraphs": [
+          "19日朝に固定した20日判定のTOPIX予想は、18日の公式終値3,824.00から±0.5%以内の横ばいでした。20日15:29のJPX途中値3,681.15も15:30の速報値3,674.22も、この範囲を大きく下回っています。ただしJPXの終了後最終更新を照合していないため、正式な外れの記録はまだ付けません。確認済みの日次TOPIX予想は現時点で1勝3敗（25.0%、母数4件）です。",
+          "20日朝に固定した別の見通しは、休場明け24日のTOPIX公式終値が19日確定終値3,822.47から0.5%超下落するというものです。20日の下落は現時点ではその見立てを支持しますが、20日だけで的中とは言えません。次に確かめるのは20日のJPX最終値、米国20日通常取引、休場明け24日の東証の業種別の買い戻しです。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov20-latest",
+        "kind": "bars",
+        "title": "TOPIX：19日終値と20日15時29分観測",
+        "note": "20日値はJPX15:29更新の現物観測値であり、最終更新の確定終値ではありません。19日値は19日最終更新の公式終値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T15:29:00+09:00",
+        "values": [
+          {
+            "label": "11/19確定",
+            "value": 3822.47,
+            "state": "実績"
+          },
+          {
+            "label": "11/20 15:29",
+            "value": 3681.15,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "jx-metals-nov20-close",
+        "kind": "bars",
+        "title": "JX金属：19日と20日の東証株価",
+        "note": "Yahoo!ファイナンスの東証20日15:30値、19日は通常・調整後終値同額。市場価格の比較で、業績変化そのものではありません。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/5016.T",
+        "observed_at": "2026-11-20T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/19終値",
+            "value": 2012.5,
+            "state": "実績"
+          },
+          {
+            "label": "11/20 15:30",
+            "value": 1820.5,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "yamazaki-nov20-close",
+        "kind": "bars",
+        "title": "山崎製パン：19日と20日の東証株価",
+        "note": "Yahoo!ファイナンスの東証20日15:30値、19日は通常・調整後終値同額。既存の10月決算情報とは分けて解釈。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/2212.T",
+        "observed_at": "2026-11-20T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/19終値",
+            "value": 4247,
+            "state": "実績"
+          },
+          {
+            "label": "11/20 15:30",
+            "value": 4322,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "name": "日本株全体は大幅安",
+        "signal": "逆風",
+        "meaning": "JPX15:29 TOPIXは3.70%安、Yahoo!15:30速報値は3.88%安。正式判定はJPX最終更新の確認後に限る。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T15:29:00+09:00"
+      },
+      {
+        "name": "非鉄の下落が突出",
+        "signal": "逆風",
+        "meaning": "JPX15:29非鉄金属指数は9.94%安、JX金属は東証15:30値で9.54%安。米国株安だけで企業固有の損益を断定しない。",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-20T15:29:00+09:00"
+      },
+      {
+        "name": "食品・保険の一部は逆行高",
+        "signal": "追い風",
+        "meaning": "山崎製パンは15:30に1.77%高、SOMPOは2.01%高。決算や資本政策の公開情報で持続性を検証する。",
+        "source_url": "https://finance.yahoo.co.jp/quote/2212.T",
+        "observed_at": "2026-11-20T15:30:00+09:00"
+      }
+    ],
+    "picks": [
+      {
+        "code": "5016",
+        "name": "JX金属",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 2012.5,
+        "close": 1820.5,
+        "price_kind": "close",
+        "market_date": "2026-11-20",
+        "previous_market_date": "2026-11-19",
+        "observed_at": "2026-11-20T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/5016.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!時系列で11/19の通常終値と調整後終値が一致することを確認。20日15:30の東証円建て値を比較し独自の分割補正なし。",
+        "context": "非鉄金属業種全体がJPX15:29時点で9.94%安。会社の業績・価格評価がどこまで変化したか、次回開示で確認する。"
+      },
+      {
+        "code": "2212",
+        "name": "山崎製パン",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 4247,
+        "close": 4322,
+        "price_kind": "close",
+        "market_date": "2026-11-20",
+        "previous_market_date": "2026-11-19",
+        "observed_at": "2026-11-20T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/2212.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!時系列で11/19の通常終値と調整後終値が一致することを確認。20日15:30の東証円建て値を比較し独自の分割補正なし。",
+        "context": "売上成長を示す10月27日会社決算がある一方、今日の逆行高だけで割安とは断定せず、利益率・需要を確認する。"
+      },
+      {
+        "code": "8630",
+        "name": "SOMPOホールディングス",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "上昇",
+        "previous_close": 6856,
+        "close": 6994,
+        "price_kind": "close",
+        "market_date": "2026-11-20",
+        "previous_market_date": "2026-11-19",
+        "observed_at": "2026-11-20T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!時系列で11/19の通常終値と調整後終値が一致することを確認。20日15:30の東証円建て値を比較し独自の分割補正なし。",
+        "context": "19日の決算・自己株式取得の発表を20日の株価反応と分け、利益・資本政策・実行状況を次に確認する。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月20日15:29時点のTOPIX・業種別指数（公式最終更新前の観測）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "JPX：上書きされる指数ファイルの更新時刻（取得時202611201529）",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：11月20日15:30 TOPIX速報値",
+        "url": "https://finance.yahoo.co.jp/quote/998405.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：日経平均、表示15:26の15分遅延値",
+        "url": "https://finance.yahoo.co.jp/quote/998407.O",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：JX金属の11月20日東証株価",
+        "url": "https://finance.yahoo.co.jp/quote/5016.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：JX金属の11月19日終値・調整後値",
+        "url": "https://finance.yahoo.co.jp/quote/5016.T/history",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：山崎製パンの11月20日東証株価",
+        "url": "https://finance.yahoo.co.jp/quote/2212.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：山崎製パンの11月19日終値・調整後値",
+        "url": "https://finance.yahoo.co.jp/quote/2212.T/history",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：SOMPOの11月20日東証株価",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Yahoo!ファイナンス：SOMPOの11月19日終値・調整後値",
+        "url": "https://finance.yahoo.co.jp/quote/8630.T/history",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "山崎製パン公式IR：2026年10月27日発表の第3四半期決算短信",
+        "url": "https://www.yamazakipan.co.jp/ir/ir-library/tanshin/index.html",
+        "published_on": "2026-10-27",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "SOMPO公式IR：11月19日決算説明と自己株式取得・消却",
+        "url": "https://www.sompo-hd.com/ir/",
+        "published_on": "2026-11-19",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "Reuters：11月20日アジア株安・米国19日のAI関連株警戒",
+        "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-11-20/",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      },
+      {
+        "title": "株探：11月20日15:35の業種別騰落",
+        "url": "https://s.kabutan.jp/news/n202611201123/",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-20"
+      }
+    ]
   }
 ]
