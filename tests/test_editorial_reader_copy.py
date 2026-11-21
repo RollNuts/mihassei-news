@@ -49,8 +49,58 @@ class EditorialReaderCopyTests(unittest.TestCase):
                 for paragraph in article["paragraphs"]:
                     visible = reader_copy(paragraph)
                     self.assertNotIn("架空の", visible)
-                    self.assertNotIn("2031年、", visible)
+                    # Editorial policy does not ban dates that carry story meaning.
+                    # Check paragraph-leading boilerplate; concrete cases below
+                    # separately cover cleanup after sentence boundaries.
+                    self.assertFalse(visible.lstrip().startswith("2031年、"))
         self.assertEqual(original, (ROOT / "content/articles.json").read_bytes())
+
+    def test_stage_year_cleanup_preserves_meaningful_dates(self):
+        cases = (
+            (
+                "paragraph_start",
+                "2031年、町は協定を結んだ。",
+                "町は協定を結んだ。",
+            ),
+            (
+                "after_full_stop",
+                "記録を調べた。 2031年、町は協定を結んだ。",
+                "記録を調べた。町は協定を結んだ。",
+            ),
+            (
+                "after_exclamation",
+                "協定ができた！2031年、町は共同井戸を使い始めた。",
+                "協定ができた！町は共同井戸を使い始めた。",
+            ),
+            (
+                "after_question",
+                "水位はどうか？2031年、町は観測を続けた。",
+                "水位はどうか？町は観測を続けた。",
+            ),
+            (
+                "after_closing_quote",
+                "「協定を結んだ」2031年、町は共同井戸を使い始めた。",
+                "「協定を結んだ」町は共同井戸を使い始めた。",
+            ),
+            (
+                "inline_year",
+                "町は、2031年、その記録を使って協定を結んだ。",
+                "町は、2031年、その記録を使って協定を結んだ。",
+            ),
+            (
+                "deadline",
+                "2031年までに完成予定",
+                "2031年までに完成予定",
+            ),
+            (
+                "inline_year_before_sentence_prefix",
+                "町は、2031年、その記録を使って協定を結んだ。2031年、共同井戸の運用を始めた。",
+                "町は、2031年、その記録を使って協定を結んだ。共同井戸の運用を始めた。",
+            ),
+        )
+        for label, original, expected in cases:
+            with self.subTest(case=label):
+                self.assertEqual(reader_copy(original), expected)
 
     def test_rendered_stories_and_shares_do_not_expose_legacy_qualifiers(self):
         examples = (
