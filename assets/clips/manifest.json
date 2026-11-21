@@ -225,7 +225,7 @@
     "airport-autonomous-carts-stop-despite-clear-crossing": {
       "origin": "verified-still-motion",
       "motion_style_version": 3,
-      "article_sha256": "8067ac19cbaa97b1398c36e007d66114fd3c8c8bdea301d3ae9755f1a34fbff7",
+      "article_sha256": "e7d91413bb9dc4537120450cc17101885698f751252fb502806bb00d9e36e344",
       "image_sha256": "d2488b69a9c98d23cfd0df18b559ae711fb4eefb5aa54f68e7a29e45f65d72b5",
       "sha256": "ed509848780f0810bab60a5fce4853eb6a59ee6e264ab983a350bb1d8b7ab52c",
       "bytes": 162544,
@@ -233,7 +233,7 @@
       "height": 360,
       "fps": 24,
       "duration_ms": 12000,
-      "created_at": "2026-11-20T22:13:20.138481+00:00"
+      "created_at": "2026-11-21T16:32:36.937813+00:00"
     }
   }
 }
