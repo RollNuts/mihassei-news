@@ -1,6 +1,76 @@
 [
   {
+    "slug": "groundwater-meters-shared-well-pump-stops",
+    "category": "政治",
+    "flash": "工場の節水で園芸施設が追加受注",
+    "art": "cards",
+    "fiction_at": "2031-11-21T07:34:51+09:00",
+    "published_at": "2026-11-21T07:34:51+09:00",
+    "publication_slot": "2026-11-21T07:30:00+09:00",
+    "title": "工場の節水で園芸施設が追加受注　5年の観測から地下水の利用枠を分け直す",
+    "summary": "2031年、水鳥町は5年分の観測をもとに、同じ地下水を使う部品工場と園芸施設が一日に汲める量を融通する協定を始めた。工場が冷却水を循環させて大型ポンプ1基を止め、減らした取水量の一部を園芸施設へ回したことで、園芸施設は井戸を増設せず春苗の注文を引き受けた。",
+    "paragraphs": [
+      "2031年11月21日の朝、水鳥町の部品工場で、56歳の設備責任者が冷却水の循環装置を動かし、機械の温度を確かめて大型ポンプ1基を止めた。加工ラインは動いたままだ。この工場が井戸から汲む量を減らせたことで、同じ地下水を使う近くの園芸施設は、これまで断っていた春苗の注文を受けられることになった。",
+      "2026年11月、国土交通省は地下水採取の実態把握と保全・利用の仕組みを検討する地下水部会を設けた。水鳥町では翌春から井戸ごとの取水量、観測井の水位、雨量を記録し、五つの夏を越して比べた。各社の井戸を別々に数えていた町は、2031年、その記録を使って同じ地下の水の層を利用する施設をひとまとまりに扱う協定を結んだ。雨の少ない季節に水位が下がった記録を基に、施設全体で一日に汲む量の上限を決める。台帳は地下水全体の正確な残量を示すものではない。",
+      "協定では、節水した施設が使わなくなった量の一部を、同じ地下水を使う別の施設へ配分できる。受け取った施設は、自分の井戸から汲める量が増える。節水する予定を書くだけでは配分は変わらず、町が設備の試運転と取水計で削減量を確かめる。減った分を全て使い切らず、地域全体の取水も減らすことを条件にした。観測井の水位が注意水準を下回れば、追加した分を止めて再協議する。",
+      "工場は協定で合意した取水削減のため、操業時間を短くする案も検討した。だが出荷予定を守るため、自費で冷却水を循環させる装置を増設した。前週の試運転では、同じ量の部品を加工しながら一日15立方メートルの取水を減らせた。電気代と点検の手間は増える。それでも、生産を止めて注文を断るより、設備を変えて仕事を続ける方を選んだ。この朝から、その運転を通常の作業にした。",
+      "町は確認した15立方メートルのうち、一日5立方メートルを園芸施設へ配分し、残る10立方メートルは汲まずに残すと決めた。園芸施設には空いた育苗台があったが、これまでは水を確保できず追加注文を断っていた。41歳の栽培責任者は、自分の井戸で使える量が増えたのを確かめ、春に出す苗の注文書へ署名した。新たな井戸を掘る見積書は取り下げた。追加分が止まる時に備える雨水槽の費用と、少雨が続いた場合の栽培調整は、園芸施設が引き受ける。",
+      "園芸施設では既存の井戸から散水管へ水を送り、空いていた台へ追加注文の育苗箱を並べた。工場の取水計には、ポンプを止めた後の低い流量が出ている。水位がすぐ回復したと示す数字はまだない。新しい井戸や大きなポンプを買い足す前に、隣の工場で減らせた量を自分の仕事に使えるか確かめる。その選択ができた朝、園芸施設の白紙だった出荷予定表に、春の納品先が一つ増えた。"
+    ],
+    "source": {
+      "kind": "国土交通省・地下水部会設置の報道発表",
+      "publisher": "国土交通省",
+      "published_at": "2026-11-20T00:00:00+09:00",
+      "url": "https://www.mlit.go.jp/report/press/water01_hh_000193.html",
+      "topic": "国土交通省は2026年11月20日、国土審議会水資源開発分科会に地下水部会を設置し、地下水採取の実態把握と適正な保全・利用の仕組みの検討開始を発表した。全国一律の取水規制が施行されたという発表ではない。水鳥町、2027年から五つの夏の観測、2031年の共同取水上限・実測した節水量の一部再配分、15・5・10立方メートルの数量、工場の循環冷却・ポンプ停止、園芸施設の追加受注、人物と出来事は創作。"
+    },
+    "scene_prompt": "Natural realistic horizontal 16:9 documentary news photograph in a modest Japanese industrial parts factory utility room on a cool November morning in the fictional year 2031. A 56-year-old Japanese male plant maintenance manager wearing ordinary workwear and safety boots carefully operates the stop control of one large industrial groundwater pump, while a newly installed closed-loop cooling water system with believable pipes, gauges, coolant return line and heat exchanger is visibly running nearby. His colleague checks the factory equipment temperature with a small handheld gauge. Focus on the machinery and the manager's deliberate action; no captions, no legible text or symbols, no logos, no sci-fi projections, no real-person likeness, natural factory lighting and physically plausible industrial pipe layout.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "地下水",
+      "工業用水",
+      "水資源"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "地下水",
+      "水資源"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "新しい井戸を掘る前に、隣の工場が節水した分を使えるか確かめる。2031年の町で、止まったポンプが別の仕事を増やした。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "policy_announcement",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "quiet_aftertaste",
+    "editorial_signature": {
+      "present": "2026年11月20日、国土交通省が地下水採取の実態把握と保全・利用の制度検討へ向けた地下水部会設置を発表した",
+      "target": "2027年から五つの夏の観測を蓄積し、2031年に同じ地下水層の共同取水上限と実測した節水分の一部再配分を始めた町",
+      "action": "工場が循環冷却で大型ポンプを止め、町が実測した一日15立方メートルの削減のうち5立方メートルを園芸施設へ配分する",
+      "outcome": "園芸施設が井戸増設を取り下げて春苗の追加注文を受け、地域全体では一日10立方メートルを汲まずに残す"
+    },
+    "reader_clarity": {
+      "who": "同じ地下水を使う部品工場と園芸施設",
+      "action": "工場が循環冷却で大型ポンプを止め、節水分の一部を得た園芸施設が既存の井戸で追加の苗注文を受ける",
+      "oddity": "5年分の共同観測から井戸ごとの利用を同じ地下水層の上限内で調整し、一社の節水が別の事業者の仕事を増やす"
+    },
+    "behavior_basis": {
+      "motive": "工場は出荷を守りながら合意した取水削減を達成し、園芸施設は空いていた育苗台で追加注文を受けたい",
+      "ordinary_alternative": "工場は操業時間を短くし、園芸施設は新しい井戸を掘るか追加注文を断る",
+      "why_not": "工場は循環設備を選べば生産を保て、園芸施設は実測された節水分の一部を利用して井戸増設なしに注文を引き受けられる",
+      "evidence_quote": "それでも、生産を止めて注文を断るより、設備を変えて仕事を続ける方を選んだ。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月20日、国土交通省が地下水の実態把握と適正な保全・利用の仕組みを検討する地下水部会を設置",
+      "continuation_force": "同じ地下水層の取水量・水位・雨量を五つの夏にわたり観測し、季節ごとの共同上限と実測に基づく配分変更を事業者間で合意する",
+      "future_result": "2031年、循環冷却で減らした取水の一部を園芸施設が自分の既存井戸で利用し、地域全体の取水を減らしながら春苗の追加注文を受ける"
+    },
+    "body": "",
+    "fiction_company": "水鳥町および町内の部品工場・園芸施設（架空）"
+  },
+  {
     "slug": "airport-autonomous-carts-stop-despite-clear-crossing",
+    "broadcast_feature": true,
     "category": "事件",
     "flash": "空港の無人車、事故ゼロでも荷物止まる",
     "art": "cards",

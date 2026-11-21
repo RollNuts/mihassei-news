@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "968d511238a6ab9c2b9f3ad2389609b519316756de9dee6f756b354797646382",
-  "logical_run_id": "news-photo-v1:8067ac19cbaa97b1398c36e007d66114fd3c8c8bdea301d3ae9755f1a34fbff7",
-  "observed_at": "2026-11-20T15:25:30.003Z",
+  "candidate_identity": "6d55e1ce97be6548f519e24591811dc34a906ad3f0a8fdc62af84a744ef2dcdf",
+  "logical_run_id": "news-photo-v1:4d80c21a7bfca3d568d60d62472122634a6822f8c2da9f79837e9fee6ef013bc",
+  "observed_at": "2026-11-21T00:12:46.065Z",
   "route": "PNG data URL in this code runtime to GitHub candidate storage",
   "probe_source_ref": "RollNuts/mihassei-news@3fc967e9e856c1e80d8336dbf8cebbbe3d11df7d:assets/editorial-scenes/robot-job-hopping.png",
   "source": {
@@ -17,11 +17,11 @@
     "bytes": 84865
   },
   "baseline": {
-    "commit_sha": "c1de26cf23adf2e4861feb342936c0d43b415a87",
+    "commit_sha": "ae2a5828330136a7fa0e1d92f9a8505e438ecbdc",
     "protected_hashes": {
-      "content/articles.json": "78089dc033bc20b45a3dbc4863bc08f5a3895cbc74be3fccf7e2d2d982033182",
-      "assets/generated/manifest.json": "d7fd89f0419874f5c78b1f4a43a7f09ca13675757b4e2a551931cf5b3511b6e1",
-      "content/visual_reviews.json": "58535d7cb7cd161b5b43a484303c4c049cbbf68819ed87ae1adaa9b783058a9b"
+      "content/articles.json": "8332fac3fe000aa9f9700e766b19f5e8e80af563a842f16161c48fc59f14cc05",
+      "assets/generated/manifest.json": "99b1ac6eb41ddefe4ab07d788540d842e3982fb05711b499cfece9d92baa9888",
+      "content/visual_reviews.json": "f7dcd93ec6ffc3dcec42a8fab16c379cf851d526b70acec9920b4624003e6ceb"
     }
   }
 }

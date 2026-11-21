@@ -10033,6 +10033,174 @@
     }
   }
 }
+  ,
+    "airport-autonomous-carts-stop-despite-clear-crossing": {
+  "article_sha256": "8067ac19cbaa97b1398c36e007d66114fd3c8c8bdea301d3ae9755f1a34fbff7",
+  "bytes": 192855,
+  "generated_at": "2026-11-20T15:27:06.225Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "66c739ef-6b9e-4904-919f-f44065538b52",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:66c739ef-6b9e-4904-919f-f44065538b52",
+  "generation_prompt": "A candid realistic documentary news photograph at a fictional Japanese airport ground handling area at cool dusk in late November 2031. A 45-year-old Japanese female ground operations supervisor in practical reflective workwear stands near a clearly painted stop line and gestures toward three small unattended autonomous baggage carts carrying luggage crates, parked safely one behind another and not moving. In the far background an airliner has already cleared the intersection and is taxiing away, with ample realistic distance; the scene focuses on the supervisor and the parked carts, a temporary pause without collision or emergency. Airport pavement, low service buildings, overcast evening light, subtle wet patches, believable wheels, luggage restraints, natural hands and faces, realistic press photography, horizontal 16:9. No logos, no brand names, no captions, no legible signs, no sci-fi holograms or real-person likeness.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "d2488b69a9c98d23cfd0df18b559ae711fb4eefb5aa54f68e7a29e45f65d72b5",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:d9bd64a6-f81d-4a80-b8fc-c7d12375d2e7",
+    "instanceID": "xmp:iid:66c739ef-6b9e-4904-919f-f44065538b52",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          41,
+          237,
+          110,
+          215,
+          226,
+          173,
+          60,
+          137,
+          252,
+          209,
+          150,
+          141,
+          92,
+          214,
+          179,
+          110,
+          6,
+          162,
+          150,
+          178,
+          130,
+          229,
+          45,
+          167,
+          10,
+          97,
+          21,
+          6,
+          226,
+          113,
+          101,
+          197
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-20T15:27:03.266324124Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-20T15:27:03.266327361Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-20T15:27:03.265703498Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "8826e12fc038149e34be0dddb523ce08258cdf003ce503d1c31fcea5ce64687e",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:8067ac19cbaa97b1398c36e007d66114fd3c8c8bdea301d3ae9755f1a34fbff7",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/5d2fb206f28f/generated_images as /workspace/scratch/5d2fb206f28f/generated_images/exec-3efaea09-cb3c-4b00-aac0-6dd4e7983147.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-20T15:27:06.225Z",
+    "bytes": 2463136,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "dda10b80e1c385e5f5cb9e2bedbf9dde8f2912a9eedf41c8e5f61fc13f881153",
+    "candidate_branch": "native-image-candidate/airport-autonomous-carts-stop-despite-clear-crossing/8067ac19cbaa97b1-ab97dd5e8a52",
+    "candidate_commit": "33e955a5695c05595e8c296032092c4f6bcc806e",
+    "receipt_path": "maintenance/native-image-candidates/airport-autonomous-carts-stop-despite-clear-crossing/receipt.json",
+    "receipt_sha256": "ca871504fc80469f099ab33080282891d5c965f8f9d229c519d9db52f31dff8e",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/airport-autonomous-carts-stop-despite-clear-crossing/source.png.part000",
+        "bytes": 524288,
+        "sha256": "0dd89c0a94671d8bea6ea3efcba92963dba44277340bc673fef24429a5c8dbc3",
+        "blob_sha": "a71e5313d9f05acfc6362bf4fa2cca522239fc67"
+      },
+      {
+        "path": "maintenance/native-image-candidates/airport-autonomous-carts-stop-despite-clear-crossing/source.png.part001",
+        "bytes": 524288,
+        "sha256": "e30596189fbc65e985a68efcac8636d9d3aa85b7303a3cdd658f17984df0c1e4",
+        "blob_sha": "072198d13d8080a025de9803b0e673157f1f22d6"
+      },
+      {
+        "path": "maintenance/native-image-candidates/airport-autonomous-carts-stop-despite-clear-crossing/source.png.part002",
+        "bytes": 524288,
+        "sha256": "39bdfdbf1dc1a03d0454abe8bfe0d4235dd8e93258cdd1179b4503242678e904",
+        "blob_sha": "203f6bbc58ccc4c10b254f19d6ff33f85dcfbaeb"
+      },
+      {
+        "path": "maintenance/native-image-candidates/airport-autonomous-carts-stop-despite-clear-crossing/source.png.part003",
+        "bytes": 524288,
+        "sha256": "f0cded6f294deaa90f907a8563973133526405735124cd012fe5f1948acc36aa",
+        "blob_sha": "ebd6417e7427f67a9b1a42725eb019a4682c233a"
+      },
+      {
+        "path": "maintenance/native-image-candidates/airport-autonomous-carts-stop-despite-clear-crossing/source.png.part004",
+        "bytes": 365984,
+        "sha256": "e2eb09b10fc88c94bf81b4c34c95d0b4f8c1d3e46b00e755b5487d074e0fdf77",
+        "blob_sha": "a31c0d556dd66501fe5f02e247bb5bbd7c6ebc4d"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "a780ebcd1f1c9e45f07ae9a786b7009177ac1b6e",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "665a8537c383633a637298ee9323cc65ebaac836e59ab086ea69ef32dc08ee31",
+      "observed_at": "2026-11-20T15:25:30.003Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/968d511238a6ab9c2b9f3ad2389609b519316756de9dee6f756b354797646382",
+      "receipt_path": "maintenance/native-image-generation-claims/968d511238a6ab9c2b9f3ad2389609b519316756de9dee6f756b354797646382.json",
+      "receipt_sha256": "ffc48504ace126c94327c50acb07380049284313f685c69bdc037492d2ec10e1",
+      "commit_sha": "4ba2b27ed145452a6eb17fdd6659f26f9a4798bf"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {

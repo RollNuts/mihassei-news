@@ -332,6 +332,8 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     trusted(api, pr["user"]["login"])
     trusted(api, attestation["authorized_by"])
     if pr.get("merged") is True:
+        # Recovery dispatch has not checked CI in this invocation. Keep its
+        # legacy result unbound rather than attesting the supplied run/attempt.
         return dispatch(api, pr["merge_commit_sha"])
     pr = await_mergeability(api, number, pr, expected_head, attestation)
     # An optional failed finalizer can itself leave a conflict-free PR unstable.
@@ -356,6 +358,8 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     if run.get("status") in {"queued", "in_progress", "waiting", "pending", "requested"}:
         return {"status": "ci_pending", "pr": number, "head": expected_head}
     require(run.get("path") == WORKFLOW and run.get("event") == "pull_request"
+            and run.get("id") == run_id and type(run.get("run_attempt")) is int
+            and run["run_attempt"] > 0
             and run.get("status") == "completed" and run.get("conclusion") == "success"
             and run.get("head_sha") == expected_head
             and run.get("head_repository", {}).get("full_name") == REPO, "CI is not successful for the exact head")
@@ -366,7 +370,12 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     jobs = job_response.get("jobs")
     require(isinstance(jobs, list) and job_response.get("total_count") == len(jobs)
             and len(jobs) <= 100, "Incomplete CI job listing")
-    require(any(j.get("name") == "test" and j.get("conclusion") == "success" for j in jobs), "Validation job is unverified")
+    tests = [job for job in jobs if job.get("name") == "test"]
+    require(len(tests) == 1 and tests[0].get("status") == "completed"
+            and tests[0].get("conclusion") == "success" and tests[0].get("run_id") == run_id
+            and tests[0].get("head_sha") == expected_head
+            and type(tests[0].get("run_attempt")) is int
+            and tests[0]["run_attempt"] == run["run_attempt"], "Validation job is unverified for the exact CI attempt")
     files = api.pages(f"/pulls/{number}/files")
     require(files and all(f.get("status") in {"added", "modified"}
                          and allowed_for(attestation["kind"], f.get("filename")) for f in files),
@@ -391,14 +400,18 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     else:
         raise PublicationBlocked(fresh, expected_head, "premerge", "PR or main changed during finalization")
     latest = api.get(f"/actions/runs/{run_id}")
-    require(latest.get("status") == "completed" and latest.get("conclusion") == "success"
+    require(latest.get("id") == run_id
+            and latest.get("status") == "completed" and latest.get("conclusion") == "success"
             and latest.get("head_sha") == expected_head
             and latest.get("run_attempt") == run.get("run_attempt"), "CI was restarted during finalization")
     if images:
         live_image_guard(api)
     result = api.request("PUT", f"/pulls/{number}/merge", {"sha": expected_head, "merge_method": "merge"})
     require(isinstance(result, dict) and result.get("merged") is True, "Merge was not confirmed")
-    return dispatch(api, result["sha"])
+    # workflow_run uses trusted-main metadata, not the reviewed PR head. Bind
+    # the completed operation to exactly the PR and CI attempt checked above.
+    return {**dispatch(api, result["sha"]), "pr": number, "head": expected_head,
+            "ci_run_id": run_id, "ci_run_attempt": run["run_attempt"]}
 
 
 def main(argv=None):
