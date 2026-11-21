@@ -21,12 +21,12 @@ import re
 try:
     from .market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from .reader_comments import render_reader_comments
-    from .market_outlooks import view_models, forecast_reader_statement, render_market_accuracy
+    from .market_outlooks import view_models, forecast_reader_statement, render_market_accuracy, market_forecast_url
     from .market_sharing import render_market_share
 except ImportError:
     from market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from reader_comments import render_reader_comments
-    from market_outlooks import view_models, forecast_reader_statement, render_market_accuracy
+    from market_outlooks import view_models, forecast_reader_statement, render_market_accuracy, market_forecast_url
     from market_sharing import render_market_share
 
 FILE = Path("content/market_bulletins.json")
@@ -480,7 +480,27 @@ def _picks(report):
     return f'<section class="market-stock-picks"><h2>{heading}</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
 
 
-def render_market_bulletin(report, layout, outlooks=()):
+def _bulletin_navigation(previous_report=None, next_report=None):
+    """Link only to adjacent, already-published reports from the loaded archive."""
+    links = []
+    for item, relation, label in (
+        (previous_report, "prev", "← 前の市況"),
+        (next_report, "next", "次の市況 →"),
+    ):
+        if item is None:
+            continue
+        links.append(
+            f'<a rel="{relation}" href="{bulletin_url(item)}">'
+            f'<span>{label} ／ {render_bulletin_publication_time(item)} JST</span>'
+            f'<strong>{escape(item["title"])}</strong></a>'
+        )
+    if not links:
+        return ""
+    return ('<nav class="serial-next-prev market-bulletin-nav" aria-label="前後の市況記事">'
+            + "".join(links) + '</nav>')
+
+
+def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None, next_report=None):
     slot_name = _coverage_label(report)
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
@@ -489,13 +509,16 @@ def render_market_bulletin(report, layout, outlooks=()):
     if latest_forecast:
         current = latest_forecast[0]
         forecast = current["forecast"]
+        forecast_at = _timestamp(forecast["at"])
         forecast_section = (
             '<section class="market-briefing-outlook market-reader-focus" id="daily-forecasts">'
-            '<h2>この日の予想</h2>'
+            '<h2>掲載時点の予想</h2>'
             f'<p class="market-reader-prediction">{escape(forecast_reader_statement(forecast))}</p>'
-            f'<p class="market-briefing-forecast-meta">結果日：'
+            f'<p class="market-briefing-forecast-meta">当初の予想：'
+            f'<time datetime="{escape(forecast["at"], quote=True)}">'
+            f'{forecast_at.strftime("%Y-%m-%d %H:%M")}</time> JST<br>結果日：'
             f'<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time></p>'
-            '<a href="/serials/market-lab/outlooks/">理由と結果を読む →</a>'
+            f'<a href="{market_forecast_url(forecast)}">理由と結果を読む →</a>'
             '</section>'
         )
     else:
@@ -533,6 +556,7 @@ def render_market_bulletin(report, layout, outlooks=()):
         + _market_conditions(report) + "".join(parts)
         + _picks(report)
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
+        + _bulletin_navigation(previous_report, next_report)
         + render_reader_comments('market-briefing-' + report['slug'],
              heading='この市況へのコメント', placeholder='今日の相場についてひとこと…')
         + '<p><a class="serial-back-link" href="/serials/market-lab/briefings/">日次市況一覧へ</a></p>'
@@ -624,9 +648,13 @@ def build_market_bulletins(reports, layout, write, *, outlooks=()):
     write(MARKET_URL.lstrip("/") + "briefings/index.html",
           render_market_bulletins_archive(reports, layout))
     write(FEED_URL.lstrip("/"), market_bulletin_feed_xml(reports))
-    for item in reports:
+    for index, item in enumerate(reports):
         write(bulletin_url(item).lstrip("/") + "index.html",
-              render_market_bulletin(item, layout, outlooks=outlooks))
+              render_market_bulletin(
+                  item, layout, outlooks=outlooks,
+                  previous_report=reports[index - 1] if index else None,
+                  next_report=reports[index + 1] if index + 1 < len(reports) else None,
+              ))
         for fig in item["figures"]:
             for small in (False, True):
                 write(figure_url(item, fig, mobile=small),
