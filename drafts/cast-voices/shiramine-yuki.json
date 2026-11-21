@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shiramine-yuki",
   "name": "白峰ゆき",
-  "created_date": "2026-11-20",
+  "created_date": "2026-11-21",
   "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
   "photo_reference": {
     "issue_slug": "november-warm-water-and-riverside-yuki-009",
-    "cut_id": "08",
-    "image_sha256": "e963105934c0c59dd61b86ccc2992943e8c06f236337c3df6cccf6d72e306aa1"
+    "cut_id": "09",
+    "image_sha256": "876e63963be244dc45a0bd5c7fb26573e8c0a0413ef92e47795eb81a8dc5549b"
   },
-  "post_text": "夕方、宿の廊下を歩いていたら、窓の向こうで庭の灯りがひとつ点きました。もう少し眺めたくて、荷物を置いたあと同じ窓辺に戻ってきました。",
-  "spoken_line": "あの灯り、もう少し見たい。",
-  "future_idea": "2031年、観光路線の運行枠を旅行者と住民で配分する新制度案。観光収入を支える事業者と、通院や通学の足を守りたい住民の間で議論が広がる。"
+  "post_text": "夕方、駅で買った小さな焼き菓子を忘れていたことに気づきました。温かいお茶を入れ直して、窓のそばでひとつ。もう少し、ここにいたいです。",
+  "spoken_line": "もう少し、ここにいたい。",
+  "future_idea": "2031年、観光都市が住民の居住権を守るため短期滞在用住宅への課税を強化。旅行者の宿泊需要と地域の家賃負担を巡り議論。"
 }
