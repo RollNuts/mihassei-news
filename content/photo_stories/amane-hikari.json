@@ -30,6 +30,21 @@
         "cut_id": "09",
         "image_sha256": "ea128664af1643d1179c74fe75e4473f30e8385a752c10b0fe6bd097201d8c35"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261121154748851000",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-21T15:47:48.851+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後のリハで新しい曲の間奏だけ何度も合わせた。最後に全員ぴたりと止まった瞬間、思わず顔を見合わせて笑っちゃった。あれ、もう一回やりたい！",
+      "source": {
+        "issue_slug": "november-city-lights-hikari-006",
+        "cut_id": "02",
+        "image_sha256": "d0ea10b9e89eb6f4e77f9a5f3def26d7b8e3299d1b6ca6476608810d567be1a8"
+      }
     }
   ]
 }
