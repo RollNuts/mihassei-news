@@ -1,0 +1,447 @@
+{
+  "version": 1,
+  "kind": "photo_original_recovery_handoff",
+  "status": "originals_verified_and_jpegs_prepared_editorial_adoption_pending",
+  "repository": "RollNuts/mihassei-news",
+  "issue": "november-hikari-city-and-pool-013",
+  "model_id": "amane-hikari",
+  "candidate_branch": "photo-issue-plan/november-hikari-city-and-pool-013",
+  "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+  "delivery_turn": "690deeae-10d8-832c-a8ca-91a8880d70ca",
+  "delivery_reference_kind": "automation_run",
+  "generation_turn": null,
+  "generation_turn_status": "not_retained",
+  "generation_prompt": null,
+  "generation_prompt_status": "not_retained",
+  "source_ordinal_basis": {
+    "commit": "bda621234ea6a4e44d246e33e733a68c5ab558c3",
+    "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/original-inventory.json",
+    "git_blob_sha": "2c96f3b8a9ded79cb27032870ed17ef962be5e7b",
+    "sha256": "589d265c40b037cd510493fd3802f9402af0cbff41d1c14ea9affb1bf9ed5b67",
+    "meaning": "Original producer-reported source_ordinal copied unchanged; not a newly assigned generation image number."
+  },
+  "originals_receipt": {
+    "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+    "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/originals/receipt.json",
+    "git_blob_sha": "da8ab458355b1db9649b20418f2f7954bc72e852",
+    "sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+    "status": "originals_only_unreviewed",
+    "count": 10,
+    "completed_receipt_readback": {
+      "status": "verified",
+      "verified_at": "2026-11-21T07:48:37.641Z",
+      "verified_source_sha256s": [
+        "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+        "e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa",
+        "4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a",
+        "71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263",
+        "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+        "cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151",
+        "f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563",
+        "5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d",
+        "502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b",
+        "996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741"
+      ],
+      "evidence_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/original-readbacks.json",
+      "evidence_commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "evidence_sha256": "87aef810c3f250a5eeb2e831093b050e18fefc78d2128f38b13f3cd73778f6dd"
+    }
+  },
+  "selected_source_ordinals": [
+    2,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16
+  ],
+  "metadata": {
+    "library_receipts": {
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/library-receipts.json",
+      "sha256": "cfe55acaa265d57ffe29df0a7758321b9b9d271429c677a4181bd6d019bd50a1",
+      "bytes": 23408,
+      "ref": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+    },
+    "source_original_qa": {
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/source-original-qa.json",
+      "sha256": "24b5497e2c0de3144498d906569862cf425dd273820a74454f302d955c5e3735",
+      "bytes": 40723,
+      "ref": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+    },
+    "prepared_jpegs": {
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs.json",
+      "sha256": "ac1d6262dbbaa23e8580421beedcc06029106f2de1c1fc52c8f5d249759574ad",
+      "bytes": 26992,
+      "ref": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+    }
+  },
+  "prepared_jpeg_storage": {
+    "status": "attached_and_all_10_remote_bytes_verified",
+    "ref": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+    "tree_attachment_verified": true,
+    "tree_readback_verified_at": "2026-11-21T07:50:21.622Z",
+    "total_bytes": 1964502,
+    "evidence_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/jpeg-readbacks.json",
+    "evidence_ref": "same_immutable_commit_as_this_handoff"
+  },
+  "transform": {
+    "encoder": "Pillow",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  },
+  "encoding_details": {
+    "pillow_version": "13.0.0",
+    "resample": "LANCZOS",
+    "mode": "RGB",
+    "optimize": true,
+    "progressive": false,
+    "subsampling": 0
+  },
+  "items": [
+    {
+      "source_ordinal": 2,
+      "source_sha256": "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+      "source_filename": "明るいスタジオで踊るダンサー.png",
+      "source_bytes": 2063699,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000962c81f4934eeb574d5daee0",
+      "library": {
+        "library_file_id": "libfile_fde3_f-aabd87a92a3c8191a96226dec045f556_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000000b50822f9343acaaef3e5a56",
+        "file_name": "明るいスタジオで踊るダンサー.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-aabd87a92a3c8191a96226dec045f556_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source02.jpg",
+        "sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb",
+        "git_blob_sha": "aa683b8ae15e49d8839867a0a3650947b723ce04",
+        "bytes": 131812,
+        "width": 800,
+        "height": 1200,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 6,
+      "source_sha256": "e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa",
+      "source_filename": "imagegen.png",
+      "source_bytes": 2354614,
+      "source_dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "source_observed_file_id": "file_00000000b37c8243bad71e17ece3dc55",
+      "library": {
+        "library_file_id": "libfile_fde3_f-59f656c6fd3881918c1c53128854330a_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000ad88822f8fd96f503a3d7692",
+        "file_name": "imagegen.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-59f656c6fd3881918c1c53128854330a_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source06.jpg",
+        "sha256": "a324465467eed07e29aa9ae057eb2aa963486c2e67958b8589bfefd1da1e57f3",
+        "git_blob_sha": "e71561840e0701a93dbb930826b7066064bb1ec4",
+        "bytes": 170754,
+        "width": 1200,
+        "height": 800,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 7,
+      "source_sha256": "4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a",
+      "source_filename": "夕暮れの街角_冬の装い.png",
+      "source_bytes": 3015529,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000a23481f491102bcdc2f56b22",
+      "library": {
+        "library_file_id": "libfile_fde3_f-ee1982115cc88191ad888e243fc16a04_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_0000000064c0822f9d8da07d9ad5a3fa",
+        "file_name": "夕暮れの街角_冬の装い.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-ee1982115cc88191ad888e243fc16a04_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source07.jpg",
+        "sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc",
+        "git_blob_sha": "a4bfe5b88d1d2433876e040b679a6160cb9424f7",
+        "bytes": 309291,
+        "width": 800,
+        "height": 1200,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 8,
+      "source_sha256": "71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263",
+      "source_filename": "リゾートテラスの笑顔と朝食.png",
+      "source_bytes": 2080297,
+      "source_dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "source_observed_file_id": "file_00000000d14481f4b06e817847f1dc5f",
+      "library": {
+        "library_file_id": "libfile_fde3_f-547c6d16d040819190e6025034f4d8ee_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000003b14822faac625adc93abad5",
+        "file_name": "リゾートテラスの笑顔と朝食.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-547c6d16d040819190e6025034f4d8ee_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source08.jpg",
+        "sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108",
+        "git_blob_sha": "84aaea1268c3430a0eadfc720a982f7bf1be183a",
+        "bytes": 153747,
+        "width": 1200,
+        "height": 800,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 10,
+      "source_sha256": "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+      "source_filename": "海辺を歩く夏の女性.png",
+      "source_bytes": 2654268,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000f7a081f4b5148ec901eb3943",
+      "library": {
+        "library_file_id": "libfile_fde3_f-b1d5721892f0819180b1126c71b94701_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000ae7c822fa0d92e1da163c206",
+        "file_name": "海辺を歩く夏の女性.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-b1d5721892f0819180b1126c71b94701_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source10.jpg",
+        "sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+        "git_blob_sha": "704b3559e21fe6e6feb285700cd9ab60254a37eb",
+        "bytes": 217852,
+        "width": 800,
+        "height": 1200,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 11,
+      "source_sha256": "cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151",
+      "source_filename": "温かな室内プールのくつろぎ時間.png",
+      "source_bytes": 2582678,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_0000000039588209b71d8d57204bc12e",
+      "library": {
+        "library_file_id": "libfile_fde3_f-d4e2ef7684608191a143f910afa311e7_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000002390822fa6a940de72a90348",
+        "file_name": "温かな室内プールのくつろぎ時間.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-d4e2ef7684608191a143f910afa311e7_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source11.jpg",
+        "sha256": "3e0a707e164a74afe509b6a623965afa438aa91dec54dac6c48edc501218f20b",
+        "git_blob_sha": "3653498545dd33e0a3efac7e57c96166c7b7c378",
+        "bytes": 198647,
+        "width": 800,
+        "height": 1200,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 12,
+      "source_sha256": "f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563",
+      "source_filename": "夕暮れのプールサイドと微笑む女性.png",
+      "source_bytes": 2279957,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000077082119abc1c884fc37e2e",
+      "library": {
+        "library_file_id": "libfile_fde3_f-1640dca0cc308191a2c463fa2cf3bc45_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_0000000064f0822fb25e1e05513f37df",
+        "file_name": "夕暮れのプールサイドと微笑む女性.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-1640dca0cc308191a2c463fa2cf3bc45_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source12.jpg",
+        "sha256": "75758b45829380e7c313bc320cb870b5b1e7bd119f51ee121a751123a348d53b",
+        "git_blob_sha": "cce73ef312155bffed27aabcdd4fea843df6c70c",
+        "bytes": 177644,
+        "width": 800,
+        "height": 1200,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 13,
+      "source_sha256": "5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d",
+      "source_filename": "温水プールサイドでくつろぐ女性.png",
+      "source_bytes": 2353208,
+      "source_dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "source_observed_file_id": "file_0000000095e88230948ac84bcaa57d94",
+      "library": {
+        "library_file_id": "libfile_fde3_f-ab86a20905608191b39bc2c834fd5618_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000008098822f94096b6e5dd5b36c",
+        "file_name": "温水プールサイドでくつろぐ女性.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-ab86a20905608191b39bc2c834fd5618_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source13.jpg",
+        "sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6",
+        "git_blob_sha": "065a0c6465dabfe1159d4536f486d5e8c54a7a21",
+        "bytes": 176014,
+        "width": 1200,
+        "height": 800,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 14,
+      "source_sha256": "502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b",
+      "source_filename": "モダンな室内プールを歩く女性.png",
+      "source_bytes": 2305060,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_0000000041d48209bb77c6db0a1510d1",
+      "library": {
+        "library_file_id": "libfile_fde3_f-5b60499b150481918ffcb11a38f6f5d1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000004a40822f8351e0d1cedda87a",
+        "file_name": "モダンな室内プールを歩く女性.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-5b60499b150481918ffcb11a38f6f5d1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source14.jpg",
+        "sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361",
+        "git_blob_sha": "688560e4b33996698e736d92ee71ae6b7fe6cf81",
+        "bytes": 180111,
+        "width": 800,
+        "height": 1200,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    },
+    {
+      "source_ordinal": 16,
+      "source_sha256": "996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741",
+      "source_filename": "温室プールで微笑む女性.png",
+      "source_bytes": 2632496,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000759482119ce3354c1edc0142",
+      "library": {
+        "library_file_id": "libfile_fde3_f-b440da4962e08191b18b329e491a062b_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000e638822faa128e2c130b40f5",
+        "file_name": "温室プールで微笑む女性.png",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-b440da4962e08191b18b329e491a062b_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source16.jpg",
+        "sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8",
+        "git_blob_sha": "b5d84fa8a103ea153055e6d995d213f20d6f3b67",
+        "bytes": 248630,
+        "width": 800,
+        "height": 1200,
+        "format": "JPEG",
+        "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+      },
+      "jpeg_visual_review": "passed_encoding_review_not_adoption"
+    }
+  ],
+  "review": {
+    "source_screening": "completed_editorial_candidate_recommendation_only",
+    "source_screened_at": "2026-11-21 07:17:36 UTC",
+    "jpeg_encoding_review": "completed_not_formal_adoption",
+    "jpeg_encoding_reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+    "formal_editorial_adoption": "pending",
+    "swimwear_count": 6,
+    "swimwear_source_ordinals": [
+      8,
+      11,
+      12,
+      13,
+      14,
+      16
+    ],
+    "both_bikini_pieces_visually_supported_count": 5,
+    "bikini_top_only_source_ordinals": [
+      8
+    ],
+    "sequence_is_editorial_not_actual_chronology": true
+  },
+  "inventory_scope": {
+    "source_pngs_recovered_and_saved_to_library": 16,
+    "selected_for_this_completed_receipt": 10,
+    "reserve_source_ordinals": [
+      1,
+      3,
+      4,
+      5,
+      9,
+      15
+    ],
+    "reserves_status": "saved_to_library_not_in_this_completed_git_receipt",
+    "new_generation_calls": 0,
+    "formally_adopted_count": 0,
+    "published_count": 0,
+    "generation_usage_this_week": null,
+    "generation_usage_note": "Recovery made zero generation calls; this does not establish historical weekly generation usage as zero."
+  },
+  "publication": {
+    "status": "not_published",
+    "next_owner": "existing_daily_photo_editor",
+    "remaining_work": [
+      "Complete final editorial adoption, current-main duplicate and publication-order check.",
+      "Use exact saved source originals and prepared JPEG bytes; retain real Library provenance and unknown generation fields.",
+      "Write or adopt the column under EDITORIAL_LOOP, with actual writing time and references.",
+      "Follow existing normal PR, publication-finalize and machine publication process."
+    ]
+  },
+  "recovery_completed_at": "2026-11-21T07:50:37.899Z"
+}
