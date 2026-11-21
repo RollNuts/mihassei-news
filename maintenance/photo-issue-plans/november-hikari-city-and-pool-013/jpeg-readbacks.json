@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "issue": "november-hikari-city-and-pool-013",
+  "kind": "prepared_jpeg_and_metadata_readback_evidence",
+  "status": "all_10_jpegs_and_4_metadata_files_verified",
+  "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+  "method": "Read each attached path at immutable Git commit; decode actual base64; verify full SHA-256, byte count, expected Git blob and JPEG boundaries against visually reviewed local derivative",
+  "jpeg_count": 10,
+  "jpeg_bytes": 1964502,
+  "items": [
+    {
+      "kind": "jpeg",
+      "source_ordinal": 2,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source02.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb",
+      "git_blob_sha": "aa683b8ae15e49d8839867a0a3650947b723ce04",
+      "bytes": 131812,
+      "verified_at": "2026-11-21T07:50:19.911Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 6,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source06.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "a324465467eed07e29aa9ae057eb2aa963486c2e67958b8589bfefd1da1e57f3",
+      "git_blob_sha": "e71561840e0701a93dbb930826b7066064bb1ec4",
+      "bytes": 170754,
+      "verified_at": "2026-11-21T07:50:20.061Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 7,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source07.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc",
+      "git_blob_sha": "a4bfe5b88d1d2433876e040b679a6160cb9424f7",
+      "bytes": 309291,
+      "verified_at": "2026-11-21T07:50:20.332Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 8,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source08.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108",
+      "git_blob_sha": "84aaea1268c3430a0eadfc720a982f7bf1be183a",
+      "bytes": 153747,
+      "verified_at": "2026-11-21T07:50:20.467Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 10,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source10.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+      "git_blob_sha": "704b3559e21fe6e6feb285700cd9ab60254a37eb",
+      "bytes": 217852,
+      "verified_at": "2026-11-21T07:50:20.660Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 11,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source11.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "3e0a707e164a74afe509b6a623965afa438aa91dec54dac6c48edc501218f20b",
+      "git_blob_sha": "3653498545dd33e0a3efac7e57c96166c7b7c378",
+      "bytes": 198647,
+      "verified_at": "2026-11-21T07:50:20.836Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 12,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source12.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "75758b45829380e7c313bc320cb870b5b1e7bd119f51ee121a751123a348d53b",
+      "git_blob_sha": "cce73ef312155bffed27aabcdd4fea843df6c70c",
+      "bytes": 177644,
+      "verified_at": "2026-11-21T07:50:20.998Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 13,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source13.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6",
+      "git_blob_sha": "065a0c6465dabfe1159d4536f486d5e8c54a7a21",
+      "bytes": 176014,
+      "verified_at": "2026-11-21T07:50:21.156Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 14,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source14.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361",
+      "git_blob_sha": "688560e4b33996698e736d92ee71ae6b7fe6cf81",
+      "bytes": 180111,
+      "verified_at": "2026-11-21T07:50:21.315Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 16,
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source16.jpg",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8",
+      "git_blob_sha": "b5d84fa8a103ea153055e6d995d213f20d6f3b67",
+      "bytes": 248630,
+      "verified_at": "2026-11-21T07:50:21.533Z",
+      "image_bytes_verified": true
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/library-receipts.json",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "cfe55acaa265d57ffe29df0a7758321b9b9d271429c677a4181bd6d019bd50a1",
+      "git_blob_sha": "6dbe711d712c5a4b51ba54eec607afbb0a97c313",
+      "bytes": 23408,
+      "verified_at": "2026-11-21T07:50:21.553Z",
+      "image_bytes_verified": false
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/source-original-qa.json",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "24b5497e2c0de3144498d906569862cf425dd273820a74454f302d955c5e3735",
+      "git_blob_sha": "36436dccb4db267ec0c84268cc74efca41e58ab7",
+      "bytes": 40723,
+      "verified_at": "2026-11-21T07:50:21.592Z",
+      "image_bytes_verified": false
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs.json",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "ac1d6262dbbaa23e8580421beedcc06029106f2de1c1fc52c8f5d249759574ad",
+      "git_blob_sha": "5a4211a66979617302196553746f875266dc65d6",
+      "bytes": 26992,
+      "verified_at": "2026-11-21T07:50:21.618Z",
+      "image_bytes_verified": false
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/original-readbacks.json",
+      "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+      "sha256": "87aef810c3f250a5eeb2e831093b050e18fefc78d2128f38b13f3cd73778f6dd",
+      "git_blob_sha": "4dacd6c4668d8144deb3e908a5375faed71d6618",
+      "bytes": 4731,
+      "verified_at": "2026-11-21T07:50:21.622Z",
+      "image_bytes_verified": false
+    }
+  ],
+  "formal_editorial_adoption": "pending",
+  "published_count": 0
+}

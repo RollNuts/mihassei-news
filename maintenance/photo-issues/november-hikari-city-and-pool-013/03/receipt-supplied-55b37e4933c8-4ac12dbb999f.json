@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-hikari-city-and-pool-013",
+  "cut_id": "03",
+  "model_id": "amane-hikari",
+  "imported_at": "2026-11-21T14:16:19.753073+00:00",
+  "review_reference_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+  "source": {
+    "format": "png",
+    "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/03/source-55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf.png",
+    "sha256": "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+    "bytes": 2654268,
+    "width": 1024,
+    "height": 1536,
+    "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-b1d5721892f0819180b1126c71b94701_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+    "library_file_id": "libfile_fde3_f-b1d5721892f0819180b1126c71b94701_3e0ce6a2e8348191be296e0419d0b8cc",
+    "file_id": "file_00000000ae7c822fa0d92e1da163c206",
+    "file_name": "海辺を歩く夏の女性.png",
+    "library_file_version": 0,
+    "generation_turn": null,
+    "generation_turn_status": "not_retained",
+    "generation_prompt": null,
+    "generation_prompt_status": "not_retained"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-03.jpg",
+    "sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+    "bytes": 217852,
+    "width": 800,
+    "height": 1200
+  },
+  "transform": {
+    "encoder": "Pillow",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  },
+  "encoding_details": {
+    "pillow_version": "13.0.0",
+    "resample": "LANCZOS",
+    "mode": "RGB",
+    "optimize": true,
+    "progressive": false,
+    "subsampling": 0
+  },
+  "recovery_reference": {
+    "source_ordinal": 10,
+    "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+    "delivery_turn": "690deeae-10d8-832c-a8ca-91a8880d70ca",
+    "delivery_reference_kind": "automation_run",
+    "original_receipt_commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+    "original_receipt_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/originals/receipt.json",
+    "original_receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+    "prepared_jpeg_commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+    "prepared_jpeg_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/prepared-jpegs/hikari013-source10.jpg"
+  }
+}

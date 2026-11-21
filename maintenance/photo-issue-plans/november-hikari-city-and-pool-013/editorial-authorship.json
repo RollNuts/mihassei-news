@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "kind": "new_editorial_column_draft",
+  "issue_slug": "november-hikari-city-and-pool-013",
+  "model_id": "amane-hikari",
+  "written_at": "2026-11-21T14:08:39.463937+00:00",
+  "source_status": "newly_written_by_editorial_assistant_not_recovered_original",
+  "not_a_daily_voice_post": true,
+  "canonical_main": "0a589d90851831529c98ace8971dc19d8925fe83",
+  "model_catalog_path": "content/photo_issues.json",
+  "model_character_used": {
+    "version": 1,
+    "first_person": "私",
+    "occupation": "歌とダンスのアイドル",
+    "casting_specialty": "架空の音楽番組やステージでの歌とダンス、舞台衣装を使った表現。",
+    "personality": "明るく人懐っこい。小さな挑戦にも負けず嫌い。",
+    "voice": "会話に近い軽快な文。喜びも失敗も隠さず、決め台詞は連発しない。",
+    "likes": [
+      "舞台衣装",
+      "新しい遊び",
+      "甘いおやつ"
+    ],
+    "weakness": "楽しみな予定を詰め込みすぎる。"
+  },
+  "published_feature_compared": "november-city-lights-hikari-006",
+  "recovered_handoff": {
+    "commit": "4bbf8a60fa63a525c676d29847ee2fc3bd7efac4",
+    "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/handoff.json"
+  },
+  "source_observations": {
+    "commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+    "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/source-original-qa.json"
+  },
+  "source_order": [
+    2,
+    7,
+    10,
+    8,
+    16,
+    14,
+    13,
+    11,
+    12,
+    6
+  ],
+  "cover_cut_id": "05",
+  "editorial_fingerprint": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+  "original_generation_dates_claimed": false,
+  "same_day_actual_shooting_chronology_claimed": false,
+  "photo_qa_used": "existing source-screening notes plus root current JPEG review; final adoption is root responsibility",
+  "checks": {
+    "pure_fingerprint_using_actual_repository_functions": true,
+    "all_ten_generation_inputs_metadata_passed": true,
+    "new_issue_adopted_photos": 0,
+    "public_state": "draft",
+    "published_at": null,
+    "full_catalog_validation": true,
+    "existing_editions_metadata_validation": true,
+    "publication_image_validation": false
+  },
+  "remaining": [
+    "Independent initial read of public copy",
+    "Root final caption/photo adoption and complete source receipts",
+    "Full candidate catalog and published-image validation",
+    "Normal PR and next eligible day actual-time publication"
+  ],
+  "revised_at": "2026-11-21T14:10:45.901725+00:00",
+  "revision_reason": "Clarify that the removed plan is the fifteen-minute dance practice added by the AI; parent initial read requested this minimal causal clarification.",
+  "previous_editorial_fingerprint": "aa936c00d3a7818dca57cc96976f07c00ac31f3ba7cea493c072e5ac53977215",
+  "validation_evidence_path": "validation-result.json",
+  "final_copy_reviewed_at": "2026-11-21T14:14:36.111799+00:00",
+  "final_copy_review": "Root read the full public text and all captions; clarified the removed practice slot and removed a same-day claim from the studio caption. Photo-feature review follows the existing same-editor rule."
+}
