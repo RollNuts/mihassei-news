@@ -47,17 +47,18 @@ var PhotoOriginalHandoff = (() => {
       await guard();
       return git(name, args);
     }
-    async function upload(file, expectedSha, start = 0, count = 1) {
+    function sourceReference(expectedSha, start, count) {
       requireThat(HASH.test(expectedSha) && Number.isInteger(start) && start >= 0 && (count === 1 || count === 2), "Invalid source reference");
-      const png = payload(await readCandidatePng({file}));
-      requireThat(png.status === "read" && png.mime_type === "image/png" && png.sha256 === expectedSha &&
-        Number.isInteger(png.bytes) && png.bytes > 0 && png.bytes <= MAX &&
-        typeof png.image_url === "string" && png.image_url.startsWith("data:image/png;base64,") &&
-        png.image_url.length === 22 + 4 * Math.ceil(png.bytes/3), "Unexpected original PNG response");
-      const bytes = runtime.fromBase64(png.image_url);
-      requireThat(bytes.length === png.bytes && runtime.sha256(bytes) === expectedSha, "Original PNG changed");
+    }
+    async function uploadPng(dataUrl, expectedSha, start, count, metadata = null) {
+      requireThat(typeof dataUrl === "string" && dataUrl.startsWith("data:image/png;base64,") &&
+        dataUrl.length > 22 && dataUrl.length <= 22 + 4 * Math.ceil(MAX/3), "Unexpected original PNG data URL");
+      const bytes = runtime.fromBase64(dataUrl);
+      requireThat(bytes.length > 0 && bytes.length <= MAX && dataUrl.length === 22 + 4 * Math.ceil(bytes.length/3) &&
+        (!metadata || bytes.length === metadata.bytes) && runtime.sha256(bytes) === expectedSha, "Original PNG changed");
       const {width, height} = runtime.inspectPng(bytes);
-      requireThat(width === png.width && height === png.height && start * PART < bytes.length, "Invalid PNG dimensions or offset");
+      requireThat((!metadata || (width === metadata.width && height === metadata.height)) &&
+        start * PART < bytes.length, "Invalid PNG dimensions or offset");
       const parts = [];
       for (let index = start; index < start + count && index * PART < bytes.length; index++) {
         const chunk = bytes.subarray(index * PART, (index + 1) * PART);
@@ -66,6 +67,19 @@ var PhotoOriginalHandoff = (() => {
       }
       return {source_sha256:expectedSha, source_bytes:bytes.length, width, height, parts,
         next:(start + parts.length) * PART < bytes.length ? start + parts.length : null};
+    }
+    async function upload(file, expectedSha, start = 0, count = 1) {
+      sourceReference(expectedSha, start, count);
+      const png = payload(await readCandidatePng({file}));
+      requireThat(png.status === "read" && png.mime_type === "image/png" && png.sha256 === expectedSha &&
+        Number.isInteger(png.bytes) && png.bytes > 0 && png.bytes <= MAX &&
+        typeof png.image_url === "string" && png.image_url.startsWith("data:image/png;base64,") &&
+        png.image_url.length === 22 + 4 * Math.ceil(png.bytes/3), "Unexpected original PNG response");
+      return uploadPng(png.image_url, expectedSha, start, count, png);
+    }
+    async function uploadDataUrl(dataUrl, expectedSha, start = 0, count = 1) {
+      sourceReference(expectedSha, start, count);
+      return uploadPng(dataUrl, expectedSha, start, count);
     }
     function validate(packet) {
       const {issue, model_id, source_chat_url, delivery_turn, assets} = packet;
@@ -191,7 +205,7 @@ var PhotoOriginalHandoff = (() => {
       requireThat(saved.ref === "refs/heads/" + branch && saved.object?.sha === plan.commit, "Branch save not confirmed");
       return {status:"staged_pending_readback",branch,commit:plan.commit,receipt_sha256:plan.receipt_sha256};
     }
-    return {upload, prepare, publish, readOriginal};
+    return {upload, uploadDataUrl, prepare, publish, readOriginal};
   }
   return {create};
 })();

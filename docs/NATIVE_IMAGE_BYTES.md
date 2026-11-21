@@ -401,7 +401,27 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 The producer can deliver existing PNGs from its own chat to the editor without a ZIP. Use the existing issue slug, producer chat URL, observed delivery turn and each source image's original ordinal and measured SHA-256. Retain the actual generation turn if known. Inspect the existing `photo-issue-plan/<issue>` branch first. Reuse any matching raw files, including older full-PNG, JPEG or binary-map handoffs. Never upload the same originals again to add a receipt in a new format.
 
-Load `scripts/photo_original_handoff.js` from the same pinned main as the native byte and staging helpers above. Use the initialized byte runtime, ordinary GitHub callbacks, existing live cloud guard and actual file adapter. Keep image bytes and base64 inside code mode. Check the 12 GiB free-space floor wherever files are materialized. Candidate writes check the public workflow and the main JPEG total each time.
+Load `scripts/photo_original_handoff.js` from the same pinned main as the native byte and staging helpers above. Use the initialized byte runtime, ordinary GitHub callbacks and existing live cloud guard. Choose the input route that matches the actual original returned in this execution; a file adapter is required only for a local file. Keep image bytes and base64 inside code mode. Check the 12 GiB free-space floor wherever files are materialized. Candidate writes check the public workflow and the main JPEG total each time. This is transport of an existing original, not permission for another generation; stock replenishment and attempt reservations follow [EDITORIAL_LOOP](EDITORIAL_LOOP.md#写真ストックと制作量).
+
+When ImageGen actually returns a PNG data URL to code mode, pass that unchanged value directly. The following `imagegenResult` is the real tool result, retained privately in code mode; it is not a made-up URL or a conversation preview. No local file or `readCandidatePng` adapter is needed.
+
+```js
+const H = new Function(source + "\nreturn PhotoOriginalHandoff;")();
+const original = H.create({runtime, github, cloudStatus:stager.cloudStatus});
+const originalDataUrl = imagegenResult.image_url;
+if (typeof originalDataUrl !== "string" || !originalDataUrl.startsWith("data:image/png;base64,"))
+  throw Error("Original PNG data URL was not returned");
+const measuredSha = runtime.sha256(runtime.fromBase64(originalDataUrl));
+// Start at 0; retain this exact original and measured SHA for each continuation.
+const slice = await original.uploadDataUrl(originalDataUrl, measuredSha, start);
+const asset = {...slice, parts:[...earlierParts, ...slice.parts], source_ordinal:originalOrdinal,
+  generation_turn:knownGenerationTurn || null};
+text({asset, next:slice.next}); // compact metadata only, never the tool result or data URL
+```
+
+The direct route and file route share the 8 MiB bound, full SHA comparison, PNG CRC and dimension checks, and guarded 512 KiB part upload. Retain the original data URL privately until all its parts are saved; `text` / `notify` must not receive it. If no actual original data URL was returned, recover the observed original file through the existing route rather than fabricating PNG bytes, a file path or a source reference. The producer chat, delivery turn and known generation turn still describe the real source; direct byte delivery does not permit relabelling another chat's output as the registered producer's work.
+
+When the actual return is a local PNG file, use the existing file adapter with that observed path instead:
 
 ```js
 const H = new Function(source + "\nreturn PhotoOriginalHandoff;")();
