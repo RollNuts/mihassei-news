@@ -66,6 +66,24 @@ def _edition_card(edition, *, featured=False):
             '</div></a></article></li>')
 
 
+def _daily_feature_navigation(edition, models):
+    """Link the latest daily issue's released features without repeating photos."""
+    if edition.get("release_mode") != "daily":
+        return ""
+    by_id = {model["id"]: model for model in models}
+    links = []
+    for feature in edition["ordered_features"]:
+        model = feature.get("model_snapshot") or by_id[feature["model_id"]]
+        links.append(f'<a href="{h(issue_url(feature))}">{h(model["name"])}</a>')
+    number = h(edition["number"])
+    return ('<div class="photo-edition-shortcuts">'
+            f'<h2 class="photo-issue-number" id="photo-edition-shortcuts-title">第{number}号の掲載特集</h2>'
+            '<nav class="photo-section-nav" aria-labelledby="photo-edition-shortcuts-title">'
+            + ''.join(links)
+            + f'<a href="{h(edition_url(edition))}#contents">第{number}号の目次へ <span aria-hidden="true">→</span></a>'
+            '</nav></div>')
+
+
 def render_edition_index(editions, models, layout, *, stories_markup=""):
     features = list(feature_edition_map(editions))
     by_slug = {feature["slug"]: feature for edition in editions for feature in edition["ordered_features"]}
@@ -78,7 +96,8 @@ def render_edition_index(editions, models, layout, *, stories_markup=""):
             f'<h1>週刊グラビア</h1><p class="photo-issue-credit">{CREDIT}</p>'
             f'<p><a href="{h(feed_url())}" type="application/rss+xml">RSSで購読</a></p></header>'
             f'{_photo_navigation("issues")}'
-            f'<ol class="photo-issues-grid">{_edition_card(editions[0],featured=True)}</ol>{stories_markup}'
+            f'<ol class="photo-issues-grid">{_edition_card(editions[0],featured=True)}</ol>'
+            f'{_daily_feature_navigation(editions[0], models)}{stories_markup}'
             f'{_rankings([by_slug[slug] for slug in features], {model["id"]:model for model in models})}'
             f'{older}</div>')
     return layout("週刊グラビア", "架空の成人モデルの写真と、短い未来コラム。",

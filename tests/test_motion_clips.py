@@ -17,7 +17,7 @@ from unittest.mock import Mock, patch
 from scripts import build
 from scripts import motion_clips
 from scripts.broadcast_captions import story_cues
-from scripts.generated_photos import generated_manifest, generated_url
+from scripts.generated_photos import article_fingerprint, generated_manifest, generated_url
 from scripts.visual_review import reviewed_generated_scene
 from scripts.motion_clips import (
     MAX_CLIP_BYTES, MAX_TOTAL_BYTES, clip_url, candidates, generate,
@@ -235,7 +235,12 @@ class MotionClipTests(unittest.TestCase):
             source = root / "assets/generated"
             source.mkdir(parents=True)
             (root / "content").mkdir()
+            # The standalone schema check fingerprints real reader scripts;
+            # do not depend on another test having warmed build.asset_url.
+            for name in ("news-broadcast.js", "comments.js", "bookmarks.js", "engagement.js"):
+                shutil.copyfile(ROOT / "assets" / name, root / "assets" / name)
             entry = generated_manifest(ROOT)[slug]
+            requires_reuse_review = entry["article_sha256"] != article_fingerprint(suitable)
             (source/"manifest.json").write_text(
                 json.dumps({"version": 1, "images": {slug: entry}}),
                 encoding="utf-8",
@@ -245,7 +250,10 @@ class MotionClipTests(unittest.TestCase):
                 json.dumps([suitable], ensure_ascii=False), encoding="utf-8"
             )
             self.assertEqual(candidates(root), [])
-            self.assertEqual(motion_clips.preparation_state(suitable, root=root), "visual_review_required")
+            # A revised article cannot use its unchanged image until the real
+            # same-scene reuse review is present; a direct generation can.
+            self.assertEqual(motion_clips.preparation_state(suitable, root=root),
+                             "image_required" if requires_reuse_review else "visual_review_required")
             # Copy real source evidence verbatim; never manufacture approval
             # metadata or rewrite production image fingerprints for a test.
             reviews = root / "content/visual_reviews.json"
@@ -314,7 +322,12 @@ class MotionClipTests(unittest.TestCase):
             review_bytes = reviews.read_bytes()
             reviews.unlink()
             with patch.object(build, "BASE", root):
-                self.assertIsNotNone(usable_clip(suitable, root=root))
+                # Reuse approval also establishes the source image's validity.
+                # Removing it retracts the raw clip as well as public playback.
+                if requires_reuse_review:
+                    self.assertIsNone(usable_clip(suitable, root=root))
+                else:
+                    self.assertIsNotNone(usable_clip(suitable, root=root))
                 self.assertIsNone(build.article_clip(suitable))
                 self.assertNotIn("<video", build.article_hero_media(suitable))
                 self.assertEqual(build.broadcast_playlist([suitable]), [])

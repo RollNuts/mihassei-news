@@ -178,6 +178,29 @@ class PhotoModelPageTests(unittest.TestCase):
         self.assertNotIn('content="noindex,follow"', page)
         self.assertEqual(pages.model_sitemap_entries(self.models, []), [(pages.MODEL_INDEX_URL, None, None)])
 
+    def test_profile_sitemap_tracks_own_latest_post_without_redating_photo_or_directory(self):
+        other_release = issue(2, self.models[1]["id"])
+        own_id, other_id = self.models[0]["id"], self.models[1]["id"]
+        posts = [
+            {"modelId": own_id, "publishedAt": "2026-11-16T09:15:00+09:00"},
+            {"modelId": own_id, "publishedAt": "2026-11-16T02:00:00Z"},
+            {"modelId": other_id, "publishedAt": "2026-11-17T20:00:00+09:00"},
+            {"modelId": self.models[2]["id"], "publishedAt": "2026-11-18T20:00:00+09:00"},
+        ]
+        before = copy.deepcopy((self.release, other_release, posts))
+        entries = pages.model_sitemap_entries(self.models, [self.release, other_release], stories=posts)
+        by_path = {path: (stamp, image) for path, stamp, image in entries}
+        self.assertEqual(by_path[pages.MODEL_INDEX_URL][0], other_release["published_at"])
+        self.assertEqual(by_path[pages.model_url(self.models[0])],
+                         ("2026-11-16T02:00:00Z", photo_issues.cover_url(self.release)))
+        self.assertEqual(by_path[pages.model_url(self.models[1])][0], posts[2]["publishedAt"])
+        # A story never grants a profile indexability without a reviewed portrait/cover.
+        self.assertNotIn(pages.model_url(self.models[2]), by_path)
+        self.assertEqual((self.release, other_release, posts), before)
+        earlier = [{"modelId": own_id, "publishedAt": "2026-11-13T12:00:00+09:00"}]
+        self.assertEqual(pages.model_sitemap_entries(self.models, [self.release], stories=earlier)[1][1],
+                         self.release["published_at"])
+
     def test_issue_byline_and_weekly_navigation_find_profiles_and_rankings_exclude_drafts(self):
         issue_page = pages.render_photo_issue(self.release, self.release["model_snapshot"], self.main_only)
         self.assertIn('<p class="photo-issue-model"><a href="' + pages.model_url(self.models[0]) + '">', issue_page)
