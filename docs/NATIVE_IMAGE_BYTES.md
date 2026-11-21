@@ -164,7 +164,7 @@ For a local-file or file-ID generator, use an existing PNG in that actual execut
 
 ### File adapter to code-mode PNG bytes
 
-The existing receiver also exposes the read-only `read_candidate_png` tool. The PNG reader additionally permits the bounded Azure account form `^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$`; JPEG probe/storage still permit only their existing exact observed Azure accounts. This is an untrusted read-only relay: the prefix does not establish OpenAI ownership, generation provenance or adoption eligibility. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
+The existing receiver also exposes the read-only `read_candidate_png` tool. The PNG reader additionally permits the bounded Azure account form `^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$`; JPEG probe/storage still permit only their existing exact observed Azure accounts. This is an untrusted read-only relay: the prefix does not establish OpenAI ownership, generation provenance or adoption eligibility. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. For an observed blocked file reference, use the [Library recovery procedure](#blocked-photo-file-reference) and retain the individual source inventory. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
 
 ```js
 const readBytes = async actualPngPath => {
@@ -433,6 +433,27 @@ const asset = {...slice, parts:[...earlierParts, ...slice.parts], source_ordinal
   generation_turn:knownGenerationTurn || null};
 text({asset, next:slice.next}); // retain only this compact metadata
 ```
+
+<a id="blocked-photo-file-reference"></a>
+#### Recover a blocked original-file reference
+
+A `BLOCKED_FILE_REFERENCE` response describes the attempted transport reference. It does not prove that the original is missing. A Library ID, a prior executor's path and a file materialized in the current execution are different inputs. Do not retry an unchanged rejected ID/path, manufacture a download URL, change the receiver's allowlist or regenerate the photograph to work around it.
+
+**Record the individual sources before the first transfer.** Reuse this producer's existing original-inventory JSON, preserving earlier records and any completed receipt. For each actually observed original retain its filename, observed local path, real Library ID and version/file ID when available, measured SHA-256, byte count and dimensions, actual observation chat/run/time, model ID and the evidence linking that file to the producer, and any known generation turn. Unknown values remain `null` / `unknown`; the observation chat is not evidence of the generation chat. Names, folder membership, close timestamps or resemblance alone cannot establish model/source identity. Do not substitute an inventory row number for an unknown original ordinal.
+
+Persist and read back the inventory through its existing authorized Library location before attempting the transfer; retain that inventory's real Library ID and measured SHA in the ordinary task result. If no inventory exists, save one for this unresolved handoff without replacing a completed receipt. A candidate-backed inventory may instead remain in the existing handoff at a sibling path outside `originals/` and `originals-pending/`, using the same expected-head and fresh-guard write procedure. Do not create a separate cross-project ledger. The helper drops arbitrary source-reference fields from its normalized packet, and `originals-pending/` permits only its checkpoint and recorded parts, so neither adding an arbitrary packet field nor putting another JSON inside that directory preserves a retrievable inventory.
+
+Recover the exact original through the supported Library path:
+
+1. Follow the available Library skill and materialize the actual authorized Library item into the **current** workspace. To pin a known version, use the `file_id` and `file_name` returned together by the same Library read/list/search, with its `library_file_id` when present. A version number is evidence to retain, not a materialize selector. If only the stable Library ID is available, resolve it normally and require the resulting bytes to match the already observed source SHA.
+2. Use the returned `workspace_path`, or complete the returned authorized signed transfer and apply its extended attributes as required by the Library tool. Preserve the 12 GiB free-space floor. Do not expose signed URLs, image bytes or base64 in conversation or handoff records.
+3. Read the actual current local file and compare its full SHA-256, byte count and dimensions with the source inventory. A changed or unreadable original stops this item; it is not a new source under the old identity.
+4. Pass **that current local path** to `read_candidate_png({file: actualPath})`. Compare the returned metadata and full source SHA again, keep its actual PNG data URL private in code mode, and continue the existing `uploadDataUrl` or file `upload`, checkpoint and immutable readback steps. Preserve the original Library/source references and candidate; the transfer path does not change provenance.
+5. If the original exists locally in the producer's current execution but has no retained Library reference, save that exact existing file once through the authorized Library tool and append its returned real ID to the inventory. Do not replace another item, recreate missing bytes or treat a local path as a durable reference.
+
+Keep a failure's error class, exact item identity, stage and next unperformed supported operation in that same inventory. If inventory persistence itself fails, retain the compact per-item references and observed hashes in the existing task result, together with that save error; a count such as “8 PNGs found” is insufficient for another execution to recover them. Retry only a changed/new actual reference or a previously unperformed supported operation. A successful transfer in one execution does not establish another scheduled worker's capabilities.
+
+An inventory is `sources_observed_not_received`, not an original-byte receipt, visual acceptance or usable stock. Library materialization and PNG reading also do not establish GitHub receipt. Continue the unchanged full original save, remote SHA readback, producer matching, duplicate and visual checks before increasing stock or permitting the next generation.
 
 #### Durable progress before the next original
 
