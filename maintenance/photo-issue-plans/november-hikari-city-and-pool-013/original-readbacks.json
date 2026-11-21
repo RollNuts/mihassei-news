@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "issue": "november-hikari-city-and-pool-013",
+  "kind": "completed_original_receipt_readback_evidence",
+  "status": "all_10_originals_verified",
+  "method": "PhotoOriginalHandoff.readOriginalStep; full reconstructed PNG SHA-256, per-part SHA-256 and PNG structural/CRC/dimension validation",
+  "original_receipt_commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+  "original_receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+  "count": 10,
+  "items": [
+    {
+      "source_ordinal": 2,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2063699,
+      "sha256": "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:46:26.883Z"
+    },
+    {
+      "source_ordinal": 6,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2354614,
+      "sha256": "e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:46:39.999Z"
+    },
+    {
+      "source_ordinal": 7,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 3015529,
+      "sha256": "4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:46:54.997Z"
+    },
+    {
+      "source_ordinal": 8,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2080297,
+      "sha256": "71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:47:08.274Z"
+    },
+    {
+      "source_ordinal": 10,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2654268,
+      "sha256": "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:47:26.258Z"
+    },
+    {
+      "source_ordinal": 11,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2582678,
+      "sha256": "cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:47:40.245Z"
+    },
+    {
+      "source_ordinal": 12,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2279957,
+      "sha256": "f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:47:52.212Z"
+    },
+    {
+      "source_ordinal": 13,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2353208,
+      "sha256": "5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:48:05.862Z"
+    },
+    {
+      "source_ordinal": 14,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2305060,
+      "sha256": "502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:48:23.315Z"
+    },
+    {
+      "source_ordinal": 16,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2632496,
+      "sha256": "996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741",
+      "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+      "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+      "verified_at": "2026-11-21T07:48:37.641Z"
+    }
+  ]
+}

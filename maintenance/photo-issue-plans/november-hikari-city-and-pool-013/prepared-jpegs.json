@@ -1,0 +1,577 @@
+{
+  "status": "prepared_jpegs_visually_checked_not_adopted",
+  "issue_candidate": "november-hikari-city-and-pool-013",
+  "created_at": "2026-11-21T07:26:05.486017+00:00",
+  "source_inventory_commit": "bda621234ea6a4e44d246e33e733a68c5ab558c3",
+  "selected_source_ordinals": [
+    2,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16
+  ],
+  "count": 10,
+  "jpeg_bytes": 1964502,
+  "new_generation_calls": 0,
+  "originals_unchanged": true,
+  "publication_receipts_created": false,
+  "items": [
+    {
+      "source_ordinal": 2,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/明るいスタジオで踊るダンサー.png",
+        "sha256": "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+        "bytes": 2063699,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_00000000962c81f4934eeb574d5daee0",
+        "library_file_id": "libfile_fde3_f-aabd87a92a3c8191a96226dec045f556_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000000b50822f9343acaaef3e5a56",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-aabd87a92a3c8191a96226dec045f556_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source02.jpg",
+        "filename": "hikari013-source02.jpg",
+        "sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb",
+        "bytes": 131812,
+        "format": "JPEG",
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Portrait dance-studio frame displays normally; face, clothing and mirror detail remain legible. No visible JPEG block corruption or edge smear."
+      }
+    },
+    {
+      "source_ordinal": 6,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/imagegen.png",
+        "sha256": "e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa",
+        "bytes": 2354614,
+        "format": "PNG",
+        "width": 1536,
+        "height": 1024,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_00000000b37c8243bad71e17ece3dc55",
+        "library_file_id": "libfile_fde3_f-59f656c6fd3881918c1c53128854330a_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000ad88822f8fd96f503a3d7692",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-59f656c6fd3881918c1c53128854330a_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source06.jpg",
+        "filename": "hikari013-source06.jpg",
+        "sha256": "a324465467eed07e29aa9ae057eb2aa963486c2e67958b8589bfefd1da1e57f3",
+        "bytes": 170754,
+        "format": "JPEG",
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Landscape restaurant frame displays normally; face, glassware and chair fabric are legible. No visible JPEG corruption. Existing frame-edge composition is retained."
+      }
+    },
+    {
+      "source_ordinal": 7,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/夕暮れの街角_冬の装い.png",
+        "sha256": "4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a",
+        "bytes": 3015529,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_00000000a23481f491102bcdc2f56b22",
+        "library_file_id": "libfile_fde3_f-ee1982115cc88191ad888e243fc16a04_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_0000000064c0822f9d8da07d9ad5a3fa",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-ee1982115cc88191ad888e243fc16a04_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source07.jpg",
+        "filename": "hikari013-source07.jpg",
+        "sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc",
+        "bytes": 309291,
+        "format": "JPEG",
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Portrait winter street frame displays normally; coat, knitwear and pavement texture are legible. No visible JPEG corruption."
+      }
+    },
+    {
+      "source_ordinal": 8,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/リゾートテラスの笑顔と朝食.png",
+        "sha256": "71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263",
+        "bytes": 2080297,
+        "format": "PNG",
+        "width": 1536,
+        "height": 1024,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_00000000d14481f4b06e817847f1dc5f",
+        "library_file_id": "libfile_fde3_f-547c6d16d040819190e6025034f4d8ee_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000003b14822faac625adc93abad5",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-547c6d16d040819190e6025034f4d8ee_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source08.jpg",
+        "filename": "hikari013-source08.jpg",
+        "sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108",
+        "bytes": 153747,
+        "format": "JPEG",
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Landscape terrace breakfast frame displays normally; face, shirt, tableware and background remain legible. No visible JPEG corruption."
+      }
+    },
+    {
+      "source_ordinal": 10,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/海辺を歩く夏の女性.png",
+        "sha256": "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+        "bytes": 2654268,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_00000000f7a081f4b5148ec901eb3943",
+        "library_file_id": "libfile_fde3_f-b1d5721892f0819180b1126c71b94701_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000ae7c822fa0d92e1da163c206",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-b1d5721892f0819180b1126c71b94701_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source10.jpg",
+        "filename": "hikari013-source10.jpg",
+        "sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+        "bytes": 217852,
+        "format": "JPEG",
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Portrait seaside walking frame displays normally, including head and feet; clothing and shoreline detail remain legible. No visible JPEG corruption."
+      }
+    },
+    {
+      "source_ordinal": 11,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/温かな室内プールのくつろぎ時間.png",
+        "sha256": "cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151",
+        "bytes": 2582678,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_0000000039588209b71d8d57204bc12e",
+        "library_file_id": "libfile_fde3_f-d4e2ef7684608191a143f910afa311e7_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000002390822fa6a940de72a90348",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-d4e2ef7684608191a143f910afa311e7_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source11.jpg",
+        "filename": "hikari013-source11.jpg",
+        "sha256": "3e0a707e164a74afe509b6a623965afa438aa91dec54dac6c48edc501218f20b",
+        "bytes": 198647,
+        "format": "JPEG",
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Portrait indoor-pool seating frame displays normally; face, sofa weave and tile detail remain legible. No visible JPEG corruption. Existing bottom-edge framing is retained."
+      }
+    },
+    {
+      "source_ordinal": 12,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/夕暮れのプールサイドと微笑む女性.png",
+        "sha256": "f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563",
+        "bytes": 2279957,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_00000000077082119abc1c884fc37e2e",
+        "library_file_id": "libfile_fde3_f-1640dca0cc308191a2c463fa2cf3bc45_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_0000000064f0822fb25e1e05513f37df",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-1640dca0cc308191a2c463fa2cf3bc45_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source12.jpg",
+        "filename": "hikari013-source12.jpg",
+        "sha256": "75758b45829380e7c313bc320cb870b5b1e7bd119f51ee121a751123a348d53b",
+        "bytes": 177644,
+        "format": "JPEG",
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Portrait sunset poolside frame displays normally, including face and feet; water and tile detail remain legible. No visible JPEG corruption."
+      }
+    },
+    {
+      "source_ordinal": 13,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/温水プールサイドでくつろぐ女性.png",
+        "sha256": "5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d",
+        "bytes": 2353208,
+        "format": "PNG",
+        "width": 1536,
+        "height": 1024,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_0000000095e88230948ac84bcaa57d94",
+        "library_file_id": "libfile_fde3_f-ab86a20905608191b39bc2c834fd5618_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000008098822f94096b6e5dd5b36c",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-ab86a20905608191b39bc2c834fd5618_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source13.jpg",
+        "filename": "hikari013-source13.jpg",
+        "sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6",
+        "bytes": 176014,
+        "format": "JPEG",
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Landscape poolside seating frame displays normally; face, chair weave and pool detail remain legible. No visible JPEG corruption. Existing lower frame-edge composition is retained."
+      }
+    },
+    {
+      "source_ordinal": 14,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/モダンな室内プールを歩く女性.png",
+        "sha256": "502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b",
+        "bytes": 2305060,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_0000000041d48209bb77c6db0a1510d1",
+        "library_file_id": "libfile_fde3_f-5b60499b150481918ffcb11a38f6f5d1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000004a40822f8351e0d1cedda87a",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-5b60499b150481918ffcb11a38f6f5d1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source14.jpg",
+        "filename": "hikari013-source14.jpg",
+        "sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361",
+        "bytes": 180111,
+        "format": "JPEG",
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Portrait indoor-pool walking frame displays normally; face, limbs and window edges remain legible. No visible JPEG corruption. Existing lower frame-edge composition is retained."
+      }
+    },
+    {
+      "source_ordinal": 16,
+      "source": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/downloads/温室プールで微笑む女性.png",
+        "sha256": "996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741",
+        "bytes": 2632496,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+        "observed_file_id": "file_00000000759482119ce3354c1edc0142",
+        "library_file_id": "libfile_fde3_f-b440da4962e08191b18b329e491a062b_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000e638822faa128e2c130b40f5",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-b440da4962e08191b18b329e491a062b_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "generation_turn_status": "not_retained",
+        "generation_turn": null,
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null
+      },
+      "jpeg": {
+        "path": "/workspace/scratch/5d2fb206f28f/hikari-original-recovery-20261121/publication-jpegs/hikari013-source16.jpg",
+        "filename": "hikari013-source16.jpg",
+        "sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8",
+        "bytes": 248630,
+        "format": "JPEG",
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "decode_validation": "passed",
+      "source_unchanged": true,
+      "visual_derivative_review": "passed_encoding_review_not_adoption",
+      "publication_eligible": false,
+      "visual_derivative_review_details": {
+        "reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+        "method": "view_image actual saved JPEG at its encoded dimensions",
+        "scope": "Visible JPEG decoding, framing and compression artifacts only; final issue adoption and model consistency remain editorial decisions.",
+        "frame_preservation": "Aspect-preserving resize only; no crop, retouching, image generation or compositing applied.",
+        "observation": "Portrait greenhouse-pool frame displays normally, including head and feet; foliage, tiles and water detail remain legible. No visible JPEG corruption."
+      }
+    }
+  ],
+  "visual_reviewed_at": "2026-11-21T07:28:02.158980+00:00",
+  "visual_review_count": 10
+}
