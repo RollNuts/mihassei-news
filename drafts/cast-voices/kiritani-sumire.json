@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-20",
+  "created_date": "2026-11-21",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
     "issue_slug": "november-rooftop-pool-sumire-011",
-    "cut_id": "01",
-    "image_sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479"
+    "cut_id": "02",
+    "image_sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca"
   },
-  "post_text": "午後、古い建物の窓枠がきれいな青緑で、手帳に「少し灰色」と書き足した。新しい服の差し色にできそう。帰りにもう一度見比べたい。",
-  "spoken_line": "この青緑、いいな。",
-  "future_idea": "2031年、歴史的建築の外観保存と店舗の改装自由をめぐり、住民・商店主・行政の対立が深まる。"
+  "post_text": "昼下がり、古道具屋で小さな真鍮の取っ手を見つけた。新しい棚に似合いそうで、店内を二周。まだ迷ってるんだけど。",
+  "spoken_line": "もう一周、見てこよう。",
+  "future_idea": "2031年、歴史ある商店街の再開発利益を地元の職人や店主にも分配する制度案をめぐり、事業者と住民が対立。"
 }
