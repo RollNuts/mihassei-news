@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "checked_at": "2026-11-21T14:16:19.855440+00:00",
+  "source_main": "0a589d90851831529c98ace8971dc19d8925fe83",
+  "issue_slug": "november-hikari-city-and-pool-013",
+  "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+  "catalog_schema": "passed_actual_repository_validator",
+  "published_prefix_and_model_settings_unchanged": true,
+  "existing_editions_metadata": "passed_actual_repository_validator",
+  "oldest_unfinished_edition": "issue-002",
+  "next_model": "amane-hikari",
+  "saved_state": "draft",
+  "saved_published_at": null,
+  "image_validation": "passed_actual_repository_validator_on_memory_only_copy",
+  "publication_performed": false,
+  "previous_published_bytes_revalidated": false,
+  "next_day_publication_date_assigned": false,
+  "source_original_count": 10,
+  "jpeg_count": 10,
+  "swimwear_count": 6,
+  "framing": [
+    "full_body",
+    "three_quarter",
+    "upper_body"
+  ],
+  "memory_probe_time": "2026-11-21T14:16:19.855440+00:00",
+  "memory_probe_note": "This temporary timestamp checks completed image provenance and review ordering; it is never written to the catalog and is not a publication assertion.",
+  "saved_catalog_sha256": "a47247d6b22693b0198b3861f7f3da4fbd866e04acab4cca24fe2e16b208f8a4",
+  "saved_catalog_unchanged_during_validation": true
+}

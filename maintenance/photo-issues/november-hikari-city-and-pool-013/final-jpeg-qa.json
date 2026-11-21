@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "kind": "formal_editorial_adoption",
+  "issue_slug": "november-hikari-city-and-pool-013",
+  "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+  "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+  "visual_display_completed_at": "2026-11-21T14:07:25+00:00",
+  "decision_basis": "All ten exact JPEGs and current face/body references were individually displayed. Final adoption follows local immutable-byte placement, receipt checks, latest-main duplicate checks and active cloud guard.",
+  "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+  "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+  "duplicate_check": {
+    "main": "0a589d90851831529c98ace8971dc19d8925fe83",
+    "photo_catalog_blob": "decc48ed57b3664fbeefeb84806ea02d46693174",
+    "news_manifest_blob": "d1667ffc9ca25e262b6f8449c7657003ee701412",
+    "originals": 10,
+    "jpegs": 10,
+    "exact_matches": 0
+  },
+  "original_screening_reference": {
+    "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/source-original-qa.json",
+    "sha256": "24b5497e2c0de3144498d906569862cf425dd273820a74454f302d955c5e3735",
+    "bytes": 40723,
+    "ref": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb"
+  },
+  "source_order": [
+    2,
+    7,
+    10,
+    8,
+    16,
+    14,
+    13,
+    11,
+    12,
+    6
+  ],
+  "cover_cut_id": "05",
+  "items": [
+    {
+      "cut_id": "01",
+      "source_ordinal": 2,
+      "source_sha256": "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+      "image_sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb",
+      "swimwear_visible": false,
+      "framing": "three_quarter",
+      "note": "Gray T-shirt and black stripe trousers in a bright mirrored dance studio; arms, ponytail, fabric and dance posture are coherent. Feet meet the lower frame, so not counted as full body. Same adult facial design and chestnut hair as current references. Caption describes visible movement."
+    },
+    {
+      "cut_id": "02",
+      "source_ordinal": 7,
+      "source_sha256": "4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a",
+      "image_sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc",
+      "swimwear_visible": false,
+      "framing": "full_body",
+      "note": "Camel coat, cream knit, checked skirt and black ankle boots on a wet evening street. Head-to-boots standing frame, hands in pockets and upward gaze match the caption. This wider long-coat/skirt view differs from the prior close coat portrait; no exact reuse."
+    },
+    {
+      "cut_id": "03",
+      "source_ordinal": 10,
+      "source_sha256": "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+      "image_sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+      "swimwear_visible": false,
+      "framing": "full_body",
+      "note": "White shirt, beige trousers and sandals on a sunny seaside path; full walking figure, hair, hand, clothing and pavement shadow are coherent. Warm coastal setting is explicit in the new column; not presented as a cold city swim or swimsuit."
+    },
+    {
+      "cut_id": "04",
+      "source_ordinal": 8,
+      "source_sha256": "71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263",
+      "image_sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108",
+      "swimwear_visible": true,
+      "framing": "upper_body",
+      "note": "Navy bikini top and white cover-up at a breakfast terrace with sea and tableware. Bottom is hidden by the table and is not claimed visible. Adult face/ponytail, shoulder and fabric are coherent; horizontal near view supplies variation."
+    },
+    {
+      "cut_id": "05",
+      "source_ordinal": 16,
+      "source_sha256": "996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741",
+      "image_sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8",
+      "swimwear_visible": true,
+      "framing": "full_body",
+      "note": "Burgundy bikini at a bright glass-enclosed pool with plants; one hand touches the hair and a complete standing figure is visible. Natural skin, fingers, feet and pool reflections; current facial design and qualitative body continuity retained. Chosen for cover cut05."
+    },
+    {
+      "cut_id": "06",
+      "source_ordinal": 14,
+      "source_sha256": "502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b",
+      "image_sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361",
+      "swimwear_visible": true,
+      "framing": "full_body",
+      "note": "Terracotta bikini walking beside a high-window indoor pool. Full figure, naturally swinging arms, legs and feet are coherent. Walking gesture and gaze differ from the hair-touch cover; not only a background change."
+    },
+    {
+      "cut_id": "07",
+      "source_ordinal": 13,
+      "source_sha256": "5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d",
+      "image_sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6",
+      "swimwear_visible": true,
+      "framing": "three_quarter",
+      "note": "Green bikini with white cover-up, reclining diagonally on a poolside chair in a horizontal frame. Hands, crossed legs and chair contact are coherent. Forefoot partly reaches the edge, so conservatively not counted as full body."
+    },
+    {
+      "cut_id": "08",
+      "source_ordinal": 11,
+      "source_sha256": "cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151",
+      "image_sha256": "3e0a707e164a74afe509b6a623965afa438aa91dec54dac6c48edc501218f20b",
+      "swimwear_visible": true,
+      "framing": "three_quarter",
+      "note": "Blue bikini seated facing the camera on an indoor pool sofa; both swimsuit pieces visible, hands braced on the cushion and legs are coherent. Front toes touch/cross the frame edge, so conservatively three-quarter. Different angle/posture and clothing from cut07."
+    },
+    {
+      "cut_id": "09",
+      "source_ordinal": 12,
+      "source_sha256": "f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563",
+      "image_sha256": "75758b45829380e7c313bc320cb870b5b1e7bd119f51ee121a751123a348d53b",
+      "swimwear_visible": true,
+      "framing": "full_body",
+      "note": "White bikini, rear three-quarter standing view with a shoulder turn beside a sunset pool. Head-to-feet frame, straps, hands and reflections are coherent. Warm resort/thermal-pool context is editorial fiction, not an inferred original shooting date."
+    },
+    {
+      "cut_id": "10",
+      "source_ordinal": 6,
+      "source_sha256": "e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa",
+      "image_sha256": "a324465467eed07e29aa9ae057eb2aa963486c2e67958b8589bfefd1da1e57f3",
+      "swimwear_visible": false,
+      "framing": "upper_body",
+      "note": "Dark green sleeveless dress at a night-view restaurant; reaching hand, glass, tableware and fabric are coherent. Horizontal seated portrait matches the dinner caption and differs from the pool and dance images."
+    }
+  ],
+  "swimwear_visible_count": 6,
+  "both_bikini_pieces_visible_count": 5,
+  "bikini_top_only_cut_ids": [
+    "04"
+  ],
+  "numerical_body_measurements_claimed": false,
+  "same_day_actual_shooting_chronology_claimed": false,
+  "published": false
+}

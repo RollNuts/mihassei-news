@@ -9786,6 +9786,446 @@
       },
       "generation_holds": {},
       "issue_sha256": "c22fce51d26a472764b5937e25c3ac426e7ea168ad519f4e25f2f96e5491cac5"
+    },
+    {
+      "slug": "november-hikari-city-and-pool-013",
+      "number": 13,
+      "title": "予定をひとつ、空けてみた。",
+      "summary": "天音ひかりと、街から暖かな海辺へ。水着と普段着で過ごす、11月の休み時間。",
+      "setting": {
+        "year": 2031,
+        "month": 11,
+        "location": "街のダンススタジオと夜のレストラン、暖かな海辺のリゾートと温水プール",
+        "aspect_ratio": "original",
+        "visual_direction": "21歳の架空の成人モデル・天音ひかり。既存の顔と全身参照を維持し、街の普段着、ダンス、暖かな海辺、屋内とリゾートの温水プールを組み合わせる。掲載順は編集上の構成であり、実際の撮影日時・行程を示さない。元の縦横比を保持し、自然な肌・髪・布・光を尊重する。"
+      },
+      "column": [
+        "2031年11月。予定を組んでくれるAIに「休みの日を充実させたい」と頼んだら、海辺で朝ごはん、散歩、プール。その隙間に十五分のダンス練習まで入りました。そこまで頑張らなくていいよ、と言いながら、練習だけ消す指がちょっと止まります。",
+        "迷ったけれど、追加された十五分の練習は予定から外しました。暖かな海辺では、白いシャツで散歩へ。先にプールへ行くつもりだったのに、明るい道をもう少し歩きたくなって、その先の曲がり角まで。予定をひとつ空けたら、知らない景色が増えました。",
+        "プールでは、泳ぐ前に椅子へ座ってひと休み。水面を見ていたら、今度は立ち上がるのが惜しくなります。夕食に遅れないよう、出発の通知だけは残しました。ところが着替えで迷って、最後は少し急ぎ足。休みの日まで、開演前みたいです。"
+      ],
+      "model_id": "amane-hikari",
+      "model_snapshot": {
+        "id": "amane-hikari",
+        "name": "天音ひかり",
+        "age": 21,
+        "fictional": true,
+        "appearance": "21歳の架空の成人。明るく親しみやすい表情。長めの栗色の髪と柔らかな毛流れ。顔は独自に設計する。",
+        "character": {
+          "version": 1,
+          "first_person": "私",
+          "occupation": "歌とダンスのアイドル",
+          "casting_specialty": "架空の音楽番組やステージでの歌とダンス、舞台衣装を使った表現。",
+          "personality": "明るく人懐っこい。小さな挑戦にも負けず嫌い。",
+          "voice": "会話に近い軽快な文。喜びも失敗も隠さず、決め台詞は連発しない。",
+          "likes": [
+            "舞台衣装",
+            "新しい遊び",
+            "甘いおやつ"
+          ],
+          "weakness": "楽しみな予定を詰め込みすぎる。"
+        },
+        "master": {
+          "path": "assets/generated/photo-master-amane-hikari-59fe6776110d.jpg",
+          "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+          "source_png_sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558",
+          "provenance": "assets/generated/photo-reference-amane-hikari-59fe6776110d.json"
+        },
+        "body_profile": {
+          "version": 1,
+          "basis": "authored_fictional_design_cm",
+          "height_cm": 156,
+          "bust_cm": 84,
+          "waist_cm": 58,
+          "hip_cm": 86,
+          "shoulder_width_cm": 35,
+          "inseam_cm": 71,
+          "heads_tall": 7.1
+        },
+        "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+        "face_reference": {
+          "path": "assets/generated/photo-master-amane-hikari-59fe6776110d.jpg",
+          "sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+          "source_png_sha256": "a16815a7b7c870e2efa90cf5fcce915fb96b58fd0ad6c557262996cbd05c3558"
+        },
+        "body_reference": {
+          "state": "accepted_reference",
+          "path": "assets/generated/photo-body-amane-hikari-6cff85d64828.jpg",
+          "sha256": "6cff85d6482860355defcb90af5cb85d7974f5d4a46437d3b91dfc9c8802c149",
+          "source_png_sha256": "efc5afa04569b656d348b20344847118e8460dd448676dba99d941b7af6844cc",
+          "provenance": "assets/generated/photo-reference-amane-hikari-6cff85d64828.json"
+        }
+      },
+      "source_article": null,
+      "shots": [
+        {
+          "id": "01",
+          "description": "明るい鏡張りのダンススタジオ。グレーのTシャツ、黒いライン入りパンツとスニーカーで身体を動かす縦写真。",
+          "caption": "スタジオでは、思いきり身体を動かす。",
+          "alt": "明るいダンススタジオで、グレーのTシャツと黒いパンツ姿で踊る天音ひかり。"
+        },
+        {
+          "id": "02",
+          "description": "キャメル色のコート、白系ニットとチェック柄スカート、黒いブーツ。雨上がりの夕方の街角に立つ、全身の縦写真。",
+          "caption": "コートのポケットに手を入れて、少しだけ遠回り。",
+          "alt": "夕暮れの街角で、コートとチェック柄スカートを着て立つ天音ひかりの全身。"
+        },
+        {
+          "id": "03",
+          "description": "日差しのある暖かな海沿いの遊歩道。白いリネンシャツ、ベージュのパンツとサンダルで歩く全身の縦写真。",
+          "caption": "次の曲がり角より、もう少し先へ。",
+          "alt": "暖かな海沿いの道を、白いシャツとベージュのパンツ、サンダル姿で歩く天音ひかりの全身。"
+        },
+        {
+          "id": "04",
+          "description": "暖かな海辺のリゾートテラスの朝食。紺色のビキニトップと白い羽織姿で座る横写真。下半身はテーブルに隠れている。",
+          "caption": "朝ごはんの席から、海が見えた。",
+          "alt": "海の見えるテラスの朝食の席で、紺色のビキニトップと白い羽織姿で笑う天音ひかり。"
+        },
+        {
+          "id": "05",
+          "description": "植物のある明るいガラス張りのプール。バーガンディ色の三角ビキニと紐付きボトムで、髪の近くへ片手を添えた全身の縦写真。",
+          "caption": "窓からの光で、水面がきらきら。",
+          "alt": "植物のあるガラス張りのプールで、バーガンディ色のビキニ姿で髪に手を添える天音ひかりの全身。"
+        },
+        {
+          "id": "06",
+          "description": "高いガラス窓のある屋内プール脇を歩く全身の縦写真。テラコッタ色の三角ビキニと紐付きボトム。",
+          "caption": "水辺の光を横目に、ゆっくり歩く。",
+          "alt": "ガラス窓のある屋内プールのそばを、テラコッタ色のビキニ姿で歩く天音ひかりの全身。"
+        },
+        {
+          "id": "07",
+          "description": "屋内プールのラウンジ。緑色のビキニと白い羽織で椅子に斜めにくつろぐ横写真。前の足先は一部画面外。",
+          "caption": "まだ立ちたくない、と思うくらい。",
+          "alt": "屋内プールのラウンジチェアで、緑色のビキニと白い羽織姿でくつろぐ天音ひかり。"
+        },
+        {
+          "id": "08",
+          "description": "屋内プール脇のソファ。青い三角ビキニと紐付きボトムで座る縦写真。前足のつま先は画面端にかかる。",
+          "caption": "泳ぐ前に、いったん座ってみる。",
+          "alt": "屋内プール脇のソファで、青いビキニ姿で座る天音ひかり。"
+        },
+        {
+          "id": "09",
+          "description": "夕暮れの暖かなリゾートの温水プール脇。白い三角ビキニと紐付きボトムを着て振り返る、後ろ斜めからの全身縦写真。",
+          "caption": "帰る前に、もう一度だけ振り返る。",
+          "alt": "夕暮れのプール脇で、白いビキニ姿で振り返る天音ひかりの全身。"
+        },
+        {
+          "id": "10",
+          "description": "夜景の見えるレストランの窓際。深緑のハイネックのノースリーブドレスで席に着き、グラスへ手を伸ばす横写真。",
+          "caption": "着替えを済ませて、夜の食事の席へ。",
+          "alt": "夜景の見えるレストランで、深緑のドレス姿でグラスに手を伸ばす天音ひかり。"
+        }
+      ],
+      "cover_cut_id": "05",
+      "state": "draft",
+      "published_at": null,
+      "images": {
+        "01": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-01.jpg",
+          "sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb",
+          "bytes": 131812,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/01/receipt-supplied-14495efc77db-aeffd0c4a529.json",
+            "receipt_sha256": "4cb2707b0e8cbddd7ea2950ad1d5fa4eab5a307b62c70c539812d4a248f239d1",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "01",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": false,
+            "framing": "three_quarter",
+            "note": "Gray T-shirt and black stripe trousers in a bright mirrored dance studio; arms, ponytail, fabric and dance posture are coherent. Feet meet the lower frame, so not counted as full body. Same adult facial design and chestnut hair as current references. Caption describes visible movement.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "02": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-02.jpg",
+          "sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc",
+          "bytes": 309291,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/02/receipt-supplied-4f6a1a3bfdcf-2d5201a36057.json",
+            "receipt_sha256": "d97754b5c997732506c581159b4ca8c3165772b805e1c1b406486a125d7c8cbd",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "02",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": false,
+            "framing": "full_body",
+            "note": "Camel coat, cream knit, checked skirt and black ankle boots on a wet evening street. Head-to-boots standing frame, hands in pockets and upward gaze match the caption. This wider long-coat/skirt view differs from the prior close coat portrait; no exact reuse.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "03": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-03.jpg",
+          "sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+          "bytes": 217852,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/03/receipt-supplied-55b37e4933c8-4ac12dbb999f.json",
+            "receipt_sha256": "3b60caabf37b540726d27647a6f0dd9e731bc3b586d752cf6bdff97bdcf3d618",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "03",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": false,
+            "framing": "full_body",
+            "note": "White shirt, beige trousers and sandals on a sunny seaside path; full walking figure, hair, hand, clothing and pavement shadow are coherent. Warm coastal setting is explicit in the new column; not presented as a cold city swim or swimsuit.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "04": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-04.jpg",
+          "sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108",
+          "bytes": 153747,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/04/receipt-supplied-71aa7c5d6e5d-8ea71ddcffff.json",
+            "receipt_sha256": "d01b9c84048311f32e9b40d830e6e1e2b4f77f1a4df67f374586986dc3372cec",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "04",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": true,
+            "framing": "upper_body",
+            "note": "Navy bikini top and white cover-up at a breakfast terrace with sea and tableware. Bottom is hidden by the table and is not claimed visible. Adult face/ponytail, shoulder and fabric are coherent; horizontal near view supplies variation.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "05": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-05.jpg",
+          "sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8",
+          "bytes": 248630,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/05/receipt-supplied-996d949572b4-8607882879e3.json",
+            "receipt_sha256": "f5c6a42e9da244acd829e392af655d0fb472dc3d217721ad6c73142162983caa",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "05",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": true,
+            "framing": "full_body",
+            "note": "Burgundy bikini at a bright glass-enclosed pool with plants; one hand touches the hair and a complete standing figure is visible. Natural skin, fingers, feet and pool reflections; current facial design and qualitative body continuity retained. Chosen for cover cut05.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "06": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-06.jpg",
+          "sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361",
+          "bytes": 180111,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/06/receipt-supplied-502ecc1ce0fb-f8fb9f7cea22.json",
+            "receipt_sha256": "e4a77665065b61c071a3d6391d69c4bb5b0473429af2059599c5017c90c328d0",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "06",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": true,
+            "framing": "full_body",
+            "note": "Terracotta bikini walking beside a high-window indoor pool. Full figure, naturally swinging arms, legs and feet are coherent. Walking gesture and gaze differ from the hair-touch cover; not only a background change.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "07": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-07.jpg",
+          "sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6",
+          "bytes": 176014,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/07/receipt-supplied-5fbfc874f32c-d443565bf3fe.json",
+            "receipt_sha256": "17d632bd94832b9b34fb6597e1b973206eca63846d34517faaf1121c6d9e2c8b",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "07",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "note": "Green bikini with white cover-up, reclining diagonally on a poolside chair in a horizontal frame. Hands, crossed legs and chair contact are coherent. Forefoot partly reaches the edge, so conservatively not counted as full body.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "08": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-08.jpg",
+          "sha256": "3e0a707e164a74afe509b6a623965afa438aa91dec54dac6c48edc501218f20b",
+          "bytes": 198647,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/08/receipt-supplied-cbd1b0ac95e1-3e0a707e164a.json",
+            "receipt_sha256": "d197c4a5fea41e9fc3190eb43c912370d592a439c5665df917709eaf75fdcd51",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "3e0a707e164a74afe509b6a623965afa438aa91dec54dac6c48edc501218f20b",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "08",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": true,
+            "framing": "three_quarter",
+            "note": "Blue bikini seated facing the camera on an indoor pool sofa; both swimsuit pieces visible, hands braced on the cushion and legs are coherent. Front toes touch/cross the frame edge, so conservatively three-quarter. Different angle/posture and clothing from cut07.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "09": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-09.jpg",
+          "sha256": "75758b45829380e7c313bc320cb870b5b1e7bd119f51ee121a751123a348d53b",
+          "bytes": 177644,
+          "width": 800,
+          "height": 1200,
+          "source_sha256": "f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/09/receipt-supplied-f8dca25634b4-75758b458293.json",
+            "receipt_sha256": "f0a9b366c2be13d986cd02b8842c27f670aae3d9ca4ed357dc4831d03de04956",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "75758b45829380e7c313bc320cb870b5b1e7bd119f51ee121a751123a348d53b",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "09",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": true,
+            "framing": "full_body",
+            "note": "White bikini, rear three-quarter standing view with a shoulder turn beside a sunset pool. Head-to-feet frame, straps, hands and reflections are coherent. Warm resort/thermal-pool context is editorial fiction, not an inferred original shooting date.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        },
+        "10": {
+          "path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-10.jpg",
+          "sha256": "a324465467eed07e29aa9ae057eb2aa963486c2e67958b8589bfefd1da1e57f3",
+          "bytes": 170754,
+          "width": 1200,
+          "height": 800,
+          "source_sha256": "e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa",
+          "provenance": {
+            "kind": "user_supplied_photo",
+            "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/10/receipt-supplied-e6c87e988d89-a324465467ee.json",
+            "receipt_sha256": "16b37c20d6ce6660577777c4de469572fc924136312819af7b4d52e731c1a2b5",
+            "target_design_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27"
+          },
+          "review": {
+            "decision": "accepted",
+            "reviewed_at": "2026-11-21T14:16:19.775560+00:00",
+            "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+            "image_sha256": "a324465467eed07e29aa9ae057eb2aa963486c2e67958b8589bfefd1da1e57f3",
+            "master_sha256": "59fe6776110da8dad95fdffe4fbe22ec5afe6215217d5bf4b2dada05cff952bd",
+            "cut_id": "10",
+            "body_profile_sha256": "8e80edf3a966f82295bc4e1fe11bfe0e42935c508a61e45dc84ae4f717672c27",
+            "swimwear_visible": false,
+            "framing": "upper_body",
+            "note": "Dark green sleeveless dress at a night-view restaurant; reaching hand, glass, tableware and fabric are coherent. Horizontal seated portrait matches the dinner caption and differs from the pool and dance images.",
+            "evidence": {
+              "path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+              "sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4"
+            }
+          }
+        }
+      },
+      "generation_holds": {},
+      "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9"
     }
   ]
 }
