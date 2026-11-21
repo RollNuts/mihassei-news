@@ -434,18 +434,96 @@ const asset = {...slice, parts:[...earlierParts, ...slice.parts], source_ordinal
 text({asset, next:slice.next}); // retain only this compact metadata
 ```
 
-After all parts of each file have been collected (`next === null`), pass the completed assets in their source order. Record the branch lease only if continuing an existing same-issue handoff after confirming it contains no matching originals. Leave it null for a new branch. A competing or occupied destination is preserved.
+#### Durable progress before the next original
+
+An upload reply contains acknowledged Git blob references, not a branch-backed original. Save transfer progress on the same `photo-issue-plan/<issue>` branch before moving on to another generated original. `prepareCheckpoint` / `publishCheckpoint` keep the actual part blobs reachable through `maintenance/photo-issue-plans/<issue>/originals-pending/`, together with `checkpoint.json`. The completed `originals/receipt.json` remains protected. Existing `generation-attempts.json` and other sibling files are preserved; these methods do not reserve generation or determine the remaining generation budget.
+
+Keep one packet's issue, producer, source chat and delivery turn fixed. Include the earlier assets in their original order, append acknowledged parts as a contiguous prefix, and append new assets without changing prior metadata or parts. For an upload interrupted after one of two requested parts, `error.partial` contains only the acknowledged parts from that call, the original SHA/dimensions/byte count and the next offset. Merge it with the earlier parts of that same original; it contains no image bytes. A lost blob acknowledgement is not an acknowledged part. Retain the real source file or private data URL while any original part remains missing, and recover that same original instead of generating a replacement.
 
 ```js
-const packet = {issue, model_id, source_chat_url, delivery_turn, assets};
-const plan = await original.prepare(packet, existingCandidateHeadOrNull); // tree and commit
-const staged = await original.publish(packet, plan); // next cell, same packet and plan
-// One source per cell. This checks every saved part, full hash, PNG CRC and dimensions.
-const data = await original.readOriginal({issue, ...staged, source_sha256:asset.source_sha256});
-text({commit:staged.commit, receipt_sha256:staged.receipt_sha256, verified_original:asset.source_sha256, bytes:data.length});
+// packet includes all retained earlier assets and the current complete or partial asset.
+// Use the actual current candidate head, or null only when creating a new branch.
+const checkpointPlan = await original.prepareCheckpoint(packet, candidateHeadOrNull);
+text(checkpointPlan); // retain compact metadata; publish in the next cell
 ```
 
-A returned `staged_pending_readback` is an unreviewed candidate. Report only the originals actually read back. The editor reads the same immutable receipt (`maintenance/photo-issue-plans/<issue>/originals/receipt.json`) and calls `readOriginal` for a selected source; its return value contains the actual bytes. Use the normal portrait/landscape editorial conversion, duplicate check, visual review, the column handled by the weekly editor under [EDITORIAL_LOOP](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠), and publication procedure. The article converter crops to 16:9 and is unsuitable for these originals.
+```js
+const checkpoint = await original.publishCheckpoint(packet, checkpointPlan);
+text(checkpoint); // checkpoint_saved_pending_readback is not usable stock
+```
+
+Both steps preserve append-only transfer history, check the registered producer and the fresh cloud guard, and use the expected candidate head. A lost branch-create/update acknowledgement can recover only the same saved record hash; a different concurrent checkpoint cannot be overwritten. Once a completed originals receipt exists, use the existing recovery path rather than modifying it through checkpoint calls.
+
+After interruption, reconstruct the packet from the exact saved commit and checkpoint hash. `restoreCheckpoint` checks metadata and the part-to-tree blob bindings, and reports whether the expected number of part references is present. Its `checkpoint_metadata_only` status and `image_bytes_verified: false` do **not** verify original PNG bytes, visual quality, acceptance or stock availability. A partial original still requires its exact remaining bytes.
+
+```js
+const restored = await original.restoreCheckpoint({issue, ...checkpoint});
+text({status:restored.status, commit:restored.commit,
+  checkpoint_sha256:restored.checkpoint_sha256, assets:restored.assets});
+store("photo-original-packet:" + issue, restored.packet); // private metadata, never print the full packet
+// Use checkpoint.commit as the expected head. If private state is lost, restore it in its own cell.
+```
+
+Read back each complete original from its pending part paths before any next generation. Prefer `readCheckpointOriginalStep`, one call per cell, to read at most eight parts at a time. Each call rechecks the fixed checkpoint and tree bindings. The private continuation is bound to the method kind, immutable commit, record hash, source SHA and exact next offset; resumed byte chunks are checked against that same receipt again. Only completion returns `original_verified` with the actual PNG bytes after all part hashes/counts, full SHA, PNG CRC and dimensions pass. An incomplete original cannot enter this readback. Visual review remains separate. Read-only restoration and byte recovery remain available while writes are stopped. A successful readback satisfies the storage prerequisite only; the central stock policy, actual generation reservation and all other generation limits still apply.
+
+```js
+const ref = {issue, ...checkpoint, source_sha256:asset.source_sha256};
+const stateKey = "pending-photo-readback:" + ref.commit + ":" + ref.source_sha256;
+const result = await original.readCheckpointOriginalStep(ref, load(stateKey) ?? null);
+if (result.status === "readback_pending") {
+  store(stateKey, result.state); // private serializable byte state, never text/notify
+  text({status:result.status, next:result.next, image_bytes_verified:false});
+} else {
+  store(stateKey, null);
+  // result.bytes contains the verified actual PNG; keep it private for review/conversion.
+  text({status:result.status, commit:result.commit,
+    verified_original:result.source_sha256, bytes:result.bytes.length});
+}
+```
+
+The continuation contains base64 bytes: never print the result or `result.state`, put it in a task result, or pass it to `text` / `notify`. Use the actual `functions` private `store` / `load` when this executor provides them; do not assume a different runtime retains values between cells. If private state is lost, restart the read-only Step at the same immutable reference. This rereads the saved original and does not generate another image. `readback_pending` is not verified bytes or usable stock. The pending Step uses at most 11 Git callbacks, and the completed-receipt Step below uses at most 9, excluding helper initialization; keep helper loading and remote packet restoration in their own cells outside that budget. Pass the normalized packet between prepare/publish cells through private store/load so restoring it does not add Git callbacks to a write phase. The legacy `readCheckpointOriginal` / `readOriginal` macros remain compatible, but a full 8 MiB source can need 19 / 17 callbacks in one call, so use the Step route for larger originals or tighter callback limits.
+
+After all originals are complete, pass the complete packet and latest checkpoint commit to the existing `prepare` / `publish` pair below. Finalization requires the full normalized packet to match the checkpoint, reuses the same part blob IDs and writes one completed receipt; it does not upload the originals again. Then read every original through `readOriginalStep`. Original-byte verification remains separate from visual acceptance and usable-stock counting.
+
+Existing handoffs without a pending checkpoint remain compatible. Recover their recorded completed assets and existing receipt instead of retransferring them just to adopt this format. Record the branch lease only if continuing an existing same-issue handoff after confirming that it has no completed originals receipt. Leave it null for a genuinely new branch. A competing or occupied destination is preserved.
+
+```js
+// A restored checkpoint has already saved this packet privately in its own cell.
+// For a handoff without a checkpoint, first store the actual complete packet under the same key.
+const packet = load("photo-original-packet:" + issue);
+const plan = await original.prepare(packet, existingCandidateHeadOrNull);
+store("photo-original-final-plan:" + issue, plan);
+text(plan); // compact references only
+```
+
+Publish in the next cell, using the same private packet and plan without another remote restore:
+
+```js
+const packet = load("photo-original-packet:" + issue);
+const plan = load("photo-original-final-plan:" + issue);
+const staged = await original.publish(packet, plan);
+store("photo-original-final-staged:" + issue, staged);
+text(staged);
+```
+
+Then use one readback Step per cell for each original:
+
+```js
+const staged = load("photo-original-final-staged:" + issue);
+const ref = {issue, ...staged, source_sha256:asset.source_sha256};
+const stateKey = "completed-photo-readback:" + ref.commit + ":" + ref.source_sha256;
+const result = await original.readOriginalStep(ref, load(stateKey) ?? null);
+if (result.status === "readback_pending") {
+  store(stateKey, result.state); // private bytes, never print the state/result
+  text({status:result.status, next:result.next, image_bytes_verified:false});
+} else {
+  store(stateKey, null);
+  text({status:result.status, commit:staged.commit, receipt_sha256:staged.receipt_sha256,
+    verified_original:result.source_sha256, bytes:result.bytes.length});
+}
+```
+
+A returned `staged_pending_readback` is an unreviewed candidate. Report only the originals actually read back. The editor reads the same immutable receipt (`maintenance/photo-issue-plans/<issue>/originals/receipt.json`) and calls `readOriginalStep` for a selected source until it returns `original_verified` and the actual bytes. The compatible `readOriginal` macro remains available when the executor can finish its full readback. Use the normal portrait/landscape editorial conversion, duplicate check, visual review, the column handled by the weekly editor under [EDITORIAL_LOOP](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠), and publication procedure. The article converter crops to 16:9 and is unsuitable for these originals.
 
 For an existing Library original, retain the actual `https://chatgpt.com/library?file_id=libfile_...&account_id=personal` reference in the per-cut `user_supplied_photo` receipt and the same ID in `source.library_file_id`. A ZIP import also records `source.archive` with `format: "zip"`, its actual `filename`, `sha256`, `bytes`, and original `member` basename. Retrieve and hash the archive before extracting the member; retain the member's original bytes and the usual source SHA/format/dimensions. Archive/member names must be safe basenames, and the member extension must match the source format. These receipt fields preserve the observed archive provenance; the build verifies the saved original and JPEG without downloading Library files. Unknown generation turns remain `source.generation_turn_status: "not_retained"` and `source.generation_turn: null`; do not invent a conversation `turn_key` or `image_number`. The existing unretained prompt fields remain unchanged.
 
