@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "repository": "RollNuts/mihassei-news",
+  "completed_at": "2026-11-21T13:38:50.907Z",
+  "timezone": "Asia/Tokyo",
+  "status": "week_carryover_corrected_and_8_rena_originals_received_publication_pending",
+  "week_carryover": {
+    "pull_request": 935,
+    "url": "https://github.com/RollNuts/mihassei-news/pull/935",
+    "head": "b7229c179c492c366805415e11003792eb7a314b",
+    "merge_commit": "0a589d90851831529c98ace8971dc19d8925fe83",
+    "merged_doc_readback": {
+      "sha": "0a589d90851831529c98ace8971dc19d8925fe83",
+      "blob": "141a84ecde7447b48710e94634240516a9e8c23c",
+      "verified": true
+    },
+    "ci": {
+      "run_id": 44907843210,
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "b7229c179c492c366805415e11003792eb7a314b"
+    },
+    "behavior": "Continue the oldest unfinished frozen daily edition from the existing candidate/PR before starting a new week; preserve actual date, published prefix, fixed order and one person per day."
+  },
+  "rena_recovery": {
+    "model_id": "tsukishiro-rena",
+    "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+    "original_count": 8,
+    "original_bytes": 17611643,
+    "new_generation_calls": 0,
+    "library_saved_count": 8,
+    "completed_original_receipt": {
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/originals/receipt.json",
+      "sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "status": "originals_only_unreviewed",
+      "all_8_readback_verified": true
+    },
+    "delivery_turn": "1f0113b8-f484-8325-8b4c-05a936b92ac6",
+    "delivery_reference_kind": "automation_run",
+    "generation_turn": null,
+    "generation_turn_status": "not_retained",
+    "prepared_jpeg_count": 8,
+    "prepared_jpeg_bytes": 1371118,
+    "all_8_jpeg_readbacks_verified": true,
+    "original_and_jpeg_visual_candidate_screening_count": 8,
+    "handoff": {
+      "commit": "d22bf60429a074609fb403cb576762577fcbd4e5",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
+      "git_blob_sha": "6912b55cc75fde66413cabaa22e66e676f3b4453",
+      "sha256": "5b180220ca47e0fa756a2099046c345d636f69060261b7d36611916f5a5cc5fe",
+      "verified": true
+    },
+    "formal_adoption_count": 0,
+    "published_count": 0,
+    "complete_ten_photo_feature": false,
+    "minimum_numeric_shortfall": 2,
+    "near_similar_groups": [
+      [
+        1,
+        8
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "additional_selection_and_variety_required": true,
+    "publication_number_assigned": null,
+    "handoff_helper_format": "existing_v1"
+  },
+  "automation_changes": [
+    {
+      "task": "editor",
+      "id": "6ae8b29f4d308191a5c5eccf32ecd974",
+      "is_enabled": true,
+      "next_run_time": "2026-11-22T06:00:00+09:00",
+      "schedule_preserved": true,
+      "source_chat_preserved": true,
+      "prompt_readback_verified": true,
+      "prompt_sha256": "c089f4eaae077ceac0adf067b213b70c1b388a7e65514b5f4f4c96efe0745ab5",
+      "changes": [
+        "oldest unfinished edition first",
+        "verified Rena handoff reference",
+        "previous Hikari handoff retained"
+      ]
+    },
+    {
+      "task": "Rena producer",
+      "id": "6af874ba79b88191b77bbe8e7b7e2b2e",
+      "is_enabled": true,
+      "next_run_time": "2026-11-22T20:30:26+09:00",
+      "schedule_preserved": true,
+      "source_chat_preserved": true,
+      "prompt_readback_verified": true,
+      "prompt_sha256": "20ed6d5b97d8c901d5a20d2388cdb639097a6d64c9faf84840032d3f600f0335",
+      "changes": [
+        "received eight originals must not be regenerated or retransferred",
+        "specific selection/variety shortage",
+        "new materials use a later candidate without appending to completed receipt"
+      ]
+    }
+  ],
+  "scope": {
+    "new_automation_tasks": 0,
+    "immediate_automation_runs": 0,
+    "new_images_generated": 0,
+    "paid_external_services_or_credits_purchased": 0,
+    "mac_gpu_or_comfyui_started": false,
+    "history_or_published_photos_rewritten": false,
+    "new_handoff_format_deployed": false
+  },
+  "remaining": {
+    "hikari_formal_adoption_column_and_publication": "pending_existing_2026-11-22_06:00_JST_editor",
+    "rio_ten_new_originals": "unverified_no_new_exact_file_references_found",
+    "rena_complete_ten_photo_issue": "pending_editorial_selection_and_additional_distinct_materials",
+    "all_models_supply_fully_resolved": false
+  }
+}
