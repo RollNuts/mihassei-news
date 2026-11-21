@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "kind": "observed_producer_delivery_evidence",
+  "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+  "delivery_turn": "1f0113b8-f484-8325-8b4c-05a936b92ac6",
+  "delivery_reference_kind": "automation_run",
+  "generation_turn": null,
+  "generation_turn_status": "not_retained",
+  "task_id": "6af874ba79b88191b77bbe8e7b7e2b2e",
+  "observed_last_run": {
+    "id": "1f0113b8-f484-8325-8b4c-05a936b92ac6",
+    "recorded_status": "completed",
+    "scheduled_for": "2026-11-21T11:30:26Z",
+    "started_at": "2026-11-21T12:21:33.997606Z",
+    "completed_at": "2026-11-21T12:27:36.094212Z",
+    "chat_ref": {
+      "type": "chatgpt",
+      "id": "6af8675f-49b8-83e8-881e-b31a8ee1f481"
+    }
+  },
+  "observed_latest_result": {
+    "run_id": "1f0113b8-f484-8325-8b4c-05a936b92ac6",
+    "created_at": "2026-11-21T12:27:35.488573Z",
+    "scheduled_for": "2026-11-21T11:30:26Z",
+    "completed_at": "2026-11-21T12:27:36.094212Z",
+    "content_text": "**11月21日（土）の月城れなの近況を1件保存し、公開検証へ引き継ぎました。**\n\n> 夜、駅前で手袋を買った。黒を選んだつもりが、街灯の下では深い緑だった。交換するほど嫌じゃないので、明日の服を考え直している。\n\n<Link url=\"https://github.com/RollNuts/mihassei-news/pull/934\" title=\"PR #934｜月城れな 11月21日の近況\"/>\n\n既刊 `november-city-pause-rena-008` のcut `01`を使用。実JPEGのSHA256一致、本人下書きの保存・再読、日内重複なしを確認しています。\n\n**公開承認head：** `9fc863fa235a0c4acb5ea9659e4015dd49eafb2c`\n\nPRはDraft解除済みで、承認の再読も成功しました。**統合・本番配信は未確認**です。\n\n### 写真ストック\n\n既存ZIPの10枚はすべて掲載済みだったため再転送していません。別途、未掲載の原本PNG8枚を特定し、ファイルID・実測SHA256・寸法を候補ブランチへ保存して再読しました。\n\n- **候補branch：** `photo-issue-plan/november-indoor-pool-rena-014`\n- **在庫記録commit：** `452567d18105ce94ff96a3ced649a6a838b75ee5`\n- **新規生成：** 0枚\n\n原本転送は `BLOCKED_FILE_REFERENCE` で停止しました。8枚はまだ遠隔原本受領・実検品が済んでおらず、**使用可能在庫には加算していません**。次の未完工程は、保存した原本一覧の実ファイル参照からのLibrary回収と、原本SHAの遠隔読戻しです。\n\ncloud停止状態は`active`を確認済みです。生成前の転送経路と週内消費数を確定できないため、追加生成はしていません。",
+    "content_truncated": false,
+    "chat_ref": {
+      "type": "chatgpt",
+      "id": "6af8675f-49b8-83e8-881e-b31a8ee1f481"
+    },
+    "requires_user_action": false,
+    "is_failure_message": false
+  },
+  "inventory_commit": "452567d18105ce94ff96a3ced649a6a838b75ee5",
+  "inventory_path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/source-inventory.json",
+  "inventory_sha256": "760c0e4f2452a85092fb1be6615b8af1ffc0e374b29314f6bbf8e1d316191262",
+  "interpretation": "The producer run explicitly recorded this exact inventory commit and eight observed originals; this delivery run is not a generation turn."
+}

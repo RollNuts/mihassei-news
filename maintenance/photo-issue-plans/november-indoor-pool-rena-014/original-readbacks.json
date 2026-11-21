@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "kind": "completed_original_receipt_readback_evidence",
+  "issue": "november-indoor-pool-rena-014",
+  "status": "all_8_originals_verified",
+  "count": 8,
+  "method": "PhotoOriginalHandoff.readOriginalStep: full reconstructed PNG SHA-256, per-part SHA-256, PNG CRC and dimensions",
+  "receipt_commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+  "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+  "items": [
+    {
+      "source_ordinal": 1,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2222925,
+      "sha256": "23ceb77ae2a4aa4ecddecead9973f47aa460fca6c93c5740f5dbfd1852b44017",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:32:33.421Z"
+    },
+    {
+      "source_ordinal": 2,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2271967,
+      "sha256": "4fa2d6d6f14c14963d4faa4bc992f3022305c2a1c4acf20c0eb73fd26ecc0f4d",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:32:50.761Z"
+    },
+    {
+      "source_ordinal": 3,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2042107,
+      "sha256": "dbf8d1196a4886a72d2bd9fd49ae66c0e33f65e7816d5cb2c3f514ee68161afa",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:33:07.328Z"
+    },
+    {
+      "source_ordinal": 4,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2151362,
+      "sha256": "6f2de73db1da20bc68a8e09c12f520d747e7e3722cc4c90bae732710c64542f2",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:33:22.160Z"
+    },
+    {
+      "source_ordinal": 5,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2086483,
+      "sha256": "50407360e672b4fe4f4daddf1917e2ecd43f27dd39163cda2ec024e17ee14787",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:33:37.964Z"
+    },
+    {
+      "source_ordinal": 6,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2236389,
+      "sha256": "49c1ff0c8c04abfe9a3f4e1ae97cff673710fda64daceaf5410c40c946d6217a",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:33:51.551Z"
+    },
+    {
+      "source_ordinal": 7,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2032499,
+      "sha256": "d0e48375980014de5148d76069f4ca71edfac3bb710a9d647f03bb6711c3d36c",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:34:07.502Z"
+    },
+    {
+      "source_ordinal": 8,
+      "status": "original_verified",
+      "image_bytes_verified": true,
+      "bytes": 2567911,
+      "sha256": "b572fa959f96ee1fe845d8262a399944bae109ebccee56e479dec6eeb74b3b8d",
+      "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+      "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+      "verified_at": "2026-11-21T13:34:31.715Z"
+    }
+  ]
+}
