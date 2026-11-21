@@ -10201,6 +10201,180 @@
     }
   }
 }
+  ,
+    "groundwater-meters-shared-well-pump-stops": {
+  "article_sha256": "4d80c21a7bfca3d568d60d62472122634a6822f8c2da9f79837e9fee6ef013bc",
+  "bytes": 224745,
+  "generated_at": "2026-11-21T00:14:08.120Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "edbf627b-40b5-4e95-8049-6c5b64fd4b5b",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:edbf627b-40b5-4e95-8049-6c5b64fd4b5b",
+  "generation_prompt": "Natural realistic horizontal 16:9 documentary news photograph in a modest Japanese industrial parts factory utility room on a cool November morning in the fictional year 2031. A 56-year-old Japanese male plant maintenance manager wearing ordinary workwear and safety boots carefully operates the stop control of one large industrial groundwater pump, while a newly installed closed-loop cooling water system with believable pipes, gauges, coolant return line and heat exchanger is visibly running nearby. His colleague checks the factory equipment temperature with a small handheld gauge. Focus on the machinery and the manager's deliberate action; no captions, no legible text or symbols, no logos, no sci-fi projections, no real-person likeness, natural factory lighting and physically plausible industrial pipe layout.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "1e44c0df928729c120641e5b61eb53db4477951a93ee53609320e4e3de8620f8",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:598e4939-d52b-45d6-9b19-09af8f229340",
+    "instanceID": "xmp:iid:edbf627b-40b5-4e95-8049-6c5b64fd4b5b",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          85,
+          144,
+          147,
+          188,
+          152,
+          211,
+          141,
+          17,
+          108,
+          103,
+          26,
+          106,
+          201,
+          203,
+          68,
+          72,
+          253,
+          172,
+          139,
+          166,
+          247,
+          204,
+          137,
+          40,
+          0,
+          85,
+          71,
+          39,
+          159,
+          236,
+          232,
+          254
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-21T00:14:06.042532503Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-21T00:14:06.042534762Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-21T00:14:06.041943652Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "676cc38535f9c5fc1ca30893a8d57c4d5d46fc80f2c2cd3890df79bb4ca486db",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:4d80c21a7bfca3d568d60d62472122634a6822f8c2da9f79837e9fee6ef013bc",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/5d2fb206f28f/generated_images as /workspace/scratch/5d2fb206f28f/generated_images/exec-5a6164e5-5e3e-45a3-8fc3-f192ab3646ea.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-21T00:14:08.120Z",
+    "bytes": 2771078,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "f23431caf619382cdc06ee885e210a1f20988c27d19ddfc93bc09418522b34f8",
+    "candidate_branch": "native-image-candidate/groundwater-meters-shared-well-pump-stops/4d80c21a7bfca3d5-f449fd12de3f",
+    "candidate_commit": "9af9694c12e0326fc9c9fd83d9f6de1dbff7a433",
+    "receipt_path": "maintenance/native-image-candidates/groundwater-meters-shared-well-pump-stops/receipt.json",
+    "receipt_sha256": "f097e4a49912ad19b6166ab75a717a80cc4a9a370daa6d7a31bd2739049b981c",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/groundwater-meters-shared-well-pump-stops/source.png.part000",
+        "bytes": 524288,
+        "sha256": "ec7632c27c54a2b043bafd0e477502d0a83794f0ea871de3b4ebc7f539501a77",
+        "blob_sha": "d8b40a8435b3d39644c288a9c038e18ca0857d21"
+      },
+      {
+        "path": "maintenance/native-image-candidates/groundwater-meters-shared-well-pump-stops/source.png.part001",
+        "bytes": 524288,
+        "sha256": "f20fcbac2516444c76f2d3d7af3fef2e9ee8f159dc87c624ee970bacaf928a4a",
+        "blob_sha": "6fe01b1b44f8d73988b1740d24f9fc0e22c3eddf"
+      },
+      {
+        "path": "maintenance/native-image-candidates/groundwater-meters-shared-well-pump-stops/source.png.part002",
+        "bytes": 524288,
+        "sha256": "d5bb342d88d01d03f9f2cf1e654f69ad8bb7f68a553619f179dc1734f361e172",
+        "blob_sha": "ce035279b762f4aabec2295bd22143c4c395e862"
+      },
+      {
+        "path": "maintenance/native-image-candidates/groundwater-meters-shared-well-pump-stops/source.png.part003",
+        "bytes": 524288,
+        "sha256": "6ad8d59e6424e941a8e61202971ef9ad3b3f5b0a15d2a5887c6df716e14b2387",
+        "blob_sha": "2e3044f0ba28eb1d887ac14a88e34ef9527532e1"
+      },
+      {
+        "path": "maintenance/native-image-candidates/groundwater-meters-shared-well-pump-stops/source.png.part004",
+        "bytes": 524288,
+        "sha256": "9c20b9e77d3a39284c8023c5e50ad58a9b27071860e3588b48b29ce1f7def3bd",
+        "blob_sha": "0954c5bbf22aef9ce189a5cf193c2e21851d4de0"
+      },
+      {
+        "path": "maintenance/native-image-candidates/groundwater-meters-shared-well-pump-stops/source.png.part005",
+        "bytes": 149638,
+        "sha256": "7a9dfd28846ccdcb9ed23d6df70141a67d14fa7187fa07ca3e3b383df40794f5",
+        "blob_sha": "3e6e089c9c9acd26f743933bd214d02d068f04b7"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "a175ad3f3ed96e9f3bdee90c9010947a0d2f469d",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "decc4ec112905a4ba8aae686fdd0ad6a2f4713ce894c6504db35b879b5fab8f4",
+      "observed_at": "2026-11-21T00:12:46.065Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/6d55e1ce97be6548f519e24591811dc34a906ad3f0a8fdc62af84a744ef2dcdf",
+      "receipt_path": "maintenance/native-image-generation-claims/6d55e1ce97be6548f519e24591811dc34a906ad3f0a8fdc62af84a744ef2dcdf.json",
+      "receipt_sha256": "fdc800fe7505f62f033ea900cd9a7f2d45bd2e01ed2fcc2f7515300d1456f9f2",
+      "commit_sha": "0e25723599f9969399f34825dbb165ffb4149d1c"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
