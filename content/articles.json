@@ -1,5 +1,74 @@
 [
   {
+    "slug": "private-rocket-town-satellite-first-ocean-image",
+    "category": "経済",
+    "flash": "町工場の衛星、補欠便から宇宙へ",
+    "art": "cards",
+    "fiction_at": "2031-11-22T07:31:56+09:00",
+    "published_at": "2026-11-22T07:31:56+09:00",
+    "publication_slot": "2026-11-22T07:30:00+09:00",
+    "title": "町工場の衛星、ロケットの補欠枠から宇宙へ　初めて撮った海の写真が届く",
+    "summary": "2031年、民間会社が小型衛星をまとめて運ぶロケット便で、ほかの客が辞退した搭載場所に町工場製の衛星が繰り上がった。前夜に打ち上げられた機体は翌朝、海沿いの養殖場を初めて撮影。部品を納めていた工場が、自分たちで作った観測機とその画像を売る仕事に踏み出した。",
+    "paragraphs": [
+      "2031年11月22日の朝、海沿いの町の部品工場で、43歳の製造責任者が受信画面に現れた海の写真を拡大した。細い防波堤と養殖いかだ、その沖の色の違う水面が写っている。工場で組み立てた小型衛星が前夜に民間ロケットで打ち上がり、初めて地上へ送ってきた画像だ。二か月前、その衛星には打上げ日さえ決まっていなかった。",
+      "2026年11月、国内のロケットでは輸送サービスに加え、法律上の打上げ実施者も民間へ段階的に移す方針が発表された。五年後、この民間打上げ会社は、一つのロケットに複数の小型衛星を積む便を商品にした。衛星を取り付ける場所と大きさを規格化し、先に安全確認を済ませた補欠機があれば、空いた場所を使える仕組みだ。ロケットを一機借り切る必要はない。",
+      "今回、予約していた別の製作チームが機体の整備を終えられず、一つの搭載場所を辞退した。運航会社から補欠の連絡を受けた工場は、箱ほどの衛星を専用ケースに収めて整備施設へ運び込んだ。振動試験と電池の安全確認は申し込み前に終えていたが、運航会社は接続部分と書類をもう一度照合した。空きができたからといって、検査を飛ばして載せられるわけではない。",
+      "この工場は、以前はほかのメーカーに電子部品を納めていた。数年前、地元の養殖事業者から海の濁りを上空から確かめたいと相談され、小型の撮影機を組み込んだ衛星を試作した。普通なら次の打上げを待つか、すでに撮影している衛星の画像を買う。しかし工場は、自分たちの機体なら撮る場所と時刻を注文に合わせやすいと考え、製造費に加えて相乗りの輸送費と保険も負担した。撮影した画像がそのまま水質検査の代わりになるわけではない。",
+      "前夜の打上げ後、工場は地上との通信ができる時間を待ち、機体の状態を確かめてから最初の撮影指示を送った。翌朝届いた写真には養殖いかだと潮の色の境目が写っていたが、それだけで濁りの原因は判断できない。製造責任者は地元の養殖担当者と画面を囲み、海水を採りに行く場所を決めるための参考画像として使えることを確認した。",
+      "養殖事業者は、次の観測でも同じ範囲を撮る有料の試験契約を工場へ発注した。天候によって写真が撮れない日もあるため、船での採水は続ける。工場の受注表には、初めて「電子部品」ではなく「衛星撮影」の仕事が記された。打上げの補欠だった機体が、町工場に新しい売り物を一つ増やした。"
+    ],
+    "source": {
+      "kind": "宇宙航空研究開発機構・2026年11月20日プレスリリース",
+      "publisher": "宇宙航空研究開発機構（JAXA）",
+      "published_at": "2026-11-20T13:00:00+09:00",
+      "url": "https://www.jaxa.jp/press/2026/11/20261120-1_j.html",
+      "topic": "宇宙航空研究開発機構は2026年11月20日、特定形態のH3ロケットについて打上げ輸送サービスに加えて法令上の打上げ実施者も民間事業者が担うことに合意し、ほかの形態にも段階的に広げる方針を公表した。"
+    },
+    "scene_prompt": "Natural realistic horizontal 16:9 documentary news photograph inside a modest Japanese electronics workshop early on a November morning in 2031. A 43-year-old Japanese male manufacturing supervisor and a colleague lean toward a desk monitor showing a plausible aerial satellite view of a coastal aquaculture area with simple sea colors and no readable UI, pointing to the water and fish-farm rafts. Compact radio ground-receiver equipment and small electronics assemblies on the workbench, believable wiring, ordinary workwear, cool natural window light. Emphasize the people seeing their first picture from the satellite, a real working factory, no lettering, no logos, no sci-fi effects, no real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "小型衛星",
+      "宇宙輸送",
+      "町工場"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "宇宙輸送",
+      "小型衛星"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "宇宙にも『キャンセル待ち』がある2031年。空いた搭載場所から、町工場の新しい商売が始まった。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月、国内のロケットで法令上の打上げ実施者を民間へ移す方針が公表された",
+      "target": "小型衛星を規格化してまとめて運ぶ民間の相乗り便と地方メーカーの新しい販売先",
+      "action": "補欠登録していた町工場の衛星が搭載場所の辞退を受け、安全確認後に打上げられて海の画像を送る",
+      "outcome": "養殖事業者が撮影の有料試験契約を発注し、工場が電子部品納入に加えて衛星画像を売る"
+    },
+    "reader_clarity": {
+      "who": "町工場",
+      "action": "補欠枠に繰り上がった自社製衛星を打ち上げ、海の画像を養殖事業者へ届ける",
+      "oddity": "小型衛星の相乗りが商品となり、部品を作る工場が撮影サービスまで売れる"
+    },
+    "behavior_basis": {
+      "motive": "工場は海を上空から定期観測したい養殖事業者の注文を得て、自社製品として売りたい",
+      "ordinary_alternative": "既存の衛星画像を買う、または次のロケット便を待つ",
+      "why_not": "自社機なら撮影場所・時刻の注文に合わせやすく、事前審査済みの機体が補欠の空きに乗れた",
+      "evidence_quote": "しかし工場は、自分たちの機体なら撮る場所と時刻を注文に合わせやすいと考え、製造費に加えて相乗りの輸送費と保険も負担した。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月20日、国内のロケットで輸送サービスだけでなく法令上の打上げ実施者も民間が担う段階的移行が発表された",
+      "continuation_force": "民間輸送事業者が小型衛星の搭載接続と安全手順を共通化し、事前審査済みの補欠顧客にも予約機会を開く",
+      "future_result": "2031年、海沿いの町工場が補欠便で自社機を打ち上げ、地上に届いた海の画像をもとに有料の試験撮影契約を獲得する"
+    },
+    "body": "",
+    "fiction_company": "海沿いの町の部品工場・民間打上げ会社・養殖事業者（いずれも架空）"
+  },
+  {
     "slug": "groundwater-meters-shared-well-pump-stops",
     "category": "政治",
     "flash": "工場の節水で園芸施設が追加受注",
