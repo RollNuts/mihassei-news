@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "6d55e1ce97be6548f519e24591811dc34a906ad3f0a8fdc62af84a744ef2dcdf",
+  "slug": "groundwater-meters-shared-well-pump-stops",
+  "article_sha256": "4d80c21a7bfca3d568d60d62472122634a6822f8c2da9f79837e9fee6ef013bc",
+  "logical_run_id": "news-photo-v1:4d80c21a7bfca3d568d60d62472122634a6822f8c2da9f79837e9fee6ef013bc",
+  "prompt_sha256": "d797379babfab51e08e58f9f4660c671ff8867049cd230830c6cf89394953f33",
+  "reserved_at": "2026-11-21T00:13:15.024Z",
+  "baseline": {
+    "commit_sha": "ae2a5828330136a7fa0e1d92f9a8505e438ecbdc",
+    "tree_sha": "d1891ef07cb29e3e39bc68d687cb0b7a568debc3",
+    "protected_hashes": {
+      "content/articles.json": "8332fac3fe000aa9f9700e766b19f5e8e80af563a842f16161c48fc59f14cc05",
+      "assets/generated/manifest.json": "99b1ac6eb41ddefe4ab07d788540d842e3982fb05711b499cfece9d92baa9888",
+      "content/visual_reviews.json": "f7dcd93ec6ffc3dcec42a8fab16c379cf851d526b70acec9920b4624003e6ceb"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "a175ad3f3ed96e9f3bdee90c9010947a0d2f469d",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "decc4ec112905a4ba8aae686fdd0ad6a2f4713ce894c6504db35b879b5fab8f4",
+    "observed_at": "2026-11-21T00:12:46.065Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
