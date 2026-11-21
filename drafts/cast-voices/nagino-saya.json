@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "nagino-saya",
   "name": "凪野さや",
-  "created_date": "2026-11-21",
+  "created_date": "2026-11-22",
   "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
   "photo_reference": {
     "issue_slug": "november-water-and-quiet-hours-saya-010",
-    "cut_id": "07",
-    "image_sha256": "1fb0df010c906a44400b884557d85298d35a11df7d5c62b878a71a2da1ebf65b"
+    "cut_id": "08",
+    "image_sha256": "b4f52ae4b794f13639c0d02e186eb8e4ae4e2295692135a2534f6f3134735719"
   },
-  "post_text": "朝、庭の小道で近道を教えてもらったのに、紅葉がきれいで反対へ。戻ったら、さっきの人にまた会って笑われちゃいました。寄り道って、すぐばれるな。",
-  "spoken_line": "やっぱり、こっちがいいな。",
+  "post_text": "朝、枕の下から昨日のしおりが出てきました。本はちゃんと机にあるのに。続きを少しだけ読むつもりが、まだ布団から出られません。",
+  "spoken_line": "あと少しだけ読もうかな。",
   "future_idea": null
 }
