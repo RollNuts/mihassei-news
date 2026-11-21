@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-20",
+  "created_date": "2026-11-21",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
     "issue_slug": "november-off-clock-rio-002",
-    "cut_id": "05",
-    "image_sha256": "478b66fdad4f70de78b934d0c53b9b4f095dc5f1c4f16e6585f0ae48c5c59d3a"
+    "cut_id": "08",
+    "image_sha256": "f5b6e07657d573d11079c937d078ec1ab6c5951a90e61ae43ea094d7d82d6c1a"
   },
-  "post_text": "朝、傘を畳んだ途端にまた小雨。駅までの短い道で、開いて閉じてを三回繰り返しました。取材の段取りより、今朝の空のほうが気まぐれです。",
-  "spoken_line": "また雨ですか。",
-  "future_idea": "2031年、公共施設のAI問い合わせ窓口に『人間への取次ぎ時間』の表示を義務化。表示は『ただいま算出中』のまま。"
+  "post_text": "朝、コートのポケットから去年の取材メモが出てきました。『風が強い』だけ妙に大きな字で書いてある。肝心な質問は小さくて、少し笑いました。",
+  "spoken_line": "風の字だけ、こんなに大きい。",
+  "future_idea": "2031年、記者会見にAIの質問分類係を導入。『なぜ』を尋ねる質問だけ、毎回『補足事項』に回される。"
 }
