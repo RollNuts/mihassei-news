@@ -499,5 +499,102 @@
     "docs/OPERATIONS.md": "担当表の既存行だけを、素材制作GPT7人は月曜週1回・既存時刻、各人の未掲載候補在庫30枚目安、既存素材先行、不足時だけ生成呼出し失敗込み週最大20回、100枚は累計目標、無料制約で臨時埋め合わせなし、と同期。時刻正本はAutomationsを優先。",
     "docs/EDITORIAL_LOOP.md": "近況は特集と独立して既刊検品写真と本人原文の確かな対応があるときだけ公開。既存の同文重複・季節・実公開時刻制限を保持。",
     "restriction": "資料だけのPR/commitや追加CIを作らず、今回の画像保存と同一の通常公開PRで適用。"
+  },
+  "remaining_original_inventory": {
+    "status": "sources_observed_not_received",
+    "checked_date": "2026-11-21",
+    "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+    "archives": {
+      "new6": {
+        "name": "shiramine_yuki_originals_6.zip",
+        "sha256": "aeee6fb40a2d6b7a22ef2ae829733af81d53943c89773dd8781299a9a6752bd2",
+        "delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f"
+      },
+      "previous10": {
+        "name": "shiramine_yuki_previous_10_originals.zip",
+        "sha256": "1b29199cdef63e072c6031c954ef74361b49e8e9d5c7a9b02311ac7163477393",
+        "delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a"
+      }
+    },
+    "observed_sources": [
+      {
+        "filename": "屋内プールサイドの静かな午後.png",
+        "sha256": "dceebd70ca767d915e5c890f71b5607b5133b8c41bc66396184bb7622fce276a",
+        "bytes": 2313103,
+        "origin_archive": "new6",
+        "observed_ref": "file_00000000723481f79a365b87d2c0a1ac",
+        "observed_ref_kind": "file_id",
+        "generation_turn": "unknown",
+        "received_on_candidate": false,
+        "remote_original_sha_verified": false,
+        "visually_accepted": false
+      },
+      {
+        "filename": "温かなレストランでワインを傾ける女性.png",
+        "sha256": "f58f1726ad48fc5f9298d5eb695bcc1b346857d90874edf26b273a4384fd54b4",
+        "bytes": 2269424,
+        "origin_archive": "previous10",
+        "observed_ref": "9f401ef5-8e0a-49ac-9af4-83d59633aa87",
+        "observed_ref_kind": "image_generation_id",
+        "generation_turn": "unknown",
+        "received_on_candidate": false,
+        "remote_original_sha_verified": false,
+        "visually_accepted": false
+      },
+      {
+        "filename": "暖かなカフェの微笑み.png",
+        "sha256": "a85f288b1af7e794a0f70841c819d76a9a3f6878055e5b4e306e6e836a855ce7",
+        "bytes": 2295039,
+        "origin_archive": "previous10",
+        "observed_ref": "19aa2240-773e-4b7c-8324-8835266167bd",
+        "observed_ref_kind": "image_generation_id",
+        "generation_turn": "unknown",
+        "received_on_candidate": false,
+        "remote_original_sha_verified": false,
+        "visually_accepted": false
+      },
+      {
+        "filename": "温かなレストランで微笑む女性とグラス.png",
+        "sha256": "6f70e3b1e72d0a157a5c1ce04c1a9022a72387f4924b61050dde095f9b816175",
+        "bytes": 2174040,
+        "origin_archive": "previous10",
+        "observed_ref": "45386e72-a064-4c0b-b33c-598ad8d28963",
+        "observed_ref_kind": "image_generation_id",
+        "generation_turn": "unknown",
+        "received_on_candidate": false,
+        "remote_original_sha_verified": false,
+        "visually_accepted": false
+      },
+      {
+        "filename": "温かな灯りのカフェディナー.png",
+        "sha256": "a8e2b17c652e96acb44d7eb1948f1f3b5e1c2dbd31d0bb09b8670e05cc9c3b27",
+        "bytes": 2095867,
+        "origin_archive": "previous10",
+        "observed_ref": "d977bc84-6728-475b-a3b0-90a2819f912d",
+        "observed_ref_kind": "image_generation_id",
+        "generation_turn": "unknown",
+        "received_on_candidate": false,
+        "remote_original_sha_verified": false,
+        "visually_accepted": false
+      },
+      {
+        "filename": "キャンドル灯るカフェのひととき.png",
+        "sha256": "094ead8a73b5e3978b8c3ad74150696bc696bfc88a8bb2fc665001dbcea55e01",
+        "bytes": 2121784,
+        "origin_archive": "previous10",
+        "observed_ref": "f07aff75-ffe0-48f6-8a28-ae82ed397f10",
+        "observed_ref_kind": "image_generation_id",
+        "generation_turn": "unknown",
+        "received_on_candidate": false,
+        "remote_original_sha_verified": false,
+        "visually_accepted": false
+      }
+    ],
+    "accepted_existing_count": 10,
+    "unreceived_observed_count": 6,
+    "usable_stock_count_from_this_inventory": 0,
+    "usable_stock_elsewhere": "unknown",
+    "weekly_generation_attempts": "unknown",
+    "next_operation": "Confirm a new editor-selected unpublished issue and transfer original existing bytes through authorized storage; remote byte readback and visual review before stock count; do not regenerate or resend received 10."
   }
 }
