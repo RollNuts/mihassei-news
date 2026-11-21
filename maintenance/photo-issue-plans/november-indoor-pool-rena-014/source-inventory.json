@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "kind": "photo_original_source_inventory",
+  "status": "sources_observed_not_received",
+  "issue_slug": "november-indoor-pool-rena-014",
+  "model_id": "tsukishiro-rena",
+  "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+  "catalog_checked_main_sha": "13134772b93aaee35c9ecfb3417c76004ba9b05c",
+  "inventory_observed_at": "2026-11-21T12:27:04.811Z",
+  "description": "Eight existing independent PNGs observed in the producer chat. All are absent from the two published Rena issues by full source SHA256. Not yet remotely received, re-read, or formally accepted; usable stock remains zero for this packet.",
+  "published_zip_excluded": "rena_2026-11-15_winter_city_indoor_10_sources.zip has 10 source PNGs already published in november-city-pause-rena-008; do not retransfer.",
+  "originals": [
+    {
+      "source_ordinal": 1,
+      "observed_file_id": "file_00000000c91481f6ac3e5faa97b5b502",
+      "file_name": "プールサイドの静かな水鏡ポートレート.png",
+      "source_sha256": "23ceb77ae2a4aa4ecddecead9973f47aa460fca6c93c5740f5dbfd1852b44017",
+      "bytes": 2222925,
+      "width": 1536,
+      "height": 1024,
+      "generation_id": "99925456-6ec0-4961-9eb8-5c90ae1d1fc2",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    },
+    {
+      "source_ordinal": 2,
+      "observed_file_id": "file_0000000097a881f6907aacf07ca5fd9d",
+      "file_name": "屋内プールの静かな肖像.png",
+      "source_sha256": "4fa2d6d6f14c14963d4faa4bc992f3022305c2a1c4acf20c0eb73fd26ecc0f4d",
+      "bytes": 2271967,
+      "width": 1024,
+      "height": 1536,
+      "generation_id": "25d84d5b-a806-4351-9dee-04d15a26d733",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    },
+    {
+      "source_ordinal": 3,
+      "observed_file_id": "file_00000000a7dc81f6add2f89bed3aad32",
+      "file_name": "屋内プールの静かな水辺肖像.png",
+      "source_sha256": "dbf8d1196a4886a72d2bd9fd49ae66c0e33f65e7816d5cb2c3f514ee68161afa",
+      "bytes": 2042107,
+      "width": 1024,
+      "height": 1536,
+      "generation_id": "13683897-aff3-4eca-9872-d2b069024983",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    },
+    {
+      "source_ordinal": 4,
+      "observed_file_id": "file_00000000e8e881f6b46beef4fac86a43",
+      "file_name": "屋内プールの静かなひととき.png",
+      "source_sha256": "6f2de73db1da20bc68a8e09c12f520d747e7e3722cc4c90bae732710c64542f2",
+      "bytes": 2151362,
+      "width": 1024,
+      "height": 1536,
+      "generation_id": "0fa55df0-6a50-4b22-8987-692ad68da2c1",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    },
+    {
+      "source_ordinal": 5,
+      "observed_file_id": "file_0000000032dc81f684402190e1152655",
+      "file_name": "曇りガラス越しのプールサイドポートレート.png",
+      "source_sha256": "50407360e672b4fe4f4daddf1917e2ecd43f27dd39163cda2ec024e17ee14787",
+      "bytes": 2086483,
+      "width": 1536,
+      "height": 1024,
+      "generation_id": "2d9a33c8-ea73-4c72-9ad4-d746fe1b0298",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    },
+    {
+      "source_ordinal": 6,
+      "observed_file_id": "file_00000000a96481f69fcade283165995a",
+      "file_name": "屋内プールサイドの静かなひととき.png",
+      "source_sha256": "49c1ff0c8c04abfe9a3f4e1ae97cff673710fda64daceaf5410c40c946d6217a",
+      "bytes": 2236389,
+      "width": 1024,
+      "height": 1536,
+      "generation_id": "64990293-91ef-4319-b43a-f364ae0ef91a",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    },
+    {
+      "source_ordinal": 7,
+      "observed_file_id": "file_00000000c02481f69bac8eebbf949c4a",
+      "file_name": "屋内プールサイドの青いビキニ姿.png",
+      "source_sha256": "d0e48375980014de5148d76069f4ca71edfac3bb710a9d647f03bb6711c3d36c",
+      "bytes": 2032499,
+      "width": 1024,
+      "height": 1536,
+      "generation_id": "d7980d4f-4490-4553-81c0-1ab893e77f7f",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    },
+    {
+      "source_ordinal": 8,
+      "observed_file_id": "file_00000000580081f6bc4a31c092e03215",
+      "file_name": "屋内スパの水面に佇む女性.png",
+      "source_sha256": "b572fa959f96ee1fe845d8262a399944bae109ebccee56e479dec6eeb74b3b8d",
+      "bytes": 2567911,
+      "width": 1536,
+      "height": 1024,
+      "generation_id": "dba3c332-f2f4-457c-8b18-744158ca2a69",
+      "transfer_status": "not_received",
+      "review_status": "unreviewed"
+    }
+  ],
+  "transfer_failure": {
+    "ordinal": 7,
+    "stage": "read_candidate_png",
+    "error_class": "BLOCKED_FILE_REFERENCE",
+    "message": "this file is unavailable for connector egress",
+    "next_step": "Use the Library resolved-reference recovery with the exact observed_file_id and filename, then read local PNG in a connector-supported current workspace; verify SHA, resume original-upload checkpoint; do not regenerate"
+  },
+  "usable_inventory_count": 0,
+  "received_original_count": 0,
+  "generated_this_run": 0,
+  "weekly_consumed_count": "unknown",
+  "publication": "not_requested"
+}
