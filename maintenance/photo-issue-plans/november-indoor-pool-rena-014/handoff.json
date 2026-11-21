@@ -1,0 +1,465 @@
+{
+  "version": 1,
+  "kind": "photo_original_recovery_handoff",
+  "status": "originals_verified_and_jpegs_prepared_editorial_adoption_pending",
+  "repository": "RollNuts/mihassei-news",
+  "source_candidate": "november-indoor-pool-rena-014",
+  "source_candidate_only": true,
+  "publication_number_assigned": null,
+  "candidate_branch": "photo-issue-plan/november-indoor-pool-rena-014",
+  "model_id": "tsukishiro-rena",
+  "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+  "delivery_turn": "1f0113b8-f484-8325-8b4c-05a936b92ac6",
+  "delivery_reference_kind": "automation_run",
+  "generation_turn": null,
+  "generation_turn_status": "not_retained",
+  "generation_prompt": null,
+  "generation_prompt_status": "not_retained",
+  "source_inventory": {
+    "commit": "452567d18105ce94ff96a3ced649a6a838b75ee5",
+    "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/source-inventory.json",
+    "git_blob_sha": "5cd5e82f36404817bb4437dfaa476370f8b467f9",
+    "sha256": "760c0e4f2452a85092fb1be6615b8af1ffc0e374b29314f6bbf8e1d316191262",
+    "source_ordinals_preserved": true
+  },
+  "originals_receipt": {
+    "commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+    "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/originals/receipt.json",
+    "sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+    "status": "originals_only_unreviewed",
+    "count": 8,
+    "all_8_remote_original_sha_png_and_dimensions_verified": true,
+    "readback_evidence": {
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/original-readbacks.json",
+      "sha256": "ed87148468801a5ccfdbffc655d4dc09e4a1359d308713fd6cbee36c5784c741",
+      "git_blob_sha": "fc3874bfa68717a16dcc811dcbd90f6a6b877a21",
+      "bytes": 3839
+    }
+  },
+  "prepared_jpeg_storage": {
+    "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+    "path_prefix": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/",
+    "count": 8,
+    "bytes": 1371118,
+    "all_remote_bytes_verified": true,
+    "visual_encoding_review_count": 8,
+    "evidence_path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/jpeg-readbacks.json",
+    "evidence_ref": "same_immutable_commit_as_this_handoff"
+  },
+  "metadata": {
+    "library-receipts.json": {
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/library-receipts.json",
+      "sha256": "084cd5d339fb077ddd90816598c46f956e03b8c69679f76994265d4e64053e51",
+      "git_blob_sha": "bb1c5dda31cb9db7e9e33dfa34df67644adb0f99",
+      "bytes": 10282
+    },
+    "source-original-qa.json": {
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/source-original-qa.json",
+      "sha256": "4261e32c6e22699fea13d5e8a92f600abfb6e284841d99b37db71d08a189c374",
+      "git_blob_sha": "8439fec19ea7f8b8506322fb3e1c0719a16cbf13",
+      "bytes": 14660
+    },
+    "prepared-jpegs.json": {
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs.json",
+      "sha256": "a6e1f017d0f042cec7ba4fda5b3a8e92a10b56a838c1e2d67aa1c5503d97f0d8",
+      "git_blob_sha": "be99e3fde463fa04ecac606a80c7337f2350a579",
+      "bytes": 19999
+    },
+    "original-readbacks.json": {
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/original-readbacks.json",
+      "sha256": "ed87148468801a5ccfdbffc655d4dc09e4a1359d308713fd6cbee36c5784c741",
+      "git_blob_sha": "fc3874bfa68717a16dcc811dcbd90f6a6b877a21",
+      "bytes": 3839
+    },
+    "delivery-evidence.json": {
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/delivery-evidence.json",
+      "sha256": "3af9400eefd258d204998a65648e84c14279140e14e9857e81b508285d7a7a13",
+      "git_blob_sha": "d6fd5f4eaaf742b5ae741b991aa482bc917dbb49",
+      "bytes": 3322
+    }
+  },
+  "items": [
+    {
+      "source_ordinal": 1,
+      "source_sha256": "23ceb77ae2a4aa4ecddecead9973f47aa460fca6c93c5740f5dbfd1852b44017",
+      "source_bytes": 2222925,
+      "source_dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "source_observed_file_id": "file_00000000c91481f6ac3e5faa97b5b502",
+      "source_filename": "プールサイドの静かな水鏡ポートレート.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-e08d0cce2420819191c56c294bc5149e_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000003f5081fa926af6f45bfd28f1",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-e08d0cce2420819191c56c294bc5149e_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source01.jpg",
+        "sha256": "2d1a21a2e184d4923aa2f3b95a45b245052416655ae7ebb9e62f5b699d58bbd2",
+        "git_blob_sha": "8b550db2b7608f2408270da3bb9c65abc8b6c168",
+        "bytes": 184056,
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    },
+    {
+      "source_ordinal": 2,
+      "source_sha256": "4fa2d6d6f14c14963d4faa4bc992f3022305c2a1c4acf20c0eb73fd26ecc0f4d",
+      "source_bytes": 2271967,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_0000000097a881f6907aacf07ca5fd9d",
+      "source_filename": "屋内プールの静かな肖像.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-19d112dae03481918dde3fcaf2a625b5_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000000d5081fa85949a71cfdd7d47",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-19d112dae03481918dde3fcaf2a625b5_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source02.jpg",
+        "sha256": "b4c32a5ce25280c6a068b92e1eabc1b382e396bca15575a13b575ed77310e08f",
+        "git_blob_sha": "02561288f62e296463f7cfdab277a38291de6d36",
+        "bytes": 179184,
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    },
+    {
+      "source_ordinal": 3,
+      "source_sha256": "dbf8d1196a4886a72d2bd9fd49ae66c0e33f65e7816d5cb2c3f514ee68161afa",
+      "source_bytes": 2042107,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000a7dc81f6add2f89bed3aad32",
+      "source_filename": "屋内プールの静かな水辺肖像.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-4cd3647f1fd8819180722a38b71b6417_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000277c81fabdd23439b855f57a",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-4cd3647f1fd8819180722a38b71b6417_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source03.jpg",
+        "sha256": "5777db7f8db9ae887a338323e618600adde44e5d6303419ae3798fb45538bfed",
+        "git_blob_sha": "14edbfd7ea051417e524b83b785d2d12e27083af",
+        "bytes": 145450,
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    },
+    {
+      "source_ordinal": 4,
+      "source_sha256": "6f2de73db1da20bc68a8e09c12f520d747e7e3722cc4c90bae732710c64542f2",
+      "source_bytes": 2151362,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000e8e881f6b46beef4fac86a43",
+      "source_filename": "屋内プールの静かなひととき.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-394cd156c23c819185195974321dfbd7_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000af0c81fa8ec0cae3fff220e7",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-394cd156c23c819185195974321dfbd7_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source04.jpg",
+        "sha256": "873f01dab5d383d4362456d200dd4340e850c0c15f88d88a476f063554680be2",
+        "git_blob_sha": "5010b47ae7ff4a750cb0e7972cdd3f767c895e32",
+        "bytes": 165055,
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    },
+    {
+      "source_ordinal": 5,
+      "source_sha256": "50407360e672b4fe4f4daddf1917e2ecd43f27dd39163cda2ec024e17ee14787",
+      "source_bytes": 2086483,
+      "source_dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "source_observed_file_id": "file_0000000032dc81f684402190e1152655",
+      "source_filename": "曇りガラス越しのプールサイドポートレート.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-d0cb2afce92c8191bac1b030e128c0dd_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000e2d881faab37486dc03d5a86",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-d0cb2afce92c8191bac1b030e128c0dd_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source05.jpg",
+        "sha256": "b8040fa9922ba5e74d5673e12a32a3a390853be7715d34e48eb121de5f802719",
+        "git_blob_sha": "87ee82781280f16ee9329a75e613966caf8679f9",
+        "bytes": 159518,
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    },
+    {
+      "source_ordinal": 6,
+      "source_sha256": "49c1ff0c8c04abfe9a3f4e1ae97cff673710fda64daceaf5410c40c946d6217a",
+      "source_bytes": 2236389,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000a96481f69fcade283165995a",
+      "source_filename": "屋内プールサイドの静かなひととき.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-808b719c8f6481919c9cf88724e3c68c_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_000000009ba081fa99faf83cdf4e684e",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-808b719c8f6481919c9cf88724e3c68c_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source06.jpg",
+        "sha256": "6d65c17784b367d4ac4591acf839707193d76cf73f5de135474adf68a942a450",
+        "git_blob_sha": "d179122dba9b509b813593dcc568fd1d1652efcc",
+        "bytes": 176442,
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    },
+    {
+      "source_ordinal": 7,
+      "source_sha256": "d0e48375980014de5148d76069f4ca71edfac3bb710a9d647f03bb6711c3d36c",
+      "source_bytes": 2032499,
+      "source_dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source_observed_file_id": "file_00000000c02481f69bac8eebbf949c4a",
+      "source_filename": "屋内プールサイドの青いビキニ姿.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-d4bf8f572b308191aea893e921cbb535_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_00000000021c81faa4346597b177c6ed",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-d4bf8f572b308191aea893e921cbb535_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source07.jpg",
+        "sha256": "977f8fc68e754218a4724ab0f5c52d1a08860615456f38569560ddfa37262f22",
+        "git_blob_sha": "46bf7c931b2be6b90044bafad33773ae71609e51",
+        "bytes": 143534,
+        "width": 800,
+        "height": 1200
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    },
+    {
+      "source_ordinal": 8,
+      "source_sha256": "b572fa959f96ee1fe845d8262a399944bae109ebccee56e479dec6eeb74b3b8d",
+      "source_bytes": 2567911,
+      "source_dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "source_observed_file_id": "file_00000000580081f6bc4a31c092e03215",
+      "source_filename": "屋内スパの水面に佇む女性.png",
+      "library": {
+        "library_file_id": "libfile_fde3_f-0adabfe843f48191848a2da36aa276c0_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_version": 0,
+        "file_id": "file_0000000058e881faaf4a3031abe925c5",
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-0adabfe843f48191848a2da36aa276c0_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal"
+      },
+      "prepared_jpeg": {
+        "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+        "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source08.jpg",
+        "sha256": "a65b332d51f21685067d14df2a9e04f5dec7b655823e81baaf11ccb668311c41",
+        "git_blob_sha": "2d97b91e4c920ced44013bc5d279e297253d8abc",
+        "bytes": 217879,
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "13.0.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "source_visual_screening": "passed_candidate_screening",
+      "jpeg_visual_screening": "passed_candidate_screening",
+      "formal_editorial_adoption": "pending"
+    }
+  ],
+  "editorial": {
+    "complete_ten_photo_feature": false,
+    "minimum_numeric_shortfall_to_ten": 2,
+    "all_eight_indoor_pool_or_swimwear_spa": true,
+    "near_similar_source_ordinal_groups": [
+      [
+        1,
+        8
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "selection_required_before_counting_a_varied_issue": true,
+    "next_material_needs": "Select among similar pool portraits. Obtain distinct clothed, wider/full-body, or other fitting settings through the existing producer and its current stock/usage limits; more than two may be needed after editorial selection.",
+    "publication_order": "Keep current frozen edition's Hikari then Rio order; the source candidate suffix 014 does not reserve a publication number.",
+    "publication_count": 0,
+    "formal_adoption_count": 0
+  },
+  "usage": {
+    "new_generation_calls": 0,
+    "additional_tasks": 0,
+    "immediate_runs": 0,
+    "additional_paid_services": 0,
+    "historical_weekly_generation_calls": null
+  },
+  "completed_at": "2026-11-21T13:36:34.865Z"
+}

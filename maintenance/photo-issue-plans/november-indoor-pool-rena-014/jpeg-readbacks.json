@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "kind": "prepared_jpeg_and_metadata_readback_evidence",
+  "source_candidate": "november-indoor-pool-rena-014",
+  "status": "all_8_jpegs_and_5_metadata_files_verified",
+  "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+  "count": 8,
+  "jpeg_bytes": 1371118,
+  "method": "Fixed Git path fetch; actual bytes decoded and full SHA-256, Git blob, byte count and JPEG boundaries matched to the reviewed derivatives",
+  "items": [
+    {
+      "kind": "jpeg",
+      "source_ordinal": 1,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source01.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "2d1a21a2e184d4923aa2f3b95a45b245052416655ae7ebb9e62f5b699d58bbd2",
+      "git_blob_sha": "8b550db2b7608f2408270da3bb9c65abc8b6c168",
+      "bytes": 184056,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:42.499Z"
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 2,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source02.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "b4c32a5ce25280c6a068b92e1eabc1b382e396bca15575a13b575ed77310e08f",
+      "git_blob_sha": "02561288f62e296463f7cfdab277a38291de6d36",
+      "bytes": 179184,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:42.657Z"
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 3,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source03.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "5777db7f8db9ae887a338323e618600adde44e5d6303419ae3798fb45538bfed",
+      "git_blob_sha": "14edbfd7ea051417e524b83b785d2d12e27083af",
+      "bytes": 145450,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:42.788Z"
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 4,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source04.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "873f01dab5d383d4362456d200dd4340e850c0c15f88d88a476f063554680be2",
+      "git_blob_sha": "5010b47ae7ff4a750cb0e7972cdd3f767c895e32",
+      "bytes": 165055,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:42.935Z"
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 5,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source05.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "b8040fa9922ba5e74d5673e12a32a3a390853be7715d34e48eb121de5f802719",
+      "git_blob_sha": "87ee82781280f16ee9329a75e613966caf8679f9",
+      "bytes": 159518,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:43.075Z"
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 6,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source06.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "6d65c17784b367d4ac4591acf839707193d76cf73f5de135474adf68a942a450",
+      "git_blob_sha": "d179122dba9b509b813593dcc568fd1d1652efcc",
+      "bytes": 176442,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:43.235Z"
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 7,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source07.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "977f8fc68e754218a4724ab0f5c52d1a08860615456f38569560ddfa37262f22",
+      "git_blob_sha": "46bf7c931b2be6b90044bafad33773ae71609e51",
+      "bytes": 143534,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:43.364Z"
+    },
+    {
+      "kind": "jpeg",
+      "source_ordinal": 8,
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source08.jpg",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "a65b332d51f21685067d14df2a9e04f5dec7b655823e81baaf11ccb668311c41",
+      "git_blob_sha": "2d97b91e4c920ced44013bc5d279e297253d8abc",
+      "bytes": 217879,
+      "image_bytes_verified": true,
+      "verified_at": "2026-11-21T13:35:43.560Z"
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/library-receipts.json",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "084cd5d339fb077ddd90816598c46f956e03b8c69679f76994265d4e64053e51",
+      "git_blob_sha": "bb1c5dda31cb9db7e9e33dfa34df67644adb0f99",
+      "bytes": 10282,
+      "image_bytes_verified": false,
+      "verified_at": "2026-11-21T13:35:43.569Z"
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/source-original-qa.json",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "4261e32c6e22699fea13d5e8a92f600abfb6e284841d99b37db71d08a189c374",
+      "git_blob_sha": "8439fec19ea7f8b8506322fb3e1c0719a16cbf13",
+      "bytes": 14660,
+      "image_bytes_verified": false,
+      "verified_at": "2026-11-21T13:35:43.583Z"
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs.json",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "a6e1f017d0f042cec7ba4fda5b3a8e92a10b56a838c1e2d67aa1c5503d97f0d8",
+      "git_blob_sha": "be99e3fde463fa04ecac606a80c7337f2350a579",
+      "bytes": 19999,
+      "image_bytes_verified": false,
+      "verified_at": "2026-11-21T13:35:43.601Z"
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/original-readbacks.json",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "ed87148468801a5ccfdbffc655d4dc09e4a1359d308713fd6cbee36c5784c741",
+      "git_blob_sha": "fc3874bfa68717a16dcc811dcbd90f6a6b877a21",
+      "bytes": 3839,
+      "image_bytes_verified": false,
+      "verified_at": "2026-11-21T13:35:43.604Z"
+    },
+    {
+      "kind": "metadata",
+      "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/delivery-evidence.json",
+      "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+      "sha256": "3af9400eefd258d204998a65648e84c14279140e14e9857e81b508285d7a7a13",
+      "git_blob_sha": "d6fd5f4eaaf742b5ae741b991aa482bc917dbb49",
+      "bytes": 3322,
+      "image_bytes_verified": false,
+      "verified_at": "2026-11-21T13:35:43.607Z"
+    }
+  ],
+  "formal_editorial_adoption": "pending"
+}
