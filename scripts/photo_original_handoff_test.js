@@ -562,3 +562,115 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
   await assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/Occupied/);
   assert.equal(state.writes.length,writes);
 });
+
+const {readFileSync} = require("node:fs");
+const {resolve} = require("node:path");
+const checkout = resolve(__dirname, "..");
+const readLocal = path => readFileSync(resolve(checkout, path));
+const rio = JSON.parse(readLocal("content/photo_issues.json")).issues.find(
+  issue => issue.slug === "november-coast-city-rio-015");
+const rioProducer = {model_id:rio.model_id, source_chat_url:"https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f"};
+
+function readbackFile(record, path, expectedBlob) {
+  const data = readLocal(record.path);
+  const object = Buffer.concat([Buffer.from("blob " + data.length + "\0"), data]);
+  const blob = hash(object, "sha1");
+  if (expectedBlob !== undefined) assert.equal(blob, expectedBlob);
+  return {path, blob, data, sha256:hash(data), bytes:data.length, width:record.width, height:record.height};
+}
+
+// #963 retained the published bytes and the source and JPEG paths at the candidate commit.
+// Reconstruct the caller's readback from those bytes without fetching the old branch in CI.
+function suppliedCutFixture(cutId) {
+  const receipt = JSON.parse(readLocal(rio.images[cutId].provenance.receipt_path));
+  const ref = receipt.recovery_reference;
+  const qa = JSON.parse(readLocal(rio.images[cutId].review.evidence.path));
+  const checked = qa.cuts.find(row => row.cut_id === cutId);
+  const candidate = {issue:rio.slug, model_id:rio.model_id, source_chat_url:rioProducer.source_chat_url,
+    commit:ref.candidate_commit, source_ordinal:ref.source_ordinal, handoff_path:ref.handoff_path,
+    source:{...receipt.source, path:ref.source_path}, jpeg:{...receipt.jpeg, path:ref.jpeg_path},
+    transform:receipt.transform, encoding_details:receipt.encoding_details};
+  const readback = {commit:qa.editorial_source.candidate_commit, source_ordinal:checked.source_ordinal, image_bytes_verified:true,
+    source:readbackFile(receipt.source, ref.source_path, ref.original_blob_sha),
+    jpeg:readbackFile(receipt.jpeg, ref.jpeg_path, ref.jpeg_blob_sha)};
+  const {url, library_file_id, turn_key, image_number} = checked.source;
+  Object.assign(readback.source, library_file_id ? {url, library_file_id} : {url, turn_key, image_number});
+  return {receipt, input:{issue:rio, cutId, producer:rioProducer, candidate, readback, importedAt:receipt.imported_at}};
+}
+
+for (const [cut, ordinal, encoder] of [["03",11,"Pillow"],["09",3,"jpeg-js"]]) {
+  test("prepares the retained " + encoder + " photo from original " + ordinal + " for cut " + cut, () => {
+    const api = helper.create({runtime:{...bytes, sha256:hash}});
+    const {receipt, input} = suppliedCutFixture(cut);
+    const result = api.prepareSuppliedCut(input);
+    assert.equal(result.status, "prepared_not_published");
+    assert.deepEqual(api.prepareSuppliedCut(input), result);
+    const record = result.files.find(file => file.path === rio.images[cut].provenance.receipt_path);
+    const binary = result.files.filter(file => file !== record);
+    assert.deepEqual(binary.map(file => [file.path,file.sha]).sort(), [
+      [receipt.source.path,input.readback.source.blob], [receipt.jpeg.path,input.readback.jpeg.blob]
+    ].sort());
+    const formal = JSON.parse(record.content);
+    for (const key of ["version","kind","issue_slug","cut_id","model_id","imported_at","review_reference_sha256",
+                       "source","jpeg","transform","encoding_details"]) {
+      assert.deepEqual(formal[key], receipt[key], key);
+    }
+    assert.deepEqual(formal.recovery_reference, receipt.recovery_reference);
+    assert.equal(formal.recovery_reference.source_ordinal, ordinal);
+    const {review, provenance, ...image} = rio.images[cut];
+    assert.equal(review.decision, "accepted");
+    assert.ok(!Object.hasOwn(formal, "review"));
+    assert.deepEqual(result.image, {...image, provenance:{...provenance, receipt_sha256:hash(record.content)}});
+  });
+}
+
+test("one cut cannot take another verified pair or an unverified original", () => {
+  const api = helper.create({runtime:{...bytes, sha256:hash}});
+  const {input} = suppliedCutFixture("03");
+  const library = suppliedCutFixture("09").input;
+  const other = library.readback;
+  for (const readback of [{...input.readback, jpeg:other.jpeg}, {...input.readback, source:other.source},
+                          {...input.readback, image_bytes_verified:false}]) {
+    assert.throws(() => api.prepareSuppliedCut({...input, readback}));
+  }
+  const tampered = Buffer.from(input.readback.jpeg.data);
+  tampered[tampered.length >> 1] ^= 1;
+  for (const [field, data] of [["source",undefined], ["source",Buffer.alloc(0)], ["jpeg",tampered]]) {
+    const readback = {...input.readback, [field]:{...input.readback[field], data}};
+    assert.throws(() => api.prepareSuppliedCut({...input, readback}));
+  }
+  const swappedTurn = {...input.candidate.source, turn_key:"d2e5940d-aaab-4771-820c-adb13b317288"};
+  assert.throws(() => api.prepareSuppliedCut({...input, candidate:{...input.candidate, source:swappedTurn}}));
+  assert.throws(() => api.prepareSuppliedCut({...input, candidate:{...input.candidate, source_ordinal:3}}));
+  assert.throws(() => api.prepareSuppliedCut({...library, candidate:{...library.candidate, source_ordinal:4}}));
+});
+
+
+test("individual Library share URLs retain their original identity without a separate Library ID", () => {
+  const api = helper.create({runtime:{...bytes, sha256:hash}});
+  const issue = JSON.parse(readLocal("content/photo_issues.json")).issues.find(i => i.slug === "winter-coat-swimsuit-saya-001");
+  const producer = {model_id:issue.model_id, source_chat_url:"https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909"};
+  const saved = "maintenance/photo-issues/" + issue.slug;
+  const receipts = ["03/receipt-supplied-8d62bc357aec-e36627a40cfc.json", "04/receipt-supplied-12aa2bc5e5d4-059225e2d0aa.json"]
+    .map(path => JSON.parse(readLocal(saved + "/" + path)));
+  for (const receipt of receipts) {
+    const cutId = receipt.cut_id, source_ordinal = Number(cutId);
+    // Stage the historically retained original/JPEG pair under a test-only candidate prefix.
+    const prefix = "maintenance/photo-issue-plans/" + issue.slug + "/";
+    const source = {...receipt.source, path:prefix + cutId + ".png"};
+    const jpeg = {...receipt.jpeg, path:prefix + cutId + ".jpg"};
+    const commit = sha1("test candidate " + cutId);
+    const candidate = {issue:issue.slug, ...producer, commit, source_ordinal, source, jpeg, transform:receipt.transform};
+    const archived = {...receipt.jpeg, path:saved + "/retired/" + cutId + "-" + jpeg.sha256 + ".jpg"};
+    const readback = {commit, source_ordinal, image_bytes_verified:true,
+      source:{...readbackFile(receipt.source,source.path), url:source.url}, jpeg:readbackFile(archived,jpeg.path)};
+    const input = {issue, cutId, producer, candidate, readback, importedAt:receipt.imported_at};
+    const output = api.prepareSuppliedCut(input);
+    const formal = JSON.parse(output.files.find(f => f.content).content);
+    assert.deepEqual(formal.source, receipt.source);
+    assert.deepEqual(formal.jpeg, receipt.jpeg);
+    const other = receipts.find(r => r.cut_id !== cutId);
+    assert.throws(() => api.prepareSuppliedCut({...input, readback:{...readback, source:{...readback.source, url:other.source.url}}}));
+    assert.throws(() => api.prepareSuppliedCut({...input, candidate:{...candidate, source:{...source, archive:{format:"zip"}}}}));
+  }
+});

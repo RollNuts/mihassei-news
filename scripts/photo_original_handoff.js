@@ -1,5 +1,5 @@
 /* Keep an existing producer's original PNGs on an isolated photo plan branch.
- * Tool payloads stay inside code mode. Only originals and unreviewed candidates are handled.
+ * Tool payloads stay inside code mode. Release preparation creates tree entries without publishing or accepting a cut.
  */
 var PhotoOriginalHandoff = (() => {
   "use strict";
@@ -22,12 +22,86 @@ var PhotoOriginalHandoff = (() => {
     requireThat(GIT.test(sha), "Invalid Git " + kind + " response");
     return sha;
   }
-  function directory(issue) {
+  function planPrefix(issue) {
     requireThat(typeof issue === "string" && issue.length <= 100 && SLUG.test(issue), "Invalid issue slug");
-    return "maintenance/photo-issue-plans/" + issue + "/originals";
+    return "maintenance/photo-issue-plans/" + issue + "/";
+  }
+  function directory(issue) {
+    return planPrefix(issue) + "originals";
   }
   function partPath(dir, sha, index) {
     return dir + "/" + sha + ".png.part" + String(index).padStart(3, "0");
+  }
+  function matchesProducer(packet, producer) {
+    return producer?.model_id === packet.model_id && producer.source_chat_url === packet.source_chat_url;
+  }
+  function validReviewSize(jpeg) {
+    return Number.isInteger(jpeg.bytes) && jpeg.bytes >= 16000 && jpeg.bytes <= 700 * 1024 &&
+      [jpeg.width, jpeg.height].every(n => Number.isInteger(n) && n >= 320 && n <= 1200);
+  }
+  function isCandidatePath(path, prefix) {
+    return typeof path === "string" && path.startsWith(prefix) &&
+      !/[\\\x00-\x1f\x7f]/.test(path) &&
+      path.slice(prefix.length).split("/").every(part => part && part !== "." && part !== "..");
+  }
+  function verifiedFile(file, observed, prefix) {
+    requireThat(isCandidatePath(file?.path, prefix) && typeof observed?.blob === "string" && GIT.test(observed.blob) &&
+      typeof file.sha256 === "string" && HASH.test(file.sha256) && ["path", "sha256", "bytes", "width", "height"].every(
+        field => file[field] === observed[field]) && (file.blob === undefined || file.blob === observed.blob),
+    "Candidate file differs from the verified readback");
+  }
+  function releaseSource(candidate, observed) {
+    const {source, source_ordinal, source_chat_url} = candidate;
+    requireThat(source.url === observed.url && typeof source.url === "string" &&
+      !("archive" in source) && !("archive" in observed) &&
+      source.generation_prompt_status === "not_retained" && source.generation_prompt === null,
+    "Expected an individual original with its observed source reference");
+    const library = /^https:\/\/chatgpt\.com\/(?:space\/file\/(libfile_[A-Za-z0-9_-]+)|library\?file_id=(libfile_[A-Za-z0-9_-]+)&account_id=personal)$/.exec(source.url);
+    const shared = /^https:\/\/chatgpt\.com\/library\/share\/(libfile_[A-Za-z0-9_-]+)(?:\?account_id=personal)?$/.exec(source.url);
+    if (library || shared) {
+      const references = [source, observed];
+      requireThat(references.every(ref => !("image_number" in ref) && !("turn_key" in ref)),
+        "Library original cannot use a conversation ordinal");
+      if (shared) {
+        requireThat(references.every(ref => !("library_file_id" in ref) || ref.library_file_id === shared[1]),
+          "Library ID differs from the observed share URL");
+      } else {
+        requireThat(source.library_file_id === (library[1] || library[2]) && source.library_file_id === observed.library_file_id &&
+          source.generation_turn_status === "not_retained" && source.generation_turn === null,
+        "Library original differs from the observed individual file");
+      }
+    } else {
+      requireThat(source.url === source_chat_url && typeof source.turn_key === "string" && UUID.test(source.turn_key) &&
+        source.turn_key !== "00000000-0000-0000-0000-000000000000" && observed.turn_key === source.turn_key &&
+        source.image_number === source_ordinal && observed.image_number === source_ordinal &&
+        [source, observed].every(ref => !("library_file_id" in ref)),
+      "Conversation original differs from the observed producer turn and image");
+    }
+    const retained = {};
+    for (const key of ["format", "sha256", "bytes", "width", "height", "url", "library_file_id", "file_id",
+      "file_name", "library_file_version", "turn_key", "image_number", "generation_turn", "generation_turn_status",
+      "generation_prompt", "generation_prompt_status"]) {
+      if (Object.hasOwn(source, key)) retained[key] = source[key];
+    }
+    return retained;
+  }
+  function validPhotoTransform(transform) {
+    return transform?.max_edge === 1200 && transform.jpeg_quality === 84 && transform.geometry === "preserve-aspect";
+  }
+  function pinnedJpegEncoder(details) {
+    return details?.encoder_ref === "1031ccd7a63c641c16afb2430279d1598530a85c" &&
+      details.resample === "bilinear" && details.mode === "RGB";
+  }
+  function validateReleaseEncoding(candidate) {
+    const {transform, encoding_details: details} = candidate;
+    requireThat(validPhotoTransform(transform) && Object.keys(transform).length === 4, "Invalid supplied photo transform");
+    if (transform.encoder === "macOS sips" && details === undefined) return;
+    if (transform.encoder === "jpeg-js" && candidate.source.format === "png" &&
+      pinnedJpegEncoder(details) && Object.keys(details).length === 3) return;
+    requireThat(transform.encoder === "Pillow" && typeof details?.pillow_version === "string" &&
+      /^[1-9][0-9]*\.[0-9]+\.[0-9]+$/.test(details.pillow_version) && details.resample === "LANCZOS" &&
+      details.mode === "RGB" && details.optimize === true && details.progressive === false &&
+      details.subsampling === 0 && Object.keys(details).length === 6, "Invalid supplied photo encoding details");
   }
   function create({runtime, github, cloudStatus, readCandidatePng}) {
     const git = (name, args) => github[name]({repository_full_name:REPO, ...args}).then(payload);
@@ -184,7 +258,7 @@ var PhotoOriginalHandoff = (() => {
     async function checkProducer(packet) {
       const draft = await git("fetch_file", {ref:"cast-source-drafts", path:"drafts/cast-voices/" + packet.model_id + ".json", encoding:"utf-8"});
       const producer = JSON.parse(draft.content);
-      requireThat(producer.model_id === packet.model_id && producer.source_chat_url === packet.source_chat_url, "Wrong producer chat");
+      requireThat(matchesProducer(packet, producer), "Wrong producer chat");
     }
     async function prepareRecord(packet, expectedHead, partial) {
       validate(packet, partial);
@@ -336,12 +410,9 @@ var PhotoOriginalHandoff = (() => {
       requireThat(GIT.test(ref.commit) && HASH.test(ref.receipt_sha256) && HASH.test(ref.source_sha256) &&
         prepared?.status === "jpeg_blob_prepared" && prepared.original_commit === ref.commit &&
         prepared.original_receipt_sha256 === ref.receipt_sha256 && prepared.source_sha256 === ref.source_sha256 &&
-        GIT.test(jpeg?.blob) && HASH.test(jpeg?.sha256) && Number.isInteger(jpeg.bytes) &&
-        jpeg.bytes >= 16000 && jpeg.bytes <= 700 * 1024 &&
-        [jpeg.width, jpeg.height].every(n => Number.isInteger(n) && n >= 320 && n <= 1200) &&
-        transform?.encoder === "jpeg-js" && transform.max_edge === 1200 && transform.jpeg_quality === 84 &&
-        transform.geometry === "preserve-aspect" && encoding?.encoder_ref === "1031ccd7a63c641c16afb2430279d1598530a85c" &&
-        encoding.resample === "bilinear" && encoding.mode === "RGB", "Invalid prepared review JPEG");
+        GIT.test(jpeg?.blob) && HASH.test(jpeg?.sha256) && validReviewSize(jpeg) &&
+        transform?.encoder === "jpeg-js" && validPhotoTransform(transform) && pinnedJpegEncoder(encoding),
+      "Invalid prepared review JPEG");
       const path = dir + "/" + ref.source_sha256 + ".jpg", metaPath = path.slice(0,-4) + ".json";
       const record = {version:1, status:"unreviewed", issue:ref.issue, source_sha256:ref.source_sha256,
         original_commit:ref.commit, original_receipt_sha256:ref.receipt_sha256, path,
@@ -355,14 +426,16 @@ var PhotoOriginalHandoff = (() => {
       requireThat(entry.ref === "refs/heads/" + branch && GIT.test(entry.object?.sha), "Unverified candidate branch");
       return entry.object.sha;
     }
+    function checkJpegBytes(data, jpeg) {
+      requireThat(data instanceof Uint8Array && data.length === jpeg.bytes && data[0] === 255 && data[1] === 216 &&
+        data[data.length-2] === 255 && data[data.length-1] === 217 &&
+        runtime.sha256(data) === jpeg.sha256, "Review JPEG bytes changed");
+      return data;
+    }
     function verifiedJpeg(file, jpeg) {
       requireThat(file.sha === jpeg.blob && file.encoding === "base64" && typeof file.content === "string",
         "Review JPEG blob changed");
-      const bytes = runtime.fromBase64(file.content);
-      requireThat(bytes.length === jpeg.bytes && bytes[0] === 255 && bytes[1] === 216 &&
-        bytes[bytes.length-2] === 255 && bytes[bytes.length-1] === 217 &&
-        runtime.sha256(bytes) === jpeg.sha256, "Review JPEG bytes changed");
-      return bytes;
+      return checkJpegBytes(runtime.fromBase64(file.content), jpeg);
     }
     async function readReviewCut(cut, commit) {
       requireThat(GIT.test(commit), "Invalid immutable review commit");
@@ -509,7 +582,73 @@ var PhotoOriginalHandoff = (() => {
     }
     const publish = (packet, plan) => publishRecord(packet, plan, false);
     const publishCheckpoint = (packet, plan) => publishRecord(packet, plan, true);
-    return {upload, uploadDataUrl, prepare, publish, readOriginal,
+    // Inputs come from the registered producer draft, fixed candidate handoff and completed byte readback.
+    // The caller owns visual review, the PR tree and the final publication validator.
+    function prepareSuppliedCut({issue, cutId, producer, candidate, readback, importedAt}) {
+      const prefix = planPrefix(issue.slug);
+      const snapshot = issue.model_snapshot;
+      requireThat(typeof cutId === "string" && /^(?:0[1-9]|10)$/.test(cutId) && candidate?.issue === issue.slug &&
+        typeof issue.model_id === "string" && SLUG.test(issue.model_id) && candidate.model_id === issue.model_id &&
+        snapshot?.id === issue.model_id && typeof snapshot.master?.sha256 === "string" && HASH.test(snapshot.master.sha256) &&
+        (!("body_profile" in snapshot || "body_profile_sha256" in snapshot) ||
+          (typeof snapshot.body_profile_sha256 === "string" && HASH.test(snapshot.body_profile_sha256))) &&
+        matchesProducer(candidate, producer) && typeof producer.source_chat_url === "string" &&
+        producer.source_chat_url.startsWith("https://chatgpt.com/c/") && UUID.test(producer.source_chat_url.slice(22)),
+      "Candidate belongs to a different issue or producer");
+      requireThat(typeof candidate.commit === "string" && GIT.test(candidate.commit) && readback?.commit === candidate.commit &&
+        readback.image_bytes_verified === true && readback.source_ordinal === candidate.source_ordinal &&
+        Number.isSafeInteger(candidate.source_ordinal) && candidate.source_ordinal > 0,
+      "Expected a complete original and JPEG readback at the candidate commit");
+      requireThat(typeof importedAt === "string" &&
+        /^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.test(importedAt) &&
+        Number.isFinite(Date.parse(importedAt)) &&
+        new Date(importedAt.slice(0, 10) + "T00:00:00Z").toISOString().slice(0, 10) === importedAt.slice(0, 10),
+      "Expected the observed import timestamp with its timezone");
+      const {source, jpeg} = candidate;
+      verifiedFile(source, readback.source, prefix);
+      verifiedFile(jpeg, readback.jpeg, prefix);
+      const png = source.format === undefined || source.format === "png";
+      requireThat((png || source.format === "jpeg") && (png ? /\.png$/i : /\.jpe?g$/i).test(source.path) &&
+        /\.jpe?g$/i.test(jpeg.path) && source.path !== jpeg.path && Number.isSafeInteger(source.bytes) &&
+        source.bytes >= 33 && source.bytes <= 32 * 1024 * 1024 &&
+        [source.width, source.height].every(n => Number.isInteger(n) && n > 0 && n <= 8192) &&
+        source.width * source.height <= 32000000 && validReviewSize(jpeg) &&
+        Math.max(jpeg.width, jpeg.height) === Math.min(1200, Math.max(source.width, source.height)) &&
+        Math.abs(source.width * jpeg.height - source.height * jpeg.width) <= Math.max(source.width, source.height),
+      "Expected a whole original and aspect-preserving publication JPEG");
+      const original = readback.source.data;
+      requireThat(original instanceof Uint8Array && original.length === source.bytes, "Missing or incomplete original bytes");
+      if (png) inspectOriginal({source_sha256:source.sha256, width:source.width, height:source.height}, original);
+      else checkJpegBytes(original, source);
+      checkJpegBytes(readback.jpeg.data, jpeg);
+      const retained = releaseSource(candidate, readback.source);
+      validateReleaseEncoding(candidate);
+      const dir = "maintenance/photo-issues/" + issue.slug + "/" + cutId + "/";
+      const sourcePath = dir + "source-" + source.sha256 + (png ? ".png" : ".jpg");
+      const jpegPath = "assets/generated/photo-issue-" + issue.slug + "-" + cutId + ".jpg";
+      const receiptPath = dir + "receipt-supplied-" + source.sha256.slice(0,12) + "-" + jpeg.sha256.slice(0,12) + ".json";
+      const recovery = {candidate_commit:candidate.commit, source_ordinal:candidate.source_ordinal,
+        source_path:source.path, jpeg_path:jpeg.path, original_blob_sha:readback.source.blob, jpeg_blob_sha:readback.jpeg.blob};
+      if (candidate.handoff_path !== undefined) {
+        requireThat(isCandidatePath(candidate.handoff_path, prefix) && candidate.handoff_path.endsWith(".json"), "Invalid candidate handoff path");
+        recovery.handoff_path = candidate.handoff_path;
+      }
+      const publicationJpeg = {path:jpegPath, sha256:jpeg.sha256, bytes:jpeg.bytes, width:jpeg.width, height:jpeg.height};
+      const record = {version:1, kind:"user_supplied_photo", issue_slug:issue.slug, cut_id:cutId, model_id:issue.model_id,
+        imported_at:importedAt, review_reference_sha256:snapshot.master.sha256, source:{...retained, path:sourcePath},
+        jpeg:publicationJpeg, transform:candidate.transform, encoding_details:candidate.encoding_details, recovery_reference:recovery};
+      const content = JSON.stringify(record, null, 2) + "\n";
+      const encoded = runtime.utf8(content);
+      requireThat(encoded.length <= 64 * 1024, "Supplied photo receipt exceeds size limit");
+      const provenance = {kind:record.kind, receipt_path:receiptPath, receipt_sha256:runtime.sha256(encoded)};
+      if (snapshot.body_profile_sha256) provenance.target_design_sha256 = snapshot.body_profile_sha256;
+      return {status:"prepared_not_published", files:[
+        {path:sourcePath, mode:"100644", type:"blob", sha:readback.source.blob},
+        {path:jpegPath, mode:"100644", type:"blob", sha:readback.jpeg.blob},
+        {path:receiptPath, mode:"100644", type:"blob", content}],
+      image:{...publicationJpeg, source_sha256:source.sha256, provenance}};
+    }
+    return {upload, uploadDataUrl, prepare, publish, readOriginal, prepareSuppliedCut,
       prepareCheckpoint, publishCheckpoint, restoreCheckpoint, readCheckpointOriginal,
       readOriginalStep, readCheckpointOriginalStep, uploadReviewJpeg, prepareReviewJpeg, publishReviewJpeg, readReviewJpeg};
   }
