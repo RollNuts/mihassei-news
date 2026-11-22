@@ -36,15 +36,22 @@ Initialize the reviewed two helper sources and three pinned dependencies in **ea
 
 The old whole-macro reservation needs at least 75 connector callbacks plus the PNG read. Each step allows at most 15 callbacks and two mutations, including cold guard reads and any original-PNG read; the five initialization reads are additional. The platform's total limit and whether it applies per cell or per turn are not assumed. Every write still checks public visibility, current-main JPEG capacity and the live stop authority. Compact staging supports original PNGs **up to 4 MiB** (eight 512 KiB parts); the reader's 8 MiB download bound does not establish save capacity.
 
-Call **one** step per code-mode cell. Here `checkpoint` is the exact small JSON from the preceding reply, or `undefined` initially; `plan` is the original prepared JSON. Bind `readBytes` to the actual original-file reader shown below:
+#### Resume a reservation
+
+Call **one** step per code-mode cell. Use the original `plan` and the preceding reservation `checkpoint`, or `undefined` on the first call. Retain the four fields of `probe` from the start: the actual file ID/path (`probeSource`), verified SHA-256 (`expectedProbeSha256`), source reference (`probeSourceRef`) and transfer route (`route`). The [offline probe](#offline-png-bootstrap) prints this object for the file-adapter route. Reuse the original values and bind a fresh `readBytes` to the same reader in **every reservation cell**. The first lookup can return a `capture` checkpoint before recording any probe inputs.
 
 ```js
 try {
+  if (checkpoint && checkpoint.version !== 2) throw Error("Expected a compact reservation checkpoint");
+  const {probeSource, expectedProbeSha256, probeSourceRef, route} = probe;
   const result = await stager.reserveExternalGenerationStep(plan, {
     compact: true, probeSource, expectedProbeSha256, probeSourceRef, route, readBytes
   }, checkpoint);
-  text(result.status === "saved" ? {status: result.status, commitSha: result.commitSha,
-    branch: result.branch, receipt_sha256: result.receipt_sha256} : result);
+  if (result.status === "pending") text({status: result.status, phase: result.phase, checkpoint: result.checkpoint,
+    probe: {probeSource, expectedProbeSha256, probeSourceRef, route}});
+  else if (result.status === "reserved") text({status: result.status, plan: result.plan,
+    transportPreflight: result.transportPreflight, generationClaim: result.generationClaim});
+  else text({status: result.status, commitSha: result.commitSha, branch: result.branch, receipt_sha256: result.receipt_sha256});
 } catch (error) {
   text({status: "stopped", message: String(error?.message ?? error), phase: error?.stage,
     checkpoint: error?.checkpoint, last_confirmed_phase: checkpoint?.phase});
@@ -55,7 +62,9 @@ try {
 
 Only the fresh final `status: "reserved"` response permits the immediately following **one** top-level native generation call with the exact original prompt. The final create-only claim, positive ownership/ref/receipt readback, candidate check and live guard occur together within one bounded cell. `saved`, an existing claim, a lost/aborted final reply or a replayed old checkpoint permits recovery only. Never change the logical identity to try again. The claim remains `reserved_generation_unconfirmed`, not evidence that generation happened.
 
-After the native tool returns, record its actual file ID/path and the **first** real observation time once, together with the returned proof/claim. The initial step takes only this small metadata; later steps take the retained checkpoint and a fresh reader callback. No cross-cell byte store is required:
+#### Resume saving the original
+
+After the native tool returns, record its actual file ID/path and the **first** real observation time once, together with the returned proof/claim. Start a new `stageReservedStep` with `checkpoint` set to `undefined`. Subsequent save cells use the preceding **save** checkpoint and a fresh reader callback:
 
 ```js
 const input = checkpoint ? {readBytes} : {
@@ -64,6 +73,7 @@ const input = checkpoint ? {readBytes} : {
   transportPreflight, generationClaim, readBytes
 };
 try {
+  if (checkpoint && checkpoint.version !== 2) throw Error("Expected a compact save checkpoint");
   const result = await stager.stageReservedStep(plan, input, checkpoint);
   text(result.status === "pending" ? result : {
     status: result.status, commitSha: result.commitSha, branch: result.branch,
@@ -194,7 +204,8 @@ expected = "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744"
 assert len(png) == 138 and hashlib.sha256(png).hexdigest() == expected
 path = Path("/mnt/data/mihassei-offline-probe.png")
 path.write_bytes(png)
-print({"path": str(path), "bytes": len(png), "sha256": expected})
+print({"probeSource": str(path), "expectedProbeSha256": expected, "probeSourceRef": str(path),
+       "route": "read_candidate_png through the original file adapter"})
 ```
 
 Use the actual returned path from that run with `read_candidate_png`; keep its data URL in code mode and use the existing bounded preflight. This 16×9 PNG has valid CRCs and no C2PA. The pinned byte helper produces a 1200×675 JPEG of 92,351 bytes, SHA-256 `974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33`. It is only a transport fixture and must never be adopted as article artwork. Offline conversion checks do not prove scheduled-worker tool access, store capacity or end-to-end publication.
@@ -203,7 +214,7 @@ After deployment, refresh the installed tool schema and prove one **existing** P
 
 After staging, `const images = await stager.load(plan)` returns verified `sourcePngDataUrl` and `jpegDataUrl`. Pass them directly to `image(images.sourcePngDataUrl)` and `image(images.jpegDataUrl)`; never emit the whole result with `text` or `notify`. Compare both displayed images with the full current article. Only after that review, use the normal publication PR to install the JPEG, its truthful generation record and a current-SHA visual decision. Keep the source candidate retrievable. Existing accepted photos, integer seeds and previous rejections remain unchanged until an actual reviewed replacement is published.
 
-For current compact version 2 steps, retain the same small checkpoint, original file reference, first observation time and plan in the existing task handoff. Resume with the **same Step method**, checkpoint and fresh `{readBytes}` callback as shown above; do not pass a Step checkpoint to legacy `resume`/`stage` macros. A missing source file before all uploads finish still requires recovering that exact original file, not generating another.
+For a compact version 2 checkpoint, follow [the reservation example](#resume-a-reservation) for `native_reservation_steps` or [the save example](#resume-saving-the-original) for `native_stage_steps`. Keep the original plan and the metadata in that example in the existing task handoff. A missing source file before upload completes requires recovering that exact original.
 
 For legacy `stage` checkpoints only, `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish tree/commit/branch/readback without original data-URI bytes. Before that boundary, retain the raw native result, real byte-returning callback and first observation time; recover `error.transferredImage ?? await readBytes(error.imageGenResult)` through the corresponding legacy storage method with its original proof/claim. Legacy `store` examples require an executor that actually retains values; current GPT does not retain them across cells. A blob or unreferenced commit is incomplete. Authorization failures, missing files on existing branches, malformed responses and ambiguous lookups never authorize overwriting a branch or generating again.
 
@@ -568,7 +579,7 @@ image("data:image/jpeg;base64," + runtime.toBase64(verified.bytes));
 
 On an interrupted ref update, recover with the same plan. The immutable JPEG path, SHA and source receipt are the editor's handoff. Only count the cut after its committed bytes have been read and inspected alongside the source. A blob or staging receipt alone is not acceptance. Use [the weekly editorial process](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠) for the column, formal selection and publication.
 
-For earlier source packets with a verified full original PNG instead of a split receipt, `runtime.convertPhoto(pngBytes)` performs the same aspect-preserving conversion. Check its `source_png_sha256` against the retained source record. Save the JPEG with that packet’s existing candidate tree and source inventory, then verify the committed bytes and record the actual transform. The split-receipt staging methods require their original receipt. Keep using the article converter only for 16:9 news photos.
+For earlier source packets with a verified full original PNG, use `runtime.convertPhoto(pngBytes)` and check its `source_png_sha256` against the retained source record. For multiple cuts, work sequentially on the existing candidate branch. Commit each PNG/JPEG pair or small batch together with its inventory entries, actual hashes and transform. Read back both files at that commit and verify their hashes before starting the next batch. After a timeout, check the existing inventory against the committed files and SHA-256 values and continue with the missing cuts. The split-receipt staging methods require their original receipt. The article converter produces 16:9 news photos.
 
 For an individual Library original, record its observed `https://chatgpt.com/space/file/libfile_...` or `https://chatgpt.com/library?file_id=libfile_...&account_id=personal` URL in the per-cut `user_supplied_photo` receipt and the matching ID in `source.library_file_id`. For ZIPs, use the observed Library query URL. A ZIP import also records `source.archive` with `format: "zip"`, its actual `filename`, `sha256`, `bytes`, and original `member` basename. Retrieve and hash the archive before extracting the member; retain the member's original bytes and the usual source SHA/format/dimensions. Archive/member names must be safe basenames, and the member extension must match the source format. These receipt fields preserve the observed archive provenance; the build verifies the saved original and JPEG without downloading Library files. Unknown generation turns remain `source.generation_turn_status: "not_retained"` and `source.generation_turn: null`; do not invent a conversation `turn_key` or `image_number`. The existing unretained prompt fields remain unchanged.
 
