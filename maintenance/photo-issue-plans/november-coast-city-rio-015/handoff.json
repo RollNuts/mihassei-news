@@ -292,5 +292,6 @@
       }
     }
   ],
-  "next": "All 10 originals/JPEG candidate pairs now saved; read back actual bytes and compare SHA/size/dimensions before any adoption. Ordinal 05 remains near-duplicate hold; swimwear allocation still unresolved. Publication only by 06:00 editor."
+  "next": "週刊編集は保存済み10組と supplemental_inventory の別撮影の水着候補から10枚を目視選定し、本人コラムと合わせて第2号を完成する。元の05は01と近似のため保留。追加カットの元画像番号は誌面番号と区別する。いずれも掲載採用は未確定。",
+  "supplemental_inventory": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/inventory.json"
 }

@@ -1,0 +1,81 @@
+{
+  "model_id": "shioba-rio",
+  "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+  "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+  "candidates": [
+    {
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 3,
+        "sha256": "535225a6b99705d4fa1dde4a49306cf0bfd16e996e92672f575a0d630954d1be",
+        "bytes": 2261909,
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/03.png"
+      },
+      "jpeg": {
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/03.jpg",
+        "sha256": "f4966c00a370bd95705ae25126c2478d82b6432412bd085f280dea48b404946d",
+        "bytes": 171564,
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "11.3.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "scene_observed": "淡い色の水着で石の縁に腕を置き、肩越しに振り向く横位置。"
+    },
+    {
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 14,
+        "sha256": "d807c412090ef13f4cd5dcd675f1e9119c8bddf8ae7b4a18bcc3b3865fa940d6",
+        "bytes": 1857371,
+        "width": 1454,
+        "height": 1082,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/14.png"
+      },
+      "jpeg": {
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/14.jpg",
+        "sha256": "b4173b58d90302d9c4e54f1f683e24c6a53d21cb43defa0fbfbd8435944394a7",
+        "bytes": 116489,
+        "width": 1200,
+        "height": 893
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "11.3.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "scene_observed": "青空と海を広く入れた砂浜の横向きカット。プールの縁や手すりは写らない。"
+    }
+  ]
+}
