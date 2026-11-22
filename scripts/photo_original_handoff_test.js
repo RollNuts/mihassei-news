@@ -37,12 +37,19 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
       assert.ok(!path.startsWith("/git/blobs/"), "binary blobs require immutable fetch_file");
       if (path === "") return {full_name:repo,private:false,visibility:"public"};
       if (path === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:main}};
+      if (path.startsWith("/branches/")) {
+        const name = decodeURIComponent(path.slice("/branches/".length));
+        const sha = name === "main" ? main : branches.get(name);
+        return {name, commit:{sha, commit:{tree:commits.get(sha)?.tree}}};
+      }
       if (path === "/actions/workflows/free-cpu-scenes.yml")
         return {path:".github/workflows/free-cpu-scenes.yml",state:state.active ? "active" : "disabled_manually"};
+      if (path === "/compare/main..." + main + "?per_page=1")
+        return state.comparison ?? {base_commit:{sha:main},merge_base_commit:{sha:main},status:"identical"};
       if (path.startsWith("/git/commits/")) return commits.get(path.slice(13));
       if (path.startsWith("/git/trees/")) {
         const id = path.split("/")[3].split("?")[0];
-        return {sha:id,truncated:false,tree:trees.get(id)};
+        return {sha:id,truncated:false,tree:trees.get(commits.get(id)?.tree.sha ?? id)};
       }
       const branch = path.slice("/git/ref/heads/".length);
       return {ref:"refs/heads/"+branch,object:{sha:branches.get(branch)}};
@@ -51,6 +58,7 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
       if (ref === "cast-source-drafts") return {encoding,content:JSON.stringify({model_id:"kiritani-sumire",source_chat_url:chat})};
       const tree = trees.get(commits.get(ref).tree.sha);
       const entry = tree.find(e => e.path === path);
+      if (state.stopOnFile === path) state.active = false;
       return {sha:entry.sha,encoding,content:entry.content ?? blobs.get(entry.sha).toString("base64")};
     },
     async create_blob({content,encoding}) {
@@ -101,7 +109,7 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
   const createApi = () => helper.create({runtime,github,
     cloudStatus:async () => state.guard ? state.guard() : ({state:state.active && state.writes.length < state.stopAfterWrites &&
       state.writes.filter(name => name === "create_blob").length < state.stopAfterBlobs
-      ?"active":"disabled",public:true,main_commit_sha:main,jpeg_bytes:123}),
+      ?"active":"disabled",public:true,main_commit_sha:state.liveMain ?? main,jpeg_bytes:123}),
     readCandidatePng:fileAdapter ? async () => {
       state.fileReads++;
       return {structuredContent:{status:"read",mime_type:"image/png",sha256:hash(input),bytes:input.length,...info,
@@ -287,16 +295,34 @@ test("checkpoint append-only ownership rejects drops, edits, reordering and stal
   assert.equal(state.branches.get("photo-issue-plan/"+input.issue),two.commit);
 });
 
-test("lost checkpoint create and update acknowledgements recover only matching remote records", async () => {
-  const {api,state}=setup(),input=packet(),sha=hash(png);
-  input.assets=[{...await api.uploadDataUrl(dataUrl(png),sha),source_ordinal:1}];
-  state.lost=true;
-  const plan=await api.prepareCheckpoint(input),saved=await api.publishCheckpoint(input,plan);
-  assert.equal((await api.publishCheckpoint(input,plan)).commit,saved.commit);
-  assert.deepEqual(Buffer.from(await api.readCheckpointOriginal({issue:input.issue,...saved,source_sha256:sha})),png);
-  const update=await api.prepareCheckpoint(input,saved.commit),advanced=await api.publishCheckpoint(input,update);
-  assert.equal(advanced.commit,state.branches.get("photo-issue-plan/"+input.issue));
-  assert.deepEqual(Buffer.from(await api.readCheckpointOriginal({issue:input.issue,...advanced,source_sha256:sha})),png);
+for (const lost of [false, true]) test("original handoff fits 15 callbacks per cold cell, lost ref reply: " + lost, async () => {
+  const {api, state, reopen, resetGuard} = setup(), input = packet(), sha = hash(png);
+  input.assets = [{...await api.uploadDataUrl(dataUrl(png), sha), source_ordinal:1}];
+  state.lost = lost;
+  async function cell(method, ...args) {
+    resetGuard();
+    const before = state.reads.length + state.writes.length;
+    const result = await reopen()[method](...args);
+    const calls = state.reads.length + state.writes.length - before;
+    assert.ok(calls <= 15, method + " used " + calls + " callbacks");
+    return result;
+  }
+
+  const plan = await cell("prepareCheckpoint", input);
+  const saved = await cell("publishCheckpoint", input, plan);
+  assert.equal((await cell("publishCheckpoint", input, plan)).commit, saved.commit);
+  const ref = {issue:input.issue, source_sha256:sha};
+  assert.deepEqual(Buffer.from(await api.readCheckpointOriginal({...ref, ...saved})), png);
+
+  const update = await cell("prepareCheckpoint", input, saved.commit);
+  const advanced = await cell("publishCheckpoint", input, update);
+  assert.equal(advanced.commit, state.branches.get("photo-issue-plan/" + input.issue));
+  assert.deepEqual(Buffer.from(await api.readCheckpointOriginal({...ref, ...advanced})), png);
+
+  const finalPlan = await cell("prepare", input, advanced.commit);
+  const final = await cell("publish", input, finalPlan);
+  assert.equal((await cell("publish", input, finalPlan)).commit, final.commit);
+  assert.deepEqual(Buffer.from(await api.readOriginal({...ref, ...final})), png);
 });
 
 test("checkpoint metadata is not byte verification and changed parts, hashes and CRC fail readback", async () => {
@@ -319,6 +345,46 @@ test("checkpoint metadata is not byte verification and changed parts, hashes and
   await assert.rejects(api.readCheckpointOriginalStep({issue:malformed.issue,...staged,source_sha256:badSha}),/PNG CRC mismatch/);
 });
 
+test("a new candidate requires its prepared base to be in the final guarded main history", async () => {
+  const {api, state} = setup(), input = packet(), newer = sha1("newer main");
+  input.assets = [{...await api.uploadDataUrl(dataUrl(png), hash(png)), source_ordinal:1}];
+  const plan = await api.prepare(input);
+  state.comparison = {base_commit:{sha:newer},merge_base_commit:{sha:main},status:"behind"};
+  const writes = state.writes.length;
+  await assert.rejects(api.publish(input, plan), /Main changed/);
+  state.liveMain = newer;
+  state.comparison.status = "diverged";
+  await assert.rejects(api.publish(input, plan), /not main history/);
+  assert.equal(state.writes.length, writes);
+  state.comparison.status = "behind";
+  assert.equal((await api.publish(input, plan)).commit, plan.commit);
+});
+
+test("publication verifies every prepared path and the receipt before updating the branch", async () => {
+  const {api, state} = setup(), input = packet();
+  const sibling = {path:"sibling.txt", mode:"100644", type:"blob", sha:sha1("sibling")};
+  state.trees.get(baseTree).push(sibling);
+  input.assets = [{...await api.uploadDataUrl(dataUrl(png), hash(png)), source_ordinal:1}];
+  const plan = await api.prepare(input);
+  const treeId = state.commits.get(plan.commit).tree.sha;
+  const prepared = state.trees.get(treeId);
+  const writes = state.writes.length;
+  const changes = [
+    [...prepared, {...sibling, path:"extra.txt"}],
+    prepared.filter(entry => entry.path !== sibling.path),
+    prepared.map(entry => entry.path.endsWith(".png.part000") ? {...entry, sha:sha1("changed part")} : entry),
+    prepared.map(entry => entry.path.endsWith("/receipt.json") ? {...entry, content:entry.content + " "} : entry)
+  ];
+  for (const changed of changes) {
+    state.trees.set(treeId, changed);
+    await assert.rejects(api.publish(input, plan));
+    assert.equal(state.writes.length, writes);
+    assert.equal(state.branches.size, 0);
+  }
+  state.trees.set(treeId, prepared);
+  assert.equal((await api.publish(input, plan)).commit, plan.commit);
+});
+
 test("upload failures retain only acknowledged part metadata and every checkpoint write checks the guard", async () => {
   const large=largePng(),sha=hash(large),{api,state}=setup(large,{fileAdapter:false});
   state.stopAfterBlobs=1;let failure;
@@ -335,10 +401,12 @@ test("upload failures retain only acknowledged part metadata and every checkpoin
   state.stopAfterWrites=Infinity;
   const plan=await api.prepareCheckpoint(input);state.active=false;
   const count=state.writes.length;await assert.rejects(api.publishCheckpoint(input,plan),/stopped/);assert.equal(state.writes.length,count);
-  state.active=true;state.stopAfterWrites=state.writes.length+1;
+  state.active=true;
+  state.stopOnFile="maintenance/photo-issue-plans/"+input.issue+"/originals-pending/checkpoint.json";
   await assert.rejects(api.publishCheckpoint(input,plan),/stopped|Unverified/);
   assert.equal(state.branches.size,0);
-  state.stopAfterWrites=Infinity;
+  assert.equal(state.writes.length,count);
+  state.stopOnFile=null;state.active=true;
   const saved=await api.publishCheckpoint(input,plan);state.active=false;
   assert.equal((await api.restoreCheckpoint({issue:input.issue,...saved})).status,"checkpoint_metadata_only");
 });

@@ -473,7 +473,7 @@ const checkpoint = await original.publishCheckpoint(packet, checkpointPlan);
 text(checkpoint); // checkpoint_saved_pending_readback is not usable stock
 ```
 
-Both steps preserve append-only transfer history, check the registered producer and the fresh cloud guard, and use the expected candidate head. A lost branch-create/update acknowledgement can recover only the same saved record hash; a different concurrent checkpoint cannot be overwritten. Once a completed originals receipt exists, use the existing recovery path rather than modifying it through checkpoint calls.
+Use one prepare or publish call per cell, for both checkpoints and completed receipts. Prepare reads the branch head and root tree together. Publish verifies the prepared commit against the complete parent tree and reads back the exact receipt before its guarded branch update. Both steps preserve append-only transfer history, check the registered producer and the fresh cloud guard, and use the expected candidate head. A lost branch-create/update acknowledgement can recover only the same saved record hash; a different concurrent checkpoint cannot be overwritten. Once a completed originals receipt exists, use the existing recovery path rather than modifying it through checkpoint calls.
 
 After interruption, reconstruct the packet from the exact saved commit and checkpoint hash. `restoreCheckpoint` checks metadata and the part-to-tree blob bindings, and reports whether the expected number of part references is present. Its `checkpoint_metadata_only` status and `image_bytes_verified: false` do **not** verify original PNG bytes, visual quality, acceptance or stock availability. A partial original still requires its exact remaining bytes.
 
