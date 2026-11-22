@@ -538,14 +538,15 @@ def _supplied_source_reference(source, model_id):
         return False
     url = source.get("url")
     library = re.fullmatch(r"https://chatgpt\.com/library\?file_id=(libfile_[A-Za-z0-9_-]+)&account_id=personal", str(url))
+    if not library and "archive" not in source:
+        library = re.fullmatch(r"https://chatgpt\.com/space/file/(libfile_[A-Za-z0-9_-]+)", str(url))
     if library:
         return (source.get("library_file_id") == library[1]
                 and not ({"turn_key", "image_number"} & source.keys())
                 and source.get("generation_turn_status") == "not_retained"
                 and "generation_turn" in source and source["generation_turn"] is None
                 and _supplied_library_archive(source))
-    # ZIP imports use the file-id route above; an old share/conversation URL
-    # cannot bypass the archive's identifier, format and member checks.
+    # ZIP imports require the library query URL and validated archive member.
     if "archive" in source:
         return False
     if re.fullmatch(r"https://chatgpt\.com/library/share/libfile_[A-Za-z0-9_-]+(?:\?account_id=personal)?", str(url)):

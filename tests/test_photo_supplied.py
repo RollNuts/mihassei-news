@@ -152,6 +152,30 @@ class SuppliedPhotoTests(unittest.TestCase):
         self.assertLess(self.image["width"], self.image["height"])
         p.validate_published_issue(self.issue, root=self.root, now=NOW)
 
+    def test_space_file_url_binds_one_original_to_its_observed_library_id(self):
+        self.use_pillow_library_archive()
+        source = self.receipt["source"]
+        archive = source.pop("archive")
+        file_id = "libfile_test_individual"
+        url = "https://chatgpt.com/space/file/" + file_id
+        source.update(url=url, library_file_id=file_id)
+        self.rewrite_receipt()
+        p.validate_published_issue(self.issue, root=self.root, now=NOW)
+
+        for changes in (
+                {"library_file_id": "libfile_other"}, {"library_file_id": None},
+                {"url": url + "?account_id=personal"}, {"url": url + "#fragment"},
+                {"url": url.replace("chatgpt.com/", "chatgpt.com.evil/")},
+                {"url": url.replace("libfile_", "file_"), "library_file_id": "file_test_individual"},
+                {"url": url + "/child"}, {"generation_turn_status": "known"},
+                {"turn_key": "4c0a07b0-c1c9-4faf-8cf8-9af807531370"},
+                {"image_number": 1}, {"archive": archive}):
+            with self.subTest(changes=changes):
+                self.receipt["source"] = {**source, **changes}
+                self.rewrite_receipt()
+                with self.assertRaisesRegex(ValueError, "provenance"):
+                    self.validate()
+
     def test_pillow_library_archive_accepts_a_real_jpeg_member(self):
         self.original = self.data
         width, height = p.jpeg_dimensions(self.original)
