@@ -1,5 +1,73 @@
 [
   {
+    "slug": "gallery-cleaner-last-footstep-beat",
+    "category": "エンタメ",
+    "flash": "展示曲、最後の一拍は清掃員",
+    "art": "cards",
+    "fiction_company": "歩響美術館（架空）",
+    "fiction_at": "2031-11-23T07:32:00+09:00",
+    "published_at": "2026-11-23T07:32:00+09:00",
+    "publication_slot": "2026-11-23T07:30:00+09:00",
+    "title": "美術館の曲、最後の一拍は清掃員の足音　閉館後に完成した2031年の展示",
+    "summary": "2031年、歩く人の足取りを曲に変える歩響美術館で、来場者が踏まなかった床の一角に清掃員が一歩を足し、音楽が完成した。翌朝、美術館は本人の同意を得てその音を展示に採用。客だけを「参加者」と考えていた作品に、館を支える人の動きが加わった。",
+    "paragraphs": [
+      "2031年11月23日の朝、歩響美術館の清掃員が展示室のスピーカーから流れる曲を聞いて、足を止めた。最後に鳴る低い一音は、前夜、清掃を終えた自分が床を一歩踏んで加えた音だった。来場者が歩くたび音が増える展示は、閉館後の清掃員の足取りで初めて最後まで演奏された。",
+      "2026年11月、AIやXRと人の感覚の関わりを問うメディアアート展が開かれた。五年後、歩響美術館は、見る人の動きそのものを毎日の作品にする展示を始めた。床下に置いた薄い圧力センサーが踏まれた場所と時間の間隔を読み取り、装置がその順序を音に変える。顔や会話、靴の持ち主は記録しない。",
+      "展示室の床には、入口から奥へ五つの短い帯が延びている。人が別々の帯を踏むと、五つの拍が少しずつ埋まり、最後の帯が踏まれた日にだけ短い曲が終止音までつながる。開館初日の客は正面の四つを行き来して音を重ねたが、壁際にある五つ目の帯を通る人はいなかった。夕方の再生では、最後の一拍だけが空白のままだった。",
+      "22日の閉館後、40代の清掃員は壁際にモップをかけ、空いた一拍の表示に気づいた。学芸員に理由を聞くと、奥の帯だけまだ誰も踏んでいないという。清掃員は作業を終え、参加記録を残すことに同意してから、モップを置いて帯の上へ一歩進んだ。足を下ろした瞬間に低い音が鳴り、曲は初めて最後まで続いた。",
+      "学芸員は、最後の音を機械に自動で補わせる案も考えた。だが、誰も通らなかった場所まで通ったことにしてしまえば、来場者が作る作品ではなくなる。清掃員に毎晩演奏してもらう決まりも設けない。センサーの維持費と仕事の時間調整は館が負担し、参加するかどうかは本人が選ぶ。今回の記録に残したのは足を踏んだ位置と間隔だけだ。",
+      "この朝、館は清掃員に再生を聞いてもらい、了承を得てその一拍を当日の完成版に残した。展示室の小さな説明札には、客の歩みと並んで『最後の一拍は閉館後の清掃から』と記した。開館前、清掃員は記録を止めた床をいつもどおり拭いた。スピーカーの曲だけが、昨日まで無音だった場所で一度鳴って終わった。"
+    ],
+    "source": {
+      "kind": "情報科学芸術大学院大学・創立30周年展公式発表",
+      "publisher": "情報科学芸術大学院大学（IAMAS）",
+      "published_at": "2026-10-29",
+      "url": "https://www.iamas.ac.jp/news/iamas30th_the-augmentation/",
+      "topic": "IAMASは2026年10月29日、AI・XRと知覚や芸術との関係を扱う創立30周年展を同年11月21〜23日に開催すると発表した。歩響美術館、足音から曲を作る床、閉館後の清掃員が最後の一拍を足す2031年の出来事は創作。"
+    },
+    "scene_prompt": "Natural realistic horizontal 16:9 documentary news photograph in a modest modern Japanese interactive art museum gallery after closing. An adult Japanese woman cleaning worker in ordinary practical workwear and flat work shoes has set a mop beside her, and is gently stepping on the fifth narrow pressure-sensitive floor strip near the back wall, while a Japanese museum curator watches from a short distance beside a small unobtrusive audio control desk. Five subtle floor strips extend from the entrance to the rear wall; one small discreet speaker, natural gallery ceiling light, believable surfaces and shadows. Capture the actual human action of adding one final step, not a stage concert. No writing, no logos, no neon, no futuristic holograms, no exaggerated light effects, no real-person resemblance.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "メディアアート",
+      "美術館",
+      "足音"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "メディアアート",
+      "美術館"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "来場者が最後まで埋められなかった一拍。閉館後、モップを置いた清掃員の一歩が作品を完成させた2031年。",
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "quiet_aftertaste",
+    "editorial_signature": {
+      "present": "2026年10月29日にIAMASがAI・XRと身体感覚・芸術との関係を扱う30周年展を発表",
+      "target": "2031年、歩く場所と間隔を音符に変え、来場者の動きで毎日つくる参加型美術館の展示",
+      "action": "壁際の最後の床帯が踏まれず欠けていた曲に、閉館後の清掃員が自発的に一歩加えて終止音を鳴らす",
+      "outcome": "翌朝、本人の同意を得て最後の一拍を展示に残し、来場者以外の館を支える人も作品の一部になった"
+    },
+    "reader_clarity": {
+      "who": "清掃員",
+      "action": "展示室の最後の床帯へ一歩踏み込み、来場者がつくった曲に欠けた終止音を足す",
+      "oddity": "来場者が作曲する展示を完成させたのは、閉館後にモップを置いた清掃員の一歩"
+    },
+    "behavior_basis": {
+      "motive": "清掃員は誰も踏まなかった床帯が曲の空白を作っていると知り、自分の一歩で音を完成させてみたいと思った",
+      "ordinary_alternative": "未完成のまま展示する、または機械で最後の音を自動補完する",
+      "why_not": "参加した人の足取りから生まれるという作品の仕組みを守るため、自動補完せず希望した清掃員の一歩を残した",
+      "evidence_quote": "学芸員は、最後の音を機械に自動で補わせる案も考えた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年のIAMAS創立30周年展ではAIやXRを用いた知覚と芸術の関係が扱われた",
+      "continuation_force": "低価格な床下圧力センサーと現場での即時音変換が普及し、来場者の足取りだけから日々音楽を作る展示が可能になる",
+      "future_result": "2031年、最後の区画を清掃員が任意参加で踏み、翌朝その音が展示曲の最後の一拍として採用される"
+    }
+  },
+  {
     "slug": "paired-maze-robots-yield-at-junction",
     "category": "技術",
     "flash": "迷路ロボ、譲った一歩が決勝点",
