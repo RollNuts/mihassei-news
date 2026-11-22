@@ -38,7 +38,7 @@ The old whole-macro reservation needs at least 75 connector callbacks plus the P
 
 #### Resume a reservation
 
-Call **one** step per code-mode cell. Use the original `plan` and the preceding reservation `checkpoint`, or `undefined` on the first call. Retain the four fields of `probe` from the start: the actual file ID/path (`probeSource`), verified SHA-256 (`expectedProbeSha256`), source reference (`probeSourceRef`) and transfer route (`route`). The [offline probe](#offline-png-bootstrap) prints this object for the file-adapter route. Reuse the original values and bind a fresh `readBytes` to the same reader in **every reservation cell**. The first lookup can return a `capture` checkpoint before recording any probe inputs.
+Call **one** step per code-mode cell. Use the original `plan` and the preceding reservation `checkpoint`, or `undefined` on the first call. Retain the four small strings of `probe` **once**, before the first lookup: the actual file ID/path (`probeSource`), verified SHA-256 (`expectedProbeSha256`), source reference (`probeSourceRef`) and transfer route (`route`). The [offline probe](#offline-png-bootstrap) prints this object for the file-adapter route. Reuse those original values and bind a fresh `readBytes` to the same reader in **every reservation cell**. The first lookup can return a `capture` checkpoint before recording any probe inputs.
 
 ```js
 try {
@@ -47,8 +47,7 @@ try {
   const result = await stager.reserveExternalGenerationStep(plan, {
     compact: true, probeSource, expectedProbeSha256, probeSourceRef, route, readBytes
   }, checkpoint);
-  if (result.status === "pending") text({status: result.status, phase: result.phase, checkpoint: result.checkpoint,
-    probe: {probeSource, expectedProbeSha256, probeSourceRef, route}});
+  if (result.status === "pending") text({status: result.status, phase: result.phase, checkpoint: result.checkpoint});
   else if (result.status === "reserved") text({status: result.status, plan: result.plan,
     transportPreflight: result.transportPreflight, generationClaim: result.generationClaim});
   else text({status: result.status, commitSha: result.commitSha, branch: result.branch, receipt_sha256: result.receipt_sha256});
