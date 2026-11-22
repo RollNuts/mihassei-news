@@ -45,6 +45,21 @@
         "cut_id": "08",
         "image_sha256": "f5b6e07657d573d11079c937d078ec1ab6c5951a90e61ae43ea094d7d82d6c1a"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261122091918933000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-22T09:19:18.933+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "休日の朝、気になっていたニットを見ようと店まで来たら、開店まであと一時間。調べたつもりだったんですけどね。近くのパン屋だけは、もう開いていました。",
+      "source": {
+        "issue_slug": "november-off-clock-rio-002",
+        "cut_id": "02",
+        "image_sha256": "7ecae4d543d2a5b00bb47ec2cd2b32f46446b07de31dccd3af9ea4c6e558c641"
+      }
     }
   ]
 }
