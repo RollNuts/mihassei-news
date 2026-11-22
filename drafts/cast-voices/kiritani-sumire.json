@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-21",
+  "created_date": "2026-11-22",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
     "issue_slug": "november-rooftop-pool-sumire-011",
-    "cut_id": "02",
-    "image_sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca"
+    "cut_id": "03",
+    "image_sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947"
   },
-  "post_text": "昼下がり、古道具屋で小さな真鍮の取っ手を見つけた。新しい棚に似合いそうで、店内を二周。まだ迷ってるんだけど。",
-  "spoken_line": "もう一周、見てこよう。",
-  "future_idea": "2031年、歴史ある商店街の再開発利益を地元の職人や店主にも分配する制度案をめぐり、事業者と住民が対立。"
+  "post_text": "昼過ぎ、稽古場で古い衣装の裏地を見せてもらった。表よりずっと鮮やかな青。新しい上着にも使いたくなって、色見本を一枚だけ持ち帰った。",
+  "spoken_line": "あの裏地の青が忘れられない。",
+  "future_idea": "2031年、舞台衣装のデジタル複製権を巡り、衣装制作者・出演者・配信事業者の収益分配交渉が難航。"
 }
