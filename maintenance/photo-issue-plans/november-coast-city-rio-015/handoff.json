@@ -538,6 +538,22 @@
     "status": "held_missing_one_swimwear",
     "publication": "not_accepted_not_published",
     "reason": "Current original set has one clear swimwear image, four supplemental images add four; total five, less than default six. Previous Rio issue already used reduced-swimwear exception, so do not repeat exception to fill new issue. Do not publish unfinished 9 cuts.",
-    "next": "Existing Shioba Rio producer: deliver one new distinct full-body/wide swimwear original and fixed SHA to this existing candidate; weekly editor resumes at missing position 09 after raw readback, JPEG, real-image QA, then normal same-branch PR / CI / finalizer / live verification. No new task or image generation in editor."
+    "next": "Existing Shioba Rio producer: deliver one new distinct full-body/wide swimwear original and fixed SHA to this existing candidate; weekly editor resumes at missing position 09 after raw readback, JPEG, real-image QA, then normal same-branch PR / CI / finalizer / live verification. No new task or image generation in editor.",
+    "resumption_20261123": {
+      "review": "original 03 JPEG visually inspected; coastal autumn full-body coat scene is suitable for magazine position 09 between poolside at 08 and night city at 10; original PNG blob sha is dc93c7ae3f43bc8e1401b5a4378843f3c87b8928 but decoded original read/display unavailable through this connector response; provisional only, not adopted",
+      "intended_position_09": {
+        "source": "original",
+        "ordinal": 3,
+        "kind": "clothed"
+      },
+      "provisional_swimwear_count": 5,
+      "provisional_clothed_count": 5,
+      "swimwear_exception_proposal": "5/10 swimwear: a water-and-city autumn/winter journey; the other five scenes provide temperature, season and city transition, and coat wide shot is compositionally distinct from pool close-ups. The 6/10 default is assessed for this issue, independently of any previous exception. Requires final review and explicit accepted field before publication.",
+      "guard": "NOT_VERIFIED: public repository confirmed; required cloud free-cpu-scenes.yml workflow state could not be read (GitHub fetch endpoint rejected; public web read inaccessible). Do not perform image adoption, public PR, final approval or deployment until state active is directly verified.",
+      "main_observed_sha": "46da5e5717b79ac29de519fbb8b4b91d71f769a7",
+      "open_pr_observed": "Only #962 editorial/quality-2026-11-23; no same issue PR in open first-page listing",
+      "publication": "not_published",
+      "next": "Recheck workflow live state active and capacity; obtain original PNG 03 byte read/display and compare JPEG, verify all ten selected original/JPEG blob/receipt pairs, finalize 5-swimwear exception, then create one publication PR based on fresh main including 10 cut receipts/QA and both catalogs; run required CI and photo_issue finalizer; verify live issue index, feature and 10 photos. Do not create per-candidate PR."
+    }
   }
 }
