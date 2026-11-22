@@ -2,15 +2,15 @@
   "schema_version": 1,
   "model_id": "hanase-mio",
   "name": "花瀬みお",
-  "created_date": "2026-11-20",
+  "created_date": "2026-11-22",
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "photo_reference": {
     "issue_slug": "november-city-evening-mio-012",
-    "cut_id": "05",
-    "image_sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305",
-    "description": "2031年11月の本人既刊012、検品済みcut05。堤防で風に吹かれた髪を押さえる写真。catalog review accepted。今回の画像実byteは未取得。"
+    "cut_id": "01",
+    "image_sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3",
+    "description": "2031年11月の検品済み既刊012 cut01。波打ち際で立つ本人写真（画像バイト未検証、catalog review accepted）。"
   },
-  "post_text": "昼、陶芸体験でろくろを回した。小鉢のつもりが、指を当てるたび横に広がってお皿になった。縁だけはきれいにできたから、帰ったら何を乗せようかな。",
-  "spoken_line": "小鉢がお皿になっちゃった。",
-  "future_idea": "2031年、体験教室で完成予定と違った器に、あとから用途を選べる展示会が広まる。"
+  "post_text": "朝、体験ロケで落ち葉を熊手で集めた。山にしたところへ風が吹いて、全部足元に戻ってきた。二回目は袋を先に開いて、今度こそ回収できた。",
+  "spoken_line": "落ち葉、戻ってきた！",
+  "future_idea": "2031年、落ち葉回収の体験ロケで風向きを読むチーム戦が人気になる。"
 }
