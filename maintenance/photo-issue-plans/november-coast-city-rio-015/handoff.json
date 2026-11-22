@@ -18,7 +18,7 @@
     },
     "successful_route": "files__list actual Library items rio-original-NN.png; materialize and full bytes/hash/dimensions match original inventory",
     "raw_verified_count": 10,
-    "github_binary_backed_count": 8,
+    "github_binary_backed_count": 9,
     "cloud_guard": "active on 2026-11-23T02:20 JST recovery, recheck next mutation",
     "publication_state": "not_accepted_not_published"
   },
@@ -239,11 +239,25 @@
         1024,
         1536
       ],
-      "raw_github_path": null,
-      "jpeg_github_path": null,
-      "jpeg_sha256": null,
-      "jpeg_bytes": null,
-      "editorial_status": "unreviewed_candidate"
+      "raw_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/10.png",
+      "jpeg_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/10.jpg",
+      "jpeg_sha256": "83bb041957fcec3703cde9cb0e766e309e2cb9326231dfa4d3c962b2037b6423",
+      "jpeg_bytes": 151090,
+      "editorial_status": "unreviewed_candidate",
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "blob_shas": {
+        "original": "e78f3837567fd1e68c558c8ba1c9196d5705ba54",
+        "jpeg": "c605e1c3338a34e2af226f6bd888b727bfdc4727"
+      }
     },
     {
       "ordinal": 12,
@@ -264,5 +278,5 @@
       "editorial_status": "unreviewed_candidate"
     }
   ],
-  "next": "Save only 10 and 12, verify source and jpeg, retain cut 05 near-duplicate hold; do not publish."
+  "next": "Save remaining ordinal 12, verify source and jpeg readback, retain cut 05 near-duplicate hold; no publishing."
 }
