@@ -168,13 +168,15 @@ var NativeImageBytes = (function () {
       caBX_bytes:chunks[0].data.slice()
     };
   }
-  function centerFitRGBA(src,sw,sh,dw=1200,dh=675) {
+  function resizeRGBA(src,sw,sh,dw=1200,dh=675,cropToFill=true) {
     if(src.length!==sw*sh*4)throw Error("Invalid RGBA");
-    const dst=new Uint8Array(dw*dh*4),scale=Math.max(dw/sw,dh/sh),ox=(sw-dw/scale)/2,oy=(sh-dh/scale)/2;
+    const dst=new Uint8Array(dw*dh*4),scale=Math.max(dw/sw,dh/sh);
+    const scaleX=cropToFill?scale:dw/sw,scaleY=cropToFill?scale:dh/sh;
+    const ox=cropToFill?(sw-dw/scale)/2:0,oy=cropToFill?(sh-dh/scale)/2:0;
     for(let y=0;y<dh;y++){
-      const sy=Math.max(0,Math.min(sh-1,oy+(y+0.5)/scale-0.5)),y0=Math.floor(sy),y1=Math.min(y0+1,sh-1),fy=sy-y0;
+      const sy=Math.max(0,Math.min(sh-1,oy+(y+0.5)/scaleY-0.5)),y0=Math.floor(sy),y1=Math.min(y0+1,sh-1),fy=sy-y0;
       for(let x=0;x<dw;x++){
-        const sx=Math.max(0,Math.min(sw-1,ox+(x+0.5)/scale-0.5)),x0=Math.floor(sx),x1=Math.min(x0+1,sw-1),fx=sx-x0;
+        const sx=Math.max(0,Math.min(sw-1,ox+(x+0.5)/scaleX-0.5)),x0=Math.floor(sx),x1=Math.min(x0+1,sw-1),fx=sx-x0;
         const p00=(y0*sw+x0)*4,p10=(y0*sw+x1)*4,p01=(y1*sw+x0)*4,p11=(y1*sw+x1)*4;
         const a=(1-fx)*(1-fy),b=fx*(1-fy),c=(1-fx)*fy,d=fx*fy,a00=src[p00+3]/255,a10=src[p10+3]/255,a01=src[p01+3]/255,a11=src[p11+3]/255;
         const alpha=a*a00+b*a10+c*a01+d*a11,p=(y*dw+x)*4;
@@ -183,6 +185,57 @@ var NativeImageBytes = (function () {
       }
     }
     return dst;
+  }
+  function suppliedPhotoBytes(input) {
+    const maxBytes = 32 * 1024 * 1024;
+    if (typeof input === "string") {
+      const prefix = "data:image/png;base64,";
+      if (input.startsWith("data:") && !input.startsWith(prefix)) throw Error("Expected a PNG data URL");
+      const length = input.length - (input.startsWith(prefix) ? prefix.length : 0);
+      if (length > 4 * Math.ceil(maxBytes / 3)) throw Error("Oversized supplied PNG");
+      return fromBase64(input);
+    }
+    if (!(input instanceof Uint8Array || input instanceof ArrayBuffer) || input.byteLength > maxBytes)
+      throw Error("Expected bounded supplied PNG bytes");
+    return input instanceof Uint8Array ? input : new Uint8Array(input);
+  }
+  function photoDecodeBuffer(bytes, info) {
+    const header = info.chunks[0].data, depth = header[8], color = header[9];
+    const depths = {0:[1,2,4,8,16], 2:[8,16], 3:[1,2,4,8], 4:[8,16], 6:[8,16]};
+    if (!depths[color]?.includes(depth) || header[10] !== 0 || header[11] !== 0 || header[12] > 1)
+      throw Error("Invalid supplied PNG pixel format");
+
+    // UPNG only needs these chunks for pixels. Keep metadata in the original
+    // hash and avoid inflating unrelated text or profiles during JPEG encoding.
+    const parts = [bytes.subarray(0, 8)];
+    let paletteEntries = 0, hasTransparency = false, dataBytes = 0;
+    for (const [index, chunk] of info.chunks.entries()) {
+      const {type, data} = chunk;
+      if (type === "IHDR" && index !== 0) throw Error("Duplicate supplied PNG header");
+      if (type === "acTL" || type === "fcTL" || type === "fdAT") throw Error("Animated PNG not supported");
+      if (type === "PLTE") {
+        if (paletteEntries || dataBytes || color === 0 || color === 4 || !data.length || data.length % 3 ||
+            data.length > 3 * (color === 3 ? 2 ** depth : 256)) throw Error("Invalid supplied PNG palette");
+        paletteEntries = data.length / 3;
+      } else if (type === "tRNS") {
+        if (hasTransparency || dataBytes || !(color === 0 && data.length === 2 || color === 2 && data.length === 6 ||
+            color === 3 && data.length && data.length <= paletteEntries)) throw Error("Invalid supplied PNG transparency");
+        hasTransparency = true;
+      } else if (type === "IDAT") {
+        if (color === 3 && !paletteEntries) throw Error("Missing supplied PNG palette");
+        dataBytes += data.length;
+      } else if (type !== "IHDR" && type !== "IEND") {
+        if (/^[A-Z]/.test(type)) throw Error("Unsupported critical PNG chunk");
+        continue;
+      }
+      const start = data.byteOffset - bytes.byteOffset - 8;
+      parts.push(bytes.subarray(start, start + data.length + 12));
+    }
+    if (!dataBytes) throw Error("Missing supplied PNG pixel data");
+    const pixels = new Uint8Array(parts.reduce((size, part) => size + part.length, 0));
+    let offset = 0;
+    for (const part of parts) { pixels.set(part, offset); offset += part.length; }
+    return pixels.buffer;
   }
   async function fetchSources(fetchFile) {
     const keys=Object.keys(SOURCES),result=await Promise.allSettled(keys.map(key=>{const {sha256,...args}=SOURCES[key];return fetchFile({...args,encoding:"utf-8"});})),sources={};
@@ -205,10 +258,27 @@ var NativeImageBytes = (function () {
       const bytes=typeof input==="string"?fromBase64(input):new Uint8Array(input),info=pngChunks(bytes),receipt=extractC2PA(bytes);
       const png=UPNG.decode(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength)),frames=UPNG.toRGBA8(png);
       if(frames.length!==1)throw Error("Animated PNG not supported");
-      const rgba=centerFitRGBA(new Uint8Array(frames[0]),png.width,png.height),jpeg=encode({data:rgba,width:1200,height:675},84).data;
+      const rgba=resizeRGBA(new Uint8Array(frames[0]),png.width,png.height),jpeg=encode({data:rgba,width:1200,height:675},84).data;
       return {bytes:jpeg,base64:toBase64(jpeg),sha256:sha256(jpeg),source_png_sha256:sha256(bytes),sourceWidth:info.width,sourceHeight:info.height,width:1200,height:675,quality:84,receipt};
     }
-    return {convert,sha256,extractC2PA,fromBase64,toBase64,utf8,inspectPng};
+    function convertPhoto(input) {
+      const bytes = suppliedPhotoBytes(input), info = pngChunks(bytes);
+      const longest = Math.max(info.width, info.height);
+      if (longest > 8192) throw Error("Supplied PNG dimensions exceed import bounds");
+      const scale = Math.min(1, 1200 / longest);
+      const width = Math.round(info.width * scale), height = Math.round(info.height * scale);
+      if (Math.min(width, height) < 320) throw Error("Supplied photo short edge is below 320 pixels");
+      const png = UPNG.decode(photoDecodeBuffer(bytes, info)), frames = UPNG.toRGBA8(png);
+      if (frames.length !== 1) throw Error("Animated PNG not supported");
+      const rgba = resizeRGBA(new Uint8Array(frames[0]), info.width, info.height, width, height, false);
+      const jpeg = encode({data:rgba, width, height}, 84).data;
+      if (jpeg.length < 16000 || jpeg.length > 700 * 1024) throw Error("Supplied photo JPEG exceeds publication size bounds");
+      return {bytes:jpeg, base64:toBase64(jpeg), sha256:sha256(jpeg), source_png_sha256:sha256(bytes),
+        sourceWidth:info.width, sourceHeight:info.height, width, height, quality:84,
+        transform:{encoder:"jpeg-js", max_edge:1200, jpeg_quality:84, geometry:"preserve-aspect"},
+        encoding_details:{encoder_ref:SOURCES.encode.ref, resample:"bilinear", mode:"RGB"}};
+    }
+    return {convert,convertPhoto,sha256,extractC2PA,fromBase64,toBase64,utf8,inspectPng};
   }
   return {SOURCES,fetchSources,initialize,fromBase64,toBase64,utf8,inspectPng,extractC2PA};
 })();

@@ -11,9 +11,11 @@ import json
 from pathlib import Path
 
 try:
+    from .market_bulletins import SLOTS as MARKET_SLOTS
     from .photo_editions import load_photo_editions
     from .photo_stories import read_story_document
 except ImportError:
+    from market_bulletins import SLOTS as MARKET_SLOTS
     from photo_editions import load_photo_editions
     from photo_stories import read_story_document
 
@@ -63,6 +65,51 @@ def _timeline(rows, identity, now):
                     "date_jst": latest[0].astimezone(JST).date().isoformat()}
                    if latest else None),
     }
+
+
+def _news(root, now):
+    rows = _read(root, "content/articles.json")
+    result = _timeline(rows, "slug", now)
+    yesterday = now.astimezone(JST).date() - timedelta(days=1)
+    slots, carryovers, unattributed = [], [], []
+    for row in rows:
+        published = _stamp(row["published_at"]).astimezone(JST)
+        if published > now:
+            continue
+        raw_slot = row.get("publication_slot")
+        if raw_slot is None:
+            if published.date() == yesterday:
+                unattributed.append(row["slug"])
+            continue
+        slot = _stamp(raw_slot).astimezone(JST)
+        record = {"slug": row["slug"], "slot_jst": slot.isoformat(), "published_at_jst": published.isoformat()}
+        if slot.date() == yesterday:
+            slots.append(record)
+        elif published.date() == yesterday:
+            carryovers.append(record)
+    result["previous_day_slots"] = {"day_jst": yesterday.isoformat(),
+                                    "original": sorted(slots, key=lambda row: row["slot_jst"]),
+                                    "published_from_other_dates": carryovers,
+                                    "published_without_slot": unattributed}
+    return result
+
+
+def _market(root, now):
+    rows = _read(root, "content/market_bulletins.json")
+    result = _timeline(rows, "slug", now)
+    latest = result["latest"]
+    observed = []
+    if latest:
+        for row in rows:
+            published = _stamp(row["published_at"]).astimezone(JST)
+            if published > now or published.date().isoformat() != latest["date_jst"]:
+                continue
+            slot = row.get("slot")
+            if slot in MARKET_SLOTS and row.get("day") == latest["date_jst"]:
+                observed.append({"slug": row["slug"], "slot": slot, "slot_time_jst": MARKET_SLOTS[slot][0],
+                                 "published_at_jst": published.isoformat()})
+    result["latest_day_slots"] = sorted(observed, key=lambda row: row["slot_time_jst"])
+    return result
 
 
 def _catalog(root):
@@ -153,8 +200,8 @@ def collect(root, *, now=None):
               "note": "Task schedules/runs, holiday calendars and intentional skipped slots are not inspected. "
                       "Today's absence is not a failure; closed-date gaps are publication observations only."}
     for name, operation in (
-        ("news", lambda: _timeline(_read(root, "content/articles.json"), "slug", now)),
-        ("market", lambda: _timeline(_read(root, "content/market_bulletins.json"), "slug", now)),
+        ("news", lambda: _news(root, now)),
+        ("market", lambda: _market(root, now)),
         ("photo_editions", lambda: _photo(root, now)),
         ("cast_stories", lambda: _cast(root, now)),
     ):

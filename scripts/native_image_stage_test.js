@@ -1392,7 +1392,22 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     assert(false, "compact operation finishes within 256 explicit invocations");
   }
   const compact = await compactContext("compact-four-MiB");
+  const createCompactBranch = compact.mock.github.create_branch;
+  const nextMain = "a".repeat(40), nextMainTree = "b".repeat(40);
+  compact.mock.github.create_branch = async args => {
+    const response = await createCompactBranch(args);
+    if (args.branch_name === claimBranchPrefix + compact.plan.identity) {
+      compact.mock.cloud.mainSha = nextMain;
+      compact.mock.cloud.commit = {sha: nextMain, tree: {sha: nextMainTree}};
+      compact.mock.cloud.tree = {...compact.mock.cloud.tree, sha: nextMainTree};
+    }
+    return response;
+  };
   const compactReserved = await compactDrive(compact, "reserveExternalGenerationStep", compactReservationOptions(compact));
+  assert(compactReserved.result.status === "reserved" && compact.mock.calls.some(call =>
+    call.name === "fetch" && call.args.url.endsWith("/git/trees/" + nextMainTree + "?recursive=1")) &&
+    compact.mock.calls.at(-1).args.url.endsWith("/actions/workflows/free-cpu-scenes.yml"),
+    "claim final rechecks the changed main tree and live workflow within its callback budget");
   assert(compactReserved.result.status === "reserved" && !compact.mock.branches.has(compact.branch),
     "compact reservation tests synthetic transport without saving an article candidate");
   await failure(() => compactCall(compact, "reserveExternalGenerationStep", compactReservationOptions(compact),
@@ -1460,6 +1475,9 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   const compactLost = await compactContext("compact-lost-claim", {claimLostResponse: true});
   const compactLostError = await failure(() => compactDrive(compactLost, "reserveExternalGenerationStep",
     compactReservationOptions(compactLost)), "lost compact claim response cannot grant generation permission");
+  assert(compactLostError.stage === "bounded_claim_final" &&
+    compactLostError.message.includes("Injected lost generation-claim response"),
+    "claim final preserves the connector's specific failure message with its phase and checkpoint");
   assert(compactLost.mock.branches.has(claimBranchPrefix + compactLost.plan.identity) &&
     !compactLost.mock.branches.has(compactLost.branch), "lost compact claim stays create-only and unconfirmed");
   await failure(() => compactCall(compactLost, "reserveExternalGenerationStep", compactReservationOptions(compactLost),

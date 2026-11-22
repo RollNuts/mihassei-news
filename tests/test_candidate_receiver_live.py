@@ -20,6 +20,15 @@ def reply(*, tools=None):
         tools[-1]["outputSchema"] = {"properties": {
             "image_url": {"type": "string", "pattern": "^data:image/png;base64,"}},
             "required": ["image_url"]}
+        weekly_fields = ["issue", "commit", "path", "expected_sha256"]
+        tools.append({
+            "name": "read_weekly_candidate_png",
+            "annotations": {"readOnlyHint": True, "destructiveHint": False},
+            "inputSchema": {"type": "object", "additionalProperties": False,
+                            "properties": {field: {"type": "string"} for field in weekly_fields},
+                            "required": weekly_fields},
+            "outputSchema": tools[-1]["outputSchema"],
+        })
     return {"jsonrpc": "2.0", "id": "read-only-file-schema", "result": {"tools": tools}}
 
 
@@ -53,9 +62,26 @@ class CandidateReceiverLiveContractTests(unittest.TestCase):
 
     def test_missing_png_byte_output_is_not_a_success(self):
         bad = reply()
-        bad["result"]["tools"][-1]["outputSchema"] = {}
+        next(tool for tool in bad["result"]["tools"]
+             if tool["name"] == "read_candidate_png")["outputSchema"] = {}
         with self.assertRaisesRegex(RuntimeError, "structured byte output"):
             check(fetch=lambda *_args, **_kwargs: FakeResponse(json.dumps(bad).encode()))
+
+    def test_weekly_reader_must_be_read_only_and_require_the_immutable_source(self):
+        for change in ("writable", "missing_hash", "file_params", "missing_output"):
+            with self.subTest(change=change):
+                bad = reply()
+                weekly = bad["result"]["tools"][-1]
+                if change == "writable":
+                    weekly["annotations"]["readOnlyHint"] = False
+                elif change == "missing_hash":
+                    weekly["inputSchema"]["required"].remove("expected_sha256")
+                elif change == "file_params":
+                    weekly["_meta"] = {"openai/fileParams": ["file"]}
+                else:
+                    weekly["outputSchema"] = {}
+                with self.assertRaises(RuntimeError):
+                    check(fetch=lambda *_args, **_kwargs: FakeResponse(json.dumps(bad).encode()))
 
 
 if __name__ == "__main__":

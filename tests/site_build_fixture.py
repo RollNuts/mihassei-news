@@ -20,6 +20,7 @@ MARKET_DATA_PATHS = frozenset({
     "content/market_bulletins.json", "content/market_outlooks.json",
     "content/market_outlook.json", "content/market_figures.json",
 })
+EDITORIAL_HANDOFF_PATHS = frozenset({"docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDEAS.md"})
 PHOTO_STORY_PATH = "content/photo_stories.json"
 # Story data reaches home, weekly indexes and profiles. Retain their reader
 # contracts, accepted photo-source schemas and global output/SEO checks.
@@ -80,26 +81,28 @@ def photo_story_data_only(changes):
     return status == "M" and (path == PHOTO_STORY_PATH or path in STORY_RECORD_PATHS)
 
 
+def editorial_handoff_pr(changes, event):
+    return (event == "pull_request" and bool(changes)
+            and all(status == "M" and path in EDITORIAL_HANDOFF_PATHS
+                    for status, path in changes))
+
+
 def native_image_engine_tests_required(changes, event):
-    """Only these two proven data-only PR scopes leave the native engine alone.
+    """Keep main pushes and unrecognized PR diffs on full native/browser checks."""
+    if event != "pull_request":
+        return True
+    return not (editorial_handoff_pr(changes, event) or market_data_only(changes)
+                or photo_story_data_only(changes))
 
-    Keep main pushes, unknown diffs and any future Python test scopes full.
-    """
-    return not (event == "pull_request"
-                and (market_data_only(changes) or photo_story_data_only(changes)))
 
-
-def python_test_command(changes):
-    """Keep a fresh full build and each data scope's public/source/SEO contracts.
-
-    Only separate, exact market-data or photo-story-data diffs can narrow the
-    suite. Mixed data, code, CI, tests, unknown paths and non-modifications stay full.
-    """
-    if not (market_data_only(changes) or photo_story_data_only(changes)):
-        return [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"]
-    if photo_story_data_only(changes):
+def python_test_command(changes, event=None):
+    """Select checks for a complete, recognized diff, always with a fresh site build."""
+    if editorial_handoff_pr(changes, event):
+        modules = {"tests.test_site", "tests.test_site_build_fixture",
+                   "tests.test_publication_finalize", "tests.test_review_release_guard"}
+    elif photo_story_data_only(changes):
         modules = set(PHOTO_STORY_MODULES)
-    else:
+    elif market_data_only(changes):
         modules = {
             "tests.test_site", "tests.test_site_build_fixture", "tests.test_serials",
             "tests.test_serial_history", "tests.test_forecast_ledger",
@@ -107,6 +110,8 @@ def python_test_command(changes):
             "tests.test_serial_discovery",
         }
         modules.update("tests." + path.stem for path in (ROOT / "tests").glob("test_market*.py"))
+    else:
+        return [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"]
     # test_site's existing fixture performs the same clean full site build once;
     # every subsequent output test shares that snapshot in this one process.
     ordered = ["tests.test_site"] + sorted(modules - {"tests.test_site"})
@@ -119,8 +124,10 @@ def main(argv=None):
     parser.add_argument("--event", default="")
     args = parser.parse_args(argv)
     changes = changed_files(args.base, args.event)
-    command = python_test_command(changes)
-    if market_data_only(changes):
+    command = python_test_command(changes, args.event)
+    if editorial_handoff_pr(changes, args.event):
+        scope = "editorial handoff PR with fresh full build"
+    elif market_data_only(changes):
         scope = "market-data-only with fresh full build"
     elif photo_story_data_only(changes):
         scope = "photo-story-data-only with fresh full build"

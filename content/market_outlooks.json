@@ -904,5 +904,40 @@
       "time_after": "202611201529",
       "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,672.25\", \"currentPrice\":\"3,681.15\", \"previousDayComparison\":\"-141.32\", \"previousDayRatio\":\"-3.70\""
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-23-am-confirm-nov20-topix",
+    "at": "2026-11-23T01:34:47+09:00",
+    "forecast_id": "2026-11-19-topix",
+    "stance": "弱気",
+    "trend": "暫定的に逆行",
+    "observed_value": 3674.22,
+    "observed_on": "2026-11-20",
+    "reason": "JPXの2026年11月20日16:59 JST更新の公式TOPIX現物終値は3,674.22。固定基準11月18日3,824.00から約3.92%下落し、当初の横ばい（±0.5%以内）条件から外れた。11月20日の取引終了後に公式値を再照合して正式に外れと判定。",
+    "change_reason": "11月20日15:50のreviewは引け後の速報・暫定観測にとどまり正式判定を保留していた。公式16:59更新後の値と確認したため正式判定へ移行。予想の固定基準・評価日・判定方法と既存のreview履歴は変更していない。",
+    "source": {
+      "title": "JPX：2026年11月20日16:59更新TOPIX現物指数終値（qcode=151）",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-23"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201659",
+      "time_before": "202611201659",
+      "time_after": "202611201659",
+      "raw_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,672.25\", \"currentPrice\":\"3,674.22\", \"previousDayComparison\":\"-148.25\", \"previousDayRatio\":\"-3.88\"",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html"
+    },
+    "result": {
+      "close": 3674.22,
+      "outcome": "外れ",
+      "observed_on": "2026-11-20",
+      "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "explanation": "11月20日公式終値3,674.22は11月18日の固定基準3,824.00比約3.92%安。横ばいの事前条件±0.5%を超えて下落したため外れ。"
+    }
   }
 ]

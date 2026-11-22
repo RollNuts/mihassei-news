@@ -5,7 +5,7 @@ The existing `/api/image-control/mcp` and its `read_image_control` tool remain i
 
 ## File input and current status
 
-Following [OpenAI's Define file inputs](https://developers.openai.com/plugins/reference#define-file-inputs), both tools declare `_meta["openai/fileParams"]=["file"]`. A file has **required** `download_url` and `file_id`, with optional `mime_type` and `file_name`. `probe_candidate_jpeg` retrieves a single temporary file URL and checks actual JPEG dimensions, byte count and SHA-256. It makes no GitHub requests, image conversions, model calls or storage writes.
+Following [OpenAI's Define file inputs](https://developers.openai.com/plugins/reference#define-file-inputs), the ChatGPT attachment tools `probe_candidate_jpeg`, `stage_candidate_jpeg` and `read_candidate_png` declare `_meta["openai/fileParams"]=["file"]`. A file has **required** `download_url` and `file_id`, with optional `mime_type` and `file_name`. `probe_candidate_jpeg` retrieves a single temporary file URL and checks actual JPEG dimensions, byte count and SHA-256. It makes no GitHub requests, image conversions, model calls or storage writes.
 
 A file URL must be HTTPS with the exact established OpenAI file host `files.oaiusercontent.com`. Custom ports, credentials, redirects and other hosts fail closed. There is a strict 700 KiB streaming cap, 5-second download deadline, JPEG magic/structure and 1200×675 size check, and no URL, file ID or signed query in the response. It returns only the SHA-256 of the file ID, not the ID itself. Exact URL-host compatibility requires a **real ChatGPT-hosted fileParam call** after connecting this separate MCP endpoint. A mock fetch of an already-verified repository JPEG is not proof that a particular ChatGPT client supplies the same host.
 
@@ -15,6 +15,12 @@ A file URL must be HTTPS with the exact established OpenAI file host `files.oaiu
 - Worker runtime variable `IMAGE_CANDIDATE_WRITE_ENABLED="true"`, only after explicit approval and a production probe; absent/false remains disabled. This is **not** configured by this PR.
 
 Before any credentialed GitHub request, the write handler validates the caller bearer against the configured server key and the exact file/claim shape. It then validates the uploaded JPEG and current claim hash. An untrusted or unauthenticated request cannot use the GitHub token to fan out to arbitrary API calls. No long-lived session, R2/KV/D1, new Workflow, API, external converter or GitHub App is added.
+
+## Reading a saved weekly original
+
+The weekly editor can call `read_weekly_candidate_png({issue, commit, path, expected_sha256})` when GitHub Contents returns a blob ID with no bytes for a saved original. Take the 40-character commit, exact PNG path and SHA-256 from the verified candidate handoff in `RollNuts/mihassei-news`. The reader supports numbered originals and supplements belonging to that issue. The existing split-file and ChatGPT file routes are still available.
+
+Use the returned `structuredContent.image_url` inside code mode to obtain the original bytes. Read the public JPEG separately at the same commit. Pass the measured files to the [weekly photo handoff](NATIVE_IMAGE_BYTES.md#photo-original-handoff). A failed read or digest mismatch leaves the candidate pending. This read-only operation downloads a single public GitHub file and needs no account credential.
 
 ## Owner-created repository claim
 

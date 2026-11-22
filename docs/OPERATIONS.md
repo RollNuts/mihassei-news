@@ -204,7 +204,7 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 - 対象slugの `Public article OK`、変更した画像・図の検証結果、必要な共有画像の対象を確認する。現行 `check_live.py` の本文確認は最新10記事、`check_share_cards.py` は選抜したカードの確認であり、対象外まで検証済みにしない。ログに含まれない対象や変更素材は、直接の取得・対象を指定した検証・次担当での確認を未完として残す。
 - 結果は「Actionsで実配信検証済み」と「今回のブラウザ目視」を分けて記録する。取得不能・実行中・対象外を0件や本番障害へ読み替えない。取得不能なら失敗した取得操作を残し、実行中なら同じrunの完了を確認する。対象外は対象を指定した検証へ引き継ぐ。
 
-同じ本番検証の`report_photo_health.py`は、既存のActions summaryとJSONへニュース・市況・写真特集・7人の近況の掲載記録も出す。最古の未完了号と固定順の次担当、人物別の最新実投稿・前日の掲載数を既存担当の未完照合に使う。これは固定checkoutの観測であり、定期runの成功・当日枠の期限超過・休場日・写真在庫を推定しない。`unavailable`を0件へ変換せず、本番配信は上記のrevisionと実checkで別に確認する。
+同じ本番検証の`report_photo_health.py`は、既存のActions summaryとJSONへニュース・市況・写真特集・7人の近況の掲載記録も出す。最古の未完了号と固定順の次担当、人物別の最新実投稿・前日の掲載数を既存担当の未完照合に使う。ニュースは前日の元枠と別日枠の遅配を分け、市況は直近掲載日の予定時刻と実掲載時刻を並べる。欠枠を見つけた担当は同じ枠のPR・見送り記録を照合し、遅配分を当日枠へ数えない。これは固定checkoutの観測であり、定期runの成功・当日枠の期限超過・休場日・写真在庫を推定しない。`unavailable`を0件へ変換せず、本番配信は上記のrevisionと実checkで別に確認する。
 
 同じworkflowの末尾にある `Report photograph completion separately from delivery checks` は、checkout SHAに対応する画像選択・写真待ち件数・対象slugと次の操作をSummaryと `live-photo-health-<run_id>` artifactへ出す。記事・共有カードの配信結果と写真の完了を別々に読む。`photo_followup_counts` は写真向け記事だけの未完了で、意図的なイラストも含むJPEG全件の `missing` とは異なる。現在の記事SHAに一致する保存済み不採用理由は、簡潔なJSONとartifactの `photo_followup[].rejection_evidence`、またはSummary・jobログの `Saved rejection` から画像SHA・確認日時・元runと合わせて引き継ぐ。これは現素材の選択結果であり、新しい目視採用や全記事の本番表示確認ではない。正常な代替画像での公開は継続し、写真待ちは既存の回収担当が引き取る。
 

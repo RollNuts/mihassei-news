@@ -1,0 +1,385 @@
+{
+  "candidate_slug": "november-coast-city-rio-015",
+  "candidate_commit": "7abd73f7839688b447d05eedeb0a37d35b45dca0",
+  "model_id": "shioba-rio",
+  "reviewed_at": "2026-11-23T06:27:15+09:00",
+  "registered_face_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+  "registered_body_reference_sha256": "478b66fdad4f70de78b934d0c53b9b4f095dc5f1c4f16e6585f0ae48c5c59d3a",
+  "review_scope": "写真単位の最終目視。この記録は誌面の配分判断・正式登録・公開の記録と別。",
+  "overall_visual_qa": "passed",
+  "photo_count": 10,
+  "swimwear_visible_count": 5,
+  "clothed_count": 5,
+  "wide_or_full_swimwear_count": 0,
+  "geometry_and_quality": "全20ファイルの固定Git blobから実バイトを取得し、原本とJPEGそれぞれを既存記録のSHA-256に照合。10組を対に実表示し、人物・衣装・場所・画角の一致、長辺1200の縦横比保持を確認。06など手指の見える箇所を追加拡大。独立した余分な人物・指、掲載を妨げる文字や透かし、明瞭な破綻を認めず。人物の見切れと隠れた指は個別の所見に記録。",
+  "design_continuity": "成人の架空人物の設定画を基準に長い暗色髪と薄い前髪、体つきの描写を見比べた。遠景02・09は顔の細部が判別しづらく、髪・姿勢・全身の描写を参照。",
+  "sequence_caveat": "09は写真全体の引きとして機能する私服の原本03で、朝の引継ぎが求めた水着の引きとは別。誌面は水着5/私服5、引きの水着0。季節・衣装配分を含む発行判断は週刊編集担当へ。",
+  "cuts": [
+    {
+      "cut_id": "01",
+      "source_group": "supplement",
+      "source_ordinal": 14,
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 14
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/14.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/14.jpg",
+      "source_sha256": "d807c412090ef13f4cd5dcd675f1e9119c8bddf8ae7b4a18bcc3b3865fa940d6",
+      "jpeg_sha256": "b4173b58d90302d9c4e54f1f683e24c6a53d21cb43defa0fbfbd8435944394a7",
+      "source_dimensions": [
+        1454,
+        1082
+      ],
+      "jpeg_dimensions": [
+        1200,
+        893
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.15,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "profile",
+      "swimwear_visible": true,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "青い柄のビキニ。砂浜で横向きになり肩越しにこちらを見る。腰までの横位置で手先と脚は画面外。海と空に余白があり、顔と髪は十分に見える。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/01/receipt-supplied-d807c412090e-b4173b58d903.json",
+      "receipt_sha256": "bc193c8880bcc2aaae4da77cae7fab77a478a591d0a91f5c41bc8451063a730b",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/01/source-d807c412090ef13f4cd5dcd675f1e9119c8bddf8ae7b4a18bcc3b3865fa940d6.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-01.jpg",
+      "imported_at": "2026-11-22T21:25:02.974809+00:00"
+    },
+    {
+      "cut_id": "02",
+      "source_group": "original",
+      "source_ordinal": 2,
+      "source": {
+        "url": "https://chatgpt.com/space/file/libfile_fde3_f-2660c60052f4819197abdde5f934639a_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_id": "libfile_fde3_f-2660c60052f4819197abdde5f934639a_3e0ce6a2e8348191be296e0419d0b8cc"
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/02.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/02.jpg",
+      "source_sha256": "753b7c71191b32cecf5b459154511bcf31efbd54c0335a67c8269bca751bc95b",
+      "jpeg_sha256": "8e3519bd6f4d4fd27564fa4a43f67521f346cdfde398a0ddd064474449ced7a5",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.73,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "wide",
+      "swimwear_visible": false,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "長いコートと靴で雪の斜面に立ち、湖を望む。全身を小さく据えた縦の遠景。長い暗色髪は見え、手はポケット付近に隠れ、横顔の細部は遠い。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/02/receipt-supplied-753b7c71191b-8e3519bd6f4d.json",
+      "receipt_sha256": "a8b4f3a8b805ed6ec8f6df51836ed3aac5c1529af9d8d2f54e8f9cfd95d4f3ec",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/02/source-753b7c71191b32cecf5b459154511bcf31efbd54c0335a67c8269bca751bc95b.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-02.jpg",
+      "imported_at": "2026-11-22T21:25:03.005595+00:00"
+    },
+    {
+      "cut_id": "03",
+      "source_group": "supplement",
+      "source_ordinal": 11,
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 11
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/11.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/11.jpg",
+      "source_sha256": "cee90646180eeff61a4b120a1a3830d8a68044c9d52ba2a0a8a282a4f89af8f2",
+      "jpeg_sha256": "2a378fb236072479792ba8990b356d54c134039ffe4e882010263f9e4b15beef",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "jpeg_dimensions": [
+        1200,
+        800
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.69,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "upper_body",
+      "swimwear_visible": true,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "紺のビキニ。屋内プールの縁に両腕を掛け、重ねた手に頬を寄せる。指は部分的に重なり、膝下は写らない。目元と濡れて束ねた髪を近景で確認。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/03/receipt-supplied-cee90646180e-2a378fb23607.json",
+      "receipt_sha256": "8e5a4c6c0dcd1d3075d10bce3acdb36575b038a1ad405c7da006258777dfcf91",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/03/source-cee90646180eeff61a4b120a1a3830d8a68044c9d52ba2a0a8a282a4f89af8f2.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-03.jpg",
+      "imported_at": "2026-11-22T21:25:03.035280+00:00"
+    },
+    {
+      "cut_id": "04",
+      "source_group": "original",
+      "source_ordinal": 4,
+      "source": {
+        "url": "https://chatgpt.com/space/file/libfile_fde3_f-8e24ede16600819195adf2db3b58fb74_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_id": "libfile_fde3_f-8e24ede16600819195adf2db3b58fb74_3e0ce6a2e8348191be296e0419d0b8cc"
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/04.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/04.jpg",
+      "source_sha256": "8dd3b4adcbae85c2f09b560d5f2514cc328c9e119de5522550e43b6d0c28c325",
+      "jpeg_sha256": "c8c2874cc06fc7fdb7a627fd120f54e32aeaee4b111cee753f7ed24e2326bae7",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.9,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "three_quarter",
+      "swimwear_visible": false,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "深緑の長袖ニットで温室の鉢花のそばに立ち、振り返る。縦位置で足先は画面外。手帳とペンを持つ手、光を受ける頬と長髪の輪郭を確認。手帳には小さな筆記がある。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/04/receipt-supplied-8dd3b4adcbae-c8c2874cc06f.json",
+      "receipt_sha256": "456f97e7b3466d9710b3358241f8349b0c5cad68c440add0ad6f89ec307b1228",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/04/source-8dd3b4adcbae85c2f09b560d5f2514cc328c9e119de5522550e43b6d0c28c325.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-04.jpg",
+      "imported_at": "2026-11-22T21:25:03.064431+00:00"
+    },
+    {
+      "cut_id": "05",
+      "source_group": "supplement",
+      "source_ordinal": 3,
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 3
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/03.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/03.jpg",
+      "source_sha256": "535225a6b99705d4fa1dde4a49306cf0bfd16e996e92672f575a0d630954d1be",
+      "jpeg_sha256": "f4966c00a370bd95705ae25126c2478d82b6432412bd085f280dea48b404946d",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "jpeg_dimensions": [
+        1200,
+        800
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.56,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "three_quarter",
+      "swimwear_visible": true,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "淡い色のビキニ。石の縁に腕を置いて背中越しに振り返る。横位置で腰と水面が見え、手の一部は腕に隠れる。束ねた髪と細い前髪、肩から背中までの線を確認。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/05/receipt-supplied-535225a6b997-f4966c00a370.json",
+      "receipt_sha256": "75e4c8a84b51f686e82a184fa2fccdb7e2c8b6546af015675bc9e3a3675affed",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/05/source-535225a6b99705d4fa1dde4a49306cf0bfd16e996e92672f575a0d630954d1be.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-05.jpg",
+      "imported_at": "2026-11-22T21:25:03.093131+00:00"
+    },
+    {
+      "cut_id": "06",
+      "source_group": "original",
+      "source_ordinal": 7,
+      "source": {
+        "url": "https://chatgpt.com/space/file/libfile_fde3_f-7b42529be56c8191970dafe1c84a7c87_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_id": "libfile_fde3_f-7b42529be56c8191970dafe1c84a7c87_3e0ce6a2e8348191be296e0419d0b8cc"
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/07.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/07.jpg",
+      "source_sha256": "488638050782514285cda585466b89e2f7e55f5402c80b382f5f4e22c2ea847f",
+      "jpeg_sha256": "079d44996d071a88f8a833cd1d86ae5d99a1599e56fd9f35e4e200ec05cafd28",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 2.22,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "three_quarter",
+      "swimwear_visible": false,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "紺のジャケットと淡色のパンツで、雨の路地から振り返る。右手と閉じた傘の柄が対応し、足先は画面外。長い暗色髪と正面寄りの表情を確認。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/06/receipt-supplied-488638050782-079d44996d07.json",
+      "receipt_sha256": "3cfc9039494d170b3098e5ae15e0ca57042d9a2662187b2e7326a1c09e4e72e2",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/06/source-488638050782514285cda585466b89e2f7e55f5402c80b382f5f4e22c2ea847f.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-06.jpg",
+      "imported_at": "2026-11-22T21:25:03.123470+00:00"
+    },
+    {
+      "cut_id": "07",
+      "source_group": "original",
+      "source_ordinal": 8,
+      "source": {
+        "url": "https://chatgpt.com/space/file/libfile_fde3_f-d232f8a94fcc8191b62b29996aa48603_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_id": "libfile_fde3_f-d232f8a94fcc8191b62b29996aa48603_3e0ce6a2e8348191be296e0419d0b8cc"
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/08.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/08.jpg",
+      "source_sha256": "3755971a8af9918fea2c86889dd1e856ce5eb530e71deaedfd4b8f91055be1d4",
+      "jpeg_sha256": "527e7bb2c55ef19c09a700c53a834cd7d5dbdc54e222722fb2dbe6d4750dedee",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.59,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "three_quarter",
+      "swimwear_visible": true,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "青の水着に白いシャツを羽織り、プール脇の椅子で本を開く。膝までの縦位置。両手は本を上下から支え、紙面の細かな印刷は情景の一部。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/07/receipt-supplied-3755971a8af9-527e7bb2c55e.json",
+      "receipt_sha256": "8cf2424a4bf92085c0ccb3e6934ce32c51c0ad6ee1abe96ab54b18e5966c9bd4",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/07/source-3755971a8af9918fea2c86889dd1e856ce5eb530e71deaedfd4b8f91055be1d4.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-07.jpg",
+      "imported_at": "2026-11-22T21:25:03.152586+00:00"
+    },
+    {
+      "cut_id": "08",
+      "source_group": "supplement",
+      "source_ordinal": 2,
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 2
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/02.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/02.jpg",
+      "source_sha256": "6e42484caa658af39d05b8af937a2c4a7e0897e79d9fe08d471cb28d553a224e",
+      "jpeg_sha256": "dd085e34f86e2dc9f1a08260b60901d728323c219401468c3c139b614c8c9dc5",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "jpeg_dimensions": [
+        1200,
+        800
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.37,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "upper_body",
+      "swimwear_visible": true,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "紺のビキニで、屋外プール横の白いタオルにうつ伏せになる。正面の横位置で肘から先は下端に隠れ、脚の全体も写らない。03の屋内・頬に手を当てる構図とは異なる。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/08/receipt-supplied-6e42484caa65-dd085e34f86e.json",
+      "receipt_sha256": "3895c61ce417de9abb8e1f86d3ade27e77d45820bf28569f1aa824700644a571",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/08/source-6e42484caa658af39d05b8af937a2c4a7e0897e79d9fe08d471cb28d553a224e.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-08.jpg",
+      "imported_at": "2026-11-22T21:25:03.180802+00:00"
+    },
+    {
+      "cut_id": "09",
+      "source_group": "original",
+      "source_ordinal": 3,
+      "source": {
+        "url": "https://chatgpt.com/space/file/libfile_fde3_f-ae7db5146d9c819186344eff7d6e031c_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_id": "libfile_fde3_f-ae7db5146d9c819186344eff7d6e031c_3e0ce6a2e8348191be296e0419d0b8cc"
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/03.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/03.jpg",
+      "source_sha256": "914dc376be35fb3fb99fb1efb591a808f3213fb1f0532167a681e2c6e25c8acd",
+      "jpeg_sha256": "ce649a006a9b83a5720ff85da192f86a6757b5f81d397b39731de5287951a53a",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 2.01,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "wide",
+      "swimwear_visible": false,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "ベージュのコートとブーツで晩秋の海沿いを歩く。空の広い縦位置に全身と足先が収まり、手はコートのポケットに隠れる。02の雪の湖で立ち止まるカットとは場所・動きとも異なる。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/09/receipt-supplied-914dc376be35-ce649a006a9b.json",
+      "receipt_sha256": "948b9a7d522d00dc299a7aadc45db303256a1dbf9b387c8e77c1a9a54c2078a4",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/09/source-914dc376be35fb3fb99fb1efb591a808f3213fb1f0532167a681e2c6e25c8acd.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-09.jpg",
+      "imported_at": "2026-11-22T21:25:03.210498+00:00"
+    },
+    {
+      "cut_id": "10",
+      "source_group": "original",
+      "source_ordinal": 10,
+      "source": {
+        "url": "https://chatgpt.com/space/file/libfile_fde3_f-0fcc04d8da888191971385bb1daddb0e_3e0ce6a2e8348191be296e0419d0b8cc",
+        "library_file_id": "libfile_fde3_f-0fcc04d8da888191971385bb1daddb0e_3e0ce6a2e8348191be296e0419d0b8cc"
+      },
+      "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/10.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/10.jpg",
+      "source_sha256": "125d8c37025a204406d3bfd96b5ab210eca00d63e70416ca9cffb24d7a7fe67e",
+      "jpeg_sha256": "83bb041957fcec3703cde9cb0e766e309e2cb9326231dfa4d3c962b2037b6423",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.55,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "three_quarter",
+      "swimwear_visible": false,
+      "reviewed_at": "2026-11-23T06:27:15+09:00",
+      "note": "背中の開いた深紅のドレスで、窓の向こうの夜景を見る。長い髪と横顔が見え、右手はカウンターのグラスの足元に添う。裾と足先は下端の外。",
+      "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+      "delivery_recheck": "passed",
+      "receipt_path": "maintenance/photo-issues/november-coast-city-rio-015/10/receipt-supplied-125d8c37025a-83bb041957fc.json",
+      "receipt_sha256": "487774dbee24f71882dbe1102abd6fea7dd0467ee55468af879893f3c9ea6714",
+      "release_source_path": "maintenance/photo-issues/november-coast-city-rio-015/10/source-125d8c37025a204406d3bfd96b5ab210eca00d63e70416ca9cffb24d7a7fe67e.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-coast-city-rio-015-10.jpg",
+      "imported_at": "2026-11-22T21:25:03.238520+00:00"
+    }
+  ],
+  "candidate_reviewed_at": "2026-11-23T06:23:49+09:00",
+  "delivery_recheck": "入稿先の受領票10件を読み、個別出典・発行カット番号・原本およびJPEGのSHA-256、実バイト数、実寸法を固定候補の確認結果と照合。入稿先の20ファイルを10組並べて再表示し、全カットの人物・画角・内容と順序を再確認。",
+  "editorial_source": {
+    "candidate_commit": "be7b3336d87d596c783021895729efe3f274ba44",
+    "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/handoff.json",
+    "column_field": "editorial_preflight.editorial_column",
+    "column_authorship": "editorial_new_draft_not_producer_recovery",
+    "selection_fields": [
+      "editorial_preflight.provisional_sequence",
+      "editorial_preflight.resumption_20261123.intended_position_09"
+    ]
+  }
+}
