@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "18b7668dc1faef155ffe7ab2868afeacc7d36c4366523a8854a6fe6d08d3507f",
+  "slug": "private-rocket-town-satellite-first-ocean-image",
+  "article_sha256": "d2de5961397d86bba41e6109cbdf975faca0f23476243cf0d418f71cdc7172a6",
+  "logical_run_id": "news-photo-v1:d2de5961397d86bba41e6109cbdf975faca0f23476243cf0d418f71cdc7172a6",
+  "prompt_sha256": "63a5360d7cd5576fa88f354ad8ab26161d0dc5539d4306437a865f6dc779c733",
+  "reserved_at": "2026-11-22T01:39:35.394Z",
+  "baseline": {
+    "commit_sha": "9d8ec8d0d5117d41f34346d3d9ff780860924022",
+    "tree_sha": "9eb4ef2ca66bf7d43cb3b49c9d1e40323af636b8",
+    "protected_hashes": {
+      "content/articles.json": "81d64620df9b7175e4d1d2fb8f6792a748c1b8f030aa7e3f39845d04802e826e",
+      "assets/generated/manifest.json": "5d5e896882c75d3a07f306b618b184156fbf20ef5f5a5a87fd9e5c4e68c6f24b",
+      "content/visual_reviews.json": "2f6973daa595f304ac3819e9cbdc4e2b89c393e151bc5f6781ea850f00e3f55b"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "6382a1b1ab6dae2783f879d88961285f75c51668",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "bdffeee7fd0897a3b482e063b951ada180b240be7a2cc1ad5c8a42caa724257f",
+    "observed_at": "2026-11-22T01:39:06.569Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
