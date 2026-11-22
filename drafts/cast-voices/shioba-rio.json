@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-21",
+  "created_date": "2026-11-22",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
     "issue_slug": "november-off-clock-rio-002",
-    "cut_id": "08",
-    "image_sha256": "f5b6e07657d573d11079c937d078ec1ab6c5951a90e61ae43ea094d7d82d6c1a"
+    "cut_id": "02",
+    "image_sha256": "7ecae4d543d2a5b00bb47ec2cd2b32f46446b07de31dccd3af9ea4c6e558c641"
   },
-  "post_text": "朝、コートのポケットから去年の取材メモが出てきました。『風が強い』だけ妙に大きな字で書いてある。肝心な質問は小さくて、少し笑いました。",
-  "spoken_line": "風の字だけ、こんなに大きい。",
-  "future_idea": "2031年、記者会見にAIの質問分類係を導入。『なぜ』を尋ねる質問だけ、毎回『補足事項』に回される。"
+  "post_text": "休日の朝、気になっていたニットを見ようと店まで来たら、開店まであと一時間。調べたつもりだったんですけどね。近くのパン屋だけは、もう開いていました。",
+  "spoken_line": "あれ、開店はまだなんですね。",
+  "future_idea": "2031年、街の案内板に寄り道予測が導入。勧められた休日の最短散歩ルートは、本人の行きたい店を一軒も通らなかった。"
 }
