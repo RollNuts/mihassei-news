@@ -10543,6 +10543,168 @@
     }
   }
 }
+  ,
+    "gallery-cleaner-last-footstep-beat": {
+  "article_sha256": "10a9ad23fe453f26a7461be871171a382a72106ec60e9bc0164de2363e5f3586",
+  "bytes": 108354,
+  "generated_at": "2026-11-22T23:06:46.069Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "0d4d04c6-572b-4c98-acc4-ce5634ece83e",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:0d4d04c6-572b-4c98-acc4-ce5634ece83e",
+  "generation_prompt": "Natural realistic horizontal 16:9 documentary news photograph in a modest modern Japanese interactive art museum gallery after closing. An adult Japanese woman cleaning worker in ordinary practical workwear and flat work shoes has set a mop beside her, and is gently stepping on the fifth narrow pressure-sensitive floor strip near the back wall, while a Japanese museum curator watches from a short distance beside a small unobtrusive audio control desk. Five subtle floor strips extend from the entrance to the rear wall; one small discreet speaker, natural gallery ceiling light, believable surfaces and shadows. Capture the actual human action of adding one final step, not a stage concert. No writing, no logos, no neon, no futuristic holograms, no exaggerated light effects, no real-person resemblance.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "6d347d02e8c1b5383cd6879b6ef75d94781a0bab4b3e161e97272efbb6d44f8e",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:b3a2f6fb-46d8-4e9e-adb0-d414a8248573",
+    "instanceID": "xmp:iid:0d4d04c6-572b-4c98-acc4-ce5634ece83e",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          116,
+          227,
+          67,
+          82,
+          3,
+          63,
+          109,
+          178,
+          253,
+          98,
+          154,
+          89,
+          193,
+          204,
+          12,
+          41,
+          106,
+          18,
+          87,
+          52,
+          230,
+          35,
+          201,
+          54,
+          55,
+          87,
+          201,
+          75,
+          186,
+          5,
+          171,
+          242
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-22T23:06:42.757561855Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-22T23:06:42.757564044Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-22T23:06:42.757085402Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "3adc6062f1ac71985f5397005f2e219eb2c6ed303bd00edd1893be6fee2e0287",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:10a9ad23fe453f26a7461be871171a382a72106ec60e9bc0164de2363e5f3586",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/d3943dc35438/generated_images as /workspace/scratch/d3943dc35438/generated_images/exec-9a596395-d131-4855-a9f2-93c414d400fc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-22T23:06:46.069Z",
+    "bytes": 2006838,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "8fc11ff7b6ae2aa17f3ba054f8dbd8f8358b199202fdf11abe462f419696485a",
+    "candidate_branch": "native-image-candidate/gallery-cleaner-last-footstep-beat/10a9ad23fe453f26-dba741d2037f",
+    "candidate_commit": "8f67efc3d8fb4b6d9d445d82cdfe19b905e87d2e",
+    "receipt_path": "maintenance/native-image-candidates/gallery-cleaner-last-footstep-beat/receipt.json",
+    "receipt_sha256": "3d2318df224022516584d4dbaa7ac39dfbed593e1b80951ee8e864ffd8fa39a6",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/gallery-cleaner-last-footstep-beat/source.png.part000",
+        "bytes": 524288,
+        "sha256": "fe39b85caf263273f5b107ed16c0b27e287b7483efdc69a1c340e62b1521146a",
+        "blob_sha": "691f4a5191cb9611771a91174dc7dbd73ffb2d66"
+      },
+      {
+        "path": "maintenance/native-image-candidates/gallery-cleaner-last-footstep-beat/source.png.part001",
+        "bytes": 524288,
+        "sha256": "c44df0bd2e98e88ecb8bef9b386a2eb06a2ea84099cb52e496e4f536a6febb73",
+        "blob_sha": "13e7c07f687b2607955ef419ec286d91f0c6338f"
+      },
+      {
+        "path": "maintenance/native-image-candidates/gallery-cleaner-last-footstep-beat/source.png.part002",
+        "bytes": 524288,
+        "sha256": "62d23896b54aeee28465b5522298c23995a72ab4739c05130f5b8c21827766b7",
+        "blob_sha": "c870995a3fbe65beb51165fcd4a7efa04a203442"
+      },
+      {
+        "path": "maintenance/native-image-candidates/gallery-cleaner-last-footstep-beat/source.png.part003",
+        "bytes": 433974,
+        "sha256": "fa1aa0b7614c4c6dff1f0d0e6cb167c6b516c99df55abab5276bfeebe7b4d884",
+        "blob_sha": "af501accbd2fffc1e992edf3e2eff3c05b02e1fe"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "94d00f01589e519c994aea6bc670e8b90d89aa84",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "00cad58421009d07f0bf39e512e5939237c4caf13f573a3b5fd10610cc532680",
+      "observed_at": "2026-11-22T23:05:27.539Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/30baa8b564b26343921fee6abffaebea249d4eafcb817da4af2e64a8266219ec",
+      "receipt_path": "maintenance/native-image-generation-claims/30baa8b564b26343921fee6abffaebea249d4eafcb817da4af2e64a8266219ec.json",
+      "receipt_sha256": "239c51a67ee25e49ef4679504b4f513d6cf50a4f8513d3ca458feed0245ffb2d",
+      "commit_sha": "e90125ffa1aa773c1b9036c277998b27fabc3df0"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
