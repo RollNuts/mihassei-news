@@ -45,6 +45,21 @@
         "cut_id": "02",
         "image_sha256": "d0ea10b9e89eb6f4e77f9a5f3def26d7b8e3299d1b6ca6476608810d567be1a8"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261122155039122000",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-22T15:50:39.122+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "控室でカイロを握ってたら、みんなが順番に手を重ねてきた。あっという間に温かくなったけど、最後は私のカイロが冷めちゃった😂",
+      "source": {
+        "issue_slug": "november-hikari-city-and-pool-013",
+        "cut_id": "02",
+        "image_sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc"
+      }
     }
   ]
 }

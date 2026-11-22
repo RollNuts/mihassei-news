@@ -111,6 +111,14 @@ text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 
 ### 既存PRの公開状態の確認
 
+独立初読を済ませた後、作者のcheckout不足などで機械検証が未実施として引き継がれたopen PRは、同じhelperの`readValidationStatus`で既存CIを1回照合できる。Draft・未承認でも使えるが、初読入力の`read`とは分ける。`ci_run_id`は同PR・現headの実際の`check.yml`実行から取得する。
+
+```js
+text(await R.readValidationStatus({fetchRepository, ref: mainSha, pr, head, ci_run_id}));
+```
+
+`ci_verified`は、同repo・PR・headの最新run/attemptと実test job、形式確認・Python検証stepの成功が一致した証拠で、作者のローカル検証成功を意味しない。検証した`base_sha`も返し、最新mainとの統合可否は既存公開guardに残す。`ci_pending`・`ci_failed`・取得不能などの`attention`を区別し、取得不能・skipped・古い成功を完了へ置き換えない。初読・画像採否・公開許可は代行せず、同じheadで済んだ機械検証を再起動するためにも使わない。
+
 同headの初読・公開許可を保存済みの`news`・`market` PRは、同じhelperの`readHandoffStatus`でCI・finalizer・本番検証を1回照合する。明示された未完の引継ぎや`publication_unverified`がある時だけ使い、公開済みの過去PRを毎回調べ直さない。コード・放送室など通常統合のPRや、近況・写真特集へこの補助確認を必須化しない。
 
 ```js
@@ -195,6 +203,8 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 - jobの実stepが成功し、ログの本番revisionが対象SHAと一致することを確認する。docs-only祖先を許容した結果なら、その差分証明も残す。run全体のsuccessやPRのCI成功だけで完了にしない。
 - 対象slugの `Public article OK`、変更した画像・図の検証結果、必要な共有画像の対象を確認する。現行 `check_live.py` の本文確認は最新10記事、`check_share_cards.py` は選抜したカードの確認であり、対象外まで検証済みにしない。ログに含まれない対象や変更素材は、直接の取得・対象を指定した検証・次担当での確認を未完として残す。
 - 結果は「Actionsで実配信検証済み」と「今回のブラウザ目視」を分けて記録する。取得不能・実行中・対象外を0件や本番障害へ読み替えない。取得不能なら失敗した取得操作を残し、実行中なら同じrunの完了を確認する。対象外は対象を指定した検証へ引き継ぐ。
+
+同じ本番検証の`report_photo_health.py`は、既存のActions summaryとJSONへニュース・市況・写真特集・7人の近況の掲載記録も出す。最古の未完了号と固定順の次担当、人物別の最新実投稿・前日の掲載数を既存担当の未完照合に使う。これは固定checkoutの観測であり、定期runの成功・当日枠の期限超過・休場日・写真在庫を推定しない。`unavailable`を0件へ変換せず、本番配信は上記のrevisionと実checkで別に確認する。
 
 同じworkflowの末尾にある `Report photograph completion separately from delivery checks` は、checkout SHAに対応する画像選択・写真待ち件数・対象slugと次の操作をSummaryと `live-photo-health-<run_id>` artifactへ出す。記事・共有カードの配信結果と写真の完了を別々に読む。`photo_followup_counts` は写真向け記事だけの未完了で、意図的なイラストも含むJPEG全件の `missing` とは異なる。現在の記事SHAに一致する保存済み不採用理由は、簡潔なJSONとartifactの `photo_followup[].rejection_evidence`、またはSummary・jobログの `Saved rejection` から画像SHA・確認日時・元runと合わせて引き継ぐ。これは現素材の選択結果であり、新しい目視採用や全記事の本番表示確認ではない。正常な代替画像での公開は継続し、写真待ちは既存の回収担当が引き取る。
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import contextlib
+from datetime import datetime, timezone
 import io
 import json
 import os
@@ -11,7 +12,10 @@ import unittest
 from unittest.mock import patch
 
 from scripts.generated_photos import article_fingerprint
-from scripts.report_photo_health import collect, main, summary
+from scripts import content_operation_health
+from scripts.photo_editions import freeze_daily_schedule
+from scripts.photo_issues import MODEL_CHAT_URLS
+from scripts.report_photo_health import collect, main, operation_lines, summary
 
 
 class PhotoHealthReportTests(unittest.TestCase):
@@ -122,6 +126,117 @@ class PhotoHealthReportTests(unittest.TestCase):
         (self.root / "content/articles.json").write_text("broken JSON", encoding="utf-8")
         with self.assertRaisesRegex(RuntimeError, "do not treat it as zero pending"):
             collect(self.root, {"articles": "success"})
+
+
+class ContentOperationObservationTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        (self.root / "content").mkdir()
+        self.now = datetime(2026, 11, 22, 1, tzinfo=timezone.utc)  # Sunday 10:00 JST.
+        self.ids = list(MODEL_CHAT_URLS)
+        self.catalog = {"schema_version": 1, "models": [
+            {"id": model, "name": "本人" + str(i)} for i, model in enumerate(self.ids)], "issues": []}
+        self.schedule = freeze_daily_schedule(self.catalog, "2026-11-15", seed="a" * 32,
+                                               now=datetime(2026, 11, 15, tzinfo=timezone.utc))
+        for i, model in enumerate(self.schedule["order"][:2]):
+            self.catalog["issues"].append({"slug": "feature-" + str(i), "model_id": model,
+                "state": "published", "published_at": f"2026-11-{15+i:02d}T14:00:00+09:00",
+                "images": {str(cut): {} for cut in range(10)}})
+        self.edition = {"number": 2, "slug": "issue-002", "state": "published", "legacy": False,
+                        "release_mode": "daily", "title": "写真", "summary": "写真とコラム。",
+                        "published_at": self.catalog["issues"][0]["published_at"],
+                        "schedule": self.schedule, "features": [row["slug"] for row in self.catalog["issues"]]}
+        self.write("photo_issues.json", self.catalog)
+        self.write("photo_editions.json", {"schema_version": 1, "editions": [self.edition]})
+        self.write("articles.json", [
+            {"slug": "today-utc", "published_at": "2026-11-21T15:30:00Z", "fiction_at": "2031-11-22T00:30:00+09:00"},
+            {"slug": "yesterday-jst", "published_at": "2026-11-21T23:30:00+09:00"},
+            {"slug": "not-yet", "published_at": "2026-11-22T03:00:00Z"},
+        ])
+        self.write("market_bulletins.json", [{"slug": "friday-close", "published_at": "2026-11-20T16:24:53+09:00"}])
+        self.stories = [{"id": "post-" + str(i), "model_id": model,
+                         "published_at": "2026-11-20T12:25:00+09:00" if model == "hanase-mio"
+                         else "2026-11-21T21:00:00+09:00"} for i, model in enumerate(self.ids)]
+        self.write("photo_stories.json", {"schema_version": 1, "stories": self.stories})
+
+    def write(self, name, data):
+        (self.root / "content" / name).write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+    def observe(self):
+        return content_operation_health.collect(self.root, now=self.now)
+
+    def test_jst_boundaries_actual_instants_and_future_records_are_distinct(self):
+        report = self.observe()
+        news = report["news"]
+        self.assertEqual(news["status"], "observed")
+        self.assertEqual((news["published_by_observation_count"], news["today_count"],
+                          news["previous_day_count"], news["future_dated_count"]), (2, 1, 1, 1))
+        self.assertEqual(news["latest"]["slug"], "today-utc")
+        self.assertEqual(news["latest"]["date_jst"], "2026-11-22")
+        self.assertEqual(report["date_jst"], "2026-11-22")
+        self.assertFalse(report["live_delivery_verified"])
+        self.assertEqual(report["schedule_evaluation"], "not_performed")
+
+    def test_completed_dates_reveal_missing_yesterday_without_guessing_todays_deadline(self):
+        report = self.observe()
+        people = {row["model_id"]: row for row in report["cast_stories"]["models"]}
+        self.assertEqual(len(people), 7)
+        self.assertEqual(people["hanase-mio"]["completed_days_since_latest_post"], 1)
+        self.assertEqual(people["hanase-mio"]["previous_day_count"], 0)
+        self.assertEqual(people["tsukishiro-rena"]["completed_days_since_latest_post"], 0)
+        self.assertEqual(people["tsukishiro-rena"]["today_count"], 0)
+        self.assertEqual(report["market"]["status"], "observed")
+        self.assertEqual(report["market"]["today_count"], 0)  # Sunday is not called an outage.
+        self.assertNotIn("overdue", json.dumps(report))
+        rendered = "\n".join(operation_lines(report))
+        self.assertIn("no scheduled deadline is inferred", rendered)
+        self.assertIn("not additional live verification", rendered)
+
+    def test_oldest_incomplete_week_and_next_frozen_model_survive_week_rollover(self):
+        photo = self.observe()["photo_editions"]
+        self.assertEqual(photo["status"], "observed")
+        oldest = photo["oldest_incomplete_daily_edition"]
+        self.assertEqual((oldest["slug"], oldest["published_feature_count"], oldest["recorded_photo_count"]),
+                         ("issue-002", 2, 20))
+        self.assertEqual(oldest["next_model_id"], self.schedule["order"][2])
+        self.assertEqual(oldest["next_scheduled_date_jst"], "2026-11-17")
+        self.assertEqual(photo["stock_status"], "not_observed")
+        self.assertNotIn("stock_count", photo)
+
+    def test_missing_or_corrupt_channel_stays_unknown_while_other_channels_remain_visible(self):
+        (self.root / "content/market_bulletins.json").unlink()
+        (self.root / "content/photo_stories.json").write_text("broken")
+        report = self.observe()
+        for key in ("market", "cast_stories"):
+            self.assertEqual(report[key]["status"], "unavailable")
+            self.assertNotIn("today_count", report[key])
+        self.assertEqual(report["news"]["status"], "observed")
+        self.assertEqual(report["photo_editions"]["status"], "observed")
+        self.assertIn("unavailable", "\n".join(operation_lines(report)))
+
+    def test_missing_creator_file_is_not_silently_replaced_by_legacy_posts(self):
+        directory = self.root / "content/photo_stories"
+        directory.mkdir()
+        for model in self.ids[:-1]:
+            (directory / (model + ".json")).write_text(json.dumps({"schema_version": 1, "stories": []}))
+        self.assertEqual(self.observe()["cast_stories"]["status"], "unavailable")
+
+    def test_future_creator_post_does_not_hide_gap_or_count_as_publication(self):
+        self.stories.append({"id": "future-mio", "model_id": "hanase-mio", "published_at": "2026-11-23T12:00:00+09:00"})
+        self.write("photo_stories.json", {"schema_version": 1, "stories": self.stories})
+        mio = next(row for row in self.observe()["cast_stories"]["models"] if row["model_id"] == "hanase-mio")
+        self.assertEqual((mio["future_dated_count"], mio["completed_days_since_latest_post"]), (1, 1))
+        self.assertEqual(mio["latest"]["date_jst"], "2026-11-20")
+
+    def test_naive_time_or_duplicate_identity_cannot_be_reported_as_healthy_zero(self):
+        for rows in ([{"slug": "bad-time", "published_at": "2026-11-22T10:00:00"}],
+                     [{"slug": "duplicate", "published_at": "2026-11-21T10:00:00Z"}] * 2):
+            self.write("articles.json", rows)
+            with self.subTest(rows=rows):
+                self.assertEqual(self.observe()["news"]["status"], "unavailable")
+                self.assertNotIn("today_count", self.observe()["news"])
 
 
 if __name__ == "__main__":
