@@ -45,6 +45,21 @@
         "cut_id": "09",
         "image_sha256": "876e63963be244dc45a0bd5c7fb26573e8c0a0413ef92e47795eb81a8dc5549b"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261122181520227",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-22T18:15:20.227+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夕方、旅先の小さなお店で厚手の靴下を見つけました。履いてみると足先がふんわり暖かくて、帰り道を少しだけ遠回りしたくなりました。",
+      "source": {
+        "issue_slug": "november-warm-water-and-riverside-yuki-009",
+        "cut_id": "10",
+        "image_sha256": "0c48c0c898332c12b94df01a7629106513d4445644fe7c6b60e2efa6fbd1dcc0"
+      }
     }
   ]
 }
