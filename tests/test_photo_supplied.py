@@ -16,6 +16,29 @@ ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 11, 15, tzinfo=timezone.utc)
 RETAINED_FP = "d1de2152b14f4676cf9624626005195d11ea36685e1202b157ec44c4ca3d200e"
 
+
+class SuppliedTransformTests(unittest.TestCase):
+    def test_jpeg_js_requires_png_and_the_pinned_preserve_aspect_settings(self):
+        transform = {"encoder": "jpeg-js", "max_edge": 1200, "jpeg_quality": 84, "geometry": "preserve-aspect"}
+        details = {"encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c", "resample": "bilinear", "mode": "RGB"}
+        receipt = {"source": {"format": "png"}, "transform": transform, "encoding_details": details}
+        self.assertTrue(p._supplied_transform(receipt))
+
+        for changes in (
+                {"source": {"format": "jpeg"}}, {"source": {}}, {"source": None},
+                {"encoding_details": None}, {"encoding_details": {"resample": "bilinear", "mode": "RGB"}},
+                {"encoding_details": {**details, "encoder_ref": "main"}},
+                {"encoding_details": {**details, "resample": "nearest"}},
+                {"encoding_details": {**details, "mode": "RGBA"}},
+                {"encoding_details": {**details, "optimize": True}},
+                {"transform": {**transform, "jpeg_quality": 83}},
+                {"transform": {**transform, "geometry": "crop"}},
+                {"transform": {**transform, "encoder": "Pillow"}},
+                {"transform": {**transform, "encoder": "macOS sips"}}):
+            with self.subTest(changes=changes):
+                self.assertFalse(p._supplied_transform({**receipt, **changes}))
+
+
 class SuppliedPhotoTests(unittest.TestCase):
     def setUp(self):
         self.issue = copy.deepcopy(p.load_photo_issues(ROOT)["issues"][0])

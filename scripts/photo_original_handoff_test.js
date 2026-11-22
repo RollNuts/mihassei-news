@@ -4,6 +4,7 @@ const {createHash} = require("node:crypto");
 const {crc32, deflateSync} = require("node:zlib");
 const bytes = require("./native_image_bytes.js");
 const helper = require("./photo_original_handoff.js");
+const stage = require("./native_image_stage.js");
 const hash = (data, algorithm="sha256") => createHash(algorithm).update(data).digest("hex");
 const sha1 = value => hash(JSON.stringify(value), "sha1");
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNgYGAAAAAEAAH2FzhVAAAAAElFTkSuQmCC","base64");
@@ -25,7 +26,7 @@ function largePng(width = 1024, height = 512) {
     pngChunk("IDAT",deflateSync(Buffer.alloc(height*(1+width*3)), {level:0})),pngChunk("IEND",Buffer.alloc(0))]);
 }
 
-function setup(input = png, {fileAdapter = true} = {}) {
+function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
   const blobs = new Map(), trees = new Map([[baseTree,[]]]), branches = new Map();
   const commits = new Map([[main,{sha:main,tree:{sha:baseTree},parents:[]}]]);
   const state = {active:true,lost:false,writes:[],reads:[],branches,trees,blobs,commits,
@@ -33,6 +34,11 @@ function setup(input = png, {fileAdapter = true} = {}) {
   const github = {
     async fetch({url}) {
       const path = url.slice(("https://api.github.com/repos/" + repo).length);
+      assert.ok(!path.startsWith("/git/blobs/"), "binary blobs require immutable fetch_file");
+      if (path === "") return {full_name:repo,private:false,visibility:"public"};
+      if (path === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:main}};
+      if (path === "/actions/workflows/free-cpu-scenes.yml")
+        return {path:".github/workflows/free-cpu-scenes.yml",state:state.active ? "active" : "disabled_manually"};
       if (path.startsWith("/git/commits/")) return commits.get(path.slice(13));
       if (path.startsWith("/git/trees/")) {
         const id = path.split("/")[3].split("?")[0];
@@ -45,7 +51,7 @@ function setup(input = png, {fileAdapter = true} = {}) {
       if (ref === "cast-source-drafts") return {encoding,content:JSON.stringify({model_id:"kiritani-sumire",source_chat_url:chat})};
       const tree = trees.get(commits.get(ref).tree.sha);
       const entry = tree.find(e => e.path === path);
-      return {encoding,content:entry.content ?? blobs.get(entry.sha).toString("base64")};
+      return {sha:entry.sha,encoding,content:entry.content ?? blobs.get(entry.sha).toString("base64")};
     },
     async create_blob({content,encoding}) {
       const bin = Buffer.from(content,encoding), sha = hash(bin,"sha1");
@@ -88,8 +94,12 @@ function setup(input = png, {fileAdapter = true} = {}) {
     const operation = github[name];github[name] = async args => {state.reads.push(name);return operation(args)};
   }
   const info = bytes.inspectPng(input);
-  const createApi = () => helper.create({runtime:{...bytes,sha256:hash},github,
-    cloudStatus:async () => ({state:state.active && state.writes.length < state.stopAfterWrites &&
+  const runtime = {...bytes,sha256:hash,convertPhoto};
+  const resetGuard = () => {
+    state.guard = stage.create({runtime:{...runtime,convert:()=>assert.fail("No article conversion")},github,repository:repo}).cloudStatus;
+  };
+  const createApi = () => helper.create({runtime,github,
+    cloudStatus:async () => state.guard ? state.guard() : ({state:state.active && state.writes.length < state.stopAfterWrites &&
       state.writes.filter(name => name === "create_blob").length < state.stopAfterBlobs
       ?"active":"disabled",public:true,main_commit_sha:main,jpeg_bytes:123}),
     readCandidatePng:fileAdapter ? async () => {
@@ -97,7 +107,7 @@ function setup(input = png, {fileAdapter = true} = {}) {
       return {structuredContent:{status:"read",mime_type:"image/png",sha256:hash(input),bytes:input.length,...info,
         image_url:dataUrl(input),...state.fileMetadata}};
     } : undefined});
-  return {api:createApi(),state,reopen:createApi};
+  return {api:createApi(),state,reopen:createApi,resetGuard};
 }
 
 test("stages the exact original, recovers a lost ref response and verifies immutable bytes",async () => {
@@ -342,6 +352,15 @@ test("bounded readback reconstructs a 14-part original across fresh cells within
   input.assets=[{...last,parts,source_ordinal:1}];
   const checkpoint=await api.publishCheckpoint(input,await api.prepareCheckpoint(input));
   const final=await api.publish(input,await api.prepare(input,checkpoint.commit));
+  const ref = {issue:input.issue, ...final, source_sha256:sha};
+  const priorWrites = state.writes.length, priorReads = state.reads.length;
+  await assert.rejects(api.uploadReviewJpeg(ref), /larger than 4 MiB/);
+  assert.equal(state.writes.length, priorWrites);
+  assert.equal(state.reads.length, priorReads + 1); // receipt only
+  await assert.rejects(api.readOriginalStep(ref, null, 9), /part read limit/);
+  const firstSeven = await api.readOriginalStep(ref, null, 7);
+  assert.equal(firstSeven.next, 7);
+  assert.equal((await api.readOriginalStep(ref, firstSeven.state, 7)).status, "original_verified");
   state.active=false;
   for(const [method,saved,overhead] of [["readCheckpointOriginalStep",checkpoint,3],["readOriginalStep",final,1]]) {
     const ref={issue:input.issue,...saved,source_sha256:sha};
@@ -386,4 +405,92 @@ test("bounded readback rejects edited, reordered, skipped and cross-reference pr
   const final=await api.publish(input,await api.prepare(input,advanced.commit));
   await assert.rejects(api.readOriginalStep({issue:input.issue,...final,source_sha256:sha},good),/readback state/);
   assert.deepEqual(Buffer.from((await api.readCheckpointOriginalStep(ref,good)).bytes),large);
+});
+
+test("a completed receipt stages one verified JPEG on its own branch and recovers a lost lease reply", async () => {
+  const source = largePng(320,320), sourceHash = hash(source);
+  // The codec is separately tested. This fixture exercises the transport of actual distinct byte buffers.
+  const jpeg = Buffer.alloc(16000);
+  jpeg.set([255,216,255]); jpeg.set([255,217],jpeg.length-2);
+  const convertPhoto = original => {
+    assert.deepEqual(Buffer.from(original), source);
+    return {width:320,height:320,bytes:jpeg,sha256:hash(jpeg),base64:jpeg.toString("base64"),
+      transform:{encoder:"jpeg-js",max_edge:1200,jpeg_quality:84,geometry:"preserve-aspect"},
+      encoding_details:{encoder_ref:bytes.SOURCES.encode.ref,resample:"bilinear",mode:"RGB"}};
+  };
+  const {api,state,resetGuard} = setup(source,{convertPhoto});
+  const raw = packet();
+  raw.assets = [{...await api.uploadDataUrl(dataUrl(source),sourceHash),source_ordinal:1}];
+  const staged = await api.publish(raw,await api.prepare(raw));
+  const ref = {issue:raw.issue,...staged,source_sha256:sourceHash};
+  const verified = await api.readOriginalStep(ref);
+  let writes = state.writes.length;
+  await assert.rejects(api.uploadReviewJpeg(ref,{...verified,bytes:png}),/original PNG changed/);
+  await assert.rejects(api.uploadReviewJpeg({...ref,receipt_sha256:"0".repeat(64)},verified),/receipt changed/);
+  state.active=false;
+  await assert.rejects(api.uploadReviewJpeg(ref,verified),/stopped/);
+  assert.equal(state.writes.length,writes);
+  state.active=true;
+
+  // Exercise the real public cloud guard with a fresh immutable-main cache in every measured cell.
+  async function callbacks(expected, operation) {
+    resetGuard();
+    const {length:reads} = state.reads, {length:mutations} = state.writes;
+    const result = await operation();
+    const count = state.reads.length - reads + state.writes.length - mutations;
+    assert.equal(count, expected);
+    assert.ok(count <= 15);
+    return result;
+  }
+  const prepared = await callbacks(7,()=>api.uploadReviewJpeg(ref,verified));
+  const recoveredBlob = await callbacks(8,()=>api.uploadReviewJpeg(ref));
+  assert.deepEqual(recoveredBlob,prepared);
+  const plan = await callbacks(14,()=>api.prepareReviewJpeg(ref,prepared,staged.commit));
+  const provisional = state.trees.get(state.commits.get(plan.commit).tree.sha);
+  const originalTree = state.trees.get(state.commits.get(staged.commit).tree.sha);
+  assert.equal(provisional.length, originalTree.length + 2);
+  assert.equal(state.branches.get(staged.branch),staged.commit);
+  const file = provisional.find(f => f.path.endsWith(".jpg"));
+  assert.equal(file.path,"maintenance/photo-issue-plans/example-011/prepared-jpegs/"+sourceHash+".jpg");
+  assert.equal(file.sha,prepared.jpeg.blob);
+  const receipt = JSON.parse(provisional.find(f=>f.path.endsWith(sourceHash+".json")).content);
+  assert.equal(receipt.status,"unreviewed");
+  assert.equal(receipt.original_commit,staged.commit);
+
+  // Substituting another tree or binary after preparation must not advance the branch.
+  const sibling = {path:"other.txt",mode:"100644",type:"blob",sha:sha1("unrelated")};
+  provisional.push(sibling);
+  await assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/other candidate files/);
+  provisional.pop();
+  const corrupted = Buffer.from(jpeg); corrupted[100] ^= 1;
+  state.blobs.set(file.sha,corrupted);
+  await assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/bytes changed/);
+  state.blobs.set(file.sha,jpeg);
+  state.active=false;
+  await assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/stopped/);
+  assert.equal(state.branches.get(staged.branch),staged.commit);
+  state.active=true;
+  await assert.rejects(api.prepareReviewJpeg(ref,prepared,main),/branch moved/);
+  await assert.rejects(api.prepareReviewJpeg({...ref,issue:"elsewhere"},prepared,staged.commit),/branch/);
+  await assert.rejects(api.prepareReviewJpeg(ref,{...prepared,encoding_details:{...prepared.encoding_details,encoder_ref:main}},staged.commit),/Invalid prepared/);
+
+  state.lost=true;
+  await callbacks(14,()=>assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/lost response/));
+  assert.equal(state.branches.get(staged.branch),plan.commit);
+  state.lost=false;
+  writes = state.writes.length;
+  const recovered = await callbacks(6,()=>api.publishReviewJpeg(ref,prepared,plan));
+  const live = await callbacks(2,()=>api.readReviewJpeg(ref,prepared,recovered.commit));
+  assert.equal(live.image_bytes_verified,true);
+  assert.deepEqual(Buffer.from(live.bytes),jpeg);
+  assert.deepEqual(await api.prepareReviewJpeg(ref,prepared,recovered.commit),{base:recovered.commit,commit:recovered.commit});
+  assert.equal(state.writes.length,writes);
+  assert.deepEqual(Buffer.from(await api.readOriginal(ref)), source);
+  assert.deepEqual([...state.branches.keys()],[staged.branch]);
+
+  const sidecar=provisional.find(f=>f.path.endsWith(sourceHash+".json"));
+  sidecar.content+=' ';
+  await assert.rejects(api.prepareReviewJpeg(ref,prepared,recovered.commit),/Occupied/);
+  await assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/Occupied/);
+  assert.equal(state.writes.length,writes);
 });

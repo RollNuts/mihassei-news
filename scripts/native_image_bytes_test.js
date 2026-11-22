@@ -35,6 +35,57 @@ var NativeImageBytesTests = function (api, sources) {
   assert(plain.sha256==="fed04331a8d183970996abc287bcbde743a3e7acacac05d4a9c732bdc0598331","PNG-to-JPEG known byte digest");
   assert(plain.source_png_sha256==="c90e86090a625661b19960cafdde6e347d6e32d73837aaae533f66dd3f099506","original PNG digest");
   assert(plain.receipt===null,"no C2PA means no invented receipt");
+  // A one-bit scanline repeated horizontally. Use uncompressed DEFLATE blocks
+  // so these fixtures also run in GPT without Node, Canvas or extra libraries.
+  function stripedPhoto(width, height, rows, palette) {
+    const stride = 1 + Math.ceil(width / 8), pixels = new Uint8Array(stride * height);
+    for (let y = 0; y < height; y++) pixels.fill(rows[y % rows.length], y * stride + 1, (y + 1) * stride);
+    const blocks = [Uint8Array.of(0x78, 0x01)];
+    for (let i = 0; i < pixels.length; i += 65535) {
+      const part = pixels.subarray(i, i + 65535), n = part.length;
+      blocks.push(Uint8Array.of(i + n === pixels.length ? 1 : 0, n, n >> 8, ~n, (~n) >> 8), part);
+    }
+    let a = 1, b = 0;
+    for (const sample of pixels) { a = (a + sample) % 65521; b = (b + a) % 65521; }
+    const header = concat(u32(width), u32(height), Uint8Array.of(1, palette ? 3 : 0, 0, 0, 0));
+    return concat(png.subarray(0, 8), chunk("IHDR", header), palette ? chunk("PLTE", palette) : new Uint8Array(),
+      chunk("IDAT", concat(...blocks, u32((b << 16) | a))), chunk("IEND", new Uint8Array()));
+  }
+  const portrait = stripedPhoto(320, 1201, [0, 255]);
+  const photo = rt.convertPhoto("data:image/png;base64," + api.toBase64(portrait));
+  assert(photo.sourceWidth === 320 && photo.sourceHeight === 1201 && photo.width === 320 && photo.height === 1200,
+    "portrait is resized with its own aspect ratio and rounded short edge");
+  // Independently encoded from the expected shades of the alternating source
+  // rows, using the full-height fractional offset (y + 0.5) / 1200 per row.
+  assert(photo.sha256 === "e482afb3d622ceb4336faec1d22dabe47250bc7cea532cd381c7e30086f16d3b" &&
+    photo.sha256 === rt.sha256(photo.bytes) && photo.sha256 === rt.sha256(rt.fromBase64(photo.base64)) &&
+    photo.source_png_sha256 === rt.sha256(portrait), "full portrait survives dimension rounding without a center crop");
+  assert(photo.transform.encoder === "jpeg-js" && photo.transform.max_edge === 1200 &&
+    photo.transform.jpeg_quality === 84 && photo.transform.geometry === "preserve-aspect" &&
+    photo.encoding_details.encoder_ref === api.SOURCES.encode.ref && photo.encoding_details.resample === "bilinear" &&
+    photo.encoding_details.mode === "RGB" && !("receipt" in photo), "photo records its actual transform without an origin claim");
+  function addPhotoChunk(type, data) {
+    return concat(portrait.subarray(0, 33), chunk(type, data), portrait.subarray(33));
+  }
+  const annotated = addPhotoChunk("caBX", api.utf8("opaque supplied metadata"));
+  const annotatedPhoto = rt.convertPhoto(annotated);
+  assert(annotatedPhoto.sha256 === photo.sha256 && annotatedPhoto.source_png_sha256 === rt.sha256(annotated),
+    "original hash keeps opaque metadata without requiring a readable C2PA claim");
+  const small = rt.convertPhoto(stripedPhoto(320, 320, [0, 255]).buffer);
+  assert(small.width === 320 && small.height === 320, "small supplied photos retain their original dimensions");
+  for (const type of ["acTL", "fcTL", "fdAT", "IHDR"])
+    rejects(() => rt.convertPhoto(addPhotoChunk(type, portrait.subarray(16, 29))), "photo rejects " + type + " before pixel decode");
+  function replacePhotoHeader(header) {
+    return concat(portrait.subarray(0, 8), chunk("IHDR", header), portrait.subarray(33));
+  }
+  for (const [label, width, height, depth] of [
+    ["per-side limit", 8193, 3000, 1], ["pixel limit", 8000, 8000, 1],
+    ["scaled short-edge limit", 320, 1400, 1], ["invalid bit depth", 320, 1201, 255]
+  ]) rejects(() => rt.convertPhoto(replacePhotoHeader(concat(u32(width), u32(height), Uint8Array.of(depth, 0, 0, 0, 0)))),
+    "photo rejects " + label);
+  const noisy = stripedPhoto(1200, 1200, [34, 145, 216, 205, 195, 16, 65, 30], Uint8Array.of(255, 0, 0, 0, 255, 255));
+  rejects(() => rt.convertPhoto(noisy), "photo rejects a JPEG larger than 700 KiB at the required quality");
+  rejects(() => rt.convertPhoto(stripedPhoto(320, 320, [0])), "photo rejects a JPEG below 16,000 bytes");
   const evidence=api.extractC2PA(withMetadata(payload(enc({instanceID:currentID,claim_generator:"Unsigned synthetic fixture"}))));
   assert(evidence.generation_receipt===currentID&&evidence.generation_id===currentID.slice(8),"current direct claim wins over old and ingredient IDs");
   assert(evidence.source_c2pa.actions[0].value.actions[0].when===when,"nanosecond timestamp retained");
