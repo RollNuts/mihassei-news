@@ -51,7 +51,12 @@ var NativeImageStage = (function () {
       // Preserve concrete outer errors; a generic outer isError flag must not
       // hide the inner NOT_FOUND record used by exact missing-ref checks.
       const failed=r?.error_code||r?.error?r:p?.error_code||p?.error?p:r?.isError||p?.isError?p:null;
-      if(!p||failed){const provider=failed||p,e=Error(provider?.error||"GitHub operation failed");e.provider=provider;throw e;}
+      if(!p||failed){
+        const provider=failed||p;
+        const detail=provider?.error_data?.message||provider?.error||provider?.error_code;
+        const e=Error(typeof detail==="string"?detail:"GitHub operation failed");
+        e.provider=provider;throw e;
+      }
       return p;
     }
     async function fetchJSON(path){
@@ -854,10 +859,11 @@ var NativeImageStage = (function () {
           // This entire ownership grant is one cold <=15-call cell. Never resume
           // an uncertain create response into permission to generate.
           const created=await call("create_branch",{branch_name:state.claim.branch,sha:state.claim.commit_sha});
-          if(created.branch!==state.claim.branch||await branchHead(state.claim.branch)!==state.claim.commit_sha)
-            throw Error("Claim ownership unconfirmed; recover only");
+          if(created.branch!==state.claim.branch)throw Error("Claim create response did not confirm the branch; recover only");
           if((await read(state.claim.receipt_path,state.claim.branch)).content!==state.claimText)throw Error("Claim branch readback mismatch");
-          await verifyProtected(state.claim.branch,plan.protectedHashes);
+          // claim_commit verified every protected file at this immutable SHA.
+          // Leave room for a fresh tree scan if main moves before the final guard.
+          if(await branchHead(state.claim.branch)!==state.claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
           if(await lookupSaved(plan,state))return;
           await cloudStatus();
           return {status:"reserved",plan,transportPreflight:state.proof,generationClaim:state.claim};

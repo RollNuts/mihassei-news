@@ -46,8 +46,8 @@ try {
   text(result.status === "saved" ? {status: result.status, commitSha: result.commitSha,
     branch: result.branch, receipt_sha256: result.receipt_sha256} : result);
 } catch (error) {
-  text({status: "stopped", phase: error.stage, message: error.message,
-    checkpoint: error.checkpoint});
+  text({status: "stopped", message: String(error?.message ?? error), phase: error?.stage,
+    checkpoint: error?.checkpoint, last_confirmed_phase: checkpoint?.phase});
 }
 ```
 
@@ -71,8 +71,8 @@ try {
     source_sha256: result.receipt.source.sha256, jpeg_sha256: result.receipt.jpeg.sha256
   });
 } catch (error) {
-  text({status: "stopped", phase: error.stage, message: error.message,
-    checkpoint: error.checkpoint});
+  text({status: "stopped", message: String(error?.message ?? error), phase: error?.stage,
+    checkpoint: error?.checkpoint, last_confirmed_phase: checkpoint?.phase});
 }
 ```
 
