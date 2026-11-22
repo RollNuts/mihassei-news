@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "amane-hikari",
   "name": "天音ひかり",
-  "created_date": "2026-11-21",
+  "created_date": "2026-11-22",
   "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
   "photo_reference": {
-    "issue_slug": "november-city-lights-hikari-006",
+    "issue_slug": "november-hikari-city-and-pool-013",
     "cut_id": "02",
-    "image_sha256": "d0ea10b9e89eb6f4e77f9a5f3def26d7b8e3299d1b6ca6476608810d567be1a8"
+    "image_sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc"
   },
-  "post_text": "午後のリハで新しい曲の間奏だけ何度も合わせた。最後に全員ぴたりと止まった瞬間、思わず顔を見合わせて笑っちゃった。あれ、もう一回やりたい！",
-  "spoken_line": "今の、もう一回やりたい！",
-  "future_idea": "2031年、AIが作った振付を公演で使う場合の権利と報酬分配を定める制度が成立。ダンサーと興行側の契約が変わる。"
+  "post_text": "控室でカイロを握ってたら、みんなが順番に手を重ねてきた。あっという間に温かくなったけど、最後は私のカイロが冷めちゃった😂",
+  "spoken_line": "みんな、ちょっと待って！",
+  "future_idea": "2031年、出演者の稽古時間と体調を記録する新制度が導入。公演運営側と出演者の休息確保をめぐって契約が変わる。"
 }
