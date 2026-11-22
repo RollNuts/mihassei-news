@@ -413,6 +413,8 @@ The producer can deliver existing PNGs from its own chat to the editor without a
 
 Load `scripts/photo_original_handoff.js` from the same pinned main as the native byte and staging helpers above. Use the initialized byte runtime, ordinary GitHub callbacks and existing live cloud guard. Choose the input route that matches the actual original returned in this execution; a file adapter is required only for a local file. Keep image bytes and base64 inside code mode. Check the 12 GiB free-space floor wherever files are materialized. Candidate writes check the public workflow and the main JPEG total each time. This is transport of an existing original, not permission for another generation; stock replenishment and attempt reservations follow [EDITORIAL_LOOP](EDITORIAL_LOOP.md#写真ストックと制作量).
 
+If a complete weekly original already exists on the pinned candidate commit, reuse it. When GitHub Contents returns just the blob ID for a large numbered original or supplement, call the existing receiver's [read_weekly_candidate_png](IMAGE_CANDIDATE_RECEIVER.md#reading-a-saved-weekly-original) with its issue, commit, path and expected SHA-256. Decode its structured PNG data URL inside code mode. Keep the ID from that exact GitHub path for the release tree. The source stays on its candidate commit and the editor receives its bytes without uploading another copy.
+
 When ImageGen actually returns a PNG data URL to code mode, pass that unchanged value directly. The following `imagegenResult` is the real tool result, retained privately in code mode; it is not a made-up URL or a conversation preview. No local file or `readCandidatePng` adapter is needed.
 
 ```js
