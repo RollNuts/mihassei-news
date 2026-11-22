@@ -1,5 +1,74 @@
 [
   {
+    "slug": "paired-maze-robots-yield-at-junction",
+    "category": "技術",
+    "flash": "迷路ロボ、譲った一歩が決勝点",
+    "fiction_company": "学生チーム「星川工科」・競技大会「双走マウス杯」（いずれも2031年の創作）",
+    "art": "cards",
+    "fiction_at": "2031-11-22T20:15:43+09:00",
+    "published_at": "2026-11-22T20:15:43+09:00",
+    "publication_slot": "2026-11-22T19:30:00+09:00",
+    "title": "学生チームのロボット2台、道を譲って優勝　速さを競う迷路が協力レースに",
+    "summary": "2031年、学生チームが製作した2台の小型ロボットが、別々の入口から迷路へ入り、見つけた壁と自分の位置を共有してゴールを目指した。合流点で青い機体が脇へ下がり、赤い相棒を先に通したことで、2台とも早く到着。1台の最高速ではなく、協力の設計が勝敗を決めた。",
+    "paragraphs": [
+      "2031年11月22日、学生チーム「星川工科」の青いロボットが、迷路の中央でいったん後退した。別の入口から走ってきた赤い相棒が先に細い通路へ入り、青もその後を追ってゴールした。2台がそろって着くまでの時間を競う「双走マウス杯」の決勝で、この譲り方が優勝を決めた。",
+      "大会では2台を左右の入口から同時に発進させ、まだ知らない迷路の壁を調べながら中央のゴールへ向かう。各機体は見つけた壁の位置と自分の現在地を無線で相棒に送り、相手から届いた情報も使って走る。発進後は学生が遠隔操縦できず、通信が途切れた場所では機体自身が進路を選ぶ。時計は先に着いた1台ではなく、遅れて着いた方がゴールした時に止まる。",
+      "2026年11月21〜22日、国内では学生の自作機が迷路走行を競う「全日本学生マイクロマウス大会」が開催された。5年後の双走マウス杯は、小型ロボットの速さを追うだけでなく、2台が別々に見つけた道を合わせる新しい競技だ。速い1台を作るなら部品や調整を集中できるが、協力レースには2台分のセンサーと通信装置、互いに邪魔をしない判断を試す時間が必要になる。",
+      "星川工科の青い機体は序盤に行き止まりを見つけ、壁の位置を赤へ送った。赤はその道へ入らず、別の短い経路を通って中央へ向かった。一方、先に合流点を見つけた青は、赤が反対側の通路から近づいていることを通信で知った。そのまま両方が進めば、狭い通路の入口で向かい合い、どちらも前へ出られなくなる。",
+      "そこで青は、横に設けられた一マスの待避区画へ後退した。赤が通り過ぎると青は再び前進し、2台で中央のゴールを通過した。別のチームは先頭の1台をより早くゴールさせたが、相棒が合流点で止まり、2台目の到着で差がついた。星川工科はどちらの機体も最短の経路を走らなかったのに、2台をそろえる時間では一番だった。",
+      "表彰後、学生たちは机に2台を並べ、走行記録の画面で青が下がった数秒間を指さした。注目されたのは最高速度の数字ではなく、相棒のために空けた通路だった。見学していた別チームの学生は、自分の設計ノートに新たな待避区画を描き足した。次に競われるのは、速い機械を2台並べる技術だけではなく、互いの道を譲り合える機械を作る技術になる。"
+    ],
+    "source": {
+      "kind": "学生マイクロマウス大会・主催者公式情報",
+      "publisher": "公益財団法人ニューテクノロジー振興財団",
+      "published_at": "2026-11-18T00:00:00+09:00",
+      "url": "https://www.ntf.or.jp/student2026/",
+      "topic": "2026年11月21日・22日に東京工芸大学厚木キャンパスで第41回全日本学生マイクロマウス大会を開催する主催者の公式案内。11月18日に更新され、11月22日の実競技はマイクロマウス・クラシックマウス・ロボトレース。2台が地図を通信共有し合流地点で譲り合う協力レースや星川工科の優勝は公式の大会結果ではなく、2031年の創作。"
+    },
+    "scene_prompt": "Natural photorealistic horizontal 16:9 documentary news photograph of a fictional Japanese student robotics competition inside a modest bright indoor gymnasium in November 2031. On a waist-high tabletop maze with simple neutral partition walls, a small blue wheeled maze robot is visibly tucked backward into a one-cell side alcove while a small red wheeled maze robot rolls past toward a central straight corridor. Two Japanese adult student makers in casual shirts watch closely beyond the table. Both robots and the junction geometry are clear and physically plausible, normal overhead gym lighting, realistic plastic and metal, candid reportage framing, no words, no sponsor logos, no readable displays, no sci-fi glow, no real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "迷路ロボット",
+      "ロボット競技",
+      "協調走行"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "マイクロマウス",
+      "ロボット競技"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "迷路で速かったのは、先を急ぐロボットではなく相棒に道を譲った2台。2031年、競技の勝ち方も変わりました。",
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月、第41回全日本学生マイクロマウス大会が実際に開催され、自作の小型ロボットが迷路走行などを競った",
+      "target": "2台が迷路の壁と現在位置を通信共有し、後着時刻で順位を決める2031年の架空の協力レース",
+      "action": "青い機体が合流点の待避区画へ後退して赤い相棒を先に通し、その後を追ってゴールする",
+      "outcome": "学生チームが2台の到着時間で優勝し、他チームが速度だけでなく待避場所を設計し始める"
+    },
+    "reader_clarity": {
+      "who": "学生チーム",
+      "action": "ロボット2台を別々の入口から走らせ、合流点で道を譲ってそろってゴールし優勝する",
+      "oddity": "最高速の機体より、相棒を先に通すため一度後退した機体が優勝を決める"
+    },
+    "behavior_basis": {
+      "motive": "学生チームは片方が最速でも相棒が詰まれば負けるため、2台を早くそろえたい",
+      "ordinary_alternative": "それぞれの機体の最高速度と単独最短経路だけを追う",
+      "why_not": "合流点の狭い入口で向かい合うと進めなくなり、後着の機体の時刻が順位を決めるため",
+      "evidence_quote": "そのまま両方が進めば、狭い通路の入口で向かい合い、どちらも前へ出られなくなる。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年11月の全日本学生マイクロマウス大会で、学生による小型自走ロボットの迷路競技が実施された",
+      "continuation_force": "小型機の走行・位置推定・近距離通信を組み合わせ、複数機の協調判断を競う新しい課題を設計できる",
+      "future_result": "2031年の架空の競技会で2台が通信で合流位置を判断し、譲り合いによって後着の時刻を縮め優勝する"
+    },
+    "body": ""
+  },
+  {
     "slug": "private-rocket-town-satellite-first-ocean-image",
     "category": "経済",
     "flash": "町工場の衛星、補欠便から宇宙へ",
@@ -7035,3 +7104,4 @@
     ]
   }
 ]
+
