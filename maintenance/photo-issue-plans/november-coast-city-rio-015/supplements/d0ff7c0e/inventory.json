@@ -76,6 +76,80 @@
         "subsampling": 0
       },
       "scene_observed": "青空と海を広く入れた砂浜の横向きカット。プールの縁や手すりは写らない。"
+    },
+    {
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 11,
+        "sha256": "cee90646180eeff61a4b120a1a3830d8a68044c9d52ba2a0a8a282a4f89af8f2",
+        "bytes": 2330627,
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/11.png"
+      },
+      "jpeg": {
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/11.jpg",
+        "sha256": "2a378fb236072479792ba8990b356d54c134039ffe4e882010263f9e4b15beef",
+        "bytes": 183645,
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "11.3.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "scene_observed": "窓のある屋内プール。青い水面を背に、重ねた手に頬を寄せた近景。"
+    },
+    {
+      "source": {
+        "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+        "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+        "image_number": 2,
+        "sha256": "6e42484caa658af39d05b8af937a2c4a7e0897e79d9fe08d471cb28d553a224e",
+        "bytes": 2118753,
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "generation_prompt_status": "not_retained",
+        "generation_prompt": null,
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/02.png"
+      },
+      "jpeg": {
+        "path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/02.jpg",
+        "sha256": "dd085e34f86e2dc9f1a08260b60901d728323c219401468c3c139b614c8c9dc5",
+        "bytes": 140085,
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "11.3.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "scene_observed": "日が差す屋外。プールサイドの白いタオルにうつ伏せになった横位置。"
     }
   ]
 }
