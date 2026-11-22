@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-coast-city-rio-015",
+  "cut_id": "06",
+  "model_id": "shioba-rio",
+  "imported_at": "2026-11-22T21:25:03.123470+00:00",
+  "review_reference_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+  "source": {
+    "format": "png",
+    "sha256": "488638050782514285cda585466b89e2f7e55f5402c80b382f5f4e22c2ea847f",
+    "bytes": 2648116,
+    "width": 1024,
+    "height": 1536,
+    "url": "https://chatgpt.com/space/file/libfile_fde3_f-7b42529be56c8191970dafe1c84a7c87_3e0ce6a2e8348191be296e0419d0b8cc",
+    "library_file_id": "libfile_fde3_f-7b42529be56c8191970dafe1c84a7c87_3e0ce6a2e8348191be296e0419d0b8cc",
+    "file_id": "file_00000000c4888206a7848bc639348d24",
+    "file_name": "rio-original-07.png",
+    "generation_turn": null,
+    "generation_turn_status": "not_retained",
+    "generation_prompt": null,
+    "generation_prompt_status": "not_retained",
+    "path": "maintenance/photo-issues/november-coast-city-rio-015/06/source-488638050782514285cda585466b89e2f7e55f5402c80b382f5f4e22c2ea847f.png"
+  },
+  "jpeg": {
+    "bytes": 237498,
+    "width": 800,
+    "height": 1200,
+    "sha256": "079d44996d071a88f8a833cd1d86ae5d99a1599e56fd9f35e4e200ec05cafd28",
+    "path": "assets/generated/photo-issue-november-coast-city-rio-015-06.jpg"
+  },
+  "transform": {
+    "encoder": "jpeg-js",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  },
+  "encoding_details": {
+    "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+    "resample": "bilinear",
+    "mode": "RGB"
+  },
+  "recovery_reference": {
+    "candidate_commit": "be7b3336d87d596c783021895729efe3f274ba44",
+    "handoff_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/handoff.json",
+    "source_ordinal": 7,
+    "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/07.png",
+    "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/07.jpg",
+    "original_blob_sha": "26eade6e3691fd2d89b2418a263ef47810b1f376",
+    "jpeg_blob_sha": "1fda2fda2a1e5982e7515da9ed93992045ba9bdd"
+  }
+}

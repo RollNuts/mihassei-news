@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-coast-city-rio-015",
+  "cut_id": "08",
+  "model_id": "shioba-rio",
+  "imported_at": "2026-11-22T21:25:03.180802+00:00",
+  "review_reference_sha256": "101edc530c7f6321b70369f60cfe282aa9304283c84b767c38f47cf29168f1a4",
+  "source": {
+    "url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+    "turn_key": "d0ff7c0e-22e2-4a2f-b784-9dfad0948e74",
+    "image_number": 2,
+    "sha256": "6e42484caa658af39d05b8af937a2c4a7e0897e79d9fe08d471cb28d553a224e",
+    "bytes": 2118753,
+    "width": 1536,
+    "height": 1024,
+    "format": "png",
+    "generation_prompt_status": "not_retained",
+    "generation_prompt": null,
+    "path": "maintenance/photo-issues/november-coast-city-rio-015/08/source-6e42484caa658af39d05b8af937a2c4a7e0897e79d9fe08d471cb28d553a224e.png"
+  },
+  "jpeg": {
+    "sha256": "dd085e34f86e2dc9f1a08260b60901d728323c219401468c3c139b614c8c9dc5",
+    "bytes": 140085,
+    "width": 1200,
+    "height": 800,
+    "path": "assets/generated/photo-issue-november-coast-city-rio-015-08.jpg"
+  },
+  "transform": {
+    "encoder": "Pillow",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  },
+  "encoding_details": {
+    "pillow_version": "11.3.0",
+    "resample": "LANCZOS",
+    "mode": "RGB",
+    "optimize": true,
+    "progressive": false,
+    "subsampling": 0
+  },
+  "recovery_reference": {
+    "candidate_commit": "be7b3336d87d596c783021895729efe3f274ba44",
+    "handoff_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/inventory.json",
+    "source_ordinal": 2,
+    "source_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/02.png",
+    "jpeg_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/02.jpg",
+    "original_blob_sha": "7fbb3a78a371258007cfec4d26bf4501ae2dc501",
+    "jpeg_blob_sha": "a545e39b958e9d78c786e22e17682844c7f764e4"
+  }
+}
