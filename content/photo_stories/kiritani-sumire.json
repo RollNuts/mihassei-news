@@ -45,6 +45,21 @@
         "cut_id": "02",
         "image_sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261122141532365000",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-22T14:15:32.365+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼過ぎ、稽古場で古い衣装の裏地を見せてもらった。表よりずっと鮮やかな青。新しい上着にも使いたくなって、色見本を一枚だけ持ち帰った。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "03",
+        "image_sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947"
+      }
     }
   ]
 }
