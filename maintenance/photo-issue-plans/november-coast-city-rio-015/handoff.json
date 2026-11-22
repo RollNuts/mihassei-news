@@ -18,8 +18,8 @@
     },
     "successful_route": "files__list actual Library items rio-original-NN.png; materialize and full bytes/hash/dimensions match original inventory",
     "raw_verified_count": 10,
-    "github_binary_backed_count": 5,
-    "cloud_guard": "active at saving; must refresh next write",
+    "github_binary_backed_count": 6,
+    "cloud_guard": "active on 2026-11-23T02:20 JST recovery, recheck next mutation",
     "publication_state": "not_accepted_not_published"
   },
   "visual_observation": {
@@ -147,11 +147,21 @@
         1024,
         1536
       ],
-      "raw_github_path": null,
-      "jpeg_github_path": null,
-      "jpeg_sha256": null,
-      "jpeg_bytes": null,
-      "editorial_status": "unreviewed_candidate"
+      "raw_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/06.png",
+      "jpeg_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/06.jpg",
+      "jpeg_sha256": "886ff1a7a957a9fd3e92bc32de0f45c08d01b992e909c6822e16b4dec6fa221b",
+      "jpeg_bytes": 133993,
+      "editorial_status": "unreviewed_candidate",
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      }
     },
     {
       "ordinal": 7,
@@ -226,5 +236,5 @@
       "editorial_status": "unreviewed_candidate"
     }
   ],
-  "next": "Save remaining ordinal 06,07,08,10,12 source PNG and matching JPEG to same branch; rerun original and JPEG SHA readback against this inventory; review cut 05 near duplicate and swimwear balance; keep publication to existing 06:00 editor. Do not generate, merge, or finalize here."
+  "next": "Recover ordinal 07,08,10,12 original and JPEG on the same branch, verify immutable GitHub bytes; ordinal 05 remains held."
 }
