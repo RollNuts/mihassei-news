@@ -165,10 +165,9 @@ var PhotoOriginalHandoff = (() => {
           before.parts.every((part, index) => same(part, after.parts[index])), "Checkpoint originals are append-only");
       }
     }
-    async function tree(packet, base, partial = false) {
+    async function originalEntries(packet, base, partial, files) {
       const dir = directory(packet.issue);
       const record = receipt(packet, partial);
-      const {parent, files} = await parentFiles(base);
       requireThat(!files.tree.some(f => f.path === dir || f.path.startsWith(dir + "/")), "Existing originals must be recovered first");
       const pending = pendingDirectory(packet.issue);
       if (files.tree.some(file => file.path === pending || file.path.startsWith(pending + "/"))) {
@@ -180,7 +179,7 @@ var PhotoOriginalHandoff = (() => {
       const entries = record.assets.flatMap(a => a.parts.map(p => ({
         path:partPath(destination, a.source_sha256, p.index), mode:"100644", type:"blob", sha:p.blob})));
       entries.push({path:destination + (partial ? "/checkpoint.json" : "/receipt.json"), mode:"100644", type:"blob", content:JSON.stringify(record)});
-      return gitId(await write("create_tree", {base_tree_sha:parent.tree.sha, tree_elements:entries}), "tree");
+      return entries;
     }
     async function checkProducer(packet) {
       const draft = await git("fetch_file", {ref:"cast-source-drafts", path:"drafts/cast-voices/" + packet.model_id + ".json", encoding:"utf-8"});
@@ -190,15 +189,17 @@ var PhotoOriginalHandoff = (() => {
     async function prepareRecord(packet, expectedHead, partial) {
       validate(packet, partial);
       await checkProducer(packet);
-      const main = await guard(), base = expectedHead ?? main;
-      if (expectedHead !== null) {
-        requireThat(GIT.test(expectedHead), "Invalid expected candidate head");
-        const branch = "photo-issue-plan/" + packet.issue;
-        const ref = await get("/git/ref/heads/" + branch);
-        requireThat(ref.ref === "refs/heads/" + branch && ref.object?.sha === base, "Candidate branch moved");
-      }
-      const treeId = await tree(packet, base, partial);
-      const result = await write("create_commit", {tree_sha:treeId, parent_sha:base,
+      const branch = expectedHead === null ? "main" : "photo-issue-plan/" + packet.issue;
+      const head = await get("/branches/" + branch);
+      const base = head.commit?.sha, root = head.commit?.commit?.tree?.sha;
+      requireThat(head.name === branch && GIT.test(base) && GIT.test(root) &&
+        (expectedHead === null || expectedHead === base), "Candidate branch moved");
+      const entries = await originalEntries(packet, base, partial, await treeFiles(root));
+      const initialMain = await guard();
+      const treeId = gitId(await git("create_tree", {base_tree_sha:root, tree_elements:entries}), "tree");
+      // If main moved, the fresh guard needed two extra reads. Retry before creating the commit.
+      requireThat(await guard() === initialMain, "Main changed during original preparation");
+      const result = await git("create_commit", {tree_sha:treeId, parent_sha:base,
         message:(partial ? "Checkpoint original photo transfer for " : "Stage unreviewed original photos for ") + packet.issue});
       return {base, expectedHead, commit:gitId(result,"commit"),
         [partial ? "checkpoint_sha256" : "receipt_sha256"]:hashText(JSON.stringify(receipt(packet, partial)))};
@@ -437,35 +438,66 @@ var PhotoOriginalHandoff = (() => {
       await write("update_ref", {branch_name:cut.branch, sha:plan.commit, expected_sha:current, force:false});
       return {status:"review_jpeg_staged_pending_readback", branch:cut.branch, commit:plan.commit, path:cut.path};
     }
+    async function verifyOriginalCommit(packet, plan, partial) {
+      const commit = await get("/git/commits/" + plan.commit);
+      requireThat(commit.sha === plan.commit && commit.parents?.length === 1 &&
+        commit.parents[0].sha === plan.base && GIT.test(commit.tree?.sha), "Commit differs from prepared original files");
+      // GitHub accepts an immutable commit SHA as the tree selector and echoes that selector.
+      const before = await treeFiles(plan.base);
+      const changes = await originalEntries(packet, plan.base, partial, before);
+      const after = await treeFiles(commit.tree.sha);
+      const manifest = changes[changes.length - 1];
+      const saved = await git("fetch_file", {ref:plan.commit, path:manifest.path, encoding:"utf-8"});
+      requireThat(saved.encoding === "utf-8" && saved.content === manifest.content && GIT.test(saved.sha),
+        "Commit differs from prepared original receipt");
+      manifest.sha = saved.sha;
+      const expected = new Map(before.tree.map(entry => [entry.path, entry]));
+      for (const entry of changes) expected.set(entry.path, entry);
+      for (const entry of after.tree) {
+        const prior = expected.get(entry.path);
+        if (manifest.path.startsWith(entry.path + "/")) {
+          requireThat(entry.type === "tree" && entry.mode === "040000" &&
+            (!prior || (prior.type === "tree" && prior.mode === entry.mode)), "Occupied original directory");
+        } else {
+          requireThat(prior && entry.type === prior.type && entry.mode === prior.mode && entry.sha === prior.sha,
+            "Commit differs from prepared original files");
+        }
+        expected.delete(entry.path);
+      }
+      requireThat(expected.size === 0, "Commit drops prepared original files");
+    }
     async function publishRecord(packet, plan, partial) {
       const branch = "photo-issue-plan/" + packet.issue;
       const hashKey = partial ? "checkpoint_sha256" : "receipt_sha256";
       requireThat(GIT.test(plan.base) && GIT.test(plan.commit) &&
         plan[hashKey] === hashText(JSON.stringify(receipt(packet, partial))), "Changed handoff plan");
-      const current = await guard();
       await checkProducer(packet);
-      if (plan.expectedHead != null) {
-        requireThat(plan.expectedHead === plan.base, "Invalid candidate branch lease");
-      } else if (current !== plan.base) {
-        const comparison = await get("/compare/" + plan.base + "..." + current);
-        requireThat(comparison.merge_base_commit?.sha === plan.base && comparison.status === "ahead", "Base is not main history");
+      if (plan.expectedHead != null) requireThat(plan.expectedHead === plan.base, "Invalid candidate branch lease");
+      await verifyOriginalCommit(packet, plan, partial);
+      // Check ancestry before the live write guard. A change between these reads requires a retry.
+      let mainAtCheck;
+      if (plan.expectedHead == null) {
+        const comparison = await get("/compare/main..." + plan.base + "?per_page=1");
+        mainAtCheck = comparison.base_commit?.sha;
+        requireThat(GIT.test(mainAtCheck) && comparison.merge_base_commit?.sha === plan.base &&
+          comparison.status === (mainAtCheck === plan.base ? "identical" : "behind"), "Base is not main history");
       }
-      const commit = await get("/git/commits/" + plan.commit);
-      requireThat(commit.sha === plan.commit && commit.parents?.length === 1 && commit.parents[0].sha === plan.base &&
-        commit.tree?.sha === await tree(packet, plan.base, partial), "Commit differs from prepared original files");
+      const liveMain = await guard();
+      requireThat(mainAtCheck === undefined || mainAtCheck === liveMain, "Main changed before original publication");
       const result = savedCommit => ({status:partial ? "checkpoint_saved_pending_readback" : "staged_pending_readback",
         branch, commit:savedCommit, [hashKey]:plan[hashKey]});
       // A duplicate or lost success is usable only after the same remote receipt is read back.
       try {
         if (plan.expectedHead != null) {
-          await write("update_ref", {branch_name:branch,sha:plan.commit,expected_sha:plan.base,force:false});
+          await git("update_ref", {branch_name:branch,sha:plan.commit,expected_sha:plan.base,force:false});
         } else {
-          await write("create_branch", {branch_name:branch,sha:plan.commit});
+          await git("create_branch", {branch_name:branch,sha:plan.commit});
         }
       }
       catch (error) {
         const existing = await get("/git/ref/heads/" + branch);
         requireThat(existing.ref === "refs/heads/" + branch && GIT.test(existing.object?.sha), "Unverified existing branch");
+        if (existing.object.sha === plan.commit) return result(plan.commit);
         const found = await git("fetch_file", {ref:existing.object.sha,
           path:partial ? pendingDirectory(packet.issue) + "/checkpoint.json" : directory(packet.issue) + "/receipt.json", encoding:"utf-8"});
         if (found.encoding !== "utf-8" || hashText(found.content) !== plan[hashKey]) throw error;
