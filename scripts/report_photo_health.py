@@ -147,6 +147,17 @@ def operation_lines(report: dict) -> list[str]:
         lines.append("| " + " | ".join(cell(value) for value in (
             label, item["published_by_observation_count"], item["today_count"],
             latest["published_at_jst"] if latest else "No recorded publication", item["future_dated_count"])) + " |")
+    if report["news"]["status"] == "observed":
+        slots = report["news"]["previous_day_slots"]
+        times = ", ".join(row["slot_jst"][11:16] for row in slots["original"])
+        carried = ", ".join(cell(row["slug"]) for row in slots["published_from_other_dates"])
+        lines += ["", "- News slots recorded for " + slots["day_jst"] + " JST: " + (times or "none recorded")
+                  + ". Published that day from other dates: " + (carried or "none")
+                  + ". Without a recorded slot: " + str(len(slots["published_without_slot"])) + "."]
+    if report["market"]["status"] == "observed" and report["market"]["latest_day_slots"]:
+        slots = report["market"]["latest_day_slots"]
+        lines.append("- Market slots on " + slots[0]["published_at_jst"][:10] + " (slot → recorded publication, JST): "
+                     + ", ".join(row["slot_time_jst"] + " → " + row["published_at_jst"][11:16] for row in slots) + ".")
     photo = report["photo_editions"]
     if photo["status"] == "observed":
         edition = photo["oldest_incomplete_daily_edition"]
