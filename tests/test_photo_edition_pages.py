@@ -64,6 +64,7 @@ class PhotoEditionPageTests(unittest.TestCase):
         self.assertEqual([link["href"] for link in parsed.links if link.get("class")=="photo-issue-card-link"],
                          [edition_url(self.edition)])
         self.assertEqual(len(parsed.images),1)
+        self.assertNotIn('photo-edition-shortcuts', page)
         self.assertEqual(page.count("data-ranking-key="),7)
         for feature in self.released:
             self.assertIn('data-ranking-key="photo-issue:'+feature["slug"]+'"',page)
@@ -179,6 +180,38 @@ class PhotoEditionPageTests(unittest.TestCase):
         self.assertEqual(parsed.images[0]["loading"],"eager")
         self.assertEqual(parsed.images[0]["fetchpriority"],"high")
         self.assertIn('最新の特集を読む',page)
+
+    def test_daily_index_links_each_released_person_and_parent_contents_before_stories(self):
+        daily = copy.deepcopy(self.edition)
+        daily.update(number=2, slug="issue-002", release_mode="daily")
+        daily["ordered_features"] = daily["ordered_features"][:5]
+        daily["features"] = [feature["slug"] for feature in daily["ordered_features"]]
+        # All seven people may be scheduled; only five released features are navigable.
+        daily["schedule"] = {"order": [feature["model_id"] for feature in self.released]}
+        old = copy.deepcopy(self.edition)
+        old["ordered_features"] = old["ordered_features"][5:]
+        old["features"] = [feature["slug"] for feature in old["ordered_features"]]
+        before = copy.deepcopy((daily, old, self.models))
+        stories = '<section class="photo-stories"><h2>ストーリーズ</h2></section>'
+        page = pages.render_edition_index([daily, old], self.models, build.layout, stories_markup=stories)
+        navigation = page.split('<div class="photo-edition-shortcuts">', 1)[1].split('</nav>', 1)[0]
+        parsed = self.parse(navigation)
+        expected = [photo_issues.issue_url(feature) for feature in daily["ordered_features"]]
+        self.assertEqual([link["href"] for link in parsed.links], expected + [edition_url(daily) + "#contents"])
+        for feature in daily["ordered_features"]:
+            name = feature["model_snapshot"]["name"]
+            self.assertEqual(navigation.count(f'>{name}</a>'), 1)
+        for feature in old["ordered_features"]:
+            self.assertNotIn(photo_issues.issue_url(feature), navigation)
+            self.assertNotIn(feature["model_snapshot"]["name"], navigation)
+        self.assertIn('第2号の掲載特集</h2>', navigation)
+        self.assertIn('aria-labelledby="photo-edition-shortcuts-title"', navigation)
+        self.assertIn('第2号の目次へ', navigation)
+        self.assertEqual(parsed.images, [])
+        self.assertEqual(len(self.parse(page).images), 2)
+        self.assertLess(page.index('photo-issue-card-link'), page.index('class="photo-edition-shortcuts"'))
+        self.assertLess(page.index('class="photo-edition-shortcuts"'), page.index(stories))
+        self.assertEqual((daily, old, self.models), before)
 
 
 if __name__=="__main__":

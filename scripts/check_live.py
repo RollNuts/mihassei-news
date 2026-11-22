@@ -30,7 +30,9 @@ if __package__:
     from .generated_photos import generated_url, generated_scene_entry
     from .social_cards import reviewed_scene_png
     from .motion_clips import clip_url
-    from .photo_stories import load_photo_stories
+    from .photo_stories import (
+        STORY_STRIP_POSTS_PER_MODEL, latest_model_stories, load_photo_stories,
+    )
     from .photo_issues import load_photo_issues, published_issues, issue_url, photo_image_url, cover_shot
     from .share_desk import select_candidates
     from .serial_discovery import choose_serial, primary_episode
@@ -51,7 +53,9 @@ else:
     from generated_photos import generated_url, generated_scene_entry
     from social_cards import reviewed_scene_png
     from motion_clips import clip_url
-    from photo_stories import load_photo_stories
+    from photo_stories import (
+        STORY_STRIP_POSTS_PER_MODEL, latest_model_stories, load_photo_stories,
+    )
     from photo_issues import load_photo_issues, published_issues, issue_url, photo_image_url, cover_shot
     from share_desk import select_candidates
     from serial_discovery import choose_serial, primary_episode
@@ -492,6 +496,162 @@ def _descendants(element):
     for child in element["children"]:
         yield child
         yield from _descendants(child)
+
+
+def verify_cast_story_delivery(markup, stories, issues, *, fetch=None, root=ROOT):
+    """Bind the visible cast posts, modal data and served photos to their source.
+
+    A person's name elsewhere on the page cannot validate a mismatched post.
+    Parse raw HTML so punctuation is decoded once, then inspect each dated card
+    independently. Fetch only the unique photographs in the latest-person view;
+    the modal's older posts are checked against the validated source data.
+    """
+    parser = _RecommendationMarkup()
+    parser.feed(markup)
+    parser.close()
+    timelines = [element for element in parser.elements
+                 if element["tag"] == "section"
+                 and element["attrs"].get("aria-labelledby") == "cast-timeline-title"]
+    expected_posts = latest_model_stories(stories)[:7]
+    if not expected_posts:
+        if timelines:
+            raise RuntimeError("Unexpected stale cast timeline remains public")
+        return 0
+    if len(timelines) != 1:
+        raise RuntimeError("Published cast timeline missing or duplicated")
+    elements = list(_descendants(timelines[0]))
+
+    def with_class(nodes, name):
+        return [node for node in nodes
+                if name in (node["attrs"].get("class") or "").split()]
+
+    cards = with_class(elements, "photo-post")
+    if ([card["attrs"].get("id") for card in cards]
+            != ["post-" + post["id"] for post in expected_posts]
+            or any(card["tag"] != "article" for card in cards)):
+        raise RuntimeError("Published cast cards differ from each person's latest post")
+    for card, post in zip(cards, expected_posts):
+        label = "Cast post " + post["id"]
+        children = list(_descendants(card))
+        person = with_class(children, "photo-post-person")
+        if (len(person) != 1 or person[0]["tag"] != "a"
+                or person[0]["attrs"].get("href") != post["profileUrl"]
+                or ["".join(child["text"]) for child in person[0]["children"]
+                    if child["tag"] == "strong"] != [post["name"]]):
+            raise RuntimeError(label + ": person or profile mismatch")
+        portraits = [child for child in person[0]["children"] if child["tag"] == "img"]
+        if (len(portraits) != 1 or portraits[0]["attrs"].get("src") != post["image"]
+                or portraits[0]["attrs"].get("alt") != ""
+                or portraits[0]["attrs"].get("srcset")):
+            raise RuntimeError(label + ": portrait differs from the source photograph")
+        dated_links = [child for child in children if child["tag"] == "a"
+                       and any(part["tag"] == "time" for part in child["children"])]
+        if (len(dated_links) != 1 or dated_links[0]["attrs"].get("href")
+                != post["profileUrl"] + "#post-" + post["id"]):
+            raise RuntimeError(label + ": dated permalink mismatch")
+        times = [child for child in children if child["tag"] == "time"]
+        if (len(times) != 1 or times[0]["attrs"].get("datetime") != post["publishedAt"]
+                or "".join(times[0]["text"]) != post["dateLabel"]):
+            raise RuntimeError(label + ": publication time mismatch")
+        paragraphs = with_class(children, "photo-post-text")
+        if (len(paragraphs) != 1 or paragraphs[0]["tag"] != "p"
+                or "".join(paragraphs[0]["text"]) != post["text"]):
+            raise RuntimeError(label + ": visible text mismatch")
+        footers = [child for child in card["children"] if child["tag"] == "footer"]
+        if (len(footers) != 1
+                or ["".join(child["text"]) for child in footers[0]["children"]
+                    if child["tag"] == "span"] != [post["settingLabel"]]
+                or [child["attrs"].get("href") for child in footers[0]["children"]
+                    if child["tag"] == "a"] != [post["sourceUrl"]]):
+            raise RuntimeError(label + ": photo source or fictional setting mismatch")
+        links = with_class(children, "photo-post-image")
+        if (len(links) != 1 or links[0]["tag"] != "a"
+                or links[0]["attrs"].get("href") != post["sourceUrl"]):
+            raise RuntimeError(label + ": photograph link mismatch")
+        pictures = [child for child in children if child["tag"] == "img"
+                    and child is not portraits[0]]
+        motion = post.get("motion")
+        if len(pictures) != (2 if motion else 1):
+            raise RuntimeError(label + ": photograph missing or duplicated")
+        for picture in pictures:
+            if (any(picture["attrs"].get(name) != value for name, value in (
+                    ("src", post["image"]), ("alt", post["alt"]),
+                    ("width", str(post["width"])), ("height", str(post["height"]))))
+                    or picture["attrs"].get("srcset")):
+                raise RuntimeError(label + ": photograph differs from the reviewed cut")
+        videos = [child for child in children if child["tag"] == "video"]
+        if len(videos) != (1 if motion else 0):
+            raise RuntimeError(label + ": photo-motion selection mismatch")
+        if motion:
+            video = videos[0]
+            sources = [child for child in video["children"] if child["tag"] == "source"]
+            if (video["attrs"].get("poster") != post["image"]
+                    or len(sources) != 1 or sources[0]["attrs"].get("src") != motion["url"]
+                    or sources[0]["attrs"].get("type") != "video/mp4"):
+                raise RuntimeError(label + ": photo-motion source mismatch")
+
+    # Readers opening a circle must receive the same identities and dated
+    # source photographs as the build, including the bounded older history.
+    payloads = [element for element in elements
+                if "data-photo-story-data" in element["attrs"]]
+    if (len(payloads) != 1 or payloads[0]["tag"] != "script"
+            or payloads[0]["attrs"].get("type") != "application/json"):
+        raise RuntimeError("Published cast modal data missing or duplicated")
+    recent, counts, latest = [], {}, {}
+    for post in stories:
+        model_id = post["modelId"]
+        if counts.get(model_id, 0) < STORY_STRIP_POSTS_PER_MODEL:
+            recent.append(post)
+            counts[model_id] = counts.get(model_id, 0) + 1
+            latest.setdefault(model_id, post)
+    try:
+        delivered = json.loads("".join(payloads[0]["text"]))
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError("Published cast modal data is invalid JSON") from exc
+    if delivered != recent:
+        raise RuntimeError("Published cast modal data differs from the validated posts")
+    circles = with_class(elements, "photo-story-open")
+    if [circle["attrs"].get("data-story-open") for circle in circles] != list(latest):
+        raise RuntimeError("Published cast circles differ from the current people")
+    for circle, post in zip(circles, latest.values()):
+        circle_elements = list(_descendants(circle))
+        pictures = [child for child in circle_elements if child["tag"] == "img"]
+        times = [child for child in circle_elements if child["tag"] == "time"]
+        names = with_class(circle_elements, "photo-story-name")
+        if (circle["tag"] != "a" or circle["attrs"].get("href") != post["sourceUrl"]
+                or len(pictures) != 1 or pictures[0]["attrs"].get("src") != post["image"]
+                or pictures[0]["attrs"].get("srcset") or len(times) != 1
+                or times[0]["attrs"].get("datetime") != post["publishedAt"]
+                or ["".join(name["text"]) for name in names] != [post["name"]]):
+            raise RuntimeError("Cast circle " + post["modelId"] + ": latest source mismatch")
+
+    fetch = fetch or get
+    accepted = {photo_image_url(issue, cut): image
+                for issue in issues for cut, image in issue["images"].items()}
+    checked_images = set()
+    for post in expected_posts:
+        image_url = post["image"]
+        if image_url not in checked_images:
+            image = accepted.get(image_url)
+            if image is None:
+                raise RuntimeError("Cast photograph has no validated published source: " + post["id"])
+            try:
+                payload, mime = fetch(image_url)
+            except (urllib.error.URLError, TimeoutError) as exc:
+                raise RuntimeError("Cast photograph is unreachable: " + post["id"]) from exc
+            if mime.split(";", 1)[0].strip().lower() != "image/jpeg":
+                raise RuntimeError("Cast photograph Content-Type mismatch: " + post["id"])
+            if (len(payload) != image["bytes"] or hashlib.sha256(payload).hexdigest() != image["sha256"]
+                    or jpeg_dimensions(payload) != (post["width"], post["height"])):
+                raise RuntimeError("Cast photograph differs from the reviewed JPEG: " + post["id"])
+            checked_images.add(image_url)
+        motion = post.get("motion")
+        if motion:
+            movie, mime = fetch(motion["url"])
+            expected = (Path(root) / "assets/photo-story-clips" / (post["id"] + ".mp4")).read_bytes()
+            if mime.split(";", 1)[0].strip().lower() != "video/mp4" or movie != expected:
+                raise RuntimeError("Cast photo-motion differs from the verified clip: " + post["id"])
+    return len(expected_posts)
 
 
 def verify_article_diagram(article: dict, markup: str, *, fetch=None, root=ROOT) -> bool:
@@ -936,17 +1096,8 @@ def check():
     # The homepage shelf now contains cast posts; article video players remain.
     verify_broadcast_delivery(home.decode("utf-8"), [])
     cast_posts = load_photo_stories(ROOT)
-    for post in cast_posts[:7]:
-        if html.escape(post["text"]) not in body or post["profileUrl"] not in body:
-            raise RuntimeError("Published cast post is missing: " + post["id"])
-        motion = post.get("motion")
-        if motion:
-            if motion["url"] not in body:
-                raise RuntimeError("Published cast photo-motion is missing")
-            movie, movie_mime = get(motion["url"])
-            expected = (ROOT / "assets/photo-story-clips" / (post["id"] + ".mp4")).read_bytes()
-            if "video/mp4" not in movie_mime or movie != expected:
-                raise RuntimeError("Published cast photo-motion differs from the verified clip")
+    checked_cast_posts = verify_cast_story_delivery(home.decode("utf-8"), cast_posts, issues)
+    print("Public cast posts, source JPEGs and modal data OK:", checked_cast_posts)
     verify_pv_recommendations(home.decode("utf-8"), sorted_articles)
     # Verify the already-shipped topic navigation rather than adding more UI.
     # This also catches a successful main merge whose public deploy is stale.

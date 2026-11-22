@@ -124,6 +124,10 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 }
 .serial-card a:focus-visible,.serial-next-prev a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .serial-next-prev{flex-wrap:wrap}
+.market-bulletin-nav{align-items:stretch}
+.market-bulletin-nav a{display:block;flex:1 1 240px;min-width:0}
+.market-bulletin-nav a span,.market-bulletin-nav a strong{display:block}
+.market-bulletin-nav a strong{margin-top:6px;line-height:1.65}
 @media(min-width:661px) and (max-width:860px){
   .serial-card{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr)}
 }

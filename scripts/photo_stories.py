@@ -265,13 +265,21 @@ def render_model_stories(model_id, stories=None, *, root=ROOT):
                             title_id="model-timeline-title")
 
 
+def latest_model_stories(stories):
+    """Keep each person's newest published post in chronological order."""
+    latest = {}
+    for story in sorted(stories, key=lambda item: _stamp(item["publishedAt"]), reverse=True):
+        latest.setdefault(story["modelId"], story)
+    return tuple(latest.values())
+
+
 def render_photo_timeline(stories):
     """Static, dated posts remain readable without JavaScript or speech support."""
-    return _render_timeline(stories, title="7人の近況", title_id="cast-timeline-title",
-                            limit=7, model_directory=True)
+    return _render_timeline(latest_model_stories(stories), title="7人の近況", title_id="cast-timeline-title",
+                            limit=7, model_directory=True, modal_stories=stories)
 
 
-def _render_timeline(stories, *, title, title_id, limit=None, model_directory=False):
+def _render_timeline(stories, *, title, title_id, limit=None, model_directory=False, modal_stories=None):
     if not stories:
         return ""
     cards = []
@@ -297,8 +305,10 @@ def _render_timeline(stories, *, title, title_id, limit=None, model_directory=Fa
                      f'<p class="photo-post-text">{_h(story["text"])}</p>{media}'
                      f'<footer><span>{_h(story["settingLabel"])}</span>'
                      f'<a href="{_h(story["sourceUrl"])}">写真の掲載特集 ↗</a></footer></article></li>')
+    archive_label = (f'ほかの{len(cards) - 3}人の近況' if model_directory else
+                     f'以前の投稿（{len(cards) - 3}件）')
     earlier = ('<details class="photo-post-archive">'
-               f'<summary>以前の投稿（{len(cards) - 3}件）</summary>'
+               f'<summary>{archive_label}</summary>'
                '<ol class="photo-post-list" start="4">' + ''.join(cards[3:]) + '</ol></details>'
                if len(cards) > 3 else '')
     directory = '<a href="/photo/models/">プロフィール一覧 ↗</a>' if model_directory else ''
@@ -307,5 +317,6 @@ def _render_timeline(stories, *, title, title_id, limit=None, model_directory=Fa
     return (f'<section class="cast-timeline" aria-labelledby="{_h(title_id)}">'
             f'<div class="section-head"><h2 id="{_h(title_id)}">{_h(title)}</h2>{directory}</div>'
             f'<p class="photo-story-label">{label}</p>'
-            + render_story_strip(stories) + '<ol class="photo-post-list">' + ''.join(cards[:3])
+            + render_story_strip(stories if modal_stories is None else modal_stories)
+            + '<ol class="photo-post-list">' + ''.join(cards[:3])
             + '</ol>' + earlier + '</section>')

@@ -13,12 +13,14 @@ if __package__:
     from .reader_comments import render_reader_comments
     from .photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
     from .photo_editions import edition_url
+    from .photo_stories import latest_model_stories
 else:
     from photo_biographies import public_biography
     from photo_issues import cover_shot, cover_url, index_url, issue_url, photo_image_url, feed_url
     from reader_comments import render_reader_comments
     from photo_profile_portraits import ROOT, validate_profile_portrait, copy_profile_portrait
     from photo_editions import edition_url
+    from photo_stories import latest_model_stories
 
 
 CREDIT = "登場人物とコラムは創作、写真はAI生成です。"
@@ -446,12 +448,20 @@ def build_photo_models(models, published_issues, layout, write, *, stories_rende
                                    root=root, portrait=portraits[model["id"]], editions=editions))
 
 
-def model_sitemap_entries(models, published_issues, *, root=ROOT):
+def model_sitemap_entries(models, published_issues, *, root=ROOT, stories=()):
     """Only a released cover or validated portrait makes a profile indexable."""
     released = _released_issues(published_issues)
     if not models:
         return []
     portraits = {model["id"]: validate_profile_portrait(model, root=root) for model in models}
+    posted_at = {story["modelId"]: story["publishedAt"] for story in latest_model_stories(stories)}
+
+    def modified_at(model_id, publication):
+        stamps = [publication]
+        if model_id in posted_at:
+            stamps.append(posted_at[model_id])
+        return max(stamps, key=lambda stamp: datetime.fromisoformat(stamp.replace("Z", "+00:00")))
+
     latest = released[0] if released else None
     first_portrait = next((value for value in portraits.values() if value), None)
     entries = [(MODEL_INDEX_URL, latest["published_at"] if latest else
@@ -460,8 +470,8 @@ def model_sitemap_entries(models, published_issues, *, root=ROOT):
     for model in models:
         latest = next((issue for issue in released if issue["model_id"] == model["id"]), None)
         if latest:
-            entries.append((model_url(model), latest["published_at"], cover_url(latest)))
+            entries.append((model_url(model), modified_at(model["id"], latest["published_at"]), cover_url(latest)))
         elif portraits[model["id"]]:
             portrait = portraits[model["id"]]
-            entries.append((model_url(model), portrait["reviewed_at"], portrait["url"]))
+            entries.append((model_url(model), modified_at(model["id"], portrait["reviewed_at"]), portrait["url"]))
     return entries

@@ -30,6 +30,21 @@
         "cut_id": "01",
         "image_sha256": "0adb15a60cdc494ecec7c18939bf2ecaf223bda59b31ef1d456333c5763cc479"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261121140601481000",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-21T14:06:01.481+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼下がり、古道具屋で小さな真鍮の取っ手を見つけた。新しい棚に似合いそうで、店内を二周。まだ迷ってるんだけど。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "02",
+        "image_sha256": "e09d33dbe03000e0dfe53a146d379eb20440b498782e2ebbe61ad589f3ec17ca"
+      }
     }
   ]
 }

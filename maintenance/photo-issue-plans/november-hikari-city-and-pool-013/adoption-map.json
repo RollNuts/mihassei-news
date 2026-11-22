@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "observed_at": "2026-11-21T14:09:27.620769+00:00",
+  "main": "0a589d90851831529c98ace8971dc19d8925fe83",
+  "issue_slug": "november-hikari-city-and-pool-013",
+  "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+  "status": "formally_adopted_on_candidate_not_published",
+  "duplicate_check_scope": [
+    "all SHA256 values in current photo catalog and news image manifest"
+  ],
+  "unverified_duplicate_scope": [],
+  "source_order": [
+    2,
+    7,
+    10,
+    8,
+    16,
+    14,
+    13,
+    11,
+    12,
+    6
+  ],
+  "items": [
+    {
+      "cut_id": "01",
+      "source_ordinal": 2,
+      "source_sha256": "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/01/source-14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-01.jpg",
+      "jpeg_sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb",
+      "existing_jpeg_blob_sha": "aa683b8ae15e49d8839867a0a3650947b723ce04",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/01/receipt-supplied-14495efc77db-aeffd0c4a529.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "02",
+      "source_ordinal": 7,
+      "source_sha256": "4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/02/source-4f6a1a3bfdcf37062be5a1fcd604e5b5e1ad2c69a8f7a8f04eac3f4865e0a91a.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-02.jpg",
+      "jpeg_sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc",
+      "existing_jpeg_blob_sha": "a4bfe5b88d1d2433876e040b679a6160cb9424f7",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/02/receipt-supplied-4f6a1a3bfdcf-2d5201a36057.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "03",
+      "source_ordinal": 10,
+      "source_sha256": "55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/03/source-55b37e4933c8346546f1ef38567d6f7113aa7a086eff6833ae8e47b832021dcf.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-03.jpg",
+      "jpeg_sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b",
+      "existing_jpeg_blob_sha": "704b3559e21fe6e6feb285700cd9ab60254a37eb",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/03/receipt-supplied-55b37e4933c8-4ac12dbb999f.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "04",
+      "source_ordinal": 8,
+      "source_sha256": "71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/04/source-71aa7c5d6e5dadb52011124d64b7ce11324a2c495e4df36ba0e09cd008ec0263.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-04.jpg",
+      "jpeg_sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108",
+      "existing_jpeg_blob_sha": "84aaea1268c3430a0eadfc720a982f7bf1be183a",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/04/receipt-supplied-71aa7c5d6e5d-8ea71ddcffff.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "05",
+      "source_ordinal": 16,
+      "source_sha256": "996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/05/source-996d949572b4686c3555bb015eb2fcf7c2ffdf51e359938e856da1b04a19c741.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-05.jpg",
+      "jpeg_sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8",
+      "existing_jpeg_blob_sha": "b5d84fa8a103ea153055e6d995d213f20d6f3b67",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/05/receipt-supplied-996d949572b4-8607882879e3.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "06",
+      "source_ordinal": 14,
+      "source_sha256": "502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/06/source-502ecc1ce0fb19f86c0397a9d5441ac93c5788903803070fc7b5f166930e049b.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-06.jpg",
+      "jpeg_sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361",
+      "existing_jpeg_blob_sha": "688560e4b33996698e736d92ee71ae6b7fe6cf81",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/06/receipt-supplied-502ecc1ce0fb-f8fb9f7cea22.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "07",
+      "source_ordinal": 13,
+      "source_sha256": "5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/07/source-5fbfc874f32ca2d194124a73b91c53457084b2b644bc63f8d0251e224466d11d.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-07.jpg",
+      "jpeg_sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6",
+      "existing_jpeg_blob_sha": "065a0c6465dabfe1159d4536f486d5e8c54a7a21",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/07/receipt-supplied-5fbfc874f32c-d443565bf3fe.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "08",
+      "source_ordinal": 11,
+      "source_sha256": "cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/08/source-cbd1b0ac95e18155a2da596ebdca45732197977e78d3c82836589e6d0bdbe151.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-08.jpg",
+      "jpeg_sha256": "3e0a707e164a74afe509b6a623965afa438aa91dec54dac6c48edc501218f20b",
+      "existing_jpeg_blob_sha": "3653498545dd33e0a3efac7e57c96166c7b7c378",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/08/receipt-supplied-cbd1b0ac95e1-3e0a707e164a.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "09",
+      "source_ordinal": 12,
+      "source_sha256": "f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/09/source-f8dca25634b46470ee22e595d3b7d92d7b89ff4176e80d45b5dc53daf3b1d563.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-09.jpg",
+      "jpeg_sha256": "75758b45829380e7c313bc320cb870b5b1e7bd119f51ee121a751123a348d53b",
+      "existing_jpeg_blob_sha": "cce73ef312155bffed27aabcdd4fea843df6c70c",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/09/receipt-supplied-f8dca25634b4-75758b458293.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    },
+    {
+      "cut_id": "10",
+      "source_ordinal": 6,
+      "source_sha256": "e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa",
+      "original_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/10/source-e6c87e988d899e8a1d57e97f5de02294bcdf764195c8d34d58a8b940de5e1dfa.png",
+      "jpeg_path": "assets/generated/photo-issue-november-hikari-city-and-pool-013-10.jpg",
+      "jpeg_sha256": "a324465467eed07e29aa9ae057eb2aa963486c2e67958b8589bfefd1da1e57f3",
+      "existing_jpeg_blob_sha": "e71561840e0701a93dbb930826b7066064bb1ec4",
+      "receipt_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/10/receipt-supplied-e6c87e988d89-a324465467ee.json",
+      "source_catalog_matches": [],
+      "jpeg_catalog_matches": []
+    }
+  ],
+  "adopted_at": "2026-11-21T14:16:19.775560+00:00",
+  "duplicate_check_evidence": {
+    "main": "0a589d90851831529c98ace8971dc19d8925fe83",
+    "photo_catalog_blob": "decc48ed57b3664fbeefeb84806ea02d46693174",
+    "news_manifest_blob": "d1667ffc9ca25e262b6f8449c7657003ee701412",
+    "originals": 10,
+    "jpegs": 10,
+    "exact_matches": 0
+  }
+}

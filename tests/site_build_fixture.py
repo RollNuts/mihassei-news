@@ -27,6 +27,7 @@ PHOTO_STORY_MODULES = frozenset({
     "tests.test_site", "tests.test_site_build_fixture", "tests.test_serial_discovery",
     "tests.test_search_indexability", "tests.test_sitemap_freshness",
     "tests.test_photo_stories", "tests.test_photo_story_motion", "tests.test_photo_health_report",
+    "tests.test_cast_story_live_delivery",
     "tests.test_photo_model_pages", "tests.test_photo_issue_pages", "tests.test_photo_edition_pages",
     "tests.test_photo_issues", "tests.test_photo_editions", "tests.test_photo_supplied",
     "tests.test_photo_profile_portraits", "tests.test_photo_biographies",

@@ -235,18 +235,15 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertIn(result[7]["motion"]["url"], profile)
 
     def test_timeline_shows_three_recent_posts_and_keeps_four_in_native_details(self):
-        result = timeline_fixture()
-        motion = next(post for post in result if post.get("motion"))
-        photos = [post for post in result if not post.get("motion")]
-        # Keep a real motion post in the archive even as newer daily posts land.
-        result = [*photos[:3], motion, *photos[3:6]]
+        # Keep a real motion post in the collapsed group of other people.
+        result = timeline_fixture(motion_index=3)[:7]
         page = stories.render_photo_timeline(result)
         visible, earlier = page.split('<details class="photo-post-archive"', 1)
         before, after = Tags(), Tags()
         before.feed(visible); after.feed(earlier)
         self.assertEqual(sum(tag == "article" for tag, _ in before.tags), 3)
         self.assertEqual(sum(tag == "article" for tag, _ in after.tags), 4)
-        self.assertIn('<summary>以前の投稿（4件）</summary>', earlier)
+        self.assertIn('<summary>ほかの4人の近況</summary>', earlier)
         self.assertIn('<ol class="photo-post-list" start="4">', earlier)
         parsed = Tags(); parsed.feed(page)
         archive = [attrs for tag, attrs in parsed.tags
@@ -277,7 +274,7 @@ class PhotoStoryTests(unittest.TestCase):
         return stories.validate_photo_stories(data, catalog=self.catalog,
                                               published=self.catalog["issues"], now=NOW)
 
-    def test_person_history_retains_all_own_posts_while_home_keeps_latest_seven(self):
+    def test_person_history_retains_all_own_posts_while_home_keeps_each_person(self):
         result = self.mixed_history()
         before = copy.deepcopy(result)
         own_id = self.data["stories"][0]["model_id"]
@@ -290,7 +287,7 @@ class PhotoStoryTests(unittest.TestCase):
         article_ids = lambda parsed: [attrs["id"] for tag, attrs in parsed.tags if tag == "article"]
         self.assertEqual(article_ids(parsed_profile), ["post-" + post["id"] for post in own])
         self.assertEqual(len(set(article_ids(parsed_profile))), 9)
-        self.assertEqual(article_ids(parsed_home), ["post-" + post["id"] for post in result[:7]])
+        self.assertEqual(article_ids(parsed_home), ["post-" + other["id"], "post-" + own[0]["id"]])
         self.assertNotIn("post-" + own[-1]["id"], article_ids(parsed_home))
         visible, older = profile.split('<details class="photo-post-archive">', 1)
         parsed_visible, parsed_older = Tags(), Tags()
@@ -304,6 +301,28 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertIn(other["text"], other_profile)
         self.assertNotIn(own[0]["name"], other_profile)
         self.assertEqual(result, before)
+
+    def test_one_person_posting_again_does_not_push_another_person_off_home(self):
+        original = timeline_fixture()[:7]
+        latest = copy.deepcopy(original[0])
+        latest.update(id="fixture-latest-post", publishedAt="2026-11-16T00:00:00+09:00",
+                      dateLabel="2026年11月16日 00:00", text="新しい近況です。")
+        history = (latest, *original)
+        before = copy.deepcopy(history)
+        expected = (latest, *original[1:])
+        # Selection uses real instants and is stable even if an input is reordered.
+        self.assertEqual(stories.latest_model_stories(tuple(reversed(history))), expected)
+        page = stories.render_photo_timeline(history)
+        parsed = Tags(); parsed.feed(page)
+        self.assertEqual([attrs["id"] for tag, attrs in parsed.tags if tag == "article"],
+                         ["post-" + post["id"] for post in expected])
+        self.assertIn(original[-1]["text"], page)
+        payload = page.split('<script type="application/json" data-photo-story-data>', 1)[1].split('</script>', 1)[0]
+        self.assertEqual([post["id"] for post in json.loads(payload)
+                          if post["modelId"] == latest["modelId"]],
+                         [latest["id"], original[0]["id"]])
+        self.assertEqual(history, before)
+        self.assertEqual(stories.latest_model_stories(()), ())
 
     def test_modal_payload_is_recent_while_native_person_history_is_preserved(self):
         result = self.mixed_history()
@@ -334,7 +353,7 @@ class PhotoStoryTests(unittest.TestCase):
         own_id = self.data["stories"][0]["model_id"]
         profile = stories.render_model_stories(own_id, result)
         own = [post for post in result if post["modelId"] == own_id]
-        for page, posts in ((profile, own), (stories.render_photo_timeline(result), result[:7])):
+        for page, posts in ((profile, own), (stories.render_photo_timeline(result), stories.latest_model_stories(result))):
             for post in posts:
                 with self.subTest(post=post["id"]):
                     target = post["profileUrl"] + "#post-" + post["id"]

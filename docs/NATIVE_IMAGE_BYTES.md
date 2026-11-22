@@ -164,7 +164,7 @@ For a local-file or file-ID generator, use an existing PNG in that actual execut
 
 ### File adapter to code-mode PNG bytes
 
-The existing receiver also exposes the read-only `read_candidate_png` tool. The PNG reader additionally permits the bounded Azure account form `^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$`; JPEG probe/storage still permit only their existing exact observed Azure accounts. This is an untrusted read-only relay: the prefix does not establish OpenAI ownership, generation provenance or adoption eligibility. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
+The existing receiver also exposes the read-only `read_candidate_png` tool. The PNG reader additionally permits the bounded Azure account form `^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$`; JPEG probe/storage still permit only their existing exact observed Azure accounts. This is an untrusted read-only relay: the prefix does not establish OpenAI ownership, generation provenance or adoption eligibility. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. For an observed blocked file reference, use the [Library recovery procedure](#blocked-photo-file-reference) and retain the individual source inventory. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
 
 ```js
 const readBytes = async actualPngPath => {
@@ -401,7 +401,27 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 The producer can deliver existing PNGs from its own chat to the editor without a ZIP. Use the existing issue slug, producer chat URL, observed delivery turn and each source image's original ordinal and measured SHA-256. Retain the actual generation turn if known. Inspect the existing `photo-issue-plan/<issue>` branch first. Reuse any matching raw files, including older full-PNG, JPEG or binary-map handoffs. Never upload the same originals again to add a receipt in a new format.
 
-Load `scripts/photo_original_handoff.js` from the same pinned main as the native byte and staging helpers above. Use the initialized byte runtime, ordinary GitHub callbacks, existing live cloud guard and actual file adapter. Keep image bytes and base64 inside code mode. Check the 12 GiB free-space floor wherever files are materialized. Candidate writes check the public workflow and the main JPEG total each time.
+Load `scripts/photo_original_handoff.js` from the same pinned main as the native byte and staging helpers above. Use the initialized byte runtime, ordinary GitHub callbacks and existing live cloud guard. Choose the input route that matches the actual original returned in this execution; a file adapter is required only for a local file. Keep image bytes and base64 inside code mode. Check the 12 GiB free-space floor wherever files are materialized. Candidate writes check the public workflow and the main JPEG total each time. This is transport of an existing original, not permission for another generation; stock replenishment and attempt reservations follow [EDITORIAL_LOOP](EDITORIAL_LOOP.md#写真ストックと制作量).
+
+When ImageGen actually returns a PNG data URL to code mode, pass that unchanged value directly. The following `imagegenResult` is the real tool result, retained privately in code mode; it is not a made-up URL or a conversation preview. No local file or `readCandidatePng` adapter is needed.
+
+```js
+const H = new Function(source + "\nreturn PhotoOriginalHandoff;")();
+const original = H.create({runtime, github, cloudStatus:stager.cloudStatus});
+const originalDataUrl = imagegenResult.image_url;
+if (typeof originalDataUrl !== "string" || !originalDataUrl.startsWith("data:image/png;base64,"))
+  throw Error("Original PNG data URL was not returned");
+const measuredSha = runtime.sha256(runtime.fromBase64(originalDataUrl));
+// Start at 0; retain this exact original and measured SHA for each continuation.
+const slice = await original.uploadDataUrl(originalDataUrl, measuredSha, start);
+const asset = {...slice, parts:[...earlierParts, ...slice.parts], source_ordinal:originalOrdinal,
+  generation_turn:knownGenerationTurn || null};
+text({asset, next:slice.next}); // compact metadata only, never the tool result or data URL
+```
+
+The direct route and file route share the 8 MiB bound, full SHA comparison, PNG CRC and dimension checks, and guarded 512 KiB part upload. Retain the original data URL privately until all its parts are saved; `text` / `notify` must not receive it. If no actual original data URL was returned, recover the observed original file through the existing route rather than fabricating PNG bytes, a file path or a source reference. The producer chat, delivery turn and known generation turn still describe the real source; direct byte delivery does not permit relabelling another chat's output as the registered producer's work.
+
+When the actual return is a local PNG file, use the existing file adapter with that observed path instead:
 
 ```js
 const H = new Function(source + "\nreturn PhotoOriginalHandoff;")();
@@ -414,18 +434,117 @@ const asset = {...slice, parts:[...earlierParts, ...slice.parts], source_ordinal
 text({asset, next:slice.next}); // retain only this compact metadata
 ```
 
-After all parts of each file have been collected (`next === null`), pass the completed assets in their source order. Record the branch lease only if continuing an existing same-issue handoff after confirming it contains no matching originals. Leave it null for a new branch. A competing or occupied destination is preserved.
+<a id="blocked-photo-file-reference"></a>
+#### Recover a blocked original-file reference
+
+A `BLOCKED_FILE_REFERENCE` response describes the attempted transport reference. It does not prove that the original is missing. A Library ID, a prior executor's path and a file materialized in the current execution are different inputs. Do not retry an unchanged rejected ID/path, manufacture a download URL, change the receiver's allowlist or regenerate the photograph to work around it.
+
+**Record the individual sources before the first transfer.** Reuse this producer's existing original-inventory JSON, preserving earlier records and any completed receipt. For each actually observed original retain its filename, observed local path, real Library ID and version/file ID when available, measured SHA-256, byte count and dimensions, actual observation chat/run/time, model ID and the evidence linking that file to the producer, and any known generation turn. Unknown values remain `null` / `unknown`; the observation chat is not evidence of the generation chat. Names, folder membership, close timestamps or resemblance alone cannot establish model/source identity. Do not substitute an inventory row number for an unknown original ordinal.
+
+Persist and read back the inventory through its existing authorized Library location before attempting the transfer; retain that inventory's real Library ID and measured SHA in the ordinary task result. If no inventory exists, save one for this unresolved handoff without replacing a completed receipt. A candidate-backed inventory may instead remain in the existing handoff at a sibling path outside `originals/` and `originals-pending/`, using the same expected-head and fresh-guard write procedure. Do not create a separate cross-project ledger. The helper drops arbitrary source-reference fields from its normalized packet, and `originals-pending/` permits only its checkpoint and recorded parts, so neither adding an arbitrary packet field nor putting another JSON inside that directory preserves a retrievable inventory.
+
+Recover the exact original through the supported Library path:
+
+1. Follow the available Library skill and materialize the actual authorized Library item or retained native file reference into the **current** workspace. To pin a known Library version, use the `file_id` and `file_name` returned together by the same Library read/list/search, with its `library_file_id` when present. A version number is evidence to retain, not a materialize selector. If only the stable Library ID is available, resolve it normally and require the resulting bytes to match the already observed source SHA. An actual native `observed_file_id` and filename recorded together in the producer's fixed source inventory are also a resolved reference: pass those exact values as `file_id` and `file_name` to `prepare_materialize`, following the Library skill's resolved-reference route with the inventory's expected SHA. The provider's normal file-access check must succeed; an inventory entry does not grant access. Include a real Library ID when known or required by its storage provider; otherwise retain it as unknown rather than inventing one or uploading a duplicate solely for transport. An access denial or missing required identifier stops that item. Do not guess another ID, path or URL, and never pass the native file ID directly to the PNG reader; use the resulting current local file in the steps below.
+2. Use the returned `workspace_path`, or complete the returned authorized signed transfer and apply its extended attributes as required by the Library tool. Preserve the 12 GiB free-space floor. Do not expose signed URLs, image bytes or base64 in conversation or handoff records.
+3. Read the actual current local file and compare its full SHA-256, byte count and dimensions with the source inventory. A changed or unreadable original stops this item; it is not a new source under the old identity.
+4. Pass **that current local path** to `read_candidate_png({file: actualPath})`. Compare the returned metadata and full source SHA again, keep its actual PNG data URL private in code mode, and continue the existing `uploadDataUrl` or file `upload`, checkpoint and immutable readback steps. Preserve the original Library/source references and candidate; the transfer path does not change provenance.
+5. If the original exists locally in the producer's current execution but has no retained Library reference, save that exact existing file once through the authorized Library tool and append its returned real ID to the inventory. Do not replace another item, recreate missing bytes or treat a local path as a durable reference.
+
+Keep a failure's error class, exact item identity, stage and next unperformed supported operation in that same inventory. If inventory persistence itself fails, retain the compact per-item references and observed hashes in the existing task result, together with that save error; a count such as “8 PNGs found” is insufficient for another execution to recover them. Retry only a changed/new actual reference or a previously unperformed supported operation. A successful transfer in one execution does not establish another scheduled worker's capabilities.
+
+An inventory is `sources_observed_not_received`, not an original-byte receipt, visual acceptance or usable stock. Library materialization and PNG reading also do not establish GitHub receipt. Continue the unchanged full original save, remote SHA readback, producer matching, duplicate and visual checks before increasing stock or permitting the next generation.
+
+#### Durable progress before the next original
+
+An upload reply contains acknowledged Git blob references, not a branch-backed original. Save transfer progress on the same `photo-issue-plan/<issue>` branch before moving on to another generated original. `prepareCheckpoint` / `publishCheckpoint` keep the actual part blobs reachable through `maintenance/photo-issue-plans/<issue>/originals-pending/`, together with `checkpoint.json`. The completed `originals/receipt.json` remains protected. Existing `generation-attempts.json` and other sibling files are preserved; these methods do not reserve generation or determine the remaining generation budget.
+
+Keep one packet's issue, producer, source chat and delivery turn fixed. Include the earlier assets in their original order, append acknowledged parts as a contiguous prefix, and append new assets without changing prior metadata or parts. For an upload interrupted after one of two requested parts, `error.partial` contains only the acknowledged parts from that call, the original SHA/dimensions/byte count and the next offset. Merge it with the earlier parts of that same original; it contains no image bytes. A lost blob acknowledgement is not an acknowledged part. Retain the real source file or private data URL while any original part remains missing, and recover that same original instead of generating a replacement.
 
 ```js
-const packet = {issue, model_id, source_chat_url, delivery_turn, assets};
-const plan = await original.prepare(packet, existingCandidateHeadOrNull); // tree and commit
-const staged = await original.publish(packet, plan); // next cell, same packet and plan
-// One source per cell. This checks every saved part, full hash, PNG CRC and dimensions.
-const data = await original.readOriginal({issue, ...staged, source_sha256:asset.source_sha256});
-text({commit:staged.commit, receipt_sha256:staged.receipt_sha256, verified_original:asset.source_sha256, bytes:data.length});
+// packet includes all retained earlier assets and the current complete or partial asset.
+// Use the actual current candidate head, or null only when creating a new branch.
+const checkpointPlan = await original.prepareCheckpoint(packet, candidateHeadOrNull);
+text(checkpointPlan); // retain compact metadata; publish in the next cell
 ```
 
-A returned `staged_pending_readback` is an unreviewed candidate. Report only the originals actually read back. The editor reads the same immutable receipt (`maintenance/photo-issue-plans/<issue>/originals/receipt.json`) and calls `readOriginal` for a selected source; its return value contains the actual bytes. Use the normal portrait/landscape editorial conversion, duplicate check, visual review, the column handled by the weekly editor under [EDITORIAL_LOOP](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠), and publication procedure. The article converter crops to 16:9 and is unsuitable for these originals.
+```js
+const checkpoint = await original.publishCheckpoint(packet, checkpointPlan);
+text(checkpoint); // checkpoint_saved_pending_readback is not usable stock
+```
+
+Both steps preserve append-only transfer history, check the registered producer and the fresh cloud guard, and use the expected candidate head. A lost branch-create/update acknowledgement can recover only the same saved record hash; a different concurrent checkpoint cannot be overwritten. Once a completed originals receipt exists, use the existing recovery path rather than modifying it through checkpoint calls.
+
+After interruption, reconstruct the packet from the exact saved commit and checkpoint hash. `restoreCheckpoint` checks metadata and the part-to-tree blob bindings, and reports whether the expected number of part references is present. Its `checkpoint_metadata_only` status and `image_bytes_verified: false` do **not** verify original PNG bytes, visual quality, acceptance or stock availability. A partial original still requires its exact remaining bytes.
+
+```js
+const restored = await original.restoreCheckpoint({issue, ...checkpoint});
+text({status:restored.status, commit:restored.commit,
+  checkpoint_sha256:restored.checkpoint_sha256, assets:restored.assets});
+store("photo-original-packet:" + issue, restored.packet); // private metadata, never print the full packet
+// Use checkpoint.commit as the expected head. If private state is lost, restore it in its own cell.
+```
+
+Read back each complete original from its pending part paths before any next generation. Prefer `readCheckpointOriginalStep`, one call per cell, to read at most eight parts at a time. Each call rechecks the fixed checkpoint and tree bindings. The private continuation is bound to the method kind, immutable commit, record hash, source SHA and exact next offset; resumed byte chunks are checked against that same receipt again. Only completion returns `original_verified` with the actual PNG bytes after all part hashes/counts, full SHA, PNG CRC and dimensions pass. An incomplete original cannot enter this readback. Visual review remains separate. Read-only restoration and byte recovery remain available while writes are stopped. A successful readback satisfies the storage prerequisite only; the central stock policy, actual generation reservation and all other generation limits still apply.
+
+```js
+const ref = {issue, ...checkpoint, source_sha256:asset.source_sha256};
+const stateKey = "pending-photo-readback:" + ref.commit + ":" + ref.source_sha256;
+const result = await original.readCheckpointOriginalStep(ref, load(stateKey) ?? null);
+if (result.status === "readback_pending") {
+  store(stateKey, result.state); // private serializable byte state, never text/notify
+  text({status:result.status, next:result.next, image_bytes_verified:false});
+} else {
+  store(stateKey, null);
+  // result.bytes contains the verified actual PNG; keep it private for review/conversion.
+  text({status:result.status, commit:result.commit,
+    verified_original:result.source_sha256, bytes:result.bytes.length});
+}
+```
+
+The continuation contains base64 bytes: never print the result or `result.state`, put it in a task result, or pass it to `text` / `notify`. Use the actual `functions` private `store` / `load` when this executor provides them; do not assume a different runtime retains values between cells. If private state is lost, restart the read-only Step at the same immutable reference. This rereads the saved original and does not generate another image. `readback_pending` is not verified bytes or usable stock. The pending Step uses at most 11 Git callbacks, and the completed-receipt Step below uses at most 9, excluding helper initialization; keep helper loading and remote packet restoration in their own cells outside that budget. Pass the normalized packet between prepare/publish cells through private store/load so restoring it does not add Git callbacks to a write phase. The legacy `readCheckpointOriginal` / `readOriginal` macros remain compatible, but a full 8 MiB source can need 19 / 17 callbacks in one call, so use the Step route for larger originals or tighter callback limits.
+
+After all originals are complete, pass the complete packet and latest checkpoint commit to the existing `prepare` / `publish` pair below. Finalization requires the full normalized packet to match the checkpoint, reuses the same part blob IDs and writes one completed receipt; it does not upload the originals again. Then read every original through `readOriginalStep`. Original-byte verification remains separate from visual acceptance and usable-stock counting.
+
+Existing handoffs without a pending checkpoint remain compatible. Recover their recorded completed assets and existing receipt instead of retransferring them just to adopt this format. Record the branch lease only if continuing an existing same-issue handoff after confirming that it has no completed originals receipt. Leave it null for a genuinely new branch. A competing or occupied destination is preserved.
+
+```js
+// A restored checkpoint has already saved this packet privately in its own cell.
+// For a handoff without a checkpoint, first store the actual complete packet under the same key.
+const packet = load("photo-original-packet:" + issue);
+const plan = await original.prepare(packet, existingCandidateHeadOrNull);
+store("photo-original-final-plan:" + issue, plan);
+text(plan); // compact references only
+```
+
+Publish in the next cell, using the same private packet and plan without another remote restore:
+
+```js
+const packet = load("photo-original-packet:" + issue);
+const plan = load("photo-original-final-plan:" + issue);
+const staged = await original.publish(packet, plan);
+store("photo-original-final-staged:" + issue, staged);
+text(staged);
+```
+
+Then use one readback Step per cell for each original:
+
+```js
+const staged = load("photo-original-final-staged:" + issue);
+const ref = {issue, ...staged, source_sha256:asset.source_sha256};
+const stateKey = "completed-photo-readback:" + ref.commit + ":" + ref.source_sha256;
+const result = await original.readOriginalStep(ref, load(stateKey) ?? null);
+if (result.status === "readback_pending") {
+  store(stateKey, result.state); // private bytes, never print the state/result
+  text({status:result.status, next:result.next, image_bytes_verified:false});
+} else {
+  store(stateKey, null);
+  text({status:result.status, commit:staged.commit, receipt_sha256:staged.receipt_sha256,
+    verified_original:result.source_sha256, bytes:result.bytes.length});
+}
+```
+
+A returned `staged_pending_readback` is an unreviewed candidate. Report only the originals actually read back. The editor reads the same immutable receipt (`maintenance/photo-issue-plans/<issue>/originals/receipt.json`) and calls `readOriginalStep` for a selected source until it returns `original_verified` and the actual bytes. The compatible `readOriginal` macro remains available when the executor can finish its full readback. Use the normal portrait/landscape editorial conversion, duplicate check, visual review, the column handled by the weekly editor under [EDITORIAL_LOOP](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠), and publication procedure. The article converter crops to 16:9 and is unsuitable for these originals.
 
 For an existing Library original, retain the actual `https://chatgpt.com/library?file_id=libfile_...&account_id=personal` reference in the per-cut `user_supplied_photo` receipt and the same ID in `source.library_file_id`. A ZIP import also records `source.archive` with `format: "zip"`, its actual `filename`, `sha256`, `bytes`, and original `member` basename. Retrieve and hash the archive before extracting the member; retain the member's original bytes and the usual source SHA/format/dimensions. Archive/member names must be safe basenames, and the member extension must match the source format. These receipt fields preserve the observed archive provenance; the build verifies the saved original and JPEG without downloading Library files. Unknown generation turns remain `source.generation_turn_status: "not_retained"` and `source.generation_turn: null`; do not invent a conversation `turn_key` or `image_number`. The existing unretained prompt fields remain unchanged.
 

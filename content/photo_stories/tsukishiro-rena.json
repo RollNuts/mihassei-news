@@ -30,6 +30,21 @@
         "cut_id": "08",
         "image_sha256": "6631f953da5671ae3d3f34320c3d9de3d96884afea48caffdaed718b9f95eb5b"
       }
+    },
+    {
+      "id": "tsukishiro-rena-post-20261121212409358000",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-21T21:24:09.358+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夜、駅前で手袋を買った。黒を選んだつもりが、街灯の下では深い緑だった。交換するほど嫌じゃないので、明日の服を考え直している。",
+      "source": {
+        "issue_slug": "november-city-pause-rena-008",
+        "cut_id": "01",
+        "image_sha256": "33281dcdd38a48dcb4d3010551e7af185287d176cf06d77d1bbef32959241471"
+      }
     }
   ]
 }

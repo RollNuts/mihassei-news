@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "kind": "editorial_ready_photo_feature",
+  "status": "ten_photos_adopted_and_column_complete_waiting_for_scheduled_publication",
+  "prepared_at": "2026-11-21T14:19:19.308Z",
+  "issue_slug": "november-hikari-city-and-pool-013",
+  "issue_sha256": "699385c400e5a9ca32ef7360e5d80716dab4ef4d52f2cd2dda649778333040e9",
+  "model_id": "amane-hikari",
+  "title": "予定をひとつ、空けてみた。",
+  "source_main": "0a589d90851831529c98ace8971dc19d8925fe83",
+  "candidate_branch": "photo-issue-plan/november-hikari-city-and-pool-013",
+  "catalog_path": "content/photo_issues.json",
+  "state": "draft",
+  "published_at": null,
+  "formal_adoption_count": 10,
+  "source_original_count": 10,
+  "source_original_bytes": 24321806,
+  "jpeg_count": 10,
+  "jpeg_bytes": 1964502,
+  "swimwear_visible_count": 6,
+  "both_bikini_pieces_visible_count": 5,
+  "bikini_top_only_cut_ids": [
+    "04"
+  ],
+  "source_order": [
+    2,
+    7,
+    10,
+    8,
+    16,
+    14,
+    13,
+    11,
+    12,
+    6
+  ],
+  "cover_cut_id": "05",
+  "column": {
+    "kind": "newly_written_by_editorial_assistant_not_recovered_original",
+    "authorship_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/editorial-authorship.json",
+    "daily_voice_unchanged": true
+  },
+  "adoption": {
+    "evidence_path": "maintenance/photo-issues/november-hikari-city-and-pool-013/final-jpeg-qa.json",
+    "evidence_sha256": "a43f8d8e744f8731fc98b1040182a56ab3f854efcf29c937dbb112cb67528ed4",
+    "mapping_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/adoption-map.json"
+  },
+  "validation": {
+    "path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/editorial-validation.json",
+    "catalog_and_image_provenance": "passed_actual_repository_validators",
+    "publication_claimed": false,
+    "existing_models_issues_and_editions_unchanged": true
+  },
+  "source_recovery": {
+    "handoff_commit": "4bbf8a60fa63a525c676d29847ee2fc3bd7efac4",
+    "handoff_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/handoff.json",
+    "completed_original_receipt_commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+    "completed_original_receipt_path": "maintenance/photo-issue-plans/november-hikari-city-and-pool-013/originals/receipt.json",
+    "prepared_jpeg_commit": "4d22a38dfd784b984d3de66e3c9568adb1dd3acb",
+    "prior_candidate_head": "b94d50940304b7596217c72b5eedd8c5529697c7",
+    "raw_transport_files_retained_in_immutable_git_history": true,
+    "originals_and_jpegs_are_now_in_standard_publication_paths": true
+  },
+  "publication": {
+    "owner_task": "6ae8b29f4d308191a5c5eccf32ecd974",
+    "next_existing_slot_jst": "2026-11-22T06:00:00+09:00",
+    "oldest_unfinished_edition": "issue-002",
+    "fixed_remaining_order": [
+      "amane-hikari",
+      "shioba-rio"
+    ],
+    "draft_pr_required_until_next_eligible_slot": true,
+    "release_steps": [
+      "Use this same branch and PR; first verify current main, same-head adoption, unchanged original/JPEG hashes, owner task and active guard.",
+      "On the actual eligible release day, preserve existing catalog entries, set this feature state to published with the actual JST publication timestamp, and append this slug to issue-002 features after its current five-feature prefix.",
+      "Run the existing catalog/photo/edition/history checks. Preserve the final photographic and text review unless inputs changed; do not regenerate, retransfer or reencode unchanged materials.",
+      "Save and read back publication-finalize kind photo_issue for the actual new PR head and real editor run; then mark ready and use the existing CI/finalizer/public verification."
+    ],
+    "not_yet_done": [
+      "actual release timestamp",
+      "edition feature append",
+      "publication-finalize for release head",
+      "merge and live delivery verification"
+    ]
+  },
+  "usage": {
+    "new_images_generated": 0,
+    "paid_services_or_credits_purchased": 0,
+    "new_automation_tasks": 0,
+    "immediate_automation_runs": 0
+  }
+}

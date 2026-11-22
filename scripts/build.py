@@ -2136,8 +2136,9 @@ def _sitemap_timestamp(value):
     return stamp if stamp.tzinfo is not None else stamp.replace(tzinfo=timezone(timedelta(hours=9)))
 
 
-def other_files(articles, issues=None, serials=None, photo_issues=(), photo_models=(), photo_editions=()):
+def other_files(articles, issues=None, serials=None, photo_issues=(), photo_models=(), photo_editions=(), photo_stories=()):
     serials = load_serials(BASE) if serials is None else public_serials(serials)
+    dispatches = load_market_bulletins(BASE)
     latest = max(
         list(modification_date(a) for a in articles) +
         list(e["published_at"] for s in serials for e in s["episodes"]) +
@@ -2145,8 +2146,15 @@ def other_files(articles, issues=None, serials=None, photo_issues=(), photo_mode
         key=_sitemap_timestamp,
         default=None
     )
+    story_dates = [post["publishedAt"] for post in photo_stories]
+    home_latest = max(
+        ([latest] if latest else []) + story_dates +
+        [report["published_at"] for report in dispatches],
+        key=_sitemap_timestamp,
+        default=None,
+    )
     issues = daily_issues(articles) if issues is None else issues
-    routes = [("/", latest), ("/archive/", latest), ("/topics/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
+    routes = [("/", home_latest), ("/archive/", latest), ("/topics/", latest), ("/issues/", latest), ("/about/", None), ("/editorial/", None), ("/advertise/", None), ("/privacy/", None)]
     routes.extend(
         (issue_url(day), max(modification_date(a) for a in items))
         for day, items in issues.items()
@@ -2160,7 +2168,6 @@ def other_files(articles, issues=None, serials=None, photo_issues=(), photo_mode
         for tag, items in curated_topics(articles).items()
     )
     routes.extend(serial_routes(serials))
-    dispatches = load_market_bulletins(BASE)
     routes.extend(market_bulletin_routes(dispatches))
     outlooks = load_market_outlooks(BASE)
     routes.append((MARKET_OUTLOOK_URL, outlooks[-1]["at"][:10] if outlooks else None))
@@ -2168,7 +2175,15 @@ def other_files(articles, issues=None, serials=None, photo_issues=(), photo_mode
     if photo_editions:
         feature_entries = [entry for entry in feature_entries if entry[0] != "/photo/weekly/"]
     photo_entries = [*edition_sitemap_entries(photo_editions), *feature_entries,
-                     *model_sitemap_entries(photo_models, photo_issues, root=BASE)]
+                     *model_sitemap_entries(photo_models, photo_issues, root=BASE, stories=photo_stories)]
+    # The photo index embeds the same dated story strip. Updating a person's
+    # post changes this index, but does not change the original feature dates.
+    if story_dates:
+        photo_entries = [
+            (url, max(([modified] if modified else []) + story_dates, key=_sitemap_timestamp), image)
+            if url == "/photo/weekly/" else (url, modified, image)
+            for url, modified, image in photo_entries
+        ]
     routes.extend((url, modified) for url, modified, _image in photo_entries)
     xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
     image_xmlns = "http://www.google.com/schemas/sitemap-image/1.1"
@@ -2416,7 +2431,7 @@ def build():
     write("photo/weekly/engagement.json", json.dumps({
         "version": 1, "issues": sorted({issue["slug"] for issue in photo_issues} | {edition["slug"] for edition in photo_editions}),
     }, ensure_ascii=False) + "\n")
-    other_files(articles, issues, serials, photo_issues, photo_data["models"], photo_editions)
+    other_files(articles, issues, serials, photo_issues, photo_data["models"], photo_editions, story_data)
     make_brand_image()
     make_issue_social_images(issues)
     make_article_social_images(articles)

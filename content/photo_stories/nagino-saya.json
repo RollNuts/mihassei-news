@@ -45,6 +45,21 @@
         "cut_id": "07",
         "image_sha256": "1fb0df010c906a44400b884557d85298d35a11df7d5c62b878a71a2da1ebf65b"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261122072025693000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-22T07:20:25.693+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、枕の下から昨日のしおりが出てきました。本はちゃんと机にあるのに。続きを少しだけ読むつもりが、まだ布団から出られません。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "08",
+        "image_sha256": "b4f52ae4b794f13639c0d02e186eb8e4ae4e2295692135a2534f6f3134735719"
+      }
     }
   ]
 }
