@@ -1,6 +1,26 @@
 {
   "version": 1,
   "stories": {
+    "private-rocket-town-satellite-first-ocean-image": {
+      "article_sha256": "d2de5961397d86bba41e6109cbdf975faca0f23476243cf0d418f71cdc7172a6",
+      "cues": [
+        {
+          "at": 0,
+          "label": "補欠衛星が打上げ",
+          "text": "空いた相乗り枠で町工場製の小型衛星が宇宙へ"
+        },
+        {
+          "at": 4,
+          "label": "海の初画像が届く",
+          "text": "防波堤と養殖いかだ、潮の色の境目を画面で確かめた"
+        },
+        {
+          "at": 8,
+          "label": "部品工場に撮影の注文",
+          "text": "養殖事業者が次の観測を有料発注。工場の新しい仕事になった"
+        }
+      ]
+    },
     "airport-autonomous-carts-stop-despite-clear-crossing": {
       "article_sha256": "e7d91413bb9dc4537120450cc17101885698f751252fb502806bb00d9e36e344",
       "cues": [
