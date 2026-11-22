@@ -153,17 +153,21 @@ test('the published fileParams schema lists four fields; only two are required',
   const f=fileFetcher();
   const response=await send({jsonrpc:'2.0',id:2,method:'tools/list'},f.fn);
   const x=await data(response);
-  assert.equal(x.result.tools.length,3);
+  const tools=new Map(x.result.tools.map(tool=>[tool.name,tool]));
+  assert.deepEqual([...tools.keys()].sort(),['probe_candidate_jpeg','read_candidate_png',
+    'read_weekly_candidate_png','stage_candidate_jpeg']);
+  assert.equal(x.result.tools.length,tools.size);
   assert.equal(f.calls.length,0);
-  for(const tool of x.result.tools){
+  for(const name of ['probe_candidate_jpeg','stage_candidate_jpeg','read_candidate_png']){
+    const tool=tools.get(name);
     assert.deepEqual(tool._meta['openai/fileParams'],['file']);
     const s=tool.inputSchema.properties.file;
     assert.deepEqual(Object.keys(s.properties).sort(),['download_url','file_id','file_name','mime_type']);
     assert.deepEqual(s.required,['download_url','file_id']);
     assert.equal(s.additionalProperties,false);
   }
-  assert.equal(x.result.tools[0].annotations.readOnlyHint,true);
-  assert.equal(x.result.tools[1].annotations.readOnlyHint,false);
+  assert.equal(tools.get('probe_candidate_jpeg').annotations.readOnlyHint,true);
+  assert.equal(tools.get('stage_candidate_jpeg').annotations.readOnlyHint,false);
 });
 
 test('initialization advertises the version-2.1 tool contract without fetching',async()=>{

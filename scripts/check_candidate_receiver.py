@@ -36,12 +36,15 @@ def check(*, fetch=urllib.request.urlopen):
     if document.get("jsonrpc") != "2.0" or document.get("id") != "read-only-file-schema":
         raise RuntimeError("Candidate MCP JSON-RPC identity mismatch")
     tools = document.get("result", {}).get("tools")
-    if not isinstance(tools, list) or len(tools) != 3:
-        raise RuntimeError("Candidate MCP must expose the JPEG probe/writer and PNG reader")
+    file_tools = ("probe_candidate_jpeg", "stage_candidate_jpeg", "read_candidate_png")
+    weekly_reader = "read_weekly_candidate_png"
+    if not isinstance(tools, list) or len(tools) != len(file_tools) + 1:
+        raise RuntimeError("Candidate MCP must expose three file tools and the weekly PNG reader")
     by_name = {tool.get("name"): tool for tool in tools}
-    if set(by_name) != {"probe_candidate_jpeg", "stage_candidate_jpeg", "read_candidate_png"}:
+    if set(by_name) != {*file_tools, weekly_reader}:
         raise RuntimeError("Candidate MCP tool names differ")
-    for name, tool in by_name.items():
+    for name in file_tools:
+        tool = by_name[name]
         if tool.get("_meta", {}).get("openai/fileParams") != ["file"]:
             raise RuntimeError(name + ": fileParams missing")
         schema = tool.get("inputSchema", {}).get("properties", {}).get("file", {})
@@ -53,14 +56,25 @@ def check(*, fetch=urllib.request.urlopen):
         raise RuntimeError("Candidate probe is not marked read-only")
     if by_name["stage_candidate_jpeg"].get("annotations", {}).get("readOnlyHint") is not False:
         raise RuntimeError("Candidate stage tool falsely claims to be read-only")
-    png = by_name["read_candidate_png"]
-    if png.get("annotations", {}).get("readOnlyHint") is not True:
-        raise RuntimeError("Candidate PNG reader is not marked read-only")
-    output = png.get("outputSchema", {})
-    image = output.get("properties", {}).get("image_url", {})
-    if "image_url" not in output.get("required", []) or image.get("pattern") != "^data:image/png;base64,":
-        raise RuntimeError("Candidate PNG reader lacks its structured byte output")
-    print("Public candidate MCP fileParams schema verified (tools/list only; no actual file transfer).")
+    weekly = by_name[weekly_reader]
+    schema = weekly.get("inputSchema", {})
+    fields = {"issue", "commit", "path", "expected_sha256"}
+    props = schema.get("properties", {})
+    if (schema.get("type") != "object" or schema.get("additionalProperties") is not False
+            or set(schema.get("required", [])) != fields or set(props) != fields
+            or any(prop.get("type") != "string" for prop in props.values())
+            or "openai/fileParams" in weekly.get("_meta", {})
+            or weekly.get("annotations", {}).get("destructiveHint") is not False):
+        raise RuntimeError("Weekly PNG reader input or annotations differ")
+    for name in ("read_candidate_png", weekly_reader):
+        png = by_name[name]
+        if png.get("annotations", {}).get("readOnlyHint") is not True:
+            raise RuntimeError(name + ": PNG reader is not marked read-only")
+        output = png.get("outputSchema", {})
+        image = output.get("properties", {}).get("image_url", {})
+        if "image_url" not in output.get("required", []) or image.get("pattern") != "^data:image/png;base64,":
+            raise RuntimeError(name + ": PNG reader lacks its structured byte output")
+    print("Public candidate MCP file and weekly PNG schemas verified (tools/list only).")
 
 
 if __name__ == "__main__":

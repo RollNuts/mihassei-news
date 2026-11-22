@@ -1,4 +1,4 @@
-// Separate, stateless MCP for ChatGPT's documented fileParams input.
+// Stateless MCP for ChatGPT fileParams and immutable weekly candidate originals.
 // No image generation/conversion and no access to the existing read_image_control.
 // https://developers.openai.com/plugins/reference#define-file-inputs
 const REPO="RollNuts/mihassei-news";
@@ -30,12 +30,28 @@ const ARCHIVE_MAX=1536*1024*1024;
 const KEY=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SHA=/^[a-f0-9]{64}$/;
 const GIT=/^[a-f0-9]{40}$/;
+const WEEKLY_ORIGINAL=/^(?:originals|supplements\/[a-z0-9]+(?:-[a-z0-9]+)*)\/(?:0[1-9]|[1-9][0-9]+)\.png$/;
 const VERSIONS=["2025-06-18","2025-11-25"];
 const isObj=x=>x!==null&&typeof x==="object"&&!Array.isArray(x);
 const validToken=x=>typeof x==="string"&&x.length>=20&&x.length<=255&&!/[\s\x00-\x1f\x7f]/.test(x);
 const fileSchema={type:"object",properties:{
   download_url:{type:"string"},file_id:{type:"string"},mime_type:{type:"string"},file_name:{type:"string"}
 },required:["download_url","file_id"],additionalProperties:false};
+const weeklyArgs={
+  issue:{type:"string",pattern:KEY.source,maxLength:100},
+  commit:{type:"string",pattern:GIT.source},
+  path:{type:"string",maxLength:256},
+  expected_sha256:{type:"string",pattern:SHA.source}
+};
+function pngOutputSchema(sourceFields){
+  const properties={
+    status:{type:"string",enum:["read"]},mime_type:{type:"string",enum:["image/png"]},
+    width:{type:"integer",minimum:1,maximum:8192},height:{type:"integer",minimum:1,maximum:8192},
+    bytes:{type:"integer",minimum:57,maximum:MAX_PNG},sha256:{type:"string",pattern:SHA.source},
+    ...sourceFields,image_url:{type:"string",pattern:"^data:image/png;base64,",maxLength:Math.ceil(MAX_PNG/3)*4+22}
+  };
+  return {type:"object",properties,required:Object.keys(properties),additionalProperties:false};
+}
 const PROBE={
   name:"probe_candidate_jpeg",
   title:"Check a prepared JPEG",
@@ -49,15 +65,16 @@ const READ_PNG={
   title:"Read an original PNG into code",
   description:"Read one original PNG up to 8 MiB without converting, saving, generating or approving it. Call inside code mode and capture structuredContent.image_url directly for the existing native image helper. Never print or forward the image data URL/base64 into conversation text. Text content contains only a short metadata summary; original bytes remain in structuredContent.",
   inputSchema:{type:"object",properties:{file:fileSchema},required:["file"],additionalProperties:false},
-  outputSchema:{type:"object",properties:{
-    status:{type:"string",enum:["read"]},mime_type:{type:"string",enum:["image/png"]},
-    width:{type:"integer",minimum:1,maximum:8192},height:{type:"integer",minimum:1,maximum:8192},
-    bytes:{type:"integer",minimum:57,maximum:MAX_PNG},
-    sha256:{type:"string",pattern:"^[a-f0-9]{64}$"},file_id_sha256:{type:"string",pattern:"^[a-f0-9]{64}$"},
-    image_url:{type:"string",pattern:"^data:image/png;base64,",maxLength:Math.ceil(MAX_PNG/3)*4+22}
-  },required:["status","mime_type","width","height","bytes","sha256","file_id_sha256","image_url"],additionalProperties:false},
+  outputSchema:pngOutputSchema({file_id_sha256:{type:"string",pattern:SHA.source}}),
   annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false},
   _meta:{"openai/fileParams":["file"]}
+};
+const READ_WEEKLY_PNG={
+  name:"read_weekly_candidate_png",title:"Read a weekly candidate PNG",
+  description:"Read one original PNG from a weekly photo candidate in RollNuts/mihassei-news. Supply the full commit SHA, issue slug, exact originals/NN.png or supplements/<group>/NN.png repository path, and the original SHA-256 from the handoff. Use structuredContent.image_url inside code mode and keep the bytes out of conversation text.",
+  inputSchema:{type:"object",properties:weeklyArgs,required:Object.keys(weeklyArgs),additionalProperties:false},
+  outputSchema:pngOutputSchema({commit:weeklyArgs.commit,path:weeklyArgs.path}),
+  annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true}
 };
 const STAGE={
   name:"stage_candidate_jpeg",
@@ -226,10 +243,30 @@ async function readFile(file,fetchImpl){
 }
 async function readPng(file,fetchImpl){
   const bytes=await downloadFile(file,fetchImpl,"image/png",MAX_PNG,allowedPngFileHost);
+  return pngResult(bytes,{file_id_sha256:await shaText(file.file_id)});
+}
+async function pngResult(bytes,source,expectedSha){
   const [width,height]=pngSize(bytes);
-  return {status:"read",mime_type:"image/png",width,height,bytes:bytes.length,
-    sha256:await shaHex(bytes),file_id_sha256:await shaText(file.file_id),
+  const sha256=await shaHex(bytes);
+  if(expectedSha!==undefined&&sha256!==expectedSha)throw failure("sha256_mismatch");
+  return {status:"read",mime_type:"image/png",width,height,bytes:bytes.length,sha256,...source,
     image_url:"data:image/png;base64,"+encodedBase64(bytes)};
+}
+async function readWeeklyPng(args,fetchImpl){
+  const {issue,commit,path,expected_sha256}=args;
+  if(!exactFields(args,Object.keys(weeklyArgs))||typeof issue!=="string"||issue.length>100||!KEY.test(issue)||
+     typeof commit!=="string"||!GIT.test(commit)||typeof expected_sha256!=="string"||!SHA.test(expected_sha256)||
+     typeof path!=="string"||path.length>256)throw failure("invalid_arguments");
+  const prefix="maintenance/photo-issue-plans/"+issue+"/";
+  if(!path.startsWith(prefix)||!WEEKLY_ORIGINAL.test(path.slice(prefix.length)))
+    throw failure("invalid_arguments");
+  const url=RAW+commit+"/"+path;
+  const response=await fetchImpl(url,{method:"GET",redirect:"manual",cache:"no-store",credentials:"omit",
+    headers:{accept:"image/png"},signal:AbortSignal.timeout(5000)});
+  if(response.status!==200||response.redirected||response.url&&response.url!==url)throw failure("file_unavailable");
+  const type=(response.headers.get("content-type")||"").split(";",1)[0].trim().toLowerCase();
+  if(type!=="image/png")throw failure("unexpected_file_type");
+  return pngResult(await limited(response,MAX_PNG),{commit,path},expected_sha256);
 }
 function encodedBase64(bytes){
   if(typeof bytes.toBase64==="function")return bytes.toBase64();
@@ -501,19 +538,20 @@ export async function imageCandidateMcp(req,url,env,fetchImpl=fetch){
   }
   if(!version)return rpcError(id,-32600,"MCP protocol version required",400);
   if(m.method==="ping")return reply({jsonrpc:"2.0",id,result:{}});
-  if(m.method==="tools/list")return reply({jsonrpc:"2.0",id,result:{tools:[PROBE,STAGE,READ_PNG]}});
+  if(m.method==="tools/list")return reply({jsonrpc:"2.0",id,result:{tools:[PROBE,STAGE,READ_PNG,READ_WEEKLY_PNG]}});
   if(m.method!=="tools/call")return rpcError(id,-32601,"Method not found");
   if(!isObj(p)||!isObj(p.arguments)||Object.keys(p).some(x=>!["name","arguments","_meta"].includes(x)))
     return rpcError(id,-32602,"Invalid call");
-  if(p.name!==PROBE.name&&p.name!==STAGE.name&&p.name!==READ_PNG.name)return rpcError(id,-32602,"Unknown tool");
+  if(![PROBE.name,STAGE.name,READ_PNG.name,READ_WEEKLY_PNG.name].includes(p.name))return rpcError(id,-32602,"Unknown tool");
   const args=p.arguments;
-  if(!isObj(args.file)||Object.keys(args).some(x=>!["file","claim"].includes(x))||
+  if(p.name!==READ_WEEKLY_PNG.name&&(!isObj(args.file)||Object.keys(args).some(x=>!["file","claim"].includes(x))||
     (p.name!==STAGE.name&&Object.keys(args).length!==1)||
-    (p.name===STAGE.name&&!isObj(args.claim)))
+    (p.name===STAGE.name&&!isObj(args.claim))))
     return toolResult(id,{error:"invalid_arguments"},true);
   try {
-    if(p.name===READ_PNG.name){
-      const image=await readPng(args.file,fetchImpl),{image_url,...summary}=image;
+    if(p.name===READ_PNG.name||p.name===READ_WEEKLY_PNG.name){
+      const image=p.name===READ_PNG.name?await readPng(args.file,fetchImpl):await readWeeklyPng(args,fetchImpl);
+      const {image_url,...summary}=image;
       return toolResult(id,image,false,summary);
     }
     if(p.name===PROBE.name){

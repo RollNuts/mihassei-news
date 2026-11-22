@@ -81,7 +81,7 @@ function safeError(actual,expected){
   assert.ok(text.length<1024,'error diagnostics stay bounded');
   assert.doesNotMatch(text,/PRIVATE_|https?:|image_url|base64|data:image|日本語/);
   const detail=JSON.parse(text);
-  assert.match(detail.error,/^[a-z_]+$/);
+  assert.match(detail.error,/^[a-z][a-z0-9_]*$/);
   if(expected)assert.equal(detail.error,expected);
   return detail;
 }
@@ -136,6 +136,107 @@ test('a valid deterministic PNG is returned byte for byte with metadata-only tex
   assert.equal(f.calls[0].opts.cache,'no-store');
   assert.deepEqual(f.calls[0].opts.headers,{accept:'image/png'});
   assert.ok(f.calls[0].opts.signal instanceof AbortSignal);
+});
+
+const weeklyIssue='november-coast-city-rio-015';
+const weeklyCommit='7abd73f7839688b447d05eedeb0a37d35b45dca0';
+const weeklyFolder='maintenance/photo-issue-plans/'+weeklyIssue;
+const weeklyArgs={issue:weeklyIssue,commit:weeklyCommit,path:weeklyFolder+'/originals/02.png',
+  expected_sha256:'753b7c71191b32cecf5b459154511bcf31efbd54c0335a67c8269bca751bc95b'};
+const weeklyCall=args=>({jsonrpc:'2.0',id:1,method:'tools/call',
+  params:{name:'read_weekly_candidate_png',arguments:args}});
+
+test('weekly PNG reader declares four immutable source fields and its read-only byte output',async()=>{
+  const response=await send({jsonrpc:'2.0',id:1,method:'tools/list'},()=>assert.fail('unexpected fetch'));
+  const tool=response.result.tools.find(candidate=>candidate.name==='read_weekly_candidate_png');
+  const fields=['commit','expected_sha256','issue','path'];
+  assert.deepEqual(Object.keys(tool.inputSchema.properties).sort(),fields);
+  assert.deepEqual([...tool.inputSchema.required].sort(),fields);
+  for(const field of fields)assert.equal(tool.inputSchema.properties[field].type,'string');
+  assert.equal(tool.inputSchema.additionalProperties,false);
+  assert.equal(tool._meta?.['openai/fileParams'],undefined);
+  assert.equal(tool.annotations.readOnlyHint,true);
+  assert.equal(tool.annotations.destructiveHint,false);
+  assert.ok(tool.outputSchema.required.includes('image_url'));
+  assert.equal(tool.outputSchema.properties.image_url.pattern,'^data:image/png;base64,');
+});
+
+test('weekly PNG reader preserves a 2.3 MB original and an actual supplemental photo',async()=>{
+  // The published source files are byte-identical to the originals on this immutable candidate.
+  const cases=[
+    {args:weeklyArgs,cut:'02',size:2328106,width:1024,height:1536},
+    {args:{...weeklyArgs,path:weeklyFolder+'/supplements/d0ff7c0e/03.png',
+      expected_sha256:'535225a6b99705d4fa1dde4a49306cf0bfd16e996e92672f575a0d630954d1be'},
+      cut:'05',size:2261909,width:1536,height:1024}
+  ];
+  for(const {args,cut,size,width,height} of cases){
+    const original=fs.readFileSync(path.join(__dirname,'../maintenance/photo-issues',
+      weeklyIssue,cut,'source-'+args.expected_sha256+'.png'));
+    assert.equal(sha(original),args.expected_sha256);
+    assert.equal(original.length,size);
+    let requests=0;
+    const response=await send(weeklyCall(args),(url,opts)=>{
+      requests++;
+      assert.equal(String(url),'https://raw.githubusercontent.com/RollNuts/mihassei-news/'+weeklyCommit+'/'+args.path);
+      assert.equal(opts.method,'GET');
+      assert.equal(opts.redirect,'manual');
+      assert.equal(opts.cache,'no-store');
+      assert.equal(opts.credentials,'omit');
+      assert.ok(opts.signal instanceof AbortSignal);
+      const headers=new Headers(opts.headers);
+      assert.equal(headers.has('authorization'),false);
+      assert.equal(headers.has('cookie'),false);
+      return new Response(original,{headers:{'content-type':'image/png'}});
+    },cut==='02'?{}:env,{authorization:'Bearer PRIVATE_REQUEST',cookie:'PRIVATE_COOKIE=1'});
+    assert.equal(requests,1);
+    assert.equal(response.result.isError,false,JSON.stringify(response.result.content));
+    const {image_url,...meta}=response.result.structuredContent;
+    assert.deepEqual(meta,{status:'read',mime_type:'image/png',sha256:args.expected_sha256,
+      bytes:size,width,height,commit:weeklyCommit,path:args.path});
+    assert.ok(image_url.startsWith('data:image/png;base64,'));
+    assert.equal(image_url.length,22+4*Math.ceil(size/3));
+    assert.ok(Buffer.from(image_url.slice(22),'base64').equals(original),'returned bytes differ from the candidate');
+    assert.deepEqual(response.result.content.map(item=>item.type),['text']);
+    assert.ok(response.result.content[0].text.length<1024);
+    assert.deepEqual(JSON.parse(response.result.content[0].text),meta);
+  }
+});
+
+test('weekly reader rejects moving refs, out-of-scope files and extra source options before fetching',async()=>{
+  const rejected=[
+    {...weeklyArgs,commit:'main'}, {...weeklyArgs,expected_sha256:''},
+    {...weeklyArgs,issue:'another-issue'}, {...weeklyArgs,path:weeklyFolder+'/jpeg/02.jpg'},
+    {...weeklyArgs,path:'assets/editorial-scenes/robot-job-hopping.png'},
+    {...weeklyArgs,path:weeklyFolder+'/supplements/d0ff7c0e/inventory.json'},
+    {...weeklyArgs,url:source}
+  ];
+  let requests=0;
+  for(const args of rejected){
+    safeError(await send(weeklyCall(args),()=>{requests++;return new Response(bytes);}), 'invalid_arguments');
+  }
+  assert.equal(requests,0);
+});
+
+test('weekly PNG read fails on hash mismatch, empty or oversized bytes, wrong MIME and redirect',async()=>{
+  const args={...weeklyArgs,expected_sha256:sha(bytes)};
+  const cases=[
+    ['sha256_mismatch',{...args,expected_sha256:'0'.repeat(64)},()=>new Response(bytes,{headers:{'content-type':'image/png'}})],
+    ['empty_response',args,()=>new Response(null,{headers:{'content-type':'image/png'}})],
+    ['invalid_png',args,()=>new Response(new Uint8Array(),{headers:{'content-type':'image/png'}})],
+    ['file_too_large',args,()=>new Response(bytes,{headers:{'content-type':'image/png','content-length':String(maxPng+1)}})],
+    ['file_too_large',args,()=>new Response(new Uint8Array(maxPng+1),{headers:{'content-type':'image/png'}})],
+    ['unexpected_file_type',args,()=>new Response(bytes,{headers:{'content-type':'text/plain'}})],
+    ['file_unavailable',args,()=>new Response(null,{status:302,headers:{location:'https://example.com/elsewhere.png'}})]
+  ];
+  for(const [error,request,upstream] of cases){
+    let requests=0;
+    safeError(await send(weeklyCall(request),(_url,opts)=>{
+      requests++;
+      assert.equal(opts.redirect,'manual');
+      return upstream();
+    }),error);
+    assert.equal(requests,1);
+  }
 });
 
 test('actual PNG HTTP bytes determine type while optional file metadata stays advisory',async()=>{
