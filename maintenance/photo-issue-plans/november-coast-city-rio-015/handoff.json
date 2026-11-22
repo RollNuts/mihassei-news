@@ -20,7 +20,7 @@
     "raw_verified_count": 10,
     "github_binary_backed_count": 10,
     "cloud_guard": "active on 2026-11-23T02:20 JST recovery, recheck next mutation",
-    "publication_state": "not_accepted_not_published",
+    "publication_state": "held_missing_one_swimwear_not_published",
     "source_reference": "制作原稿の汐羽りお欄「個別原本」で sources[].ordinal と同じ番号の個別Library URLを使用。library_current_file_id は取込用ID。生成turnは未記録。補充分は supplemental_inventory 内の実turn・画像番号を使用。",
     "encoding_verification": {
       "method": "byte-for-byte reproduction of saved JPEGs using NativeImageBytes.convertPhoto and its pinned dependencies",
@@ -422,6 +422,122 @@
       }
     }
   ],
-  "next": "週刊編集は保存済み10組と supplemental_inventory の別撮影の水着候補から10枚を目視選定し、本人コラムと合わせて第2号を完成する。元の05は01と近似のため保留。追加カットの元画像番号は誌面番号と区別する。いずれも掲載採用は未確定。",
-  "supplemental_inventory": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/inventory.json"
+  "next": "Existing Shioba Rio producer: deliver one new distinct full-body/wide swimwear original and fixed SHA to this existing candidate; weekly editor resumes at missing position 09 after raw readback, JPEG, real-image QA, then normal same-branch PR / CI / finalizer / live verification. No new task or image generation in editor.",
+  "supplemental_inventory": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/inventory.json",
+  "editorial_preflight": {
+    "created_at_utc": "2026-11-22T20:59:17.163Z",
+    "editor": "weekly-photo-editor",
+    "basis_main_sha": "dea0cf14d48945254070252f5af07a50b58bfa95",
+    "basis_candidate_head": "e5c6d5ecddbac84fc685ea001f4b0286d1349cb9",
+    "source_inventory_sha256": "f03bdeae5de8147d91235fa3b687e484757cf5e235e87fbc207308254aa1bc3e",
+    "supplement_inventory_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/supplements/d0ff7c0e/inventory.json",
+    "visual_review": "All 10 existing original candidate JPEGs and all 4 supplemental JPEGs directly displayed from candidate branch; ordinal 05 near-pixel-repeat of ordinal 01, exclude; 9 provisionally selected distinct scenes. No final adoption.",
+    "existing_original_jpeg_blob_count": 10,
+    "supplement_jpeg_blob_count": 4,
+    "existing_original_raw_verified_prior": 10,
+    "supplement_raw_verified_prior": 4,
+    "provisional_sequence": [
+      {
+        "position": 1,
+        "source": "supplement",
+        "ordinal": 14,
+        "kind": "swimwear",
+        "scene": "海辺の横位置、水着姿と広い青空。表紙候補"
+      },
+      {
+        "position": 2,
+        "source": "original",
+        "ordinal": 2,
+        "kind": "clothed",
+        "scene": "雪の残る湖、人物を小さく置いた全景"
+      },
+      {
+        "position": 3,
+        "source": "supplement",
+        "ordinal": 11,
+        "kind": "swimwear",
+        "scene": "温水プールの近景、紺の水着と窓からの光"
+      },
+      {
+        "position": 4,
+        "source": "original",
+        "ordinal": 4,
+        "kind": "clothed",
+        "scene": "温室の窓辺、緑のニットと手帳"
+      },
+      {
+        "position": 5,
+        "source": "supplement",
+        "ordinal": 3,
+        "kind": "swimwear",
+        "scene": "淡色水着で石の縁に腕を置く肩越しの横位置"
+      },
+      {
+        "position": 6,
+        "source": "original",
+        "ordinal": 7,
+        "kind": "clothed",
+        "scene": "雨上がりの路地、傘を下げて振り返る"
+      },
+      {
+        "position": 7,
+        "source": "original",
+        "ordinal": 8,
+        "kind": "swimwear",
+        "scene": "プールサイドの読書、青いワンピース水着"
+      },
+      {
+        "position": 8,
+        "source": "supplement",
+        "ordinal": 2,
+        "kind": "swimwear",
+        "scene": "屋外プールサイドでタオルにうつ伏せの横位置"
+      },
+      {
+        "position": 10,
+        "source": "original",
+        "ordinal": 10,
+        "kind": "clothed",
+        "scene": "夜景を望むバー、深紅のドレス"
+      }
+    ],
+    "swimwear_clear_count": 5,
+    "clothed_count": 4,
+    "fullbody_wide_swimwear_count": 0,
+    "missing": [
+      {
+        "quantity": 1,
+        "type": "new unpublished original adult swimwear photograph",
+        "composition": "clearly visible full-body or wide shot at a winter-appropriate heated indoor pool, with sufficiently different posture/background than close-up pool photographs; natural person and body continuity; independent PNG with producer image number / fixed commit / SHA-256 and derived JPEG",
+        "assigned_to": "shioba-rio existing producer task; weekly editor to receive in same candidate branch"
+      }
+    ],
+    "held": [
+      {
+        "source": "original",
+        "ordinal": 5,
+        "reason": "Same coast path and outfit as original 01, virtually identical composition; cannot count as independent cut"
+      }
+    ],
+    "other_unused_originals": [
+      1,
+      3,
+      6,
+      12
+    ],
+    "editorial_column": {
+      "type": "editorial_new_draft_not_producer_recovery",
+      "created_at_utc": "2026-11-22T20:59:17.163Z",
+      "title": "水の色が変わるころ",
+      "paragraphs": [
+        "雪の残る湖を見たあとで、温かなプールに入りました。同じ水なのに、場所が違うだけで表情がこんなに変わる。取材ならきっと、理由を聞きたくなったと思います。今日は少しだけ、答えを探さないことにしました。",
+        "窓辺の温室では花の名前を手帳に書き、海では風の強さを覚えて帰りました。プールサイドで開いた本は、結局ほんの数ページ。読んでいない間にも、水面の光が何度も変わっていました。",
+        "夜、雨のあとの路地を抜けると街の灯りが見えました。一日じゅう青い景色を見ていたせいか、いつもの夜景まで少し違って見えます。明日の仕事に使う言葉は、まだ決めていません。"
+      ]
+    },
+    "status": "held_missing_one_swimwear",
+    "publication": "not_accepted_not_published",
+    "reason": "Current original set has one clear swimwear image, four supplemental images add four; total five, less than default six. Previous Rio issue already used reduced-swimwear exception, so do not repeat exception to fill new issue. Do not publish unfinished 9 cuts.",
+    "next": "Existing Shioba Rio producer: deliver one new distinct full-body/wide swimwear original and fixed SHA to this existing candidate; weekly editor resumes at missing position 09 after raw readback, JPEG, real-image QA, then normal same-branch PR / CI / finalizer / live verification. No new task or image generation in editor."
+  }
 }
