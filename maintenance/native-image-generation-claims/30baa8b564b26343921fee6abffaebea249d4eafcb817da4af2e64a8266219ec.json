@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "30baa8b564b26343921fee6abffaebea249d4eafcb817da4af2e64a8266219ec",
+  "slug": "gallery-cleaner-last-footstep-beat",
+  "article_sha256": "10a9ad23fe453f26a7461be871171a382a72106ec60e9bc0164de2363e5f3586",
+  "logical_run_id": "news-photo-v1:10a9ad23fe453f26a7461be871171a382a72106ec60e9bc0164de2363e5f3586",
+  "prompt_sha256": "8ba64b75eb18bd1458e24fc3da42a58ec8609c6d019885a52e0c5f908c2aea48",
+  "reserved_at": "2026-11-22T23:05:50.830Z",
+  "baseline": {
+    "commit_sha": "7dd470ed23180151bb0a3aba14f873f976db48a3",
+    "tree_sha": "6b859a9aa5b845d7081b735e684040824418e560",
+    "protected_hashes": {
+      "content/articles.json": "fbb253c68a29630d88e7b9941dd3a24a84b07151b2f270c8ae87875848b3dde0",
+      "assets/generated/manifest.json": "45c78b333afebab46d9573b4e6fe36f3b6b9fed8205ecdc712304f205b1eecc1",
+      "content/visual_reviews.json": "f4774c146d32dde8dda6bbf8694f0dcc59c9090aa9caa57084745d834a21f78f"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "94d00f01589e519c994aea6bc670e8b90d89aa84",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "00cad58421009d07f0bf39e512e5939237c4caf13f573a3b5fd10610cc532680",
+    "observed_at": "2026-11-22T23:05:27.539Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
