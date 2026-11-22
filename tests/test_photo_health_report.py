@@ -194,6 +194,26 @@ class ContentOperationObservationTests(unittest.TestCase):
         self.assertIn("no scheduled deadline is inferred", rendered)
         self.assertIn("not additional live verification", rendered)
 
+    def test_cross_midnight_news_does_not_fill_another_date_and_market_keeps_delay(self):
+        self.write("articles.json", [
+            {"slug": "fri-pm", "publication_slot": "2026-11-20T19:30:00+09:00",
+             "published_at": "2026-11-21T00:24:19+09:00"},
+            {"slug": "sat-am", "publication_slot": "2026-11-20T22:30:00Z",
+             "published_at": "2026-11-21T07:34:51+09:00"},
+            {"slug": "without-slot", "published_at": "2026-11-21T18:12:00+09:00"},
+            {"slug": "future", "publication_slot": "2026-11-21T19:30:00+09:00",
+             "published_at": "2026-11-22T20:00:00+09:00"}])
+        self.write("market_bulletins.json", [{"slug": "2026-11-20-am", "day": "2026-11-20",
+                   "slot": "am", "published_at": "2026-11-20T11:59:27+09:00"}])
+        report = self.observe()
+        slots = report["news"]["previous_day_slots"]
+        self.assertEqual([r["slug"] for r in slots["original"]], ["sat-am"])
+        self.assertEqual([r["slug"] for r in slots["published_from_other_dates"]], ["fri-pm"])
+        self.assertEqual(slots["published_without_slot"], ["without-slot"])
+        summary = "\n".join(operation_lines(report))
+        self.assertIn("2026-11-21 JST: 07:30.", summary)
+        self.assertIn("08:30 → 11:59", summary)
+
     def test_oldest_incomplete_week_and_next_frozen_model_survive_week_rollover(self):
         photo = self.observe()["photo_editions"]
         self.assertEqual(photo["status"], "observed")
