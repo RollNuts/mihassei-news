@@ -335,11 +335,21 @@ var PublicationReviewContext = (function () {
   }
   // One bounded observation of an existing handoff, not a watcher or a new
   // approval. Run IDs must come from its real handoff; never search by title.
-  async function readHandoffStatus({ fetchRepository, fetchJobLogs, ref, pr: number, head,
-    ci_run_id, finalizer_run_id, verification_run_id } = {}) {
+  async function readHandoffStatus(options = {}) {
+    return readStatus(options, false);
+  }
+  // Use after the independent first read. This separate entry point can inspect
+  // an unapproved draft's existing CI without changing the blinded read payload
+  // or relaxing any publication handoff requirement.
+  async function readValidationStatus(options = {}) {
+    return readStatus(options, true);
+  }
+  async function readStatus({ fetchRepository, fetchJobLogs, ref, pr: number, head,
+    ci_run_id, finalizer_run_id, verification_run_id } = {}, validationOnly = false) {
     const positive = value => Number.isSafeInteger(value) && value > 0;
-    const result = { schema_version: 1, verification: "handoff_status_only",
+    const result = { schema_version: 1, verification: validationOnly ? "ci_validation_only" : "handoff_status_only",
       publication_authorized: false, review_completed: false, photo_adoption: "not_assessed",
+      ...(validationOnly ? { release_readiness: "not_assessed" } : {}),
       source: { repository: REPOSITORY, ref: matches(GIT, ref) ? ref : null },
       pr: positive(number) ? number : null, head: matches(GIT, head) ? head : null,
       status: "attention", stage: "input", evidence: {} };
@@ -465,7 +475,8 @@ var PublicationReviewContext = (function () {
       check(JSON.stringify(await latestCI()) === JSON.stringify(ciListing), "ci_changed_during_snapshot");
       check((await get("/git/ref/heads/main")).object?.sha === ref, "main_changed_during_snapshot");
       result.status = status;
-      result.stage = status === "verified" ? "delivery" : status === "verification_pending" ? "live" : status.replace(/_pending$/, "");
+      result.stage = validationOnly ? "ci" : status === "verified" ? "delivery"
+        : status === "verification_pending" ? "live" : status.replace(/_pending$/, "");
       result.reads = { repository: reads, logs: logReads };
       return result;
     }
@@ -478,10 +489,11 @@ var PublicationReviewContext = (function () {
       check(snapshot.number === number && snapshot.head?.sha === head
         && typeof snapshot.head?.ref === "string" && snapshot.head.ref.length > 0
         && snapshot.head.repo?.full_name === REPOSITORY && snapshot.base?.repo?.full_name === REPOSITORY
-        && snapshot.base.ref === "main" && snapshot.draft === false
-        && ((snapshot.state === "open" && snapshot.merged === false)
-          || (snapshot.state === "closed" && snapshot.merged === true)), "pr_head_or_state_unbound");
-      check(handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
+        && snapshot.base.ref === "main"
+        && (validationOnly ? typeof snapshot.draft === "boolean" && snapshot.state === "open" && snapshot.merged === false
+          : snapshot.draft === false && ((snapshot.state === "open" && snapshot.merged === false)
+            || (snapshot.state === "closed" && snapshot.merged === true))), "pr_head_or_state_unbound");
+      if (!validationOnly) check(handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
       if (snapshot.merged) {
         check(matches(GIT, snapshot.merge_commit_sha), "merge_sha_unverified");
         const commit = await get("/git/commits/" + snapshot.merge_commit_sha);
@@ -502,9 +514,25 @@ var PublicationReviewContext = (function () {
       // GitHub removes pull_requests after merge. The exact normal-merge parent,
       // repository, branch and CI head above preserve the historical binding.
       check(linked.length === 1 || (snapshot.merged && ci.pull_requests.length === 0), "ci_pr_binding_unverified");
+      if (validationOnly) {
+        result.evidence.ci.base_sha = linked[0].base.sha;
+        if (ACTIVE_RUN.has(ci.status)) return await finish("ci_pending");
+        if (ci.status === "completed" && ["failure", "cancelled", "timed_out", "action_required", "startup_failure", "stale"].includes(ci.conclusion))
+          return await finish("ci_failed");
+      }
       const ciJob = await job(ci, "test", "ci");
       if (ACTIVE_RUN.has(ci.status) && (ACTIVE_RUN.has(ciJob.status) || ciJob.conclusion === "success")) return await finish("ci_pending");
+      if (validationOnly && ciJob.status === "completed" && ciJob.conclusion === "failure") return await finish("ci_failed");
       completed(ci, ciJob, "ci");
+      if (validationOnly) {
+        const names = ["Validate article fields, editorial lanes and exact duplicate guards",
+          "Run Python checks with a fresh full site build"];
+        result.evidence.ci.validated_steps = names.map(name => {
+          const value = step(ciJob, name);
+          return { name, status: value.status, conclusion: value.conclusion, completed_at: value.completed_at };
+        });
+        return await finish("ci_verified");
+      }
       result.stage = "finalizer";
       const finalizer = await run(finalizer_run_id, VERIFY, ["pull_request_target", "workflow_run"],
         head, snapshot.head.ref, "finalizer", true);
@@ -560,6 +588,6 @@ var PublicationReviewContext = (function () {
       return result;
     }
   }
-  return Object.freeze({ read, readHandoffStatus });
+  return Object.freeze({ read, readHandoffStatus, readValidationStatus });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = PublicationReviewContext;
