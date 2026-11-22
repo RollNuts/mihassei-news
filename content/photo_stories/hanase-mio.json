@@ -30,6 +30,21 @@
         "cut_id": "05",
         "image_sha256": "16397e09b410c0c03e453256fdb0ea94fc180bca1d0cefe102c09f8607dd1305"
       }
+    },
+    {
+      "id": "hanase-mio-post-20261122114408986",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-22T11:44:08.986+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、体験ロケで落ち葉を熊手で集めた。山にしたところへ風が吹いて、全部足元に戻ってきた。二回目は袋を先に開いて、今度こそ回収できた。",
+      "source": {
+        "issue_slug": "november-city-evening-mio-012",
+        "cut_id": "01",
+        "image_sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3"
+      }
     }
   ]
 }
