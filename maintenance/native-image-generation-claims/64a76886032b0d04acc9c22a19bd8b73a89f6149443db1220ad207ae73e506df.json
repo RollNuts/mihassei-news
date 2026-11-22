@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/64a76886032b0d04acc9c22a19bd8b73a89f6149443db1220ad207ae73e506df",
+  "receipt_path": "maintenance/native-image-generation-claims/64a76886032b0d04acc9c22a19bd8b73a89f6149443db1220ad207ae73e506df.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "64a76886032b0d04acc9c22a19bd8b73a89f6149443db1220ad207ae73e506df",
+  "slug": "paired-maze-robots-yield-at-junction",
+  "article_sha256": "08fad6a9ad0a708912ad159bd4b057dd90d04c4098f6bba4f94a2a33057a6a56",
+  "logical_run_id": "news-photo-v1:08fad6a9ad0a708912ad159bd4b057dd90d04c4098f6bba4f94a2a33057a6a56",
+  "prompt_sha256": "ee3e2d41b73ca8af8e614d457fbcc8f59e3c320ed1e484387fd38876f0445a57",
+  "reserved_at": "2026-11-22T11:11:59.886Z",
+  "baseline": {
+    "commit_sha": "568810a98736d97deefe8d8d5bf8d5c8a3794b6e",
+    "tree_sha": "b5d46866c2bf6d1f44051a8bf03314a610dc61ed",
+    "protected_hashes": {
+      "content/articles.json": "307a6ac5e6a98f0922871daf75de5d8c293cb5f5c1a8d07b9a07fd2e00750fea",
+      "assets/generated/manifest.json": "45c78b333afebab46d9573b4e6fe36f3b6b9fed8205ecdc712304f205b1eecc1",
+      "content/visual_reviews.json": "f4774c146d32dde8dda6bbf8694f0dcc59c9090aa9caa57084745d834a21f78f"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "c9b6decf8817b686a72ec6f3be3d9409f395eb7107700f1cb563de40ee434e7b",
+    "observed_at": "2026-11-22T11:10:32.723Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+    "commit_sha": "0b0273a790f080fb9c90deee75cd16424f1f844f"
+  }
+}
