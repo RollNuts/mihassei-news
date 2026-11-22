@@ -10375,6 +10375,174 @@
     }
   }
 }
+  ,
+    "private-rocket-town-satellite-first-ocean-image": {
+  "article_sha256": "d2de5961397d86bba41e6109cbdf975faca0f23476243cf0d418f71cdc7172a6",
+  "bytes": 197663,
+  "generated_at": "2026-11-22T01:40:31.140Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "f024ca3b-e856-4125-9d5c-932e768d012e",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:f024ca3b-e856-4125-9d5c-932e768d012e",
+  "generation_prompt": "Natural realistic horizontal 16:9 documentary news photograph inside a modest Japanese electronics workshop early on a November morning in 2031. A 43-year-old Japanese male manufacturing supervisor and a colleague lean toward a desk monitor showing a plausible aerial satellite view of a coastal aquaculture area with simple sea colors and no readable UI, pointing to the water and fish-farm rafts. Compact radio ground-receiver equipment and small electronics assemblies on the workbench, believable wiring, ordinary workwear, cool natural window light. Emphasize the people seeing their first picture from the satellite, a real working factory, no lettering, no logos, no sci-fi effects, no real-person likeness.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "16f99ca8ed56e37ae400483f624f00a84046a91dbe5763587d05bb871ea8548b",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:8f0a5776-c180-420c-9915-5924f0679f02",
+    "instanceID": "xmp:iid:f024ca3b-e856-4125-9d5c-932e768d012e",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          47,
+          111,
+          19,
+          212,
+          48,
+          195,
+          236,
+          161,
+          54,
+          129,
+          249,
+          209,
+          186,
+          146,
+          129,
+          129,
+          100,
+          199,
+          111,
+          158,
+          23,
+          213,
+          70,
+          30,
+          14,
+          15,
+          161,
+          93,
+          60,
+          250,
+          141,
+          0
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-22T01:40:28.289291323Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-22T01:40:28.289293306Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-22T01:40:28.288860423Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "13026c0d65e04fca030c7fed5ff17a32cf5868c6029c56f238096871bdf7f550",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:d2de5961397d86bba41e6109cbdf975faca0f23476243cf0d418f71cdc7172a6",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/6ed730e02e56/generated_images as /workspace/scratch/6ed730e02e56/generated_images/exec-ced1115a-1c46-4274-a75d-f9cb5ecbe854.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-22T01:40:31.140Z",
+    "bytes": 2571031,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "a9dc888813703ce2eaec829388300ed1846a87ef756400ce3a8da740435b8d7f",
+    "candidate_branch": "native-image-candidate/private-rocket-town-satellite-first-ocean-image/d2de5961397d86bb-ae3ee2e1d970",
+    "candidate_commit": "12bf2a367231ff60f43a106708290910ca20221b",
+    "receipt_path": "maintenance/native-image-candidates/private-rocket-town-satellite-first-ocean-image/receipt.json",
+    "receipt_sha256": "7008f882ead892b986308af820aa13be28f27d0310671d421c63bddca631ab53",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/private-rocket-town-satellite-first-ocean-image/source.png.part000",
+        "bytes": 524288,
+        "sha256": "44bf43ae0c668c9fa61cac8b8f5a7ad3a89fdc34725e7c7599b370abcf4c330a",
+        "blob_sha": "3f4d97b0e4788d505c04ae9b25cdccccf0e143fd"
+      },
+      {
+        "path": "maintenance/native-image-candidates/private-rocket-town-satellite-first-ocean-image/source.png.part001",
+        "bytes": 524288,
+        "sha256": "4991cb96ed01d22776256c24e489659a85fdf167f68bcdda2e240ab077182b9f",
+        "blob_sha": "e08f3cd626f2891451a665a64448b657e9211835"
+      },
+      {
+        "path": "maintenance/native-image-candidates/private-rocket-town-satellite-first-ocean-image/source.png.part002",
+        "bytes": 524288,
+        "sha256": "1fad5c432251e92a61ebd3f700504235d5bde1cc50bb48b7b40988aa2c02143e",
+        "blob_sha": "0b123692b6cf19d3bad659d4c9d9f5e10b9c0354"
+      },
+      {
+        "path": "maintenance/native-image-candidates/private-rocket-town-satellite-first-ocean-image/source.png.part003",
+        "bytes": 524288,
+        "sha256": "354170fbddde2f7dfb4f946fe450eca20e62c5f11ef55bdde09873cb7d7d3921",
+        "blob_sha": "42f45d418c3cb7cbea8a1fe95b6f314205c13f23"
+      },
+      {
+        "path": "maintenance/native-image-candidates/private-rocket-town-satellite-first-ocean-image/source.png.part004",
+        "bytes": 473879,
+        "sha256": "63bd3ff53d551fc7c35b8327f98ad32fc2f202c7f0f8bf5335f3de83968b2a01",
+        "blob_sha": "f3354cf7e5e215c2ca1df0430e95aca4be846a46"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "6382a1b1ab6dae2783f879d88961285f75c51668",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "bdffeee7fd0897a3b482e063b951ada180b240be7a2cc1ad5c8a42caa724257f",
+      "observed_at": "2026-11-22T01:39:06.569Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/18b7668dc1faef155ffe7ab2868afeacc7d36c4366523a8854a6fe6d08d3507f",
+      "receipt_path": "maintenance/native-image-generation-claims/18b7668dc1faef155ffe7ab2868afeacc7d36c4366523a8854a6fe6d08d3507f.json",
+      "receipt_sha256": "0cbd437cbc506d677171ad13a1901cca15072a7428b4f448d64712df807b48fc",
+      "commit_sha": "5c96c61fde2bcc543e1ad64fd43b5f0531d2e1b7"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
