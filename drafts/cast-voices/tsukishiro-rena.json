@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "tsukishiro-rena",
   "name": "月城れな",
-  "created_date": "2026-11-21",
+  "created_date": "2026-11-22",
   "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
   "photo_reference": {
     "issue_slug": "november-city-pause-rena-008",
-    "cut_id": "01",
-    "image_sha256": "33281dcdd38a48dcb4d3010551e7af185287d176cf06d77d1bbef32959241471"
+    "cut_id": "05",
+    "image_sha256": "108c04f11540e88d1a837ec93aecf79e84cd1581d46f48a454ac10f24d23a70d"
   },
-  "post_text": "夜、駅前で手袋を買った。黒を選んだつもりが、街灯の下では深い緑だった。交換するほど嫌じゃないので、明日の服を考え直している。",
+  "post_text": "夜、エレベーターの鏡で髪に小さな落ち葉がついているのを見つけた。いつから一緒だったんだろう。玄関の鉢にそっと置いた。",
   "spoken_line": null,
   "future_idea": null
 }
