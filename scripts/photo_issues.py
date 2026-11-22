@@ -588,6 +588,11 @@ def _supplied_transform(receipt):
     if encoder == "macOS sips":
         return "encoding_details" not in receipt
     details = receipt.get("encoding_details")
+    if encoder == "jpeg-js":
+        source = receipt.get("source")
+        return (isinstance(source, dict) and source.get("format") == "png"
+                and details == {"encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+                                "resample": "bilinear", "mode": "RGB"})
     return (encoder == "Pillow" and isinstance(details, dict)
             and set(details) == {"pillow_version", "resample", "mode", "optimize", "progressive", "subsampling"}
             and bool(re.fullmatch(r"[1-9][0-9]*\.[0-9]+\.[0-9]+", str(details.get("pillow_version", ""))))

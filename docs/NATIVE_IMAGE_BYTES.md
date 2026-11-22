@@ -544,7 +544,31 @@ if (result.status === "readback_pending") {
 }
 ```
 
-A returned `staged_pending_readback` is an unreviewed candidate. Report only the originals actually read back. The editor reads the same immutable receipt (`maintenance/photo-issue-plans/<issue>/originals/receipt.json`) and calls `readOriginalStep` for a selected source until it returns `original_verified` and the actual bytes. The compatible `readOriginal` macro remains available when the executor can finish its full readback. Use the normal portrait/landscape editorial conversion, duplicate check, visual review, the column handled by the weekly editor under [EDITORIAL_LOOP](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠), and publication procedure. The article converter crops to 16:9 and is unsuitable for these originals.
+A returned `staged_pending_readback` is an unreviewed candidate. With a completed split receipt and up to eight parts (4 MiB), the editor can call `await original.uploadReviewJpeg(ref)` once. It reads and hashes the complete PNG and prepares a portrait or landscape JPEG without private state across cells. For a larger packet, use `readOriginalStep(ref, state, 7)` in a runtime that can retain the private partial bytes. The seven-part bound leaves room for conversion and guarded upload in the final cell. Pass its `original_verified` result directly:
+
+```js
+if (result.status === "original_verified") {
+  const prepared = await original.uploadReviewJpeg(ref, result);
+  text(prepared);
+}
+```
+
+Reuse a JPEG already listed for this source in the existing candidate handoff, including earlier paths and encoders. For a newly prepared blob, run one step per cell using the same small `ref`, `prepared` and returned plan. `expectedHead` is the observed head of the existing `photo-issue-plan/<issue>` branch.
+
+```js
+const plan = await original.prepareReviewJpeg(ref, prepared, expectedHead); // retain base and commit
+```
+```js
+const staged = await original.publishReviewJpeg(ref, prepared, plan);     // retain commit and path
+```
+```js
+const verified = await original.readReviewJpeg(ref, prepared, staged.commit);
+image("data:image/jpeg;base64," + runtime.toBase64(verified.bytes));
+```
+
+On an interrupted ref update, recover with the same plan. The immutable JPEG path, SHA and source receipt are the editor's handoff. Only count the cut after its committed bytes have been read and inspected alongside the source. A blob or staging receipt alone is not acceptance. Use [the weekly editorial process](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠) for the column, formal selection and publication.
+
+For earlier source packets with a verified full original PNG instead of a split receipt, `runtime.convertPhoto(pngBytes)` performs the same aspect-preserving conversion. Check its `source_png_sha256` against the retained source record. Save the JPEG with that packet’s existing candidate tree and source inventory, then verify the committed bytes and record the actual transform. The split-receipt staging methods require their original receipt. Keep using the article converter only for 16:9 news photos.
 
 For an existing Library original, retain the actual `https://chatgpt.com/library?file_id=libfile_...&account_id=personal` reference in the per-cut `user_supplied_photo` receipt and the same ID in `source.library_file_id`. A ZIP import also records `source.archive` with `format: "zip"`, its actual `filename`, `sha256`, `bytes`, and original `member` basename. Retrieve and hash the archive before extracting the member; retain the member's original bytes and the usual source SHA/format/dimensions. Archive/member names must be safe basenames, and the member extension must match the source format. These receipt fields preserve the observed archive provenance; the build verifies the saved original and JPEG without downloading Library files. Unknown generation turns remain `source.generation_turn_status: "not_retained"` and `source.generation_turn: null`; do not invent a conversation `turn_key` or `image_number`. The existing unretained prompt fields remain unchanged.
 

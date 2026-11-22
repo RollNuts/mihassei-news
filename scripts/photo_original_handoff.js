@@ -1,5 +1,5 @@
 /* Keep an existing producer's original PNGs on an isolated photo plan branch.
- * Tool payloads stay inside code mode. No generation, conversion, acceptance or main write.
+ * Tool payloads stay inside code mode. Only originals and unreviewed candidates are handled.
  */
 var PhotoOriginalHandoff = (() => {
   "use strict";
@@ -124,13 +124,16 @@ var PhotoOriginalHandoff = (() => {
     }
     const pendingDirectory = issue => directory(issue) + "-pending";
     const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    async function treeFiles(sha) {
+      const files = await get("/git/trees/" + sha + "?recursive=1");
+      requireThat(files.sha === sha && files.truncated === false && Array.isArray(files.tree), "Invalid parent files");
+      return files;
+    }
     async function parentFiles(base) {
       requireThat(GIT.test(base), "Invalid base commit");
       const parent = await get("/git/commits/" + base);
       requireThat(parent.sha === base && GIT.test(parent.tree?.sha), "Invalid parent tree");
-      const files = await get("/git/trees/" + parent.tree.sha + "?recursive=1");
-      requireThat(files.sha === parent.tree.sha && files.truncated === false && Array.isArray(files.tree), "Invalid parent files");
-      return {parent, files};
+      return {parent, files:await treeFiles(parent.tree.sha)};
     }
     async function checkpointRecord(issue, commit, expectedHash = null, knownFiles = null) {
       const dir = pendingDirectory(issue);
@@ -234,11 +237,13 @@ var PhotoOriginalHandoff = (() => {
       }
       return inspectOriginal(asset, bytes);
     }
-    async function originalRecord({issue, commit, receipt_sha256, source_sha256}) {
+    async function originalRecord({issue, commit, receipt_sha256, source_sha256}, treeEntries = null) {
       requireThat(GIT.test(commit) && HASH.test(receipt_sha256) && HASH.test(source_sha256), "Invalid immutable original reference");
       const dir = directory(issue);
       const entry = await git("fetch_file", {ref:commit, path:dir + "/receipt.json", encoding:"utf-8"});
       requireThat(entry.encoding === "utf-8" && hashText(entry.content) === receipt_sha256, "Original receipt changed");
+      requireThat(!treeEntries || treeEntries.some(f => f.path === dir + "/receipt.json" &&
+        f.sha === entry.sha && f.mode === "100644"), "Candidate original receipt changed");
       const record = JSON.parse(entry.content);
       validate(record);
       requireThat(record.issue === issue && record.status === "originals_only_unreviewed" && record.version === 1, "Invalid original receipt");
@@ -260,12 +265,13 @@ var PhotoOriginalHandoff = (() => {
       const {record} = await checkpointRecord(issue, commit, checkpoint_sha256);
       return readParts(record, commit, pendingDirectory(issue), source_sha256);
     }
-    async function readOriginalStepRecord(ref, state, partial) {
+    async function readOriginalStepRecord(ref, state, partial, limit = 8) {
+      requireThat(Number.isInteger(limit) && limit >= 1 && limit <= 8, "Invalid part read limit");
       const {issue, commit, source_sha256} = ref;
       const recordHash = ref[partial ? "checkpoint_sha256" : "receipt_sha256"];
       requireThat(GIT.test(commit) && HASH.test(source_sha256) && HASH.test(recordHash), "Invalid immutable original reference");
       const record = partial ? (await checkpointRecord(issue, commit, recordHash)).record : await originalRecord(ref);
-      const asset = completeAsset(record, source_sha256), limit = 8;
+      const asset = completeAsset(record, source_sha256);
       const reference = {issue, commit, record_sha256:recordHash, source_sha256};
       const kind = partial ? "checkpoint_original" : "completed_original";
       let chunks = [];
@@ -301,8 +307,136 @@ var PhotoOriginalHandoff = (() => {
       inspectOriginal(asset, bytes);
       return {status:"original_verified", image_bytes_verified:true, commit, source_sha256, bytes};
     }
-    const readOriginalStep = (ref, state = null) => readOriginalStepRecord(ref, state, false);
+    const readOriginalStep = (ref, state = null, limit = 8) => readOriginalStepRecord(ref, state, false, limit);
     const readCheckpointOriginalStep = (ref, state = null) => readOriginalStepRecord(ref, state, true);
+    async function uploadReviewJpeg(ref, original) {
+      const record = await originalRecord(ref);
+      const asset = completeAsset(record, ref.source_sha256);
+      let bytes;
+      if (original === undefined) {
+        // One receipt, at most eight part reads, then a cold five-call guard and one blob write.
+        requireThat(asset.parts.length <= 8, "Use readOriginalStep for originals larger than 4 MiB");
+        bytes = await readParts(record, ref.commit, directory(ref.issue), ref.source_sha256);
+      } else {
+        requireThat(original?.status === "original_verified" && original.image_bytes_verified === true &&
+          original.commit === ref.commit && original.source_sha256 === ref.source_sha256,
+        "Use the verified original from the selected receipt");
+        bytes = inspectOriginal(asset, original.bytes);
+      }
+      const jpeg = runtime.convertPhoto(bytes);
+      const blob = gitId(await write("create_blob", {encoding:"base64", content:jpeg.base64}), "blob");
+      return {status:"jpeg_blob_prepared", source_sha256:ref.source_sha256, original_commit:ref.commit,
+        original_receipt_sha256:ref.receipt_sha256, jpeg:{blob, sha256:jpeg.sha256, bytes:jpeg.bytes.length,
+          width:jpeg.width, height:jpeg.height}, transform:jpeg.transform, encoding_details:jpeg.encoding_details};
+    }
+    function reviewCut(ref, prepared) {
+      const dir = directory(ref.issue).replace(/\/originals$/, "/prepared-jpegs");
+      const jpeg = prepared?.jpeg, transform = prepared?.transform, encoding = prepared?.encoding_details;
+      requireThat(GIT.test(ref.commit) && HASH.test(ref.receipt_sha256) && HASH.test(ref.source_sha256) &&
+        prepared?.status === "jpeg_blob_prepared" && prepared.original_commit === ref.commit &&
+        prepared.original_receipt_sha256 === ref.receipt_sha256 && prepared.source_sha256 === ref.source_sha256 &&
+        GIT.test(jpeg?.blob) && HASH.test(jpeg?.sha256) && Number.isInteger(jpeg.bytes) &&
+        jpeg.bytes >= 16000 && jpeg.bytes <= 700 * 1024 &&
+        [jpeg.width, jpeg.height].every(n => Number.isInteger(n) && n >= 320 && n <= 1200) &&
+        transform?.encoder === "jpeg-js" && transform.max_edge === 1200 && transform.jpeg_quality === 84 &&
+        transform.geometry === "preserve-aspect" && encoding?.encoder_ref === "1031ccd7a63c641c16afb2430279d1598530a85c" &&
+        encoding.resample === "bilinear" && encoding.mode === "RGB", "Invalid prepared review JPEG");
+      const path = dir + "/" + ref.source_sha256 + ".jpg", metaPath = path.slice(0,-4) + ".json";
+      const record = {version:1, status:"unreviewed", issue:ref.issue, source_sha256:ref.source_sha256,
+        original_commit:ref.commit, original_receipt_sha256:ref.receipt_sha256, path,
+        jpeg:{blob:jpeg.blob, sha256:jpeg.sha256, bytes:jpeg.bytes, width:jpeg.width, height:jpeg.height},
+        transform:{encoder:transform.encoder, max_edge:transform.max_edge, jpeg_quality:transform.jpeg_quality, geometry:transform.geometry},
+        encoding_details:{encoder_ref:encoding.encoder_ref, resample:encoding.resample, mode:encoding.mode}};
+      return {branch:"photo-issue-plan/" + ref.issue, path, metaPath, record};
+    }
+    async function reviewHead(branch) {
+      const entry = await get("/git/ref/heads/" + branch);
+      requireThat(entry.ref === "refs/heads/" + branch && GIT.test(entry.object?.sha), "Unverified candidate branch");
+      return entry.object.sha;
+    }
+    function verifiedJpeg(file, jpeg) {
+      requireThat(file.sha === jpeg.blob && file.encoding === "base64" && typeof file.content === "string",
+        "Review JPEG blob changed");
+      const bytes = runtime.fromBase64(file.content);
+      requireThat(bytes.length === jpeg.bytes && bytes[0] === 255 && bytes[1] === 216 &&
+        bytes[bytes.length-2] === 255 && bytes[bytes.length-1] === 217 &&
+        runtime.sha256(bytes) === jpeg.sha256, "Review JPEG bytes changed");
+      return bytes;
+    }
+    async function readReviewCut(cut, commit) {
+      requireThat(GIT.test(commit), "Invalid immutable review commit");
+      const meta = await git("fetch_file", {ref:commit, path:cut.metaPath, encoding:"utf-8"});
+      requireThat(meta.encoding === "utf-8" && meta.content === JSON.stringify(cut.record), "Occupied review JPEG destination");
+      const file = await git("fetch_file", {ref:commit, path:cut.path, encoding:"base64"});
+      return verifiedJpeg(file, cut.record.jpeg);
+    }
+    async function readReviewJpeg(ref, prepared, commit) {
+      const cut = reviewCut(ref, prepared);
+      const bytes = await readReviewCut(cut, commit);
+      return {status:"review_jpeg_verified", image_bytes_verified:true, commit, path:cut.path,
+        sha256:cut.record.jpeg.sha256, bytes};
+    }
+    async function reviewSource(ref, cut, files) {
+      const source = await originalRecord(ref, files.tree);
+      const asset = completeAsset(source, ref.source_sha256), jpeg = cut.record.jpeg;
+      const scale = Math.min(1, 1200 / Math.max(asset.width, asset.height));
+      requireThat(jpeg.width === Math.round(asset.width * scale) && jpeg.height === Math.round(asset.height * scale) &&
+        asset.parts.every(p => files.tree.some(f => f.path === partPath(directory(ref.issue), ref.source_sha256, p.index) &&
+          f.mode === "100644" && f.sha === p.blob)), "Candidate branch source or dimensions changed");
+      const paths = [cut.path, cut.metaPath];
+      requireThat(!files.tree.some(f => f.type !== "tree" && paths.some(p => p.startsWith(f.path + "/"))),
+        "Occupied review JPEG directory");
+      const existing = files.tree.filter(f => paths.includes(f.path));
+      requireThat(!existing.length || (existing.length === 2 && existing.every(f => f.type === "blob" && f.mode === "100644") &&
+        existing.some(f => f.path === cut.path && f.sha === jpeg.blob)), "Occupied review JPEG destination");
+      return existing.length === 2;
+    }
+    async function prepareReviewJpeg(ref, prepared, expectedHead) {
+      const cut = reviewCut(ref, prepared);
+      requireThat(GIT.test(expectedHead) && await reviewHead(cut.branch) === expectedHead, "Candidate branch moved");
+      const {parent, files} = await parentFiles(expectedHead);
+      if (await reviewSource(ref, cut, files)) {
+        await readReviewCut(cut, expectedHead);
+        return {base:expectedHead, commit:expectedHead};
+      }
+      const entries = [{path:cut.path, mode:"100644", type:"blob", sha:cut.record.jpeg.blob},
+        {path:cut.metaPath, mode:"100644", type:"blob", content:JSON.stringify(cut.record)}];
+      const initialMain = await guard();
+      const treeId = gitId(await git("create_tree", {base_tree_sha:parent.tree.sha, tree_elements:entries}), "tree");
+      // A changed main needs a second cold storage scan; stop within the 15-call cell and retry on the same branch.
+      requireThat(await guard() === initialMain, "Main changed during review JPEG preparation");
+      const result = await git("create_commit", {tree_sha:treeId, parent_sha:expectedHead,
+        message:"Prepare one unreviewed photo for " + ref.issue});
+      return {base:expectedHead, commit:gitId(result,"commit")};
+    }
+    async function publishReviewJpeg(ref, prepared, plan) {
+      const cut = reviewCut(ref, prepared);
+      requireThat(GIT.test(plan?.base) && GIT.test(plan.commit), "Invalid review JPEG plan");
+      const current = await reviewHead(cut.branch);
+      if (current !== plan.base || current === plan.commit) {
+        // Recover a lost success only when both immutable paths and their bytes match.
+        requireThat(await reviewSource(ref, cut, (await parentFiles(current)).files),
+          "Candidate branch moved without this review JPEG");
+        await readReviewCut(cut, current);
+        return {status:"review_jpeg_staged_pending_readback", branch:cut.branch, commit:current, path:cut.path};
+      }
+      const {parent:commit, files:after} = await parentFiles(plan.commit);
+      requireThat(commit.parents?.length === 1 && commit.parents[0].sha === current &&
+        await reviewSource(ref, cut, after), "Commit differs from prepared review JPEG");
+      const {files:before} = await parentFiles(current);
+      // Git changes tree IDs up to the root when adding the two files. Every other entry must survive exactly.
+      const ancestor = f => f.type === "tree" && f.mode === "040000" && cut.path.startsWith(f.path + "/");
+      const target = f => f.path === cut.path || f.path === cut.metaPath;
+      const retained = new Map(after.tree.filter(f => !ancestor(f) && !target(f)).map(f => [f.path,f]));
+      const prior = before.tree.filter(f => !ancestor(f));
+      requireThat(!before.tree.some(target) && retained.size === prior.length && prior.every(f => {
+        const found = retained.get(f.path);
+        return found?.type === f.type && found.mode === f.mode && found.sha === f.sha;
+      }), "Commit changes other candidate files");
+      await readReviewCut(cut, plan.commit);
+      await write("update_ref", {branch_name:cut.branch, sha:plan.commit, expected_sha:current, force:false});
+      return {status:"review_jpeg_staged_pending_readback", branch:cut.branch, commit:plan.commit, path:cut.path};
+    }
     async function publishRecord(packet, plan, partial) {
       const branch = "photo-issue-plan/" + packet.issue;
       const hashKey = partial ? "checkpoint_sha256" : "receipt_sha256";
@@ -345,7 +479,7 @@ var PhotoOriginalHandoff = (() => {
     const publishCheckpoint = (packet, plan) => publishRecord(packet, plan, true);
     return {upload, uploadDataUrl, prepare, publish, readOriginal,
       prepareCheckpoint, publishCheckpoint, restoreCheckpoint, readCheckpointOriginal,
-      readOriginalStep, readCheckpointOriginalStep};
+      readOriginalStep, readCheckpointOriginalStep, uploadReviewJpeg, prepareReviewJpeg, publishReviewJpeg, readReviewJpeg};
   }
   return {create};
 })();
