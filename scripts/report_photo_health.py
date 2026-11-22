@@ -13,8 +13,9 @@ import re
 import subprocess
 
 try:
-    from . import visual_review
+    from . import content_operation_health, visual_review
 except ImportError:
+    import content_operation_health
     import visual_review
 
 
@@ -39,6 +40,7 @@ def collect(root: Path, live_checks: dict[str, str]) -> dict:
             status: sum(item["status"] == status for item in report["photo_followup"])
             for status in ("pending", "missing", "rejected")
         },
+        "content_operations": content_operation_health.collect(root),
     })
     return report
 
@@ -121,8 +123,59 @@ def summary(report: dict) -> str:
                 "slug", "reason", "next_action")) + " |")
     else:
         lines.append("No additional image or diagram repair is reported.")
+    operations = report.get("content_operations")
+    if operations:
+        lines += operation_lines(operations)
     lines.append("")
     return "\n".join(lines)
+
+
+def operation_lines(report: dict) -> list[str]:
+    lines = ["", "## Content publication observations", "",
+             "- Observed at (JST): " + cell(report["observed_at_jst"]),
+             "- Source: publication metadata at the checkout SHA above; not additional live verification, "
+             "image approval, or proof of task execution.",
+             "- " + cell(report["note"]), "",
+             "| Channel | Recorded publications by observation | Today (JST) | Latest actual publication (JST) | Future-dated records |",
+             "| --- | ---: | ---: | --- | ---: |"]
+    for key, label in (("news", "News"), ("market", "Market bulletins"), ("photo_editions", "Photo features")):
+        item = report[key]
+        if item["status"] == "unavailable":
+            lines.append("| " + label + " | unavailable | unavailable | " + cell(item["reason"]) + " | unavailable |")
+            continue
+        latest = item["latest"]
+        lines.append("| " + " | ".join(cell(value) for value in (
+            label, item["published_by_observation_count"], item["today_count"],
+            latest["published_at_jst"] if latest else "No recorded publication", item["future_dated_count"])) + " |")
+    photo = report["photo_editions"]
+    if photo["status"] == "observed":
+        edition = photo["oldest_incomplete_daily_edition"]
+        lines += ["", "### Daily photo edition carryover", ""]
+        if edition:
+            lines += ["- Oldest incomplete edition: " + cell(edition["slug"])
+                      + " / week " + cell(edition["week_start_date_jst"]),
+                      "- Published features: " + str(edition["published_feature_count"]) + "/"
+                      + str(edition["scheduled_model_count"]) + " / recorded photos: " + str(edition["recorded_photo_count"]),
+                      "- Next in frozen order: " + cell(edition["next_model_name"]) + " (" + cell(edition["next_model_id"])
+                      + "), original scheduled date " + cell(edition["next_scheduled_date_jst"])]
+        else:
+            lines.append("No incomplete daily edition is recorded in this checkout.")
+        lines.append("- Unpublished photo stock: not observed. " + cell(photo["stock_reason"]))
+    cast = report["cast_stories"]
+    lines += ["", "### Creator posts", ""]
+    if cast["status"] == "unavailable":
+        lines.append("Unavailable: " + cell(cast["reason"]))
+    else:
+        lines += ["Closed dates since latest post exclude today; no scheduled deadline is inferred.", "",
+                  "| Model | Latest actual post (JST) | Today | Previous JST date | Closed dates since latest post |",
+                  "| --- | --- | ---: | ---: | ---: |"]
+        for model in cast["models"]:
+            latest = model["latest"]
+            lines.append("| " + " | ".join(cell(value) for value in (
+                model["name"], latest["published_at_jst"] if latest else "No recorded post",
+                model["today_count"], model["previous_day_count"],
+                model["completed_days_since_latest_post"] if latest else "unknown")) + " |")
+    return lines
 
 
 def main(argv: list[str] | None = None) -> int:

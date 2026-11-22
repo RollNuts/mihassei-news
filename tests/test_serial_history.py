@@ -176,6 +176,40 @@ class PhotoEditionHistoryGuardTests(unittest.TestCase):
             with self.subTest(field=field), self.assertRaises(ValueError):
                 guard_photo_edition_history(self.before, current)
 
+    def daily(self, number, week, count=1, state="published"):
+        return {"number": number, "slug": f"issue-{number:03d}", "state": state,
+                "release_mode": "daily", "legacy": False,
+                "published_at": week + "T14:00:00+09:00" if state == "published" else None,
+                "features": [f"week-{number}-feature-{i}" for i in range(count)],
+                "schedule": {"week_start_date_jst": week, "seed": "a" * 32, "order": list(range(7))}}
+
+    def test_new_week_draft_or_publication_cannot_skip_an_unfinished_older_week(self):
+        before = copy.deepcopy(self.before)
+        before["editions"].append(self.daily(2, "2026-11-15", count=6))
+        for state in ("draft", "published"):
+            after = copy.deepcopy(before)
+            after["editions"].append(self.daily(3, "2026-11-22", count=0 if state == "draft" else 1, state=state))
+            with self.subTest(state=state), self.assertRaisesRegex(ValueError, "oldest incomplete.*issue-002"):
+                guard_photo_edition_history(before, after)
+        completed = copy.deepcopy(before)
+        completed["editions"][1]["features"].append("week-2-feature-6")
+        self.assertEqual(guard_photo_edition_history(before, completed), 2)
+        next_week = copy.deepcopy(completed)
+        next_week["editions"].append(self.daily(3, "2026-11-22"))
+        self.assertEqual(guard_photo_edition_history(completed, next_week), 2)
+
+    def test_unchanged_historical_overlap_is_preserved_but_new_work_returns_to_oldest(self):
+        before = copy.deepcopy(self.before)
+        before["editions"] += [self.daily(2, "2026-11-15"), self.daily(3, "2026-11-22")]
+        self.assertEqual(guard_photo_edition_history(before, copy.deepcopy(before)), 3)
+        oldest = copy.deepcopy(before)
+        oldest["editions"][1]["features"].append("week-2-feature-1")
+        self.assertEqual(guard_photo_edition_history(before, oldest), 3)
+        skipped = copy.deepcopy(before)
+        skipped["editions"][2]["features"].append("week-3-feature-1")
+        with self.assertRaisesRegex(ValueError, "oldest incomplete.*issue-002"):
+            guard_photo_edition_history(before, skipped)
+
 
 if __name__ == "__main__":
     unittest.main()

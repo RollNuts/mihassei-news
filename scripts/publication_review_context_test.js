@@ -697,3 +697,128 @@ test("changed PR, main, latest CI or run attempt during the snapshot keeps the r
     const result = await w.read(); assert.equal(result.status, "attention", mutation); assert.equal(result.stage, "snapshot");
   }
 });
+
+function validationWorld() {
+  const w = handoffWorld({ merged: false });
+  w.pr.draft = true;
+  w.pr.body = "AUTHOR_BODY_SECRET: local checkout unavailable; independent review still needed";
+  w.jobs.get(101)[0].steps = [
+    "Validate article fields, editorial lanes and exact duplicate guards",
+    "Run Python checks with a fresh full site build",
+  ].map((name, index) => ({ name, status: "completed", conclusion: "success",
+    started_at: "2026-11-20T00:0" + index + ":00Z", completed_at: "2026-11-20T00:0" + index + ":59Z" }));
+  w.readValidation = (extra = {}, api = context) => api.readValidationStatus({
+    fetchRepository: w.fetchRepository, ref: REF, pr: 14, head: GIT(14), ci_run_id: 101, ...extra });
+  return w;
+}
+
+test("unapproved drafts can reuse exact-head CI evidence after first read without author text or approval", async () => {
+  const w = validationWorld(), before = JSON.stringify([w.pr, [...w.runs], [...w.jobs]]);
+  w.wrap = value => ({ structuredContent: { content: JSON.stringify(value) } });
+  const result = await w.readValidation();
+  assert.equal(result.status, "ci_verified"); assert.equal(result.stage, "ci");
+  assert.equal(result.verification, "ci_validation_only");
+  assert.equal(result.publication_authorized, false); assert.equal(result.review_completed, false);
+  assert.equal(result.photo_adoption, "not_assessed"); assert.equal(result.release_readiness, "not_assessed");
+  assert.equal(result.evidence.ci.run_id, 101); assert.equal(result.evidence.ci.run_attempt, 1);
+  assert.equal(result.evidence.ci.job_id, 1101); assert.equal(result.evidence.ci.base_sha, BASE);
+  assert.deepEqual(result.evidence.ci.validated_steps.map(step => step.name), w.jobs.get(101)[0].steps.map(step => step.name));
+  assert(result.evidence.ci.validated_steps.every(step => step.status === "completed" && step.conclusion === "success"));
+  assert.deepEqual(Object.keys(result.evidence), ["ci"]);
+  assert.equal(result.merge_sha, undefined); assert.equal(result.live_sha, undefined);
+  assert(!JSON.stringify(result).includes("SECRET")); assert(JSON.stringify(result).length < 2000);
+  assert.equal(w.calls.length, 9); assert.deepEqual(w.logCalls, []);
+  assert(!w.calls.some(route => /\/actions\/runs\/(102|103)|\/git\/commits|\/compare\//.test(route)));
+  assert.equal(JSON.stringify([w.pr, [...w.runs], [...w.jobs]]), before);
+  const plain = new Function(fs.readFileSync(path.join(__dirname, "publication_review_context.js"), "utf8")
+    + "\nreturn PublicationReviewContext;")();
+  assert.equal((await validationWorld().readValidation({}, plain)).status, "ci_verified");
+  assert.equal((await validationWorld().read()).reason, "pr_head_or_state_unbound", "handoff checks still refuse drafts");
+  const unarmed = validationWorld(); unarmed.pr.draft = false;
+  assert.equal((await unarmed.read()).reason, "current_head_handoff_required", "validation never arms publication");
+  assert.equal((await unarmed.readValidation()).status, "ci_verified");
+});
+
+test("validation distinguishes queued CI and known failed runs without polling, logs or finalization", async () => {
+  for (const status of ["queued", "in_progress", "waiting"]) {
+    const w = validationWorld(); Object.assign(w.runs.get(101), { status, conclusion: null });
+    w.jobs.set(101, []);
+    const result = await w.readValidation();
+    assert.equal(result.status, "ci_pending"); assert.equal(result.stage, "ci");
+    assert.equal(result.evidence.ci.validated_steps, undefined);
+    assert.equal(w.calls.filter(route => route === "/actions/runs/101").length, 2);
+    assert(!w.calls.some(route => route.endsWith("/jobs"))); assert.deepEqual(w.logCalls, []);
+  }
+  for (const conclusion of ["failure", "cancelled", "timed_out", "action_required", "startup_failure", "stale"]) {
+    const w = validationWorld(); w.runs.get(101).conclusion = conclusion; w.jobs.set(101, []);
+    const result = await w.readValidation();
+    assert.equal(result.status, "ci_failed"); assert.equal(result.evidence.ci.conclusion, conclusion);
+    assert.equal(result.evidence.ci.validated_steps, undefined); assert.deepEqual(w.logCalls, []);
+  }
+  const failedJob = validationWorld(); failedJob.jobs.get(101)[0].conclusion = "failure";
+  assert.equal((await failedJob.readValidation()).status, "ci_failed");
+});
+
+test("validation never treats unknown, skipped or partial CI steps as completed validation", async () => {
+  for (const edit of [
+    w => { w.runs.get(101).status = "unknown"; },
+    ...[null, "skipped", "neutral"].map(conclusion => w => { w.runs.get(101).conclusion = conclusion; }),
+    w => { w.jobs.get(101)[0].conclusion = "skipped"; },
+    w => { w.jobs.set(101, []); },
+    w => { w.jobs.get(101).push({ ...w.jobs.get(101)[0], id: 999 }); },
+    w => { w.jobs.get(101)[0].steps = []; },
+    w => { w.jobs.get(101)[0].steps.push({ ...w.jobs.get(101)[0].steps[0] }); },
+    ...["skipped", "failure", null].flatMap(conclusion => [0, 1].map(index =>
+      w => { w.jobs.get(101)[0].steps[index].conclusion = conclusion; })),
+    w => { w.jobs.get(101)[0].steps[1].completed_at = "2026-11-19T00:00:00Z"; },
+  ]) {
+    const w = validationWorld(); edit(w);
+    const result = await w.readValidation(); assert.equal(result.status, "attention", result.reason);
+    assert.equal(result.publication_authorized, false); assert.deepEqual(w.logCalls, []);
+  }
+});
+
+test("validation requires the latest attempt and exact open PR, workflow, branch, repository and head", async () => {
+  for (const edit of [
+    w => { w.pr.state = "closed"; w.pr.merged = true; },
+    w => { w.pr.head.sha = GIT(99); },
+    w => { w.pr.base.repo.full_name = "other/repo"; },
+    w => { w.pr.head.repo.full_name = "other/repo"; },
+    w => { w.ciInventory.push({ ...clone(w.runs.get(101)), id: 104 }); },
+    w => { w.ciInventory = [{ ...w.runs.get(101), run_attempt: 2 }]; },
+    w => { w.runs.get(101).pull_requests = []; },
+    w => { w.runs.get(101).pull_requests[0].number = 99; },
+    w => { w.runs.get(101).path = ".github/workflows/other.yml"; },
+    w => { w.runs.get(101).event = "push"; },
+    w => { w.runs.get(101).repository.full_name = "other/repo"; },
+    w => { w.runs.get(101).head_repository.full_name = "other/repo"; },
+    w => { w.runs.get(101).head_sha = GIT(99); },
+    w => { w.runs.get(101).head_branch = "other-branch"; },
+    ...["run_attempt", "run_id", "head_sha", "head_branch"].map(field => w => {
+      w.jobs.get(101)[0][field] = field.startsWith("head_") ? "unrelated" : 999;
+    }),
+  ]) {
+    const w = validationWorld(); edit(w);
+    assert.equal((await w.readValidation()).status, "attention"); assert.deepEqual(w.logCalls, []);
+  }
+  assert.equal((await validationWorld().readValidation({ ci_run_id: undefined })).reason, "invalid_status_input");
+});
+
+test("validation keeps retrieval failures and changing snapshots explicit instead of reusing stale success", async () => {
+  for (const mutation of ["pr", "main", "ci", "attempt", "provider", "jobs", "network"]) {
+    const w = validationWorld(); w.hook = ({ route, count }) => {
+      if (mutation === "pr" && route === "/pulls/14" && count === 2) return { ...w.pr, body: "changed" };
+      if (mutation === "main" && route === "/git/ref/heads/main" && count === 2) return { object: { sha: GIT(99) } };
+      if (mutation === "ci" && route === "/actions/runs" && count === 2)
+        return { total_count: 1, workflow_runs: [{ ...w.runs.get(101), id: 999 }] };
+      if (mutation === "attempt" && route === "/actions/runs/101" && count === 2)
+        return { ...w.runs.get(101), run_attempt: 2 };
+      if (mutation === "provider" && route === "/actions/runs") return { isError: true, content: "SECRET" };
+      if (mutation === "jobs" && route === "/actions/runs/101/jobs") return { total_count: 2, jobs: w.jobs.get(101) };
+      if (mutation === "network" && route === "/actions/runs/101") throw Error("NETWORK_SECRET");
+    };
+    const result = await w.readValidation();
+    assert.equal(result.status, "attention", mutation); assert(!JSON.stringify(result).includes("SECRET"));
+    assert.deepEqual(w.logCalls, []); assert(w.calls.length <= 9);
+  }
+});

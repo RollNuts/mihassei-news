@@ -149,6 +149,23 @@ def guard_photo_edition_history(before, after):
                     or updated[:len(members)] != members):
                 raise ValueError(f"{slug}: published daily photo contents must only append")
         checked += 1
+    # Apply carryover priority only to new work, not unchanged historical issues.
+    # Static validation still owns the seven-person roster, dates and prefix order.
+    if before is not None:
+        daily = [edition for edition in new.values() if edition.get("release_mode") == "daily"]
+        for edition in daily:
+            previous = old.get(edition["slug"])
+            if previous is not None and all(previous.get(key) == edition.get(key)
+                                            for key in ("state", "features", "schedule")):
+                continue
+            week = date.fromisoformat(edition["schedule"]["week_start_date_jst"])
+            older = [candidate for candidate in daily
+                     if date.fromisoformat(candidate["schedule"]["week_start_date_jst"]) < week
+                     and (candidate.get("state") != "published"
+                          or len(candidate.get("features", [])) < len(candidate["schedule"]["order"]))]
+            if older:
+                first = min(older, key=lambda candidate: candidate["schedule"]["week_start_date_jst"])
+                raise ValueError(f"{edition['slug']}: finish oldest incomplete daily photo edition {first['slug']} first")
     return checked
 
 
