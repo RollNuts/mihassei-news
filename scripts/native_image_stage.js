@@ -9,6 +9,7 @@ var NativeImageStage = (function () {
   const PART_SIZE=512*1024, COMPACT_SOURCE_LIMIT=4*1024*1024;
   const PREFLIGHT_BRANCH="native-image-preflight/transport";
   const PREFLIGHT_DIR="maintenance/native-image-preflight";
+  const PREFLIGHT_VERIFY_BATCH=6; // Probe PNG, JPEG, receipt and three protected files.
   const CLAIM_BRANCH_PREFIX="native-image-generation-claim/";
   const CLAIM_DIR="maintenance/native-image-generation-claims";
   const CLOUD_WORKFLOW="free-cpu-scenes.yml", JPEG_CAP=1536*1024*1024;
@@ -690,9 +691,9 @@ var NativeImageStage = (function () {
         throw e;
       }finally{stepUsage=null;}
     }
-    async function verifySlice(plan,state,ref,files){
+    async function verifySlice(plan,state,ref,files,batchSize=2){
       const all=[...files,...PROTECTED.map(path=>({path,hash:plan.protectedHashes[path],encoding:"utf-8"}))];
-      const end=Math.min((state.verifyIndex||0)+2,all.length);
+      const end=Math.min((state.verifyIndex||0)+batchSize,all.length);
       for(let i=state.verifyIndex||0;i<end;i++){
         const file=all[i],raw=await read(file.path,ref,file.encoding||"utf-8");
         const bytes=file.encoding==="base64"?runtime.fromBase64(raw.content):runtime.utf8(raw.content);
@@ -823,7 +824,7 @@ var NativeImageStage = (function () {
             tree_sha:state.treeSha,message:"Check native image transport: "+plan.logicalRunId}),"commit");
           state.proof.commit_sha=state.commitSha;state.verifyIndex=0;state.phase="preflight_verify_commit";
         }else if(state.phase==="preflight_verify_commit"){
-          if(await verifySlice(plan,state,state.commitSha,state.files))state.phase="preflight_publish";
+          if(await verifySlice(plan,state,state.commitSha,state.files,PREFLIGHT_VERIFY_BATCH))state.phase="preflight_publish";
         }else if(state.phase==="preflight_publish"){
           try{
             if(state.previousSha)await call("update_ref",{branch_name:PREFLIGHT_BRANCH,sha:state.commitSha,expected_sha:state.previousSha,force:false});
@@ -832,7 +833,7 @@ var NativeImageStage = (function () {
           if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Concurrent preflight branch change");
           state.verifyIndex=0;state.phase="preflight_verify_branch";
         }else if(state.phase==="preflight_verify_branch"){
-          if(await verifySlice(plan,state,PREFLIGHT_BRANCH,state.files)){
+          if(await verifySlice(plan,state,PREFLIGHT_BRANCH,state.files,PREFLIGHT_VERIFY_BATCH)){
             if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Preflight branch changed during readback");
             state.phase="claim_prepare";
           }
