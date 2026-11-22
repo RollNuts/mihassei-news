@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "model_id": "shioba-rio",
+  "issue_candidate": "november-coast-city-rio-015",
+  "inventory": {
+    "library_file_id": "libfile_fde3_f-9b9da2c24058819193e0187de3222802_3e0ce6a2e8348191be296e0419d0b8cc",
+    "file_id": "file_000000008510820696c0390dd187ceed",
+    "sha256": "f03bdeae5de8147d91235fa3b687e484757cf5e235e87fbc207308254aa1bc3e"
+  },
+  "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+  "source_observation": "original-inventory.json; original generation turn and actual observed producer delivery turn unknown",
+  "recovery": {
+    "failed_first_ref": {
+      "observed_file_id": "file_00000000d744820c947f99cd75894a09",
+      "stage": "files__materialize",
+      "error": "File is not visible in the requested files surface. Use a visible files.search/files.list/files.find/files.read citation reference",
+      "retried": false
+    },
+    "successful_route": "files__list actual Library items rio-original-NN.png; materialize and full bytes/hash/dimensions match original inventory",
+    "raw_verified_count": 10,
+    "github_binary_backed_count": 5,
+    "cloud_guard": "active at saving; must refresh next write",
+    "publication_state": "not_accepted_not_published"
+  },
+  "visual_observation": {
+    "viewed_10": true,
+    "near_duplicate_hold": [
+      {
+        "ordinal": 5,
+        "similar_to": 1,
+        "reason": "Same coastal walkway composition, person location and outfit, pixel difference does not establish sufficiently independent scene"
+      }
+    ],
+    "other_ordinals": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      10,
+      12
+    ],
+    "note": "Only one visibly clear swimsuit image at ordinal 8; 10-cut weekly selection requires explicit editorial decision and/or more distinct swimwear stock, not an automatic acceptance"
+  },
+  "sources": [
+    {
+      "ordinal": 1,
+      "original_filename": "contemplative_walk_along_the_coast.png",
+      "observed_file_id": "file_00000000d744820c947f99cd75894a09",
+      "library_current_file_id": "file_00000000895c82069cdd8f6a8df6f4bb",
+      "library_current_filename": "rio-original-01.png",
+      "raw_sha256": "269d29d999039eda179343bb4e10ef11351a2f8e3da9c546c004ac907c8dcabc",
+      "raw_bytes": 2274007,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/01.png",
+      "jpeg_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/01.jpg",
+      "jpeg_sha256": "e325237f9aa3cc06e8c9561b4c9504cc3e4db4a65510e17a1098235448ec0cce",
+      "jpeg_bytes": 151625,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 2,
+      "original_filename": "solitary_winter_lake_view.png",
+      "observed_file_id": "file_00000000559c820c95817d306f1568cc",
+      "library_current_file_id": "file_000000009d148206a5999201add5fafc",
+      "library_current_filename": "rio-original-02.png",
+      "raw_sha256": "753b7c71191b32cecf5b459154511bcf31efbd54c0335a67c8269bca751bc95b",
+      "raw_bytes": 2328106,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/02.png",
+      "jpeg_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/02.jpg",
+      "jpeg_sha256": "8e3519bd6f4d4fd27564fa4a43f67521f346cdfde398a0ddd064474449ced7a5",
+      "jpeg_bytes": 165126,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 3,
+      "original_filename": "autumn_stroll_along_the_waterfront.png",
+      "observed_file_id": "file_000000003cac820ca46f25839727fc90",
+      "library_current_file_id": "file_00000000fa888206ad34d4a78db02abc",
+      "library_current_filename": "rio-original-03.png",
+      "raw_sha256": "914dc376be35fb3fb99fb1efb591a808f3213fb1f0532167a681e2c6e25c8acd",
+      "raw_bytes": 2363745,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/03.png",
+      "jpeg_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/03.jpg",
+      "jpeg_sha256": "ce649a006a9b83a5720ff85da192f86a6757b5f81d397b39731de5287951a53a",
+      "jpeg_bytes": 179092,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 4,
+      "original_filename": "botanical_notes_in_sunlit_conservatory.png",
+      "observed_file_id": "file_000000005318820c8b2be8bc7ee360e9",
+      "library_current_file_id": "file_00000000104082068895ab1f9427b8e1",
+      "library_current_filename": "rio-original-04.png",
+      "raw_sha256": "8dd3b4adcbae85c2f09b560d5f2514cc328c9e119de5522550e43b6d0c28c325",
+      "raw_bytes": 2368322,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/04.png",
+      "jpeg_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/04.jpg",
+      "jpeg_sha256": "c8c2874cc06fc7fdb7a627fd120f54e32aeaee4b111cee753f7ed24e2326bae7",
+      "jpeg_bytes": 213250,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 5,
+      "original_filename": "solitary_walk_along_the_quiet_coast.png",
+      "observed_file_id": "file_00000000bb78820c8412e8301a1e06cf",
+      "library_current_file_id": "file_000000000764820699816200eaf86dd1",
+      "library_current_filename": "rio-original-05.png",
+      "raw_sha256": "038149cc1fc32ea7ed38bcacf27984d2c5dad7c073e6c88818bb57efc4dd6e77",
+      "raw_bytes": 2172891,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/originals/05.png",
+      "jpeg_github_path": "maintenance/photo-issue-plans/november-coast-city-rio-015/jpeg/05.jpg",
+      "jpeg_sha256": "db282cb4046d8cd2231edd0697d68ab120b88851b7bd056ddf7e2639ba79b549",
+      "jpeg_bytes": 153161,
+      "editorial_status": "near_duplicate_hold"
+    },
+    {
+      "ordinal": 6,
+      "original_filename": "pensive_cocktail_overlooking_city_lights.png",
+      "observed_file_id": "file_000000001fd8820c8937db018a072d75",
+      "library_current_file_id": "file_00000000a1ac82068cd69180095617e5",
+      "library_current_filename": "rio-original-06.png",
+      "raw_sha256": "56413ed388635c9a9082fdbaa01ab778e277de2dda7d2d702ab555bd2718e935",
+      "raw_bytes": 2024985,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": null,
+      "jpeg_github_path": null,
+      "jpeg_sha256": null,
+      "jpeg_bytes": null,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 7,
+      "original_filename": "rainy_lantern_alley_stroll.png",
+      "observed_file_id": "file_000000005350820cafc306c690f2202b",
+      "library_current_file_id": "file_00000000c4888206a7848bc639348d24",
+      "library_current_filename": "rio-original-07.png",
+      "raw_sha256": "488638050782514285cda585466b89e2f7e55f5402c80b382f5f4e22c2ea847f",
+      "raw_bytes": 2648116,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": null,
+      "jpeg_github_path": null,
+      "jpeg_sha256": null,
+      "jpeg_bytes": null,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 8,
+      "original_filename": "poolside_reading_in_soft_sunlight.png",
+      "observed_file_id": "file_00000000b0ec820c8dedc85370fbc72a",
+      "library_current_file_id": "file_0000000063408206bf512a333ce97b87",
+      "library_current_filename": "rio-original-08.png",
+      "raw_sha256": "3755971a8af9918fea2c86889dd1e856ce5eb530e71deaedfd4b8f91055be1d4",
+      "raw_bytes": 2222677,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": null,
+      "jpeg_github_path": null,
+      "jpeg_sha256": null,
+      "jpeg_bytes": null,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 10,
+      "original_filename": "twilight_glamour_over_the_city.png",
+      "observed_file_id": "file_00000000fca0820caa5103152b3db7cf",
+      "library_current_file_id": "file_00000000528082069f84953cb65866f9",
+      "library_current_filename": "rio-original-10.png",
+      "raw_sha256": "125d8c37025a204406d3bfd96b5ab210eca00d63e70416ca9cffb24d7a7fe67e",
+      "raw_bytes": 2069227,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "raw_github_path": null,
+      "jpeg_github_path": null,
+      "jpeg_sha256": null,
+      "jpeg_bytes": null,
+      "editorial_status": "unreviewed_candidate"
+    },
+    {
+      "ordinal": 12,
+      "original_filename": "mountain_view_balcony_portrait.png",
+      "observed_file_id": "file_000000001928820cbc5c9cd9dcd4c89e",
+      "library_current_file_id": "file_0000000086ac82068cbb2e1f9de4dcea",
+      "library_current_filename": "rio-original-12.png",
+      "raw_sha256": "1007b76600e69ff08f8be8d6e69a8c4c80f0b6e005e9d6b534aea721620dc617",
+      "raw_bytes": 2634293,
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "raw_github_path": null,
+      "jpeg_github_path": null,
+      "jpeg_sha256": null,
+      "jpeg_bytes": null,
+      "editorial_status": "unreviewed_candidate"
+    }
+  ],
+  "next": "Save remaining ordinal 06,07,08,10,12 source PNG and matching JPEG to same branch; rerun original and JPEG SHA readback against this inventory; review cut 05 near duplicate and swimwear balance; keep publication to existing 06:00 editor. Do not generate, merge, or finalize here."
+}
