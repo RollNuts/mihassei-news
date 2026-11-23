@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/f371316986d004653b17bc02a2269b9c6680f59b1a375156feac29a8acebb8c5",
+  "receipt_path": "maintenance/native-image-generation-claims/f371316986d004653b17bc02a2269b9c6680f59b1a375156feac29a8acebb8c5.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "f371316986d004653b17bc02a2269b9c6680f59b1a375156feac29a8acebb8c5",
+  "slug": "students-waste-collection-reuse-boxes-win",
+  "article_sha256": "0b67397b5ace9ee444210d35d00451ff6f4af2ffeaf88b2d31546f184a8c280d",
+  "logical_run_id": "news-photo-v1:0b67397b5ace9ee444210d35d00451ff6f4af2ffeaf88b2d31546f184a8c280d",
+  "prompt_sha256": "3cc69e48d1ff4ddee7ac668483d3bac7bc399a080b58680976d0fc5b72b86bcc",
+  "reserved_at": "2026-11-23T11:14:06.822Z",
+  "baseline": {
+    "commit_sha": "66482a0fb5001c97b8034252d7fb106c55b08f6c",
+    "tree_sha": "ac080eb05705e1d95a5085c5fd1e991ef88120b1",
+    "protected_hashes": {
+      "content/articles.json": "22a2e332d249e50dbec9a53ab5c5c32df3db2423664af0a9103ed1d206e4ad55",
+      "assets/generated/manifest.json": "0c4edf72e1494a7ea9e896454435a768b1744cf7163510cb43986178d08473ed",
+      "content/visual_reviews.json": "4616071e480080f083826687d8f8968452988537deb61bae0727d2daa8fcdab1"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "96518c1cc50f075ac546c0c1c6bba83d3918b94d13804c20d5f96c10a7e809e0",
+    "observed_at": "2026-11-23T11:13:12.668Z",
+    "route": "read_candidate_png through the original file adapter",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "bd81c714715abca4ef2d72d0e7d5d6a184e4a2f8"
+  }
+}
