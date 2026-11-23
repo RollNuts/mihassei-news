@@ -499,14 +499,16 @@ function trustedMainFinalizer(w, event = "workflow_run") {
   return w;
 }
 
-function stoppedStory() {
+function stoppedPublication(kind) {
   const w = trustedMainFinalizer(handoffWorld({ merged: false }));
-  w.pr.body = marker(w.pr.head.sha, { kind: "cast_story", reviewer_run: "chatgpt:author-12345", article_sha256: undefined });
+  w.pr.body = marker(w.pr.head.sha, kind === "cast_story"
+    ? { kind, reviewer_run: "chatgpt:author-12345", article_sha256: undefined }
+    : { kind, article_sha256: kind === "news" ? { "new-story": "a".repeat(64) } : {} });
   const ci = w.runs.get(101), finalizer = w.runs.get(102), job = w.jobs.get(102)[0];
   ci.created_at = "2026-11-20T00:00:00Z";
   finalizer.display_title = "Publication head " + w.pr.head.sha + " (CI 101/1)";
   finalizer.conclusion = job.conclusion = job.steps[0].conclusion = "failure";
-  const outcome = { status: "unverified", stage: "latest_main", kind: "cast_story", pr: w.pr.number,
+  const outcome = { status: "unverified", stage: "latest_main", kind, pr: w.pr.number,
     expected_head: w.pr.head.sha, current_head: w.pr.head.sha, ci_run_id: ci.id, ci_run_attempt: ci.run_attempt,
     tested_main: BASE, current_main: REF };
   w.setFinalizerOutcome(outcome);
@@ -522,7 +524,7 @@ function stoppedStory() {
 }
 
 test("the #972 workflow_run failure identifies the same open story and tested main without a supplied finalizer ID", async () => {
-  const { w } = stoppedStory();
+  const { w } = stoppedPublication("cast_story");
   const workflow = fs.readFileSync(path.join(__dirname, "../.github/workflows/verify-public-photos.yml"), "utf8");
   assert(workflow.includes("format('Publication head {0} (CI {1}/{2})', github.event.workflow_run.head_sha, github.event.workflow_run.id, github.event.workflow_run.run_attempt)"));
   const result = await w.read({ finalizer_run_id: undefined, verification_run_id: undefined });
@@ -537,27 +539,77 @@ test("the #972 workflow_run failure identifies the same open story and tested ma
 test("a title, unbound failure, active finalizer or a changed story never establish the recovery diagnosis", async () => {
   for (const patch of [{ pr: 99 }, { current_head: BASE }, { expected_head: BASE }, { ci_run_id: 103 },
     { ci_run_attempt: 2 }, { tested_main: REF }, { current_main: BASE }, { stage: "preflight" }, { kind: "news" }]) {
-    const { w, outcome } = stoppedStory(); w.setFinalizerOutcome({ ...outcome, ...patch });
+    const { w, outcome } = stoppedPublication("cast_story"); w.setFinalizerOutcome({ ...outcome, ...patch });
     const result = await w.read();
     assert.equal(result.reason, "story_failure_binding_unverified"); assert.equal(result.next_operation, undefined);
   }
-  const active = stoppedStory().w;
+  const active = stoppedPublication("cast_story").w;
   Object.assign(active.runs.get(102), { status: "in_progress", conclusion: null });
   assert.equal((await active.read()).reason, "story_finalizer_failure_unconfirmed"); assert.deepEqual(active.logCalls, []);
-  const titleOnly = stoppedStory().w;
+  const titleOnly = stoppedPublication("cast_story").w;
   titleOnly.setFinalizerOutcome({ status: "unverified", error: "Main runtime changed since CI; fresh CI is required" });
   assert.equal((await titleOnly.read()).reason, "story_failure_binding_unverified");
-  const later = stoppedStory().w;
+  const later = stoppedPublication("cast_story").w;
   later.runs.get(102).display_title = "Publication head " + later.pr.head.sha + " (CI 101/2)";
   assert.equal((await later.read({ finalizer_run_id: undefined })).reason, "story_finalizer_unverified");
-  const changed = stoppedStory().w;
+  const changed = stoppedPublication("cast_story").w;
   changed.hook = ({ route, count }) => route === "/pulls/14" && count === 2
     ? { ...changed.pr, body: "" } : undefined;
   assert.equal((await changed.read()).reason, "pr_changed_during_snapshot");
-  const incomplete = stoppedStory().w;
+  const incomplete = stoppedPublication("cast_story").w;
   incomplete.hook = ({ route, url }) => route === "/actions/runs" && url.searchParams.get("event") === "workflow_run"
     ? { total_count: 101, workflow_runs: [incomplete.runs.get(102)] } : undefined;
   assert.equal((await incomplete.read({ finalizer_run_id: undefined })).reason, "story_finalizer_inventory_incomplete");
+});
+
+test("an approved open article reports its latest-main stop with an explicit or discovered finalizer", async () => {
+  for (const kind of ["news", "market"]) {
+    for (const finalizerId of [102, undefined]) {
+      const { w } = stoppedPublication(kind);
+      if (finalizerId !== undefined) {
+        // Editing the approval after CI uses pull_request_target, outside the workflow_run discovery query.
+        Object.assign(w.runs.get(102), { event: "pull_request_target", head_sha: w.pr.head.sha, head_branch: w.pr.head.ref });
+        Object.assign(w.jobs.get(102)[0], { head_sha: w.pr.head.sha, head_branch: w.pr.head.ref });
+      }
+      const result = await w.read({ finalizer_run_id: finalizerId, verification_run_id: undefined });
+      assert.equal(result.status, "attention"); assert.equal(result.stage, "latest_main");
+      assert.equal(result.reason, "latest_main_requires_fresh_ci");
+      assert.equal(result.evidence.finalizer.tested_main, BASE); assert.equal(result.evidence.finalizer.current_main, REF);
+      assert.equal(result.evidence.finalizer.run_id, 102); assert.equal(result.publication_authorized, false);
+      assert.equal(result.review_completed, false); assert.equal(result.photo_adoption, "not_assessed");
+      assert.deepEqual(w.logCalls, [1102]); assert(!w.calls.includes("/actions/runs/103"));
+    }
+  }
+});
+
+test("an article failure requires its own kind, head and attempt in the failed step", async () => {
+  for (const kind of ["news", "market"]) {
+    for (const patch of [{ kind: kind === "news" ? "market" : "news" }, { expected_head: BASE },
+      { current_head: BASE }, { ci_run_attempt: 2 }, { stage: "premerge" }]) {
+      const { w, outcome } = stoppedPublication(kind);
+      w.setFinalizerOutcome({ ...outcome, ...patch });
+      const result = await w.read();
+      assert.equal(result.reason, "publication_failure_binding_unverified");
+      assert.equal(result.next_operation, undefined);
+      assert.equal(result.evidence.finalizer.tested_main, undefined);
+      assert.equal(result.evidence.finalizer.current_main, undefined);
+    }
+  }
+});
+
+test("a closed or merged article and an unbound historical failure have no recovery instruction", async () => {
+  for (const merged of [false, true]) {
+    const { w } = stoppedPublication("news");
+    Object.assign(w.pr, { state: "closed", merged });
+    const result = await w.read();
+    assert.equal(result.status, "attention"); assert.notEqual(result.reason, "latest_main_requires_fresh_ci");
+    assert.equal(result.next_operation, undefined); assert.deepEqual(w.logCalls, []);
+  }
+  const { w } = stoppedPublication("news");
+  w.setFinalizerOutcome({ status: "unverified", error: "Main runtime changed since CI; fresh CI is required" });
+  const result = await w.read();
+  assert.equal(result.reason, "publication_failure_binding_unverified");
+  assert.equal(result.next_operation, undefined); assert.equal(result.evidence.finalizer.tested_main, undefined);
 });
 
 test("trusted-main finalization binds news and market delivery to its actual PR, head and CI attempt", async () => {
