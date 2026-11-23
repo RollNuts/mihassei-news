@@ -75,6 +75,21 @@
         "cut_id": "01",
         "image_sha256": "eb85b575311327cd8d5b5b807ed034409e8ee71730e5a855608f7f41fd1f701e"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261124071937781000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-24T07:19:37.781+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、温かい水に足をつけていたら、そばの人がタオルを貸してくれました。もう帰るつもりだったのに、つい話し込んでしまって。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "10",
+        "image_sha256": "7a4edf6f36d3c283353a5cb1d108ead68e821667d4762385a2503ccdd62283b1"
+      }
     }
   ]
 }
