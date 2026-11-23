@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-22",
+  "created_date": "2026-11-23",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
     "issue_slug": "november-rooftop-pool-sumire-011",
-    "cut_id": "03",
-    "image_sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947"
+    "cut_id": "06",
+    "image_sha256": "ce3f082f9d399a5a2535412130d48a473c9485cb88136cb325b0e7e07bea561d"
   },
-  "post_text": "昼過ぎ、稽古場で古い衣装の裏地を見せてもらった。表よりずっと鮮やかな青。新しい上着にも使いたくなって、色見本を一枚だけ持ち帰った。",
-  "spoken_line": "あの裏地の青が忘れられない。",
-  "future_idea": "2031年、舞台衣装のデジタル複製権を巡り、衣装制作者・出演者・配信事業者の収益分配交渉が難航。"
+  "post_text": "午後、古い劇場の資料室で紐のかかったスケッチ帳を見せてもらった。舞台袖の光まで描かれていて、ページを閉じるのが少し惜しかった。",
+  "spoken_line": "あの光の描き方、好き。",
+  "future_idea": "2031年、舞台美術の学習データ利用を巡り、制作者の許諾と劇場の資料保存の権利調整が難航。"
 }
