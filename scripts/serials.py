@@ -339,7 +339,8 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
             price_kind = "終値" if pick["price_kind"] == "close" else "途中値"
             quotes.append(f'<li><a href="{latest_url}#market-picks"><b>{h(pick["name"])}</b>'
                           f'<strong>{move:+.2f}%</strong><small>{h(pick["exchange"])}・'
-                          f'{h(pick["market_date"][5:].replace("-", "/"))} {price_kind}（前日比）</small></a></li>')
+                          f'{h(pick["market_date"][5:].replace("-", "/"))} {price_kind}\n'
+                          f'（{h(pick["previous_market_date"][5:].replace("-", "/"))}終値比）</small></a></li>')
         quote_strip = ('<section class="market-quote-strip"><h3>記事で扱う銘柄の値動き</h3><ul>'
                        + ''.join(quotes) + '</ul></section>')
     recent_bulletins = (bulletins[:-1] if report_leads else bulletins) or []

@@ -12,6 +12,7 @@ from scripts.market_bulletins import render_market_bulletins_index, render_marke
 from scripts.market_outlooks import render_market_outlook_board
 from tests.test_market_forecast_summary import final_review
 from tests.test_market_investor_coverage import report, stock
+from tests.test_market_outlook_instruments import instrument_forecast
 from tests.test_market_outlooks import original, review
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -149,6 +150,21 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn("TOPIXの短期予想の的中率", scores)
         self.assertIn("未確定1件は集計外", scores)
         self.assertEqual(scores.count('class="market-reader-accuracy"'), 1)
+
+    def test_published_japan_us_and_company_forecasts_link_to_their_own_originals(self):
+        forecasts = [instrument_forecast(key) for key in ("nikkei225", "sp500", "nasdaq-aapl")]
+        at = datetime.fromisoformat("2026-11-16T12:40:00+09:00")
+        page = render_series_page(self.market, passthrough, daily_outlooks=forecasts, asof=at)
+        next_forecast = page.split('id="market-next"', 1)[1].split('id="market-score"', 1)[0]
+        dispatch = report()
+        article = render_market_bulletin(dispatch, passthrough, outlooks=forecasts)
+        article_forecasts = article.split('id="daily-forecasts"', 1)[1].split("</section>", 1)[0]
+        for fc, scope in zip(forecasts, ("日本の主要225銘柄", "米国の大型株", "米国の個別株")):
+            with self.subTest(subject=fc["subject"]):
+                link = f'href="/serials/market-lab/outlooks/#forecast-{fc["id"]}"'
+                self.assertIn(scope, next_forecast)
+                self.assertIn(link, next_forecast)
+                self.assertIn(link, article_forecasts)
 
     def test_article_leads_with_prediction_and_result_without_method_panels(self):
         episode = self.market["episodes"][-1]
