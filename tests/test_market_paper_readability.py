@@ -1,7 +1,7 @@
 """Reader-first newspaper layout for factual markets; preserves auditable sources."""
 import json
 import copy
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 import unittest
 
@@ -10,6 +10,9 @@ from scripts.market_figures import load_market_figures, render_market_svg
 from scripts.market_outlook import load_market_outlook
 from scripts.market_bulletins import render_market_bulletins_index, render_market_bulletin
 from scripts.market_outlooks import render_market_outlook_board
+from tests.test_market_forecast_summary import final_review
+from tests.test_market_investor_coverage import report, stock
+from tests.test_market_outlook_instruments import instrument_forecast
 from tests.test_market_outlooks import original, review
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,20 +34,22 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         rendered = render_series_page(self.market, passthrough, self.figure_data, [], self.outlook, [])
         latest = self.market["episodes"][-1]
         self.assertIn('class="container serials-page market-paper"', rendered)
-        self.assertIn('id="market-focus"', rendered)
-        self.assertIn('id="market-stories"', rendered)
+        sections = [("market-focus", "最新の市況"), ("market-next", "次の予想"),
+                    ("market-score", "答え合わせ"), ("market-stories", "企業分析")]
+        for anchor, label in sections:
+            self.assertIn(f'href="#{anchor}">{label}</a>', rendered)
+            self.assertEqual(rendered.count(f'id="{anchor}"'), 1)
+        positions = [rendered.index(f'id="{anchor}"') for anchor, _ in sections]
+        self.assertEqual(positions, sorted(positions))
         self.assertIn('href="/serials/market-lab/briefings/"', rendered)
         self.assertIn('href="/serials/market-lab/outlooks/">短期予想と成績</a>', rendered)
         self.assertIn('href="#market-proof">企業予想の結果</a>', rendered)
         self.assertIn('id="forecast-ledger"', rendered)
-        self.assertLess(rendered.index('id="market-focus"'),
-                        rendered.index('id="market-stories"'))
         self.assertLess(rendered.index('id="market-stories"'),
                         rendered.index('id="forecast-ledger"'))
         self.assertIn('href="/serials/market-lab/' + latest["slug"] + '/"', rendered)
         self.assertIn(latest["title"], rendered)
         self.assertIn('最終掲載 <time datetime="' + latest["published_at"] + '">', rendered)
-        self.assertIn("今の予想", rendered)
         self.assertIn('href="/serials/market-lab/' + latest["slug"] + '/#article-outlook"', rendered)
         self.assertNotIn("詳しい検証方法", rendered)
         self.assertNotIn("判定記録", rendered)
@@ -86,39 +91,82 @@ class MarketPaperReadabilityTests(unittest.TestCase):
     def test_front_page_forecast_shows_its_original_reason_and_latest_assessment(self):
         fc={**original(),'reason':'受注が増加した。営業利益率も改善した。'}
         latest=review(stance='弱気',reason='新たな費用増で利益率が低下した。売りが広がった。')
-        events=[fc,latest];before=copy.deepcopy(events)
-        page=render_series_page(self.market,passthrough,daily_outlooks=events)
-        follow=page.split('<aside class="market-paper-follow market-reader-focus"',1)[1].split('</aside>',1)[0]
+        events=[fc,latest,final_review(fc)];before=copy.deepcopy(events)
+        page=render_series_page(self.market,passthrough,daily_outlooks=events,asof=datetime.fromisoformat(latest['at']))
+        follow=page.split('id="market-next"',1)[1].split('id="market-score"',1)[0]
         self.assertIn('11月17日のTOPIXは上昇を予想。',follow)
-        self.assertIn('JSTの当初の予想',follow)
+        self.assertIn('datetime="' + fc['at'] + '"', follow)
         self.assertIn(fc['reason'],follow)
-        self.assertIn(latest['reason'],follow)
-        self.assertIn('最新の評価：',follow)
-        self.assertIn('弱気（暫定的に逆行）',follow)
-        self.assertIn('評価の出典：',follow)
-        self.assertIn('集計時点：<time datetime="2026-11-16T12:40:00+09:00"',follow)
+        self.assertIn('最新の評価：', follow)
+        self.assertIn('2026-11-16 12:40', follow)
+        self.assertIn('弱気の見方', follow)
+        self.assertNotIn('暫定的に逆行', follow)
+        self.assertIn('終値で判定', follow)
+        self.assertNotIn(latest['reason'], follow)
+        self.assertNotIn('基準終値', follow)
+        self.assertNotIn('評価の出典', follow)
         self.assertIn('href="/serials/market-lab/outlooks/#forecast-2026-11-16-topix"',follow)
         self.assertIn('確定0件',page)
         self.assertIn('<strong>—</strong>', page)
         self.assertIn('未確定1件は集計外', page)
         self.assertEqual(page.count('class="market-reader-accuracy"'), 1)
-        self.assertLess(page.index('class="market-reader-accuracy"'), page.index('11月17日のTOPIXは上昇を予想。'))
+        self.assertLess(page.index('11月17日のTOPIXは上昇を予想。'), page.index('class="market-reader-accuracy"'))
         self.assertEqual(events,before)
 
     def test_front_page_reports_missing_assessment_without_borrowing_another_forecasts_review(self):
         older={**original(),'id':'2026-11-15-topix','at':'2026-11-15T08:30:00+09:00',
                'reviewed_on':'2026-11-16'}
         fc={**original(),'reason':'受注が増加した。営業利益率も改善した。'}
-        unrelated=review(forecast_id=older['id'],stance='弱気')
+        unrelated=review(forecast_id=older['id'],stance='弱気',at='2026-11-16T16:40:00+09:00')
         events=[older,fc,unrelated]
-        page=render_series_page(self.market,passthrough,daily_outlooks=events)
-        follow=page.split('<aside class="market-paper-follow market-reader-focus"',1)[1].split('</aside>',1)[0]
-        self.assertIn('この予想の更新評価はまだありません。',follow)
+        page=render_series_page(self.market,passthrough,daily_outlooks=events,asof=datetime.fromisoformat(unrelated['at']))
+        follow=page.split('id="market-next"',1)[1].split('id="market-score"',1)[0]
         self.assertIn(fc['reason'],follow)
-        self.assertIn('集計時点：<time datetime="2026-11-16T12:40:00+09:00"',follow)
-        self.assertNotIn('最新の評価：',follow)
+        self.assertIn('11月17日のTOPIXは上昇を予想。', follow)
+        self.assertNotIn('最新の評価：', follow)
         self.assertNotIn(unrelated['reason'],follow)
         self.assertNotIn('弱気（',follow)
+
+    def test_article_prices_have_no_forecast_or_accuracy_until_a_dated_outlook_exists(self):
+        nasdaq = stock(code="AAPL", name="Test Apple", close=113.50)
+        tokyo = stock(code="5016", name="Test JP", exchange="東証", currency="JPY",
+                      observed_at="2026-11-16T15:30:00+09:00")
+        bulletin = report([nasdaq, tokyo])
+        page = render_series_page(self.market, passthrough, bulletins=[bulletin], daily_outlooks=[original()],
+                                  asof=datetime.fromisoformat(bulletin["published_at"]))
+        market = page.split('id="market-focus"', 1)[1].split('id="market-next"', 1)[0]
+        next_forecast = page.split('id="market-next"', 1)[1].split('id="market-score"', 1)[0]
+        scores = page.split('id="market-score"', 1)[1].split('id="market-stories"', 1)[0]
+        self.assertIn('class="market-quote-strip"', market)
+        self.assertIn("記事で扱う銘柄の値動き", market)
+        detail_section = f'href="/serials/market-lab/briefings/{bulletin["slug"]}/#market-picks"'
+        self.assertIn(detail_section, market)
+        detail = render_market_bulletin(bulletin, passthrough)
+        self.assertIn('id="market-picks"', detail)
+        for pick in (nasdaq, tokyo):
+            self.assertIn(pick["name"], market)
+            self.assertIn(pick["code"], detail)
+            self.assertNotIn(pick["name"], next_forecast)
+            self.assertNotIn(pick["name"], scores)
+        self.assertIn("11月17日のTOPIXは上昇を予想。", next_forecast)
+        self.assertIn("TOPIXの短期予想の的中率", scores)
+        self.assertIn("未確定1件は集計外", scores)
+        self.assertEqual(scores.count('class="market-reader-accuracy"'), 1)
+
+    def test_published_japan_us_and_company_forecasts_link_to_their_own_originals(self):
+        forecasts = [instrument_forecast(key) for key in ("nikkei225", "sp500", "nasdaq-aapl")]
+        at = datetime.fromisoformat("2026-11-16T12:40:00+09:00")
+        page = render_series_page(self.market, passthrough, daily_outlooks=forecasts, asof=at)
+        next_forecast = page.split('id="market-next"', 1)[1].split('id="market-score"', 1)[0]
+        dispatch = report()
+        article = render_market_bulletin(dispatch, passthrough, outlooks=forecasts)
+        article_forecasts = article.split('id="daily-forecasts"', 1)[1].split("</section>", 1)[0]
+        for fc, scope in zip(forecasts, ("日本の主要225銘柄", "米国の大型株", "米国の個別株")):
+            with self.subTest(subject=fc["subject"]):
+                link = f'href="/serials/market-lab/outlooks/#forecast-{fc["id"]}"'
+                self.assertIn(scope, next_forecast)
+                self.assertIn(link, next_forecast)
+                self.assertIn(link, article_forecasts)
 
     def test_article_leads_with_prediction_and_result_without_method_panels(self):
         episode = self.market["episodes"][-1]

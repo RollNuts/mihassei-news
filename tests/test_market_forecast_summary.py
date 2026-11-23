@@ -65,7 +65,9 @@ class MarketForecastSummaryTests(unittest.TestCase):
         self.assertIn('id="forecast-2026-11-16-topix"',markup)
         self.assertNotIn('market-forecast-table',markup)
         self.assertNotIn(fc['statement'],markup)
-        self.assertNotIn('3,400.00',markup)
+        self.assertIn('基準終値 <time datetime="2026-11-13">11/13</time> 3,400.00ポイント',markup)
+        self.assertNotIn('確認済み終値',markup)
+        self.assertNotIn('market-score-example',markup)
         self.assertIn('結果待ち',markup)
         self.assertIn('href="'+SOURCE+'"',markup)
 
@@ -243,6 +245,46 @@ class MarketForecastSummaryTests(unittest.TestCase):
         self.assertIn("掲載時点", historical_score)
         self.assertIn(report["published_at"], historical_score)
         self.assertIn("JST", historical_score)
+        self.assertNotIn('#forecast-2026-11-19-topix', historical_score)
+        for score, source_day, answer in (
+                (historical_score, "2026-11-18", "11/19判定　上昇予想 → 横ばい（−0.46%）で外れ"),
+                (confirmed, "2026-11-19", "11/20判定　横ばい予想 → 下落（−3.92%）で外れ")):
+            link = score.split(f'#forecast-{source_day}-topix">', 1)[1].split("</a>", 1)[0]
+            self.assertIn(answer, re.sub(r"<[^>]+>", "", link))
+            self.assertLess(score.index(answer), score.index("TOPIXの短期予想の的中率"))
+
+    def test_real_result_cards_show_the_original_baseline_and_official_target_close(self):
+        path = Path(__file__).resolve().parents[1] / 'content/market_outlooks.json'
+        events = json.loads(path.read_text(encoding='utf-8'))
+        markup = render_market_outlook_board(events, before=datetime.fromisoformat('2026-11-23T01:34:47+09:00'))
+        cards = dict(re.findall(r'<article class="market-reader-card" id="forecast-([^"]+)">(.*?)</article>',
+                                markup, re.S))
+        for issue_day, base_day, baseline, target, close, move, comparison in (
+            (15, 13, '3,941.57', 16, '3,901.37', '−1.02%', '横ばい → 実際 下落'),
+            (16, 13, '3,941.57', 17, '3,840.02', '−2.58%', '横ばい → 実際 下落'),
+            (17, 16, '3,901.37', 18, '3,824.00', '−1.98%', '下落 → 実際 下落'),
+            (18, 17, '3,840.02', 19, '3,822.47', '−0.46%', '上昇 → 実際 横ばい'),
+            (19, 18, '3,824.00', 20, '3,674.22', '−3.92%', '横ばい → 実際 下落'),
+        ):
+            with self.subTest(issue_day=issue_day):
+                verdict = re.sub(r'<[^>]+>', '', cards[f'2026-11-{issue_day}-topix'].split('</div>', 1)[0])
+                self.assertIn('予想 ' + comparison, verdict)
+                self.assertIn(f'基準終値 11/{base_day} {baseline}ポイント', verdict)
+                self.assertIn(f'結果日：2026-11-{target}', verdict)
+                self.assertIn(f'確認済み終値 {close}ポイント（{move}）', verdict)
+
+    def test_visible_rule_and_examples_preserve_the_half_percent_boundaries(self):
+        visible = re.sub(r'<[^>]+>', '', render_market_accuracy([]))
+        for rule in ('7日以内', '上昇 ＋0.5%超', '横ばい ±0.5%以内', '下落 −0.5%未満'):
+            self.assertIn(rule, visible)
+        for close, direction, move in ((3382.99, '下落', '−0.5%未満'), (3383, '横ばい', '−0.50%'),
+                                       (3417, '横ばい', '＋0.50%'), (3417.01, '上昇', '＋0.5%超')):
+            with self.subTest(close=close):
+                forecast = {**original(), 'direction':direction}
+                confirmed = final_review(forecast)
+                confirmed['result']['close'] = close
+                score = render_market_accuracy([forecast, confirmed])
+                self.assertIn(f'{direction}予想 → {direction}（{move}）で的中', score)
 
     def test_archive_compares_forecast_and_actual_only_when_the_result_is_confirmed(self):
         first = original()

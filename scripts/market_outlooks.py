@@ -7,7 +7,7 @@ JST dates, not fictional newspaper dates.
 """
 from __future__ import annotations
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from html import escape
 from pathlib import Path
@@ -30,7 +30,12 @@ STANCES = ("強気", "中立", "弱気")
 TRENDS = ("暫定的に整合", "暫定的に逆行", "判断材料不足")
 DIRECTIONS = ("上昇", "下落", "横ばい")
 BASE_URL = "/serials/market-lab/outlooks/"
-FORECAST_ID = re.compile(r"20\d{2}-\d{2}-\d{2}-topix\Z")
+JP_CODE = r"(?:[0-9]{4}|[0-9]{3}[a-z])"
+US_CODE = r"[a-z]{1,5}(?:-[a-z])?"
+FORECAST_ID = re.compile(r"20\d{2}-\d{2}-\d{2}-(?P<instrument>topix|nikkei225|sp500|tse-"
+                         + JP_CODE + r"|(?:nyse|nasdaq)-" + US_CODE + r")\Z")
+INDEX_SUBJECTS = {"topix": "TOPIX", "nikkei225": "日経平均株価", "sp500": "S&P 500"}
+EXCHANGE_LABELS = {"tse": "東証", "nyse": "NYSE", "nasdaq": "NASDAQ"}
 REVIEW_ID = re.compile(r"20\d{2}-\d{2}-\d{2}-(?:am|open|noon|close)-[a-z0-9-]+\Z")
 
 
@@ -89,6 +94,138 @@ def _source(source, *, asof):
     return source["url"]
 
 
+def forecast_instrument_id(forecast):
+    identity = forecast.get("id")
+    match = FORECAST_ID.fullmatch(identity) if isinstance(identity, str) else None
+    if not match:
+        raise ValueError("Unsafe market forecast identity")
+    return match["instrument"]
+
+
+def _instrument_market(key):
+    return "JP" if key in ("topix", "nikkei225") or key.startswith("tse-") else "US"
+
+
+def _instrument_unit(key):
+    if key in ("topix", "sp500"):
+        return "ポイント"
+    return "JPY" if _instrument_market(key) == "JP" else "USD"
+
+
+def forecast_display_unit(forecast):
+    unit = _instrument_unit(forecast_instrument_id(forecast))
+    return {"JPY": "円", "USD": "米ドル"}.get(unit, unit)
+
+
+def _subject_matches(key, subject):
+    if key in INDEX_SUBJECTS:
+        return subject == INDEX_SUBJECTS[key]
+    exchange, ticker = key.split("-", 1)
+    suffix = f"（{ticker.upper().replace('-', '.')}・{EXCHANGE_LABELS[exchange]}）"
+    return isinstance(subject, str) and len(subject) <= 110 and subject.endswith(suffix) and bool(subject[:-len(suffix)].strip())
+
+
+def _market_zone(key):
+    return ZoneInfo("Asia/Tokyo" if _instrument_market(key) == "JP" else "America/New_York")
+
+
+def market_forecast_horizon(forecast):
+    # The result date is the trading venue's date, even while Japan is a day ahead.
+    started = _timestamp(forecast["at"])
+    if forecast.get("target_session"):
+        started = started.astimezone(_market_zone(forecast_instrument_id(forecast))).date()
+    return forecast_horizon(started, forecast["reviewed_on"])
+
+
+def _hours(key, market_day):
+    japan = _instrument_market(key) == "JP"
+    zone = _market_zone(key)
+    return (datetime.combine(market_day, time(9) if japan else time(9, 30), tzinfo=zone),
+            datetime.combine(market_day, time(15, 30) if japan else time(16), tzinfo=zone))
+
+
+def _scheduled_close(key, market_day, session, cited):
+    if not isinstance(session, dict) or market_day.weekday() >= 5:
+        raise ValueError("Expected a sourced cash-market trading session")
+    url = _https(session.get("source_url"))
+    host = urlsplit(url).hostname
+    owners = ("jpx.co.jp",) if _instrument_market(key) == "JP" else ("nyse.com", "nasdaq.com", "nasdaqtrader.com")
+    if url not in cited or not any(host == owner or host.endswith("." + owner) for owner in owners):
+        raise ValueError("Session must cite the relevant exchange calendar")
+    close = _timestamp(session.get("close_at"))
+    opening, regular_close = _hours(key, market_day)
+    if not opening < close <= regular_close:
+        raise ValueError("Session close must match the local exchange date and hours")
+    return close
+
+
+def _quote(key, quote, source, market_day, published, *, price_kind, close_at=None):
+    if (quote.get("instrument_id") != key or source.get("instrument_id") != key or
+            quote.get("unit") != _instrument_unit(key) or quote.get("price_kind") not in price_kind):
+        raise ValueError("Price/source instrument, unit or quote type mismatch")
+    # A provider's separately recorded quote metadata must agree when supplied.
+    if (source.get("price_kind", quote["price_kind"]) != quote["price_kind"] or
+            source.get("unit", quote["unit"]) != quote["unit"] or
+            source.get("market_date", market_day.isoformat()) != market_day.isoformat()):
+        raise ValueError("Cited price record differs from this quote")
+    observed = _timestamp(quote.get("observed_at"))
+    opening, regular_close = _hours(key, market_day)
+    closing = close_at or regular_close
+    if (market_day.weekday() >= 5 or observed > published or observed < opening or
+            observed.astimezone(opening.tzinfo).date() != market_day):
+        raise ValueError("Price observation must match its local trading day before publication")
+    if quote["price_kind"] == "close" and observed < closing:
+        raise ValueError("Official close not yet observed for this session")
+    if (quote["price_kind"] == "close" and observed > closing and
+            (source.get("price_kind") != "close" or source.get("market_date") != market_day.isoformat())):
+        raise ValueError("Post-session observation needs a dated official closing-price source")
+    if quote["price_kind"] == "intraday" and observed > closing:
+        raise ValueError("Intraday quote must be during its session")
+    return observed
+
+
+def forecast_result_due(forecast, asof):
+    """The target regular session must have ended, regardless of the reader's timezone."""
+    if not isinstance(asof, datetime) or asof.utcoffset() is None:
+        raise ValueError("A market result needs a timezone-aware comparison time")
+    if forecast_instrument_id(forecast) == "topix":
+        close = _hours("topix", _day(forecast["reviewed_on"]))[1]
+    else:
+        close = _timestamp(forecast["target_session"]["close_at"])
+    return asof >= close
+
+
+def _validated_result(fc, event):
+    result, source = event["result"], event["source"]
+    at, target = _timestamp(event["at"]), _day(fc["reviewed_on"])
+    if not forecast_result_due(fc, at):
+        raise ValueError("No verified result before fixed judgement date and close")
+    if not isinstance(result, dict):
+        raise ValueError("Market result must contain evidence")
+    close = _number(result.get("close"))
+    if result.get("observed_on") != fc["reviewed_on"]:
+        raise ValueError("Market outcome must use its original evaluation day")
+    if _https(result.get("source_url")) != source["url"]:
+        raise ValueError("Market outcome must cite the checked source")
+    key = forecast_instrument_id(fc)
+    if key == "topix":
+        for record in (result, source):
+            if (record.get("instrument_id", key) != key or record.get("unit", "ポイント") != "ポイント"
+                    or record.get("price_kind", "close") != "close" or record.get("market_date", fc["reviewed_on"]) != fc["reviewed_on"]):
+                raise ValueError("Cited result differs from the original TOPIX forecast")
+    else:
+        _quote(key, result, source, target, at, price_kind=("close",),
+               close_at=_timestamp(fc["target_session"]["close_at"]))
+        if key not in INDEX_SUBJECTS:
+            if result.get("corporate_action_checked") is not True:
+                raise ValueError("Stock outcome needs a comparable share basis")
+            _text(result.get("adjustment_note"), "stock price adjustment note", maximum=350)
+    if result.get("outcome") != _forecast_result(fc, close):
+        raise ValueError("Market result inconsistent with frozen criterion")
+    _text(result.get("explanation"), "result explanation", minimum=35)
+    return result
+
+
 def _observed_direction(baseline, close):
     # Compare the recorded decimal prices directly. Exactly ±0.5% is flat.
     start = Decimal(str(baseline))
@@ -98,6 +235,18 @@ def _observed_direction(baseline, close):
     if movement < -start:
         return "下落"
     return "横ばい"
+
+
+def _change_label(baseline, close):
+    start = Decimal(str(baseline))
+    change = (Decimal(str(close)) - start) * 100 / start
+    rounded = change.quantize(Decimal("0.01"))
+    # Rounding must not make a directional verdict look exactly flat.
+    if abs(rounded) == Decimal("0.5") and abs(change) > abs(rounded):
+        return "＋0.5%超" if change > 0 else "−0.5%未満"
+    if not rounded:
+        return "0.00%" if not change else "変化幅0.01%未満"
+    return ("＋" if change > 0 else "−") + f'{abs(rounded):.2f}%'
 
 
 def _forecast_result(forecast, observed):
@@ -113,7 +262,8 @@ def load_market_outlooks(root, *, today=None):
     events = json.loads(f.read_text(encoding="utf-8"))
     if not isinstance(events, list):
         raise ValueError("Market outlook history must be a list")
-    now = today or datetime.now(ZoneInfo("Asia/Tokyo")).date()
+    clock = datetime.now(ZoneInfo("Asia/Tokyo")) if today is None else None
+    now = clock.date() if clock else today
     forecasts = {}
     latest_stance = {}
     verified = set()
@@ -127,24 +277,26 @@ def load_market_outlooks(root, *, today=None):
             raise ValueError("Duplicate or missing market outlook identity")
         seen.add(eid)
         at = _timestamp(event.get("at"))
-        if at.date() > now or (last_at is not None and at < last_at):
+        if at.date() > now or (clock and at > clock) or (last_at is not None and at < last_at):
             raise ValueError("Market outlook events must be chronological and not future dated")
         last_at = at
         if kind == "forecast":
             if not FORECAST_ID.fullmatch(eid) or eid[:10] != at.date().isoformat() or eid in forecasts:
                 raise ValueError("Daily forecast must have one real JST-date identity")
             target_day = _day(event.get("reviewed_on"))
-            if target_day <= at.date():
+            key = forecast_instrument_id(event)
+            if key == "topix" and target_day <= at.date():
                 raise ValueError("Daily forecast judgement must be after publication")
-            if event.get("subject") != "TOPIX" or event.get("direction") not in DIRECTIONS:
-                raise ValueError("Daily forecast must be a verifiable TOPIX direction")
+            if (event.get("instrument_id", key) != key or not _subject_matches(key, event.get("subject"))
+                    or event.get("direction") not in DIRECTIONS):
+                raise ValueError("Daily forecast must identify its original instrument and direction")
             if event.get("stance") not in STANCES:
                 raise ValueError("Daily forecast stance must be clear")
             for k, n in (("statement", 25), ("method", 35),
                          ("reason", 35), ("invalidated_if", 25)):
                 _text(event.get(k), k, minimum=n)
             if "0.5" not in event["method"]:
-                raise ValueError("Daily TOPIX direction requires the fixed 0.5 percent threshold")
+                raise ValueError("Daily forecast requires the fixed 0.5 percent threshold")
             scenarios = event.get("scenarios")
             if not isinstance(scenarios, dict) or set(scenarios) != set(STANCES):
                 raise ValueError("Daily forecast needs three scenarios")
@@ -159,11 +311,23 @@ def load_market_outlooks(root, *, today=None):
             baseline = event.get("baseline")
             if not isinstance(baseline, dict):
                 raise ValueError("Daily forecast requires a verified baseline")
-            if _day(baseline.get("date")) > at.date():
+            baseline_day = _day(baseline.get("date"))
+            if baseline_day > at.date():
                 raise ValueError("Baseline cannot be from the future")
             _number(baseline.get("value"))
-            if baseline.get("unit") != "ポイント" or baseline.get("source_url") not in urls:
-                raise ValueError("Baseline needs TOPIX units and cited public source")
+            if baseline.get("unit") != _instrument_unit(key) or baseline.get("source_url") not in urls:
+                raise ValueError("Baseline needs the correct units and cited public source")
+            quote_source = next(src for src in sources if src["url"] == baseline["source_url"])
+            if key == "topix":
+                if any(record.get("instrument_id", key) != key for record in (baseline, quote_source)):
+                    raise ValueError("Cited baseline differs from the original TOPIX forecast")
+            else:
+                target_close = _scheduled_close(key, target_day, event.get("target_session"), urls)
+                if at >= target_close or baseline_day >= target_day:
+                    raise ValueError("Target session must close after publication and follow the baseline")
+                prior_session = baseline.get("session")
+                prior_close = _scheduled_close(key, baseline_day, prior_session, urls) if prior_session is not None else None
+                _quote(key, baseline, quote_source, baseline_day, at, price_kind=("close",), close_at=prior_close)
             _text(baseline.get("method"), "baseline method", minimum=20)
             forecasts[eid] = event
             latest_stance[eid] = event["stance"]
@@ -176,6 +340,13 @@ def load_market_outlooks(root, *, today=None):
             if fid not in forecasts or fid in verified:
                 raise ValueError("Market review references absent or already verified forecast")
             fc = forecasts[fid]
+            key = forecast_instrument_id(fc)
+            if event.get("instrument_id", key) != key:
+                raise ValueError("Review instrument differs from the original forecast")
+            tail = eid.split("-", 4)[4]
+            if key != "topix" or re.match(r"20\d{2}-", tail):
+                if tail != fid and not re.fullmatch(re.escape(fid) + r"-[0-9]{2}", tail):
+                    raise ValueError("Review identity must include the original forecast identity")
             if at <= _timestamp(fc["at"]):
                 raise ValueError("Market review must follow its original forecast")
             if event.get("stance") not in STANCES or event.get("trend") not in TRENDS:
@@ -187,22 +358,18 @@ def load_market_outlooks(root, *, today=None):
                 _text(event.get("change_reason"), "stance-change reason", minimum=35)
             if event.get("observed_value") is not None:
                 _number(event["observed_value"])
-                if _day(event.get("observed_on")) > at.date():
+                market_day = _day(event.get("observed_on"))
+                if market_day > at.date():
                     raise ValueError("Observed value cannot be future-dated")
+                if key != "topix":
+                    closing = (_timestamp(fc["target_session"]["close_at"]) if market_day == _day(fc["reviewed_on"])
+                               else None)
+                    observed = _quote(key, event, source, market_day, at, price_kind=("close", "intraday"), close_at=closing)
+                    if observed <= _timestamp(fc["at"]):
+                        raise ValueError("Interim price must follow the original forecast")
             outcome = event.get("result")
             if outcome is not None:
-                if at.date() < _day(fc["reviewed_on"]):
-                    raise ValueError("No verified result before fixed judgement date")
-                if not isinstance(outcome, dict):
-                    raise ValueError("Market result must contain evidence")
-                value = _number(outcome.get("close"))
-                if outcome.get("observed_on") != fc["reviewed_on"]:
-                    raise ValueError("Market outcome must use its original evaluation day")
-                if outcome.get("source_url") != source["url"]:
-                    raise ValueError("Market outcome must cite the checked source")
-                if outcome.get("outcome") != _forecast_result(fc, value):
-                    raise ValueError("Market result inconsistent with frozen criterion")
-                _text(outcome.get("explanation"), "result explanation", minimum=35)
+                _validated_result(fc, event)
                 verified.add(fid)
             latest_stance[fid] = event["stance"]
         else:
@@ -237,16 +404,9 @@ def _confirmed_result(row):
     if not isinstance(result, dict) or result.get("outcome") not in ("的中", "外れ"):
         return None
     try:
-        close = _number(result.get("close"))
-        if (_timestamp(latest["at"]).date() < _day(fc["reviewed_on"])
-                or result.get("observed_on") != fc["reviewed_on"]
-                or _https(result.get("source_url")) != latest["source"]["url"]
-                or result["outcome"] != _forecast_result(fc, close)):
-            return None
-        _text(result.get("explanation"), "result explanation", minimum=35)
+        return _validated_result(fc, latest)
     except (KeyError, ValueError, TypeError):
         return None
-    return result
 
 
 def _status(row):
@@ -257,7 +417,7 @@ def _status(row):
     outcome = latest.get("result") if latest else None
     if isinstance(outcome, dict) and outcome.get("outcome") in ("判定不能", "保留"):
         return "判定保留"
-    if row["asof"].astimezone(ZoneInfo("Asia/Tokyo")).date() >= _day(row["forecast"]["reviewed_on"]):
+    if forecast_result_due(row["forecast"], row["asof"]):
         return "結果日到来・確認待ち"
     return "結果待ち"
 
@@ -278,7 +438,8 @@ def forecast_reader_statement(forecast):
     """Display the original direction and target day without its test machinery."""
     target = _day(forecast["reviewed_on"])
     year = f'{target.year}年' if target.year != _timestamp(forecast["at"]).year else ''
-    return f'{year}{target.month}月{target.day}日の{forecast["subject"]}は{forecast["direction"]}を予想。'
+    local = "（米国時間）" if _instrument_market(forecast_instrument_id(forecast)) == "US" else ""
+    return f'{year}{target.month}月{target.day}日{local}の{forecast["subject"]}は{forecast["direction"]}を予想。'
 
 
 def forecast_reader_reason(forecast):
@@ -286,16 +447,50 @@ def forecast_reader_reason(forecast):
     return reader_reason_sentences(forecast["reason"])
 
 
+def pending_market_forecasts(events, *, before=None):
+    """The nearest outstanding target per instrument, with the newest view on tied dates."""
+    asof = before or datetime.now(ZoneInfo("Asia/Tokyo"))
+    pending = {}
+    for row in sorted(view_models(events, before=asof), key=lambda row: row["forecast"]["reviewed_on"]):
+        fc = row["forecast"]
+        if not forecast_result_due(fc, asof) and _confirmed_result(row) is None:
+            pending.setdefault(forecast_instrument_id(fc), row)
+    return list(pending.values())
+
+
+def forecast_market_scope(forecast):
+    instrument = forecast_instrument_id(forecast)
+    if instrument == "topix":
+        return "日本株全体"
+    if instrument == "nikkei225":
+        return "日本の主要225銘柄"
+    if instrument == "sp500":
+        return "米国の大型株"
+    return "日本の個別株" if instrument.startswith("tse-") else "米国の個別株"
+
+
 def render_market_accuracy(events, *, before=None):
-    """Accuracy for all evidenced short-term verdicts in this historical view."""
-    rows = [row for row in view_models(events, before=before)
-            if forecast_horizon(row["forecast"]["at"], row["forecast"]["reviewed_on"]) == "短期"]
-    settled = [result for row in rows if (result := _confirmed_result(row)) is not None]
-    hits = sum(result["outcome"] == "的中" for result in settled)
+    groups = {}
+    for row in view_models(events, before=before):
+        fc = row["forecast"]
+        if market_forecast_horizon(fc) == "短期":
+            groups.setdefault(forecast_instrument_id(fc), []).append(row)
+    scores = [_instrument_score(rows, before) for rows in groups.values()] or [_instrument_score([], before)]
+    older = ('<details class="market-reader-past"><summary>ほかの対象の成績</summary>'
+             + ''.join(scores[3:]) + '</details>') if len(scores) > 3 else ''
+    return (''.join(scores[:3]) + older
+            + '<p class="market-score-basis">予想時に記録した基準終値と、判定日の終値を比較します。'
+              '対象は公表から7日以内に判定する予想です。実際の方向が予想と合えば的中です。</p>'
+              '<ul class="market-score-ranges" aria-label="終値の変化率と判定">'
+              '<li>上昇 <b>＋0.5%超</b></li><li>横ばい <b>±0.5%以内</b></li><li>下落 <b>−0.5%未満</b></li></ul>')
+
+
+def _instrument_score(rows, before):
+    settled = [(row["forecast"], result) for row in rows if (result := _confirmed_result(row)) is not None]
+    hits = sum(result["outcome"] == "的中" for _, result in settled)
     total = len(settled)
     pending = len(rows) - total
-    subjects = {row["forecast"]["subject"] for row in rows}
-    scope = escape(next(iter(subjects))) + 'の短期予想' if len(subjects) == 1 else '短期相場予想'
+    scope = escape(rows[0]["forecast"]["subject"]) + 'の短期予想' if rows else '短期相場予想'
     percent = (f'{hits * 100 / total:.1f}'.rstrip('0').rstrip('.') + '%') if total else '—'
     count = f'判定済み{total}件のうち{hits}件が的中' if total else '確定0件'
     bar = (f'<meter class="market-score-meter" min="0" max="{total}" value="{hits}" aria-hidden="true"></meter>'
@@ -306,10 +501,19 @@ def render_market_accuracy(events, *, before=None):
         asof = before.astimezone(ZoneInfo("Asia/Tokyo"))
         when = (f'<time datetime="{asof.isoformat(timespec="seconds")}">'
                 f'{asof.month}月{asof.day}日 {asof:%H:%M} JST 掲載時点</time>')
+    example = ''
+    if settled:
+        fc, result = max(settled, key=lambda pair: (pair[0]["reviewed_on"], pair[0]["at"]))
+        day = _day(fc["reviewed_on"])
+        move = _change_label(fc["baseline"]["value"], result["close"])
+        actual = _observed_direction(fc["baseline"]["value"], result["close"])
+        example = (f'<a class="market-score-example" href="{market_forecast_url(fc)}"><strong>{escape(fc["subject"])}の直近の判定</strong> '
+                   f'{day.month}/{day.day}判定　{escape(fc["direction"])}予想 → {actual}（{move}）で{result["outcome"]}</a>')
     return ('<div class="market-reader-accuracy" aria-label="短期相場予想の的中率">'
-            f'<div class="market-score-heading"><b>{scope}の的中率</b>{when}</div>'
+            + example + f'<div class="market-score-heading"><b>{scope}の的中率</b>{when}</div>'
             f'<div class="market-score-value"><strong>{percent}</strong><span class="market-reader-count">{count}</span></div>'
-            + bar + (f'<small>{"　／　".join(counts)}</small>' if counts else '') + '</div>')
+            + bar + (f'<small>{"　／　".join(counts)}</small>' if counts else '')
+            + '</div>')
 
 
 def render_market_forecast_assessment(row):
@@ -338,11 +542,16 @@ def render_market_forecast_assessment(row):
         )
     status = _status(row)
     outcome = 'hit' if result and result["outcome"] == '的中' else 'miss' if result else 'pending'
-    confirmed = f'<span>確認済み終値 {result["close"]:,.2f}ポイント</span>' if result else ''
+    base = fc["baseline"]
+    base_day = _day(base["date"])
+    basis = (f'<span>基準終値 <time datetime="{base_day}">{base_day.month}/{base_day.day}</time> '
+             f'{base["value"]:,.2f}{escape(forecast_display_unit(fc))}</span>')
+    confirmed = (f'<span>確認済み終値 {result["close"]:,.2f}{escape(forecast_display_unit(fc))}（{_change_label(base["value"], result["close"])}）</span>'
+                 if result else '')
     sources = ''.join(
         f'<a href="{escape(_https(source["url"]),quote=True)}" title="{escape(source["title"],quote=True)}" '
-        f'target="_blank" rel="noopener noreferrer external">資料{index}</a>'
-        for index, source in enumerate(fc["sources"], 1)
+        f'target="_blank" rel="noopener noreferrer external">{escape(source["title"])}</a> '
+        for source in fc["sources"]
     )
     asof = row["asof"].astimezone(ZoneInfo("Asia/Tokyo")).isoformat(timespec="seconds")
     actual = ''
@@ -351,7 +560,7 @@ def render_market_forecast_assessment(row):
         actual = f'<span class="market-direction-pair">予想 <b>{escape(fc["direction"])}</b> → 実際 <b>{direction}</b></span>'
     return (f'<div class="market-reader-result" data-outcome="{outcome}"><strong>{escape(status)}</strong>'
             + actual + f'<span>結果日：<time datetime="{escape(fc["reviewed_on"], quote=True)}">{escape(fc["reviewed_on"])}</time></span>'
-            + confirmed + '</div>' + reason_html
+            + basis + confirmed + '</div>' + reason_html
             + '<details class="market-reader-evidence"><summary>経過と出典</summary>'
             + assessment + f'<p class="market-reader-sources">当初の出典 {sources}</p>'
             + f'<p class="market-reader-date">集計時点：<time datetime="{asof}">{_event_day(asof)}</time> JST</p></details>')
@@ -361,7 +570,7 @@ def _reader_forecast_card(row):
     fc = row["forecast"]
     return (f'<article class="market-reader-card" id="{_forecast_anchor(fc)}">'
             f'<p class="market-reader-date"><span class="market-reader-horizon">'
-            f'{forecast_horizon(fc["at"],fc["reviewed_on"])}</span> '
+            f'{market_forecast_horizon(fc)}</span> '
             f'<time datetime="{escape(fc["at"],quote=True)}">'
             f'{_event_day(fc["at"])}</time>の当初の予想</p>'
             f'<h3 class="market-reader-direction">{escape(forecast_reader_statement(fc))}</h3>'
@@ -403,7 +612,7 @@ def render_market_outlook_archive(events, layout):
                + render_market_share(BASE_URL, "相場の予想と結果") + '</header>'
                + render_market_outlook_board(events, link_to_archive=False) + '</div>')
     return layout("相場の予想と結果 | 未来相場観測室",
-                  "日本市場の予想、その理由、確認できた結果と的中率。",
+                  "日米の指数・個別株の予想と、その理由・結果。対象別に短期の的中率を掲載。",
                   BASE_URL, content, active="serials",
                   serial={"slug":"market-lab","kind":"analysis","title":"未来相場観測室"})
 
