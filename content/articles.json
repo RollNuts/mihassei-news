@@ -1,5 +1,73 @@
 [
   {
+    "slug": "students-waste-collection-reuse-boxes-win",
+    "category": "社会",
+    "flash": "拾う量より、出さない工夫",
+    "art": "cards",
+    "fiction_company": "まち循環杯実行委員会（架空）",
+    "fiction_at": "2031-11-23T20:12:18+09:00",
+    "published_at": "2026-11-23T20:12:18+09:00",
+    "publication_slot": "2026-11-23T19:30:00+09:00",
+    "title": "高校生チーム、ごみ袋1.8キロで逆転優勝　2031年の勝負を決めた返却箱",
+    "summary": "2031年の海明市で、高校生チームはごみ拾いの回収量では負けながら総合優勝した。パン屋二店で使い捨て容器を減らし、販売数と返却記録で確認された削減点が決め手に。客の返却の手間と店の洗浄費も考えた仕組みは、大会後も商店街に残った。",
+    "paragraphs": [
+      "11月23日夕方、海明市の高校生チーム「潮路三人組」は、まち循環杯の表彰台で小さなごみ袋を持ち上げた。60分で拾った量は1.8キロ。隣のチームは9.1キロを集めた。それなのに総合優勝は「潮路三人組」。勝敗を分けたのは、競技の前に商店街へ置いた返却箱だった。",
+      "2026年には、全国43チームが60分間のごみ拾いを競う高校生の大会が開かれた。5年後の海明市で始まった「まち循環杯」は、当日の回収量に加え、先の二週間に使い捨て容器をどれだけ減らせたかを別に採点する。袋が軽ければ自動で得点になるわけではない。店の販売数と容器の仕入れ・返却記録を照らし、実際に減った分だけを数える。",
+      "潮路三人組が協力を頼んだのは駅前のパン屋二店だ。生徒たちは両店で使える共通の持ち帰り箱と返却棚を用意した。客は会計時に100円を預け、後日どちらの店へ返してもその場で返金される。箱の番号と返却時刻だけを記録し、共同の洗浄所で洗って翌朝また店へ運ぶ。別々の店で捨てられていた容器が、店をまたいで戻ってくるようになった。",
+      "試行前の四週間はパン100食につき使い捨て容器が92個。試行中の二週間は38個になり、販売した食数は減らなかった。審判はレジの件数、容器の仕入れ、返却された箱の数を突き合わせ、行方不明になった箱は削減実績から差し引いた。一方、別チームは川沿いで重いごみ袋を次々に満たし、当日の回収量では首位になった。",
+      "「箱を返すために遠回りはしたくない」という客もいた。洗浄と運搬の費用、破損した箱の補充費は店が負担する。そこで二店は使い捨て容器を選ぶ余地も残し、返却棚は通勤途中に寄りやすい駅側に置いた。学生が毎日箱を集め続ける形にはせず、商店会の配送便に載せる契約を結んだ。店主たちが大会後も続けられると判断したのは、採点の前日だった。",
+      "表彰式では審判が「拾ったごみの得点だけなら二位」と告げ、それから返却記録に基づく削減点を加えて逆転を発表した。拾う競技は残す。すでに落ちているごみを放置してよいわけではないからだ。翌朝、二店は大会の掲示を外したが、駅側の返却箱はそのまま置いた。袋より重くなったその箱へ、出勤前の客がまた容器を一つ戻した。"
+    ],
+    "source": {
+      "kind": "スポGOMI甲子園2026・主催者による全国大会結果発表",
+      "publisher": "一般財団法人日本財団スポGOMI連盟",
+      "published_at": "2026-11-22T21:22:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000146.000165301.html",
+      "topic": "日本財団スポGOMI連盟は2026年11月22日、高校生によるスポGOMI甲子園2026全国大会を開催し、全国43都道府県の代表43チーム・計128人が60分間でごみ拾いを競ったと発表。2031年の海明市、まち循環杯、商店街の共通容器返却、販売100食あたり92個から38個への削減と逆転優勝はすべて本紙の創作であり、現実の大会結果や実在団体の導入制度ではない。"
+    },
+    "scene_prompt": "Photorealistic horizontal 16:9 Japanese local newspaper documentary photo, fictional seaside-city shopping street in the evening. Three Japanese high-school students in modest ordinary school jackets stand outside two small independent bakeries by a railway-station return point. One student holds a small partially filled transparent roadside-litter collection bag, another returns a sturdy clean reusable takeaway bread container into a large crate already containing several identical returned boxes; an adult shopkeeper watches while closing the stall. Concrete believable setting, ordinary neutral light and shadows, real physical objects, no staged trophies, no writing, no logos, no real people likeness, no text overlay.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "高校生",
+      "ごみ拾い",
+      "リユース容器"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "ごみ拾い",
+      "リユース"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "ごみ拾い大会なのに、たくさん拾ったチームが負けた。逆転を決めたのは、商店街に戻ってきたパンの容器だった。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年11月22日に高校生43チームが60分間のスポGOMI全国大会でごみ収集を競った",
+      "target": "2031年に拾った量だけでなく、使い捨て容器の発生削減を商店街の記録で競う高校生大会",
+      "action": "生徒3人がパン屋二店の共通返却箱・100円預かり金・共同洗浄と配送を整え、使い捨て容器を減らす",
+      "outcome": "拾ったごみ1.8キロのチームが容器削減点で逆転優勝し、終了後も返却箱が商店街に残る"
+    },
+    "reader_clarity": {
+      "who": "高校生チーム",
+      "action": "パン屋二店へ容器の共通返却箱を広げ、回収量では負けたのに削減点で総合優勝する",
+      "oddity": "2031年のごみ拾い大会は、拾った量に加え、そもそも使い捨て容器を出さなかった実績も競う"
+    },
+    "behavior_basis": {
+      "motive": "高校生はごみを拾う努力を競うだけでなく、商店街で捨てられる包装自体を減らして勝ちたかった",
+      "ordinary_alternative": "拾ったごみの重量だけで競う、または各店が使い捨て包装を使い続ける",
+      "why_not": "二店共通の返却と配送なら客の戻す手間と店の運搬費を抑えながら再利用を続けられる",
+      "evidence_quote": "学生が毎日箱を集め続ける形にはせず、商店会の配送便に載せる契約を結んだ。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年の高校生スポGOMI全国大会では43チームが60分間のごみ回収を競い、地域と競技の関係が生まれている",
+      "continuation_force": "5年間で共通容器のタグ管理と預かり金返金が複数店で使いやすくなり、返却数と販売実績を照合できる",
+      "future_result": "2031年に高校生が二店の返却箱を運用し、使い捨て容器を100食あたり92個から38個に削減して総合優勝する"
+    }
+  },
+  {
     "slug": "gallery-cleaner-last-footstep-beat",
     "category": "エンタメ",
     "flash": "展示曲、最後の一拍は清掃員",

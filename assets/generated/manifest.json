@@ -10705,6 +10705,174 @@
     }
   }
 }
+  ,
+    "students-waste-collection-reuse-boxes-win": {
+  "article_sha256": "0b67397b5ace9ee444210d35d00451ff6f4af2ffeaf88b2d31546f184a8c280d",
+  "bytes": 192104,
+  "generated_at": "2026-11-23T11:15:12.150Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "0ae5883a-9f98-41b3-bb0c-259545b42d6f",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:0ae5883a-9f98-41b3-bb0c-259545b42d6f",
+  "generation_prompt": "Photorealistic horizontal 16:9 Japanese local newspaper documentary photo, fictional seaside-city shopping street in the evening. Three Japanese high-school students in modest ordinary school jackets stand outside two small independent bakeries by a railway-station return point. One student holds a small partially filled transparent roadside-litter collection bag, another returns a sturdy clean reusable takeaway bread container into a large crate already containing several identical returned boxes; an adult shopkeeper watches while closing the stall. Concrete believable setting, ordinary neutral light and shadows, real physical objects, no staged trophies, no writing, no logos, no real people likeness, no text overlay.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "468284d80aed9251cf52a30dcda0e2d07227e558c3b43aaf3f5f8b07ff07908e",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:2098f35d-d9b5-4371-85c6-0b25d15ccd6e",
+    "instanceID": "xmp:iid:0ae5883a-9f98-41b3-bb0c-259545b42d6f",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          34,
+          224,
+          180,
+          170,
+          90,
+          65,
+          100,
+          226,
+          201,
+          142,
+          78,
+          200,
+          190,
+          237,
+          99,
+          8,
+          51,
+          73,
+          211,
+          216,
+          241,
+          14,
+          22,
+          8,
+          112,
+          1,
+          50,
+          70,
+          186,
+          184,
+          83,
+          151
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-23T11:15:08.117590484Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-23T11:15:08.117592556Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-23T11:15:08.117185032Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "9316872b9bcd8509e63b6c0704666ec64a024acaa00bc54253ecf0fc8d4f094d",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:0b67397b5ace9ee444210d35d00451ff6f4af2ffeaf88b2d31546f184a8c280d",
+    "actual_output_hint": "/workspace/scratch/8c33507ed7f2/generated_images/exec-0142a14b-6ceb-4552-864e-31d70c67ded1.png",
+    "observed_at": "2026-11-23T11:15:12.150Z",
+    "bytes": 2368094,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "f53d7e1a765e186adabd79d1c817b9dc67c039f5f7e8c6ff8149b9ad6dbc6583",
+    "candidate_branch": "native-image-candidate/students-waste-collection-reuse-boxes-win/0b67397b5ace9ee4-faff23e7d7cb",
+    "candidate_commit": "86ea9a455dc5ba88127b2e2883be468ae45a4ebb",
+    "receipt_path": "maintenance/native-image-candidates/students-waste-collection-reuse-boxes-win/receipt.json",
+    "receipt_sha256": "61c01c8e225c8ff06ad28f8b7cc97b6a8e9789350d6beb079efc88a53493942a",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/students-waste-collection-reuse-boxes-win/source.png.part000",
+        "bytes": 524288,
+        "sha256": "d3c0784750e7724e62bf32e038bcd4019240539c48aecd61f7b3ecda7b47acce",
+        "blob_sha": "203c24a46048cf46b818c52260c88ecfd9f5ad56"
+      },
+      {
+        "path": "maintenance/native-image-candidates/students-waste-collection-reuse-boxes-win/source.png.part001",
+        "bytes": 524288,
+        "sha256": "57d378086b2f22b3032e2f125e7c41ca63edcb0b15c741697be8c3f15433bf8b",
+        "blob_sha": "9e3e96fd6a17b19b2855a96f9eec09b5493d70c1"
+      },
+      {
+        "path": "maintenance/native-image-candidates/students-waste-collection-reuse-boxes-win/source.png.part002",
+        "bytes": 524288,
+        "sha256": "74e1b97bdbe692911eaeaea5163856fdc9a1638d3dad3f90ea403bc0e55f1817",
+        "blob_sha": "296e6c24aabee1259d1743ad067d439330211122"
+      },
+      {
+        "path": "maintenance/native-image-candidates/students-waste-collection-reuse-boxes-win/source.png.part003",
+        "bytes": 524288,
+        "sha256": "07f314c7f0d42e2b3487e7332e7dababea3722db8d428ed54ff331bd7065eebd",
+        "blob_sha": "e1930f066115fe85557446854981a1bed5396da0"
+      },
+      {
+        "path": "maintenance/native-image-candidates/students-waste-collection-reuse-boxes-win/source.png.part004",
+        "bytes": 270942,
+        "sha256": "f863fb70857b63c30e32f392a0bf12c5a9bd186d1fee18dd992a77ae5dba4da8",
+        "blob_sha": "d62953b368cc2e60cffab54b5018eb9e2dc8689b"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "96518c1cc50f075ac546c0c1c6bba83d3918b94d13804c20d5f96c10a7e809e0",
+      "observed_at": "2026-11-23T11:13:12.668Z",
+      "route": "read_candidate_png through the original file adapter",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "bd81c714715abca4ef2d72d0e7d5d6a184e4a2f8"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/f371316986d004653b17bc02a2269b9c6680f59b1a375156feac29a8acebb8c5",
+      "receipt_path": "maintenance/native-image-generation-claims/f371316986d004653b17bc02a2269b9c6680f59b1a375156feac29a8acebb8c5.json",
+      "receipt_sha256": "91be7baf80b0ba2fa13d4c649cf1507140f389b34adc25e2bdac8e1ff7b15133",
+      "commit_sha": "5956abeab80d2b179012654e0ce517d8d5af18c1"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
