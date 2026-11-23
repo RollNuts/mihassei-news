@@ -1,12 +1,15 @@
 """Validate factual market figures separately from immutable prediction history."""
 import copy
 from datetime import date
+from hashlib import sha256
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from xml.etree import ElementTree
 
+from scripts.market_bulletins import chart_html, load_market_bulletins
 from scripts.market_figures import (
     load_market_figures, figure_description, render_market_figure,
     render_market_svg, write_market_figures,
@@ -57,6 +60,24 @@ class MarketFigureTests(unittest.TestCase):
             self.figures["swcc-second-half-profit-03"][1]))
         self.assertIn("会社予想", figure_description(
             self.figures["gs-yuasa-margin-test-02"][0]))
+
+    def test_picture_reserves_space_for_each_versioned_svg(self):
+        episode = next(e for e in self.series["episodes"] if e["slug"] in self.figures)
+        historical = self.figures[episode["slug"]][0]
+        bulletin = load_market_bulletins(ROOT)[-1]
+        current = bulletin["figures"][0]
+        for figure, markup in (
+            (historical, render_market_figure(self.series, episode, historical)),
+            (current, chart_html(bulletin, current)),
+        ):
+            for mobile, tag, attr in ((True, "source", "srcset"), (False, "img", "src")):
+                svg = render_market_svg(figure, mobile=mobile)
+                size = ElementTree.fromstring(svg).attrib
+                version = sha256(svg.encode("utf-8")).hexdigest()[:12]
+                element = re.search(rf"<{tag}\b[^>]+>", markup).group()
+                self.assertRegex(element, rf'{attr}="[^"]+\.svg\?v={version}"')
+                for name in ("width", "height"):
+                    self.assertIn(f'{name}="{size[name]}"', element)
 
     def test_render_does_not_touch_original_prediction(self):
         original = copy.deepcopy(self.series)

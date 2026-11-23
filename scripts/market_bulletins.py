@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
 from email.utils import format_datetime
-from hashlib import sha256
 from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -19,11 +18,11 @@ import math
 import re
 
 try:
-    from .market_figures import render_market_svg, figure_description, render_market_numbers, STATES
+    from .market_figures import render_market_svg, render_market_picture, render_market_numbers, STATES
     from .reader_comments import render_reader_comments
     from .market_sharing import render_market_share
 except ImportError:
-    from market_figures import render_market_svg, figure_description, render_market_numbers, STATES
+    from market_figures import render_market_svg, render_market_picture, render_market_numbers, STATES
     from reader_comments import render_reader_comments
     from market_sharing import render_market_share
 
@@ -385,20 +384,16 @@ def figure_url(report, figure, mobile=False):
 
 
 def chart_html(report, fig):
-    regular = render_market_svg(fig)
-    compact = render_market_svg(fig, mobile=True)
-    full_url = "/" + figure_url(report, fig) + "?v=" + sha256(regular.encode()).hexdigest()[:12]
-    phone_url = "/" + figure_url(report, fig, mobile=True) + "?v=" + sha256(compact.encode()).hexdigest()[:12]
+    picture = render_market_picture(fig, figure_url(report, fig),
+                                    figure_url(report, fig, mobile=True))
     src = next(src for src in report["sources"] if src["url"] == fig["source_url"])
+    observed = _timestamp(fig["observed_at"])
     return (
         '<figure class="market-figure market-dispatch-figure">'
-        '<picture>'
-        f'<source media="(max-width:600px)" srcset="{escape(phone_url,quote=True)}" type="image/svg+xml">'
-        f'<img src="{escape(full_url,quote=True)}" width="940" height="372" loading="lazy" decoding="async" alt="{escape(figure_description(fig),quote=True)}">'
-        '</picture><figcaption>'
+        f'{picture}<figcaption>'
         f'<strong>{escape(fig["title"])}</strong>'
         f'<p>{escape(fig["note"])}</p>'
-        f'<p class="market-figure-meta">観測時点：<time datetime="{fig["observed_at"]}">{escape(fig["observed_at"])}</time> ／ 単位：{escape(fig["unit"])}</p>'
+        f'<p class="market-figure-meta">観測時点：<time datetime="{fig["observed_at"]}">{observed:%Y年%m月%d日 %H:%M}（日本時間）</time> ／ 単位：{escape(fig["unit"])}</p>'
         f'<a href="{escape(fig["source_url"],quote=True)}" target="_blank" rel="noopener noreferrer external">出典：{escape(src["title"])}</a>'
         '</figcaption></figure>'
     )
