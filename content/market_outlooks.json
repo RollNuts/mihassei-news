@@ -939,5 +939,33 @@
       "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
       "explanation": "11月20日公式終値3,674.22は11月18日の固定基準3,824.00比約3.92%安。横ばいの事前条件±0.5%を超えて下落したため外れ。"
     }
+  },
+  {
+    "type": "review",
+    "id": "2026-11-23-am-us-selloff-24th",
+    "at": "2026-11-23T08:34:18+09:00",
+    "forecast_id": "2026-11-20-topix",
+    "stance": "弱気",
+    "trend": "暫定的に整合",
+    "observed_value": 3674.22,
+    "observed_on": "2026-11-20",
+    "reason": "日本の11月23日は祝日休場で当日TOPIX終値なし。JPXが11月20日16:59 JSTに最終更新した現物TOPIX終値3,674.22は、11月24日判定予想の固定基準11月19日3,822.47に対して3.88%安。11月20日の米国通常取引もナスダック5.28%安と逆風が強まったため、24日の下落予想を暫定支持する。ただし判定日は11月24日であり、今回の数値で正式的中にしない。",
+    "change_reason": "直前の11月20日15:29のTOPIX途中観測3,681.15から、同日16:59最終更新の公式終値3,674.22へ観測資料の確実性が上がり、さらに米国20日通常取引での大幅下落が確認された。弱気・暫定的整合を継続。判定基準3,822.47、対象日24日、元予測の方法を保持。",
+    "source": {
+      "title": "JPX：2026年11月20日16:59 JST最終更新のTOPIX公式終値（qcode151）",
+      "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+      "published_on": "2026-11-20",
+      "checked_on": "2026-11-23"
+    },
+    "source_evidence": {
+      "index_code": "151",
+      "index_name": "TOPIX (東証株価指数)",
+      "updated_minute": "202611201659",
+      "time_before": "202611201659",
+      "time_after": "202611201659",
+      "time_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+      "page_url": "https://www.jpx.co.jp/markets/indices/realvalues/index.html",
+      "raw_index_row": "\"marketName\":\"TOPIX (東証株価指数)\", \"openingPrice\":\"3,767.40\", \"highPrice\":\"3,775.83\", \"lowPrice\":\"3,672.25\", \"currentPrice\":\"3,674.22\", \"previousDayComparison\":\"-148.25\", \"previousDayRatio\":\"-3.88\""
+    }
   }
 ]
