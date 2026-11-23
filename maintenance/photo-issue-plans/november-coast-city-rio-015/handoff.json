@@ -555,5 +555,54 @@
       "publication": "not_published",
       "next": "Recheck workflow live state active and capacity; obtain original PNG 03 byte read/display and compare JPEG, verify all ten selected original/JPEG blob/receipt pairs, finalize 5-swimwear exception, then create one publication PR based on fresh main including 10 cut receipts/QA and both catalogs; run required CI and photo_issue finalizer; verify live issue index, feature and 10 photos. Do not create per-candidate PR."
     }
+  },
+  "post_publication_stock": {
+    "as_of_jst": "2026-11-23",
+    "basis_main_sha": "f435ac3f9be35deaf3157d30c64a2c06796fa1c4",
+    "source_candidate_commit": "be7b3336d87d596c783021895729efe3f274ba44",
+    "published_issue": "november-coast-city-rio-015",
+    "published_original_pairs": 10,
+    "originals_already_saved": 14,
+    "remaining_original_ordinals": [
+      1,
+      5,
+      6,
+      12
+    ],
+    "near_duplicate_hold_ordinals": [
+      5
+    ],
+    "pending_review_ordinals": [
+      1,
+      6,
+      12
+    ],
+    "known_usable_unpublished_count": 0,
+    "pending_review_count": 3,
+    "confirmed_transit_pending_count": 0,
+    "unknown_unreceived_count": null,
+    "next_issue_shortfall_confirmed": 10,
+    "next_issue_shortfall_if_all_pending_pass": 7,
+    "inventory_target": 30,
+    "weekly_attempts": {
+      "week_start_jst": "2026-11-22",
+      "week_end_jst": "2026-11-28",
+      "known_consumed": null,
+      "remaining": null,
+      "new_attempts_in_this_run": 0,
+      "evidence": "No generation-attempts.json at existing candidate; actual same-week generation call count not independently reconstructed; do not infer zero."
+    },
+    "preflight": {
+      "cloud_guard": "active",
+      "time_utc": "2026-11-23T00:21:34.409Z",
+      "read_candidate_png_probe": {
+        "file": "/mnt/data/mihassei-offline-probe.png",
+        "png_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+        "error_class": "BLOCKED_FILE_REFERENCE",
+        "message": "this file is unavailable for connector egress"
+      },
+      "generation_permitted": false
+    },
+    "next_action": "Keep 01/06/12 in original candidate without redelivery; editor visual-review for usable stock, preserve 05 hold; producer must first prove native file-reference/PNG read and remote SHA readback and reconstruct weekly attempts before new generation. Use same candidate, no repeated uploads."
   }
 }
