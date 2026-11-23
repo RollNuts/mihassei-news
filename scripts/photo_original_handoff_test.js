@@ -674,3 +674,72 @@ test("individual Library share URLs retain their original identity without a sep
     assert.throws(() => api.prepareSuppliedCut({...input, candidate:{...candidate, source:{...source, archive:{format:"zip"}}}}));
   }
 });
+
+function mioArchiveCut(cutId, source_ordinal) {
+  const slug = "november-city-evening-mio-012";
+  const issue = JSON.parse(readLocal("content/photo_issues.json")).issues.find(issue => issue.slug === slug);
+  const qa = JSON.parse(readLocal("maintenance/photo-issues/" + slug + "/final-jpeg-qa.json"));
+  const record = JSON.parse(readLocal(issue.images[cutId].provenance.receipt_path));
+  const prefix = "maintenance/photo-issue-plans/" + slug + "/";
+  const source = {...record.source, path:prefix + "stock-recovery/originals/" + record.source.sha256 + ".png"};
+  const jpeg = {...record.jpeg, path:prefix + "prepared-jpegs/" + cutId + ".jpg"};
+  const producer = {model_id:issue.model_id, source_chat_url:qa.source_chat_url};
+  const candidate = {issue:slug, ...producer, commit:qa.source_commit, source_ordinal,
+    handoff_path:prefix + "stock-recovery/receipt.json", source, jpeg,
+    transform:record.transform, encoding_details:record.encoding_details};
+  const readback = {commit:qa.source_commit, source_ordinal, image_bytes_verified:true,
+    source:{...readbackFile(record.source, source.path), url:source.url, library_file_id:source.library_file_id,
+      archive:{...source.archive}}, jpeg:readbackFile(record.jpeg, jpeg.path)};
+  return {record, input:{issue, cutId, producer, candidate, readback, importedAt:record.imported_at}};
+}
+
+test("prepares selected originals from both retained Mio ZIPs using the committed PNG/JPEG bytes", () => {
+  const api = helper.create({runtime:{...bytes, sha256:hash}});
+  for (const [cutId, ordinal] of [["01",8], ["02",1]]) {
+    const {record, input} = mioArchiveCut(cutId, ordinal);
+    const output = api.prepareSuppliedCut(input);
+    assert.equal(output.status, "prepared_not_published");
+    const formal = JSON.parse(output.files.find(file => file.content).content);
+    assert.deepEqual(formal.source, record.source);
+    assert.deepEqual(formal.jpeg, record.jpeg);
+    assert.equal(formal.recovery_reference.candidate_commit, input.readback.commit);
+    assert.equal(formal.recovery_reference.source_ordinal, ordinal);
+    assert.equal(output.files.find(file => file.path === record.source.path).sha, input.readback.source.blob);
+    assert.equal(output.files.find(file => file.path === record.jpeg.path).sha, input.readback.jpeg.blob);
+  }
+});
+
+test("the observed archive and member cannot be substituted, dropped or passed as an individual file", () => {
+  const api = helper.create({runtime:{...bytes, sha256:hash}});
+  const {input} = mioArchiveCut("01", 8);
+  const {candidate, readback} = input;
+  const original = candidate.source, measured = readback.source;
+  const other = mioArchiveCut("02", 1).record.source;
+  const prepare = (source, observed) => api.prepareSuppliedCut({...input,
+    candidate:{...candidate, source}, readback:{...readback, source:observed}});
+  const {archive, ...asIndividual} = original;
+  const {archive:measuredArchive, ...withoutMember} = measured;
+  assert.throws(() => prepare(asIndividual, measured), /Archive/);
+  assert.throws(() => prepare(original, withoutMember), /Archive/);
+
+  for (const field of Object.keys(archive)) {
+    const changed = {format:"tar", filename:other.archive.filename, sha256:other.archive.sha256,
+      bytes:other.archive.bytes, member:"another.png"}[field];
+    assert.throws(() => prepare(original, {...measured, archive:{...measuredArchive, [field]:changed}}), /Archive/);
+  }
+  assert.throws(() => prepare(original, {...measured, library_file_id:other.library_file_id}), /Library/);
+  for (const url of ["https://chatgpt.com/space/file/" + original.library_file_id,
+                     "https://chatgpt.com/library/share/" + original.library_file_id, candidate.source_chat_url]) {
+    assert.throws(() => prepare({...original, url}, {...measured, url}), /Library query URL/);
+  }
+  for (const invalid of [null, {format:"zip"}, {...archive, extra:true}, {...archive, sha256:"invalid"},
+                         {...archive, bytes:0}, {...archive, bytes:"41555760"}, {...archive, filename:"original.png"},
+                         {...archive, member:"folder/original.png"}, {...archive, member:"..\\original.png"},
+                         {...archive, member:".private.png"}, {...archive, member:"original.jpg"},
+                         {...archive, filename:" photos.zip"}, {...archive, member:"x".repeat(252) + ".png"}]) {
+    assert.throws(() => prepare({...original, archive:invalid}, {...measured, archive:invalid}), /[Aa]rchive/);
+  }
+  const changedMember = Buffer.from(measured.data);
+  changedMember[changedMember.length >> 1] ^= 1;
+  assert.throws(() => prepare(original, {...measured, data:changedMember}), /original PNG changed/);
+});
