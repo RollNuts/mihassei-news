@@ -452,7 +452,24 @@
     "next_material_needs": "Select among similar pool portraits. Obtain distinct clothed, wider/full-body, or other fitting settings through the existing producer and its current stock/usage limits; more than two may be needed after editorial selection.",
     "publication_order": "Keep current frozen edition's Hikari then Rio order; the source candidate suffix 014 does not reserve a publication number.",
     "publication_count": 0,
-    "formal_adoption_count": 0
+    "formal_adoption_count": 0,
+    "next_feature_brief": {
+      "edition": "issue-003",
+      "model_id": "tsukishiro-rena",
+      "frozen_schedule_commit": "902a050903ec5b73c446db3f07420f31c64cd27a",
+      "verified_stock_commit": "d9d9491259c57bc4964526f83321956388bab4bd",
+      "max_distinct_from_this_shoot": 5,
+      "minimum_other_distinct_cuts": 5,
+      "theme": "撮影日の寄り道。俳優のれなが稽古場を出て、自分の服と夜の街に戻るまで。",
+      "scene_options": [
+        "衣装室の鏡の前で、二着のコートを肩に合わせる引き。",
+        "楽屋の窓辺で台本の角を折る。指先と横顔の寄り。",
+        "稽古場の床の印をまたいで一歩踏み出す全身。",
+        "帰りのバス停で片方のイヤホンを外す、夜の横顔。",
+        "水着着用の屋内施設で、異なる色の水着にタオルを肩掛けして回廊を歩く引き。"
+      ],
+      "next_operation": "既存の本人原本から不足分を優先して選ぶ。5場面は選定の例で、同じ役割の別カットも使える。近似組は各1枚まで。11月22日の新規生成は0枚と記録されているが当週の呼出し総数は未確定。新規生成は既存の週残枠・原本保存の確認後に本人の通常枠で扱う。"
+    }
   },
   "usage": {
     "new_generation_calls": 0,
