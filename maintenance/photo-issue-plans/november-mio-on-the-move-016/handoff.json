@@ -1,0 +1,856 @@
+{
+  "version": 1,
+  "kind": "weekly_photo_candidate_handoff",
+  "status": "prepared_unpublished_unreviewed",
+  "issue": "november-mio-on-the-move-016",
+  "model_id": "hanase-mio",
+  "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+  "branch": "photo-issue-plan/november-mio-on-the-move-016",
+  "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+  "conversion_code": {
+    "commit": "e3192600d960043208b51151c013272de9e3a686",
+    "path": "scripts/native_image_bytes.js",
+    "function": "convertPhoto"
+  },
+  "producer_registry": {
+    "commit": "80f6e28394f1dd652cf5e773e1c4bbfd379e18d7",
+    "path": "drafts/cast-voices/hanase-mio.json"
+  },
+  "candidates": [
+    {
+      "candidate_number": "01",
+      "archive_key": "H04",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 4,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_04_train_window.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1536,
+        "height": 1024,
+        "sha256": "c1ad0532908d5b527f613a63cf660c7ea868e9690749324e943d24fe66088a9f",
+        "blob": "27e0d0f838a5846eed58ca2b4836754a7a971c22",
+        "bytes": 2230750,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/01.png"
+      },
+      "jpeg": {
+        "width": 1200,
+        "height": 800,
+        "sha256": "64f27c8088537e890d0f069b3e0b8b8d310b00fa16f676dc8a374a6a08ebda98",
+        "blob": "21a9b1912eaf0106d2cbe1419f021fd5732d0ee9",
+        "bytes": 164806,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/01.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 4,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/01.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/01.jpg",
+        "original_blob_sha": "27e0d0f838a5846eed58ca2b4836754a7a971c22",
+        "jpeg_blob_sha": "21a9b1912eaf0106d2cbe1419f021fd5732d0ee9",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "列車の窓辺から沿線を見る"
+    },
+    {
+      "candidate_number": "02",
+      "archive_key": "C03",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 3,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_03.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2a1fd0abb3e0357eb8dc223086f5e249c815b4fa43a3782e78946103f835db52",
+        "blob": "1bbd63355b3b92c6f1b2a0cd39a99192e43ebb43",
+        "bytes": 2424280,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/02.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "1eeba10e1bfd6bfbfed1e6312d15ffb5be34de1d308b019efef930fa63ee7d4d",
+        "blob": "707d1cebe9a89dfce5136133a2a3ea2b1db90db6",
+        "bytes": 210807,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/02.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 3,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/02.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/02.jpg",
+        "original_blob_sha": "1bbd63355b3b92c6f1b2a0cd39a99192e43ebb43",
+        "jpeg_blob_sha": "707d1cebe9a89dfce5136133a2a3ea2b1db90db6",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "ホームで紙の地図を広げる"
+    },
+    {
+      "candidate_number": "03",
+      "archive_key": "H18",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 18,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_18_bicycle.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "a36defaa15c048e590856783ac621d7ca6f789ba6987b09b3f83d48e5f6196db",
+        "blob": "2c4adea9919287ce4c46cbea11af29fea4ecfe2f",
+        "bytes": 2362324,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/03.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "4336b4d6c6e5ad5e4323358657f82f4b6f0e41a8655c09c1db2719396059eb00",
+        "blob": "bc74022559e2db507b6fde546f4c2cc09ff82e32",
+        "bytes": 201731,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/03.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 18,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/03.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/03.jpg",
+        "original_blob_sha": "2c4adea9919287ce4c46cbea11af29fea4ecfe2f",
+        "jpeg_blob_sha": "bc74022559e2db507b6fde546f4c2cc09ff82e32",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "海沿いで自転車のハンドルに手を掛ける"
+    },
+    {
+      "candidate_number": "04",
+      "archive_key": "C19",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 19,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_19.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "2dc13f3fd300719ef687f72ac1ce16520569aba6b01ec0c614976107a9e3ec58",
+        "blob": "9b870ba2b547dbe249242c747d52cd84960e9bfd",
+        "bytes": 2481842,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/04.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "58a1712b67f184b41121fc494d626e0ad08d2b0b24114c8eb254d6f1fbe7612e",
+        "blob": "ef197ee6fe814bb021890a527369f87d427e88b6",
+        "bytes": 216653,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/04.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 19,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/04.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/04.jpg",
+        "original_blob_sha": "9b870ba2b547dbe249242c747d52cd84960e9bfd",
+        "jpeg_blob_sha": "ef197ee6fe814bb021890a527369f87d427e88b6",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "桟橋で船の方へ一歩踏み出す"
+    },
+    {
+      "candidate_number": "05",
+      "archive_key": "C04",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 4,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_04.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "fffdae50eaeccc15707d178cac96c18f35918e4eddb789b09270ef8c71cb7000",
+        "blob": "ae50d59a4bc81183eb4c65d59d4558044f95ae68",
+        "bytes": 2226288,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/05.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "0e0cc0ed7192086aa88e1d8aa619b3228d6f8582c41ebcc67f2ce3939f40e65a",
+        "blob": "1e670ebf7f810454f300c543482403bce09c8d2a",
+        "bytes": 180855,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/05.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 4,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/05.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/05.jpg",
+        "original_blob_sha": "ae50d59a4bc81183eb4c65d59d4558044f95ae68",
+        "jpeg_blob_sha": "1e670ebf7f810454f300c543482403bce09c8d2a",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "船上で肩掛けバッグを持ち手すりに触れる"
+    },
+    {
+      "candidate_number": "06",
+      "archive_key": "H06",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 6,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_06_seaside_cafe.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1536,
+        "height": 1024,
+        "sha256": "c7cda4eb2dbfb5f1333c03ea1d0514817e69507938956838faa5869c28a5434f",
+        "blob": "4c0b753abd829f2538f29b5e4cd5710de090c223",
+        "bytes": 2473315,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/06.png"
+      },
+      "jpeg": {
+        "width": 1200,
+        "height": 800,
+        "sha256": "b6e0992eecb6877663c93a767c48447d793856c9a281c77458de03741dba8773",
+        "blob": "b1c15259deb4b7d287dc976d0d88c28d609ed1b7",
+        "bytes": 205088,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/06.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 6,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/06.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/06.jpg",
+        "original_blob_sha": "4c0b753abd829f2538f29b5e4cd5710de090c223",
+        "jpeg_blob_sha": "b1c15259deb4b7d287dc976d0d88c28d609ed1b7",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "海の見える店で飲み物を手にする。花柄の水着トップに白い羽織、下半身は画角外"
+    },
+    {
+      "candidate_number": "07",
+      "archive_key": "H14",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 14,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_14_resort_boardwalk.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "984c4b43c33e58bb2bcfe29798d0a9ebbdaf179c2c131ad44483caa5168da229",
+        "blob": "2179ea9a35bd8a6693e79f46664f65b920499df7",
+        "bytes": 1954486,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/07.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "eccf050205b78fac6d227d4870f1829c6446ba918a94d9839b5ecb262fbf157b",
+        "blob": "8a9e619947c15f7cbf66f37d88928538c913c333",
+        "bytes": 133828,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/07.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 14,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/07.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/07.jpg",
+        "original_blob_sha": "2179ea9a35bd8a6693e79f46664f65b920499df7",
+        "jpeg_blob_sha": "8a9e619947c15f7cbf66f37d88928538c913c333",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "海沿いの木道で前かがみになる。青いビキニの上下"
+    },
+    {
+      "candidate_number": "08",
+      "archive_key": "H02",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 2,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_02_beach_walk.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1536,
+        "height": 1024,
+        "sha256": "f51f76794b43358a7b422e808a2b9c509e59ca6fe781e8350c420e8838015534",
+        "blob": "72921d63d4ebfeddf441aea8a937c1e3cb13bca2",
+        "bytes": 2425271,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/08.png"
+      },
+      "jpeg": {
+        "width": 1200,
+        "height": 800,
+        "sha256": "b633ac841141ab6ad37e8b2596f01c4151a7e2198461938a926691324a193035",
+        "blob": "ebaf6d91a645109fffc8facda3def479c7749476",
+        "bytes": 190432,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/08.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 2,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/08.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/08.jpg",
+        "original_blob_sha": "72921d63d4ebfeddf441aea8a937c1e3cb13bca2",
+        "jpeg_blob_sha": "ebaf6d91a645109fffc8facda3def479c7749476",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "波打ち際を横に歩く。柄入りビキニの上下、横長の引き"
+    },
+    {
+      "candidate_number": "09",
+      "archive_key": "C05",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 5,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_05.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "541fe2b3d235c2bfbd63bdb95d5888f367c8eb1dbdabd52855ee2102825fc045",
+        "blob": "6524c2ef1a75607cca5f9464d7ee8fc99dc28146",
+        "bytes": 2514086,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/09.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "624ef570d2542264dcca688ba39cf2d74ec971f64ee99c3a8bada28de7d862bc",
+        "blob": "b14ac6095c1f32d0178d6bf4f8b207abe2d8ed2b",
+        "bytes": 207532,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/09.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 5,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/09.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/09.jpg",
+        "original_blob_sha": "6524c2ef1a75607cca5f9464d7ee8fc99dc28146",
+        "jpeg_blob_sha": "b14ac6095c1f32d0178d6bf4f8b207abe2d8ed2b",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "桟橋に腰を下ろす。コーラル色の服"
+    },
+    {
+      "candidate_number": "10",
+      "archive_key": "C14",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 14,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_14.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "0b5cafaf007e07b0effa31591a92b4e3e91508ebb666f1655942a194cd03d354",
+        "blob": "b7f1d8434e79b0125e125b04322047eaa7045791",
+        "bytes": 2178021,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/10.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "eee70bbdcd73996597f6a27ac6510ab48f186f0237f3956ecb79f225b32f4965",
+        "blob": "691898695dadc0efaf8c31122feb74debe3005b9",
+        "bytes": 156751,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/10.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 14,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/10.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/10.jpg",
+        "original_blob_sha": "b7f1d8434e79b0125e125b04322047eaa7045791",
+        "jpeg_blob_sha": "691898695dadc0efaf8c31122feb74debe3005b9",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "夕日の波打ち際をサンダルを手に歩く"
+    },
+    {
+      "candidate_number": "11",
+      "archive_key": "H01",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 1,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_01_terrace_breakfast.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1536,
+        "height": 1024,
+        "sha256": "99c2e49f67df636f21720ea25afff1ddc1801de2b8b7a7199133c0e148fbf4dc",
+        "blob": "437dd99f21c34057a6aebe7a24eddd00972b9eda",
+        "bytes": 2455156,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/11.png"
+      },
+      "jpeg": {
+        "width": 1200,
+        "height": 800,
+        "sha256": "e6897d83518c4dc0fe2d5aaec6d9ac4cecfcb4a2a6ea83181a065e2a2248fe29",
+        "blob": "1897af83b006ca527899496599de2d2cb38a8ff5",
+        "bytes": 196788,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/11.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 1,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/11.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/11.jpg",
+        "original_blob_sha": "437dd99f21c34057a6aebe7a24eddd00972b9eda",
+        "jpeg_blob_sha": "1897af83b006ca527899496599de2d2cb38a8ff5",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "テラスの朝食で果物へ手を伸ばす"
+    },
+    {
+      "candidate_number": "12",
+      "archive_key": "H03",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 3,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_03_coastal_walk.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "5cca809de02b7af089455bfb80e9a76186c5367a3c0f55a02e94b6a69b30c5cf",
+        "blob": "1022dceff2baba432e4b4d1cacff4abeed0bb93e",
+        "bytes": 2775405,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/12.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "1016a624dc6b8f3455527d98451beafffd734ec50dcae0c1327fdfca5c4152a6",
+        "blob": "6e91496f65a7d4d2ba5e3629e82dd9c33255c90d",
+        "bytes": 223293,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/12.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 3,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/12.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/12.jpg",
+        "original_blob_sha": "1022dceff2baba432e4b4d1cacff4abeed0bb93e",
+        "jpeg_blob_sha": "6e91496f65a7d4d2ba5e3629e82dd9c33255c90d",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "リュックを背負い海沿いの歩道で振り向く"
+    },
+    {
+      "candidate_number": "13",
+      "archive_key": "C10",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 10,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-8509be014f4c8191a072f59d3de690df_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_continued_20_images.zip",
+          "sha256": "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6",
+          "bytes": 45887598,
+          "member": "hanase_mio_extra_10.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1086,
+        "height": 1448,
+        "sha256": "06d738935962bb1ea114ee19004f1a8bd05a9d9eccfc98783a651a634e787d2e",
+        "blob": "324fb5b6d56b9cd95a9aaae90fb68219dbd25d24",
+        "bytes": 2056996,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/13.png"
+      },
+      "jpeg": {
+        "width": 900,
+        "height": 1200,
+        "sha256": "ad9637c80795a3a0d76306ba589bf36d41b60bef57b8bed7e2dbe9997ded3322",
+        "blob": "45a1e3d8c9ce82f9dbfc65224f58e253d188fc86",
+        "bytes": 165715,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/13.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 10,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/13.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/13.jpg",
+        "original_blob_sha": "324fb5b6d56b9cd95a9aaae90fb68219dbd25d24",
+        "jpeg_blob_sha": "45a1e3d8c9ce82f9dbfc65224f58e253d188fc86",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "海に面した手すりから横顔で沖を見る"
+    },
+    {
+      "candidate_number": "14",
+      "archive_key": "H15",
+      "issue": "november-mio-on-the-move-016",
+      "model_id": "hanase-mio",
+      "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+      "source_ordinal": 15,
+      "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+      "source": {
+        "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+        "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+        "archive": {
+          "format": "zip",
+          "filename": "hanase_mio_highres_19.zip",
+          "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+          "bytes": 41555760,
+          "member": "hanase_mio_15_sunset_walk.png"
+        },
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained",
+        "generation_turn": null,
+        "generation_turn_status": "not_retained",
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "sha256": "ab6a59f71606714a5745243d9e6121c333893988adbf08739286195d35a974ec",
+        "blob": "88c691d578419cf5fd1bc1a0cead0af90627c1ae",
+        "bytes": 2249717,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/14.png"
+      },
+      "jpeg": {
+        "width": 800,
+        "height": 1200,
+        "sha256": "b99df3a30074c1f12bebcc95eecd4d41c8bbba399677af72dfcaf819823f3400",
+        "blob": "8e1ddbd5af5b0d9c99c8147512ca606348385d62",
+        "bytes": 151351,
+        "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/14.jpg"
+      },
+      "transform": {
+        "encoder": "jpeg-js",
+        "max_edge": 1200,
+        "jpeg_quality": 84,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+        "resample": "bilinear",
+        "mode": "RGB"
+      },
+      "recovery_reference": {
+        "source_ordinal": 15,
+        "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/14.png",
+        "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/14.jpg",
+        "original_blob_sha": "88c691d578419cf5fd1bc1a0cead0af90627c1ae",
+        "jpeg_blob_sha": "8e1ddbd5af5b0d9c99c8147512ca606348385d62",
+        "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+      },
+      "scene_note": "夕焼けの浜辺で柄物のワンピースが風を受ける"
+    }
+  ],
+  "stock_review": {
+    "checked_at": "2026-11-23T01:13:02+00:00",
+    "main_commit": "e3192600d960043208b51151c013272de9e3a686",
+    "status": "candidate_only",
+    "source_png_count": 39,
+    "exact_previous_cuts_excluded": 6,
+    "retained_candidates": 14,
+    "editorial_note": "既刊004・012と候補39枚を実表示で比較。既刊と同じ立ち方の水着、合成一覧、目立つロゴを除外。衣装が判別できる水着はH02・H14、H06は羽織の下のトップのみ。船の服やワンピースを水着に数えない。海辺の季節・撮影日は未確定。入稿時に編集担当が10枚と水着実数を確定する。"
+  }
+}
