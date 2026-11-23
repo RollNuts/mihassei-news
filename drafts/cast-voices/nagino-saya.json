@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "nagino-saya",
   "name": "凪野さや",
-  "created_date": "2026-11-23",
+  "created_date": "2026-11-24",
   "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
   "photo_reference": {
     "issue_slug": "november-water-and-quiet-hours-saya-010",
-    "cut_id": "01",
-    "image_sha256": "eb85b575311327cd8d5b5b807ed034409e8ee71730e5a855608f7f41fd1f701e"
+    "cut_id": "10",
+    "image_sha256": "7a4edf6f36d3c283353a5cb1d108ead68e821667d4762385a2503ccdd62283b1"
   },
-  "post_text": "朝、上着を脱いでから髪を結び忘れたことに気づいて、またロッカーへ。出てきたらみんな先に水の中。私、準備だけは長いんです。",
-  "spoken_line": "あれ、もう入ってる。",
+  "post_text": "朝、温かい水に足をつけていたら、そばの人がタオルを貸してくれました。もう帰るつもりだったのに、つい話し込んでしまって。",
+  "spoken_line": "もう少しだけ。",
   "future_idea": null
 }
