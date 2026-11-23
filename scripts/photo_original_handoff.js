@@ -50,14 +50,36 @@ var PhotoOriginalHandoff = (() => {
         field => file[field] === observed[field]) && (file.blob === undefined || file.blob === observed.blob),
     "Candidate file differs from the verified readback");
   }
+  function safeBasename(name, suffix) {
+    return typeof name === "string" && name.length <= 510 && [...name].length <= 255 &&
+      !/^\p{White_Space}|\p{White_Space}$/u.test(name) &&
+      !name.startsWith(".") && !/[/\\:\x00-\x1f\x7f]/.test(name) && suffix.test(name);
+  }
+  function verifiedArchive(source, observed) {
+    const archive = source.archive, saved = observed.archive;
+    const fields = ["format", "filename", "sha256", "bytes", "member"];
+    requireThat([archive, saved].every(record => record && typeof record === "object" &&
+      !Array.isArray(record) && Object.keys(record).length === fields.length &&
+      fields.every(key => Object.hasOwn(record, key))) &&
+      fields.every(key => archive[key] === saved[key]), "Archive differs from the verified source member");
+    requireThat(archive.format === "zip" && typeof archive.sha256 === "string" && HASH.test(archive.sha256) &&
+      Number.isSafeInteger(archive.bytes) && archive.bytes > 0 && safeBasename(archive.filename, /\.zip$/i) &&
+      safeBasename(archive.member, source.format === "jpeg" ? /\.jpe?g$/i : /\.png$/i),
+    "Invalid Library archive or original member");
+    return {...archive};
+  }
   function releaseSource(candidate, observed) {
     const {source, source_ordinal, source_chat_url} = candidate;
     requireThat(source.url === observed.url && typeof source.url === "string" &&
-      !("archive" in source) && !("archive" in observed) &&
       source.generation_prompt_status === "not_retained" && source.generation_prompt === null,
-    "Expected an individual original with its observed source reference");
+    "Expected an original with its observed source reference");
     const library = /^https:\/\/chatgpt\.com\/(?:space\/file\/(libfile_[A-Za-z0-9_-]+)|library\?file_id=(libfile_[A-Za-z0-9_-]+)&account_id=personal)$/.exec(source.url);
     const shared = /^https:\/\/chatgpt\.com\/library\/share\/(libfile_[A-Za-z0-9_-]+)(?:\?account_id=personal)?$/.exec(source.url);
+    const retained = {};
+    if ("archive" in source || "archive" in observed) {
+      requireThat(library?.[2], "An archive requires the observed Library query URL");
+      retained.archive = verifiedArchive(source, observed);
+    }
     if (library || shared) {
       const references = [source, observed];
       requireThat(references.every(ref => !("image_number" in ref) && !("turn_key" in ref)),
@@ -77,7 +99,6 @@ var PhotoOriginalHandoff = (() => {
         [source, observed].every(ref => !("library_file_id" in ref)),
       "Conversation original differs from the observed producer turn and image");
     }
-    const retained = {};
     for (const key of ["format", "sha256", "bytes", "width", "height", "url", "library_file_id", "file_id",
       "file_name", "library_file_version", "turn_key", "image_number", "generation_turn", "generation_turn_status",
       "generation_prompt", "generation_prompt_status"]) {
@@ -616,12 +637,12 @@ var PhotoOriginalHandoff = (() => {
         Math.max(jpeg.width, jpeg.height) === Math.min(1200, Math.max(source.width, source.height)) &&
         Math.abs(source.width * jpeg.height - source.height * jpeg.width) <= Math.max(source.width, source.height),
       "Expected a whole original and aspect-preserving publication JPEG");
+      const retained = releaseSource(candidate, readback.source);
       const original = readback.source.data;
       requireThat(original instanceof Uint8Array && original.length === source.bytes, "Missing or incomplete original bytes");
       if (png) inspectOriginal({source_sha256:source.sha256, width:source.width, height:source.height}, original);
       else checkJpegBytes(original, source);
       checkJpegBytes(readback.jpeg.data, jpeg);
-      const retained = releaseSource(candidate, readback.source);
       validateReleaseEncoding(candidate);
       const dir = "maintenance/photo-issues/" + issue.slug + "/" + cutId + "/";
       const sourcePath = dir + "source-" + source.sha256 + (png ? ".png" : ".jpg");
