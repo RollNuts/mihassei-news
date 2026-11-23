@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "amane-hikari",
   "name": "天音ひかり",
-  "created_date": "2026-11-22",
+  "created_date": "2026-11-23",
   "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
   "photo_reference": {
     "issue_slug": "november-hikari-city-and-pool-013",
-    "cut_id": "02",
-    "image_sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc"
+    "cut_id": "01",
+    "image_sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb"
   },
-  "post_text": "控室でカイロを握ってたら、みんなが順番に手を重ねてきた。あっという間に温かくなったけど、最後は私のカイロが冷めちゃった😂",
-  "spoken_line": "みんな、ちょっと待って！",
-  "future_idea": "2031年、出演者の稽古時間と体調を記録する新制度が導入。公演運営側と出演者の休息確保をめぐって契約が変わる。"
+  "post_text": "午後の練習前、立ち位置の目印に色テープを貼った。私のだけ斜めで、直したら隣の子の印とくっついちゃった😂",
+  "spoken_line": "目印、斜めだった！",
+  "future_idea": "2031年、舞台の立ち位置をAIが提案する制度に出演者の拒否権を導入。演出の安全と表現の自由をめぐって制作契約が改定。"
 }
