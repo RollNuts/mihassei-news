@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-22",
+  "created_date": "2026-11-23",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
-    "issue_slug": "november-off-clock-rio-002",
-    "cut_id": "02",
-    "image_sha256": "7ecae4d543d2a5b00bb47ec2cd2b32f46446b07de31dccd3af9ea4c6e558c641"
+    "issue_slug": "november-coast-city-rio-015",
+    "cut_id": "04",
+    "image_sha256": "c8c2874cc06fc7fdb7a627fd120f54e32aeaee4b111cee753f7ed24e2326bae7"
   },
-  "post_text": "休日の朝、気になっていたニットを見ようと店まで来たら、開店まであと一時間。調べたつもりだったんですけどね。近くのパン屋だけは、もう開いていました。",
-  "spoken_line": "あれ、開店はまだなんですね。",
-  "future_idea": "2031年、街の案内板に寄り道予測が導入。勧められた休日の最短散歩ルートは、本人の行きたい店を一軒も通らなかった。"
+  "post_text": "朝、温室の窓辺で青い花の名前を聞いて、忘れないように手帳へ書きました。帰り道に開いたら、字が急ぎすぎて読めません。もう一度聞きに行くのも悪くないですね。",
+  "spoken_line": "急いだ字、私にも読めませんね。",
+  "future_idea": "2031年、手書きメモのAI文字起こしに『本人すら読めない字』警告が追加。取材記録で最初に検知されたのは自分の手帳だった。"
 }
