@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "d94d3c1044b7eb1bffe19ba7b0379e250115f63a7edf5cd8b6ca76e187ad919d",
+  "slug": "island-club-sound-ball-remote-league",
+  "article_sha256": "e1633ddfc3c579aa6e7f4ffcd3240aa3387919fc333155af54df81d640a2c4a0",
+  "logical_run_id": "news-photo-v1:e1633ddfc3c579aa6e7f4ffcd3240aa3387919fc333155af54df81d640a2c4a0",
+  "prompt_sha256": "31866736e7d7e7fc42ac2dc687289a08218ad0bf08e5cdaae0199004a482c67f",
+  "reserved_at": "2026-11-23T23:13:07.509Z",
+  "baseline": {
+    "commit_sha": "79d21bf534f62ae23f9953a6ed15c93e4dee5344",
+    "tree_sha": "48cf9a87a1adcce517cd46413840fae8bbab4f43",
+    "protected_hashes": {
+      "content/articles.json": "5602133ba2b78d3e384b8c5121312f40bbfc3ef7d1264dbe646a90bcb49249e2",
+      "assets/generated/manifest.json": "72f8a40833e807e46baeeab85a6d816d77d896ab3e9271bc416ad29a064c7459",
+      "content/visual_reviews.json": "8f4d339916906937be384ff6e1763cf6d2b6ea8f1e3fc9f30031e9b028943819"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "d93ee090acdaeacd6748fe1917134eedadc420e9",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "a689290b8bb0850ff8fa4ce6f8289175b79a2a67cc60b020665f887b68509767",
+    "observed_at": "2026-11-23T23:12:35.649Z",
+    "route": "actual read_candidate_png file adapter to code-mode original PNG bytes",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33"
+  }
+}
