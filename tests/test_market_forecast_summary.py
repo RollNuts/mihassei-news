@@ -224,14 +224,17 @@ class MarketForecastSummaryTests(unittest.TestCase):
             with self.subTest(identity=identity),self.assertRaises(ValueError):
                 render_market_outlook_board([{**original(),'id':identity}])
 
-    def test_real_results_remain_as_known_at_the_time_of_each_briefing(self):
+    def test_historical_accuracy_stays_in_the_forecast_archive_as_of_each_snapshot(self):
         root = Path(__file__).resolve().parents[1] / "content"
         events = json.loads((root / "market_outlooks.json").read_text(encoding="utf-8"))
         reports = json.loads((root / "market_bulletins.json").read_text(encoding="utf-8"))
         report = next(row for row in reports if row["slug"] == "2026-11-20-close")
         historical = render_market_bulletin(report, lambda _t, _d, _u, body, **kw: body, outlooks=events)
         historical_score = render_market_accuracy(events, before=datetime.fromisoformat(report["published_at"]))
-        self.assertIn(historical_score, historical)
+        self.assertNotIn('class="market-reader-accuracy"', historical)
+        self.assertNotIn('id="daily-forecasts"', historical)
+        historical_board = render_market_outlook_board(events, before=datetime.fromisoformat(report["published_at"]))
+        self.assertIn(historical_score, historical_board)
         confirmed = render_market_accuracy(events, before=datetime.fromisoformat("2026-11-23T01:34:47+09:00"))
         for score, percent, total, misses, pending in ((historical_score, "25%", 4, 3, 2),
                                                       (confirmed, "20%", 5, 4, 1)):

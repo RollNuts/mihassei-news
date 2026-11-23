@@ -597,8 +597,10 @@ def render_market_outlook_board(events, *, limit=3, before=None, link_to_archive
 
 def render_market_outlook_archive(events, layout):
     latest_update = ''
+    archive_time = None
     if events:
         latest = max(events, key=lambda event: _timestamp(event["at"]))
+        archive_time = _timestamp(latest["at"])
         target = {"id": latest["forecast_id"] if latest["type"] == "review" else latest["id"]}
         latest_update = (
             '<p class="market-latest-update"><strong>予想・結果の最終更新</strong>'
@@ -607,12 +609,12 @@ def render_market_outlook_archive(events, layout):
     content = ('<div class="container serials-page market-desk-archive">'
                '<nav class="serial-breadcrumb"><a href="/">トップ</a> / '
                '<a href="/serials/market-lab/">未来相場観測室</a></nav>'
-               '<header class="serials-intro"><h1>相場の予想と結果</h1>'
+               '<header class="serials-intro"><h1>過去の相場予想と結果</h1>'
                + latest_update
                + render_market_share(BASE_URL, "相場の予想と結果") + '</header>'
-               + render_market_outlook_board(events, link_to_archive=False) + '</div>')
+               + render_market_outlook_board(events, before=archive_time, link_to_archive=False) + '</div>')
     return layout("相場の予想と結果 | 未来相場観測室",
-                  "日米の指数・個別株の予想と、その理由・結果。対象別に短期の的中率を掲載。",
+                  "当時公表した予想と、最終集計時点で確認できた結果を読む。",
                   BASE_URL, content, active="serials",
                   serial={"slug":"market-lab","kind":"analysis","title":"未来相場観測室"})
 

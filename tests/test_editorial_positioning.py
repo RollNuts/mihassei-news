@@ -31,7 +31,7 @@ class EditorialPositioningTests(unittest.TestCase):
         self.assertIn("ニュース記事はフィクションです", page)
         self.assertIn("投資助言や売買の勧誘ではありません", page)
         self.assertIn("「未来相場観測室」は現実の公開資料に基づく市場分析", page)
-        self.assertIn("出典・予測日・検証条件を示します", page)
+        self.assertIn("日米の市況と注目株を出典とともに伝えます", page)
 
     def test_home_presents_a_single_disclosure_before_the_lead(self):
         page = home(load())

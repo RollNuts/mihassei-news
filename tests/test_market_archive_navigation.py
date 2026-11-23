@@ -101,7 +101,7 @@ class MarketBulletinArchiveTests(unittest.TestCase):
         self.assertIn('日次市況一覧へ', page)
         self.assertNotIn('次回は未公開', page)
 
-    def test_forecast_link_points_to_original_snapshot_not_the_newest_forecast(self):
+    def test_archived_report_retains_its_original_story_without_injecting_forecasts(self):
         report = self.dispatches()[0]
         earlier = {
             "type": "forecast", "id": "2026-11-16-topix",
@@ -111,15 +111,15 @@ class MarketBulletinArchiveTests(unittest.TestCase):
         later = dict(earlier, id="2026-11-17-topix", at="2026-11-17T09:00:00+09:00",
                      reviewed_on="2026-11-18", direction="上昇")
         events = [earlier, later]
-        before = copy.deepcopy(events)
+        before = copy.deepcopy([report, events])
         page = render_market_bulletin(report, only_content, outlooks=events)
-        self.assertIn('href="/serials/market-lab/outlooks/#forecast-2026-11-16-topix"', page)
-        self.assertNotIn('#forecast-2026-11-17-topix', page)
-        self.assertIn('掲載時点の予想', page)
-        self.assertIn('datetime="2026-11-16T08:30:00+09:00">2026-11-16 08:30</time> JST', page)
-        self.assertIn('11月17日のTOPIXは横ばいを予想。', page)
-        self.assertNotIn('11月18日のTOPIXは上昇を予想。', page)
-        self.assertEqual(events, before)
+        self.assertIn(report["lead"], page)
+        self.assertIn('href="/serials/market-lab/briefings/"', page)
+        for event in events:
+            self.assertNotIn('#forecast-' + event["id"], page)
+        self.assertNotIn('id="daily-forecasts"', page)
+        self.assertNotIn('class="market-reader-accuracy"', page)
+        self.assertEqual([report, events], before)
 
 
 if __name__ == "__main__":
