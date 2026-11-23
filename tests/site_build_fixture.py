@@ -20,7 +20,10 @@ MARKET_DATA_PATHS = frozenset({
     "content/market_bulletins.json", "content/market_outlooks.json",
     "content/market_outlook.json", "content/market_figures.json",
 })
-EDITORIAL_HANDOFF_PATHS = frozenset({"docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDEAS.md"})
+# CI scope only. Publication PRs have a separate path/ownership policy.
+EDITORIAL_DOC_PATHS = frozenset({
+    "docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDEAS.md", "docs/SERIAL_EDITING_GUIDE.md",
+})
 PHOTO_STORY_PATH = "content/photo_stories.json"
 # Story data reaches home, weekly indexes and profiles. Retain their reader
 # contracts, accepted photo-source schemas and global output/SEO checks.
@@ -81,22 +84,22 @@ def photo_story_data_only(changes):
     return status == "M" and (path == PHOTO_STORY_PATH or path in STORY_RECORD_PATHS)
 
 
-def editorial_handoff_only(changes, event):
+def editorial_docs_only(changes, event):
     return (event in ("pull_request", "push") and bool(changes)
-            and all(status == "M" and path in EDITORIAL_HANDOFF_PATHS
+            and all(status == "M" and path in EDITORIAL_DOC_PATHS
                     for status, path in changes))
 
 
 def native_image_engine_tests_required(changes, event):
-    """Only editorial handoff edits can also skip native/browser checks on main."""
-    if editorial_handoff_only(changes, event):
+    """Only recognized editorial document edits can also skip native/browser checks on main."""
+    if editorial_docs_only(changes, event):
         return False
     return event != "pull_request" or not (market_data_only(changes) or photo_story_data_only(changes))
 
 
 def python_test_command(changes, event=None):
     """Select checks for a complete, recognized diff, always with a fresh site build."""
-    if editorial_handoff_only(changes, event):
+    if editorial_docs_only(changes, event):
         modules = {"tests.test_site", "tests.test_site_build_fixture",
                    "tests.test_publication_finalize", "tests.test_review_release_guard"}
     elif photo_story_data_only(changes):
@@ -124,8 +127,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     changes = changed_files(args.base, args.event)
     command = python_test_command(changes, args.event)
-    if editorial_handoff_only(changes, args.event):
-        scope = "editorial handoff with fresh full build"
+    if editorial_docs_only(changes, args.event):
+        scope = "editorial documents with fresh full build"
     elif market_data_only(changes):
         scope = "market-data-only with fresh full build"
     elif photo_story_data_only(changes):
