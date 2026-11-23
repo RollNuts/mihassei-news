@@ -244,3 +244,45 @@ test("read works in a plain new Function runtime without Node imports", async ()
   assert.equal(report.model.id, input.modelId);
   assert.equal(report.source.ref, REF);
 });
+
+test("daily creator reads both story streams, omits the catalog on a recorded JST day", async () => {
+  const input = fixture();
+  const past = story(input, 1, "2026-11-17T15:01:00Z");
+  const future = story(input, 2, "2026-11-18T12:00:00+09:00");
+  input.stream = { schema_version: 1, stories: [future] };
+  input.stories.stories = [past];
+  const args = { ref: REF, modelId: input.modelId, now: NOW, skipIfRecorded: true };
+  const transport = reader(input);
+  const result = await context.read({ ...args, fetchFile: transport.fetchFile });
+  assert.equal(result.verification, "story_records_only");
+  assert.equal(result.today_has_record, true);
+  assert.deepEqual(result.today_story_ids, [past.id]);
+  assert.equal(result.future_today_record_count, 1);
+  assert.equal(result.open_prs, "unknown");
+  assert.equal(result.image_bytes_verified, false);
+  assert.equal(Object.hasOwn(result, "photos"), false);
+  assert.deepEqual(transport.calls.map(call => call.path), ["content/photo_stories.json", result.source.story_path]);
+  assert.deepEqual(Object.keys(result.source.blob_shas).sort(), transport.calls.map(call => call.path).sort());
+
+  input.stories.stories = [];
+  const futureOnly = await context.read({ ...args, fetchFile: reader(input).fetchFile });
+  assert.equal(futureOnly.verification, "story_records_only");
+  assert.deepEqual(futureOnly.today_story_ids, []);
+  input.stories.stories = [future];
+  await assert.rejects(context.read({ ...args, fetchFile: reader(input).fetchFile }), /story ID/);
+  input.stories.stories = [];
+  await assert.rejects(context.read({ ...args, fetchFile: reader(input, file => ({ ...file, truncated: true })).fetchFile }));
+});
+
+test("on a new JST day daily mode returns the same full input without rereading any blob", async () => {
+  const input = fixture(), args = { ref: REF, modelId: input.modelId, now: NOW };
+  input.stories.stories.push(story(input, 1, "2026-11-17T14:59:59Z"));
+  const transport = reader(input);
+  const full = await context.read({ ...args, fetchFile: reader(input).fetchFile });
+  const daily = await context.read({ ...args, fetchFile: transport.fetchFile, skipIfRecorded: true });
+  assert.deepEqual(daily, full);
+  assert.equal(daily.today_has_record, false);
+  assert.equal(transport.calls.length, 3);
+  assert.equal(new Set(transport.calls.map(call => call.path)).size, 3);
+  assert(transport.calls.every(call => call.ref === REF));
+});

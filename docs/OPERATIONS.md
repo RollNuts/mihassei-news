@@ -150,14 +150,14 @@ GPTは許可の保存と再読後に「CI・公開検証へ移譲済み」とし
 
 ### 7人の近況
 
-日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。約635KBの全カタログを会話へ転記せず、本人設定・直近3投稿・当日重複・既刊写真候補だけを返す。
+日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。当日分の投稿記録があれば、当日のID・未来時刻の件数と照合元だけを返す。未投稿の日に写真台帳を取得し、本人設定・直近3投稿・既刊写真候補を返す。
 
 ```js
 const C = new Function(helperSource + "\nreturn CastStoryContext;")();
-text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString()}));
+text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString(), skipIfRecorded: true}));
 ```
 
-`fetchFile`は実際に露出したGitHubの`fetch_file`へ束縛する。結果は`metadata_only`で、画像byte検証・新しい目視採用・未統合PRの取得はしていない。`open_prs: unknown`を0件とせず、本人のPRだけ別に確認する。当日既刊があれば追加しない。新規投稿は返却された `source.story_path`（本人専用ファイル）へ原文を1件追記し、そのファイルの `blob_shas` を照合して通常のPRへ進める。CLIの `adopt_cast_story.py --write` も同じ場所を使う。採用時は下記の既存原文・写真照合を通す。
+`fetchFile`は実際に露出したGitHubの`fetch_file`へ束縛する。`story_records_only`は当日記録の照合、`metadata_only`は投稿準備用のメタデータ照合を示す。どちらも実画像と本番配信は未確認。`open_prs: unknown`を0件とせず、本人のPRだけ別に確認する。当日既刊があれば追加しない。新規投稿は返却された `source.story_path`（本人専用ファイル）へ原文を1件追記し、そのファイルの `blob_shas` を照合して通常のPRへ進める。CLIの `adopt_cast_story.py --write` も同じ場所を使う。採用時は下記の既存原文・写真照合を通す。
 
 人物別の既存制作タスクが、自分の近況をJSTで1日1件ずつ投稿する。開始枠は以下とし、実際の公開時刻を記録する。遅延分の一括投稿や過去時刻への書換えはしない。日次近況は検品済み本人写真を使い、写真ストックはEDITORIAL_LOOP「写真ストックと制作量」の在庫基準と既存週上限に従い、同じ既存枠内で補充・受渡しする。グラビア編集は特集を担当し、本人タスクの正常な近況を重複して書き直さない。
 
