@@ -1,6 +1,7 @@
 """Exact-head finalization contracts; no live API, dispatch, CI or site build."""
 import copy
 from datetime import datetime, timezone
+from functools import partial
 import io
 import json
 import os
@@ -786,13 +787,15 @@ class MergedSourceTests(unittest.TestCase):
             git("init", "-q")
             git("config", "user.email", "test@example.invalid")
             git("config", "user.name", "Test")
-            (root / "content").mkdir()
-            (root / "content/photo_stories.json").write_text('{"schema_version":1,"stories":[]}\n')
+            story_path = "content/photo_stories/shioba-rio.json"
+            story = root / story_path
+            story.parent.mkdir(parents=True)
+            story.write_text('{"schema_version":1,"stories":[]}\n')
             (root / "content/articles.json").write_text("[]\n")
             git("add", "."); git("commit", "-qm", "base")
             baseline = git("rev-parse", "HEAD")
             git("checkout", "-qb", "editor")
-            (root / "content/photo_stories.json").write_text('{"schema_version":1,"stories":[{"id":"new-story"}]}\n')
+            story.write_text('{"schema_version":1,"stories":[{"model_id":"shioba-rio","id":"new-story"}]}\n')
             git("commit", "-qam", "story")
             head = git("rev-parse", "HEAD")
             git("checkout", "-qb", "later-main", baseline)
@@ -814,7 +817,7 @@ class MergedSourceTests(unittest.TestCase):
                     self.assertNotIn("GH_TOKEN", kwargs["env"])
                     merged = Path(kwargs["cwd"])
                     self.assertIn("other-news", (merged / "content/articles.json").read_text())
-                    self.assertIn("new-story", (merged / "content/photo_stories.json").read_text())
+                    self.assertIn("new-story", (merged / story_path).read_text())
                     return subprocess.CompletedProcess(command, 0)
                 return real_run(command, **kwargs)
             isolated = {k: v for k, v in os.environ.items() if k not in
@@ -838,9 +841,29 @@ class MergedSourceTests(unittest.TestCase):
             git("config", "user.name", "Test"); git("config", "user.email", "test@example.invalid")
             git("add", "."); git("commit", "-qm", "runtime changed")
             api.main = git("rev-parse", "HEAD")
-            with patch.object(f, "git", side_effect=local_git):
-                with self.assertRaisesRegex(ValueError, "fresh CI"):
-                    f.validate_merge(api, pr, run, root)
+            api.pr, api.run = pr, run
+            api.pr["base"]["sha"] = api.main
+            api.run["pull_requests"][0]["head"]["sha"] = head
+            api.run.update(head_sha=head, run_attempt=2)
+            api.jobs[0].update(head_sha=head, run_attempt=2)
+            api.files = [{"status": "modified", "filename": story_path}]
+            event, summary = root / "event.json", root / "summary.md"
+            event.write_text(json.dumps({"workflow_run": run}))
+            with patch.object(f, "git", side_effect=local_git), patch.object(f, "GitHub", return_value=api), \
+                    patch.object(f, "finalize", partial(f.finalize, root=root)), \
+                    patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(summary)}), \
+                    patch("sys.stdout", new_callable=io.StringIO) as output:
+                self.assertEqual(f.main(["--event", str(event)]), 1)
+            result = json.loads(output.getvalue())
+            expected = {"status": "unverified", "error": "Main runtime changed since CI; fresh CI is required",
+                        "stage": "latest_main", "kind": "cast_story", "pr": pr["number"], "expected_head": head,
+                        "current_head": head, "ci_run_id": run["id"], "ci_run_attempt": 2,
+                        "tested_main": baseline, "current_main": api.main}
+            self.assertEqual({k: result[k] for k in expected}, expected)
+            for action in ("remove the old approval", "verify its removal", "same PR", "fresh CI", "new exact head"):
+                self.assertIn(action, result["next_operation"])
+            self.assertIn(json.dumps(result, indent=2), summary.read_text())
+            self.assertEqual(api.writes, [])
 
     def test_clean_git_merge_of_individually_valid_stories_still_rejects_same_model_day(self):
         from scripts.photo_issues import load_photo_issues
