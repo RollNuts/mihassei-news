@@ -2,15 +2,15 @@
   "schema_version": 1,
   "model_id": "hanase-mio",
   "name": "花瀬みお",
-  "created_date": "2026-11-22",
+  "created_date": "2026-11-23",
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "photo_reference": {
     "issue_slug": "november-city-evening-mio-012",
-    "cut_id": "01",
-    "image_sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3",
-    "description": "2031年11月の検品済み既刊012 cut01。波打ち際で立つ本人写真（画像バイト未検証、catalog review accepted）。"
+    "cut_id": "07",
+    "image_sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2",
+    "description": "2031年11月、既刊012 cut07。夕方の窓辺で座る検品済み本人写真。原本byteは本工程では未検証（catalog review accepted）。"
   },
-  "post_text": "朝、体験ロケで落ち葉を熊手で集めた。山にしたところへ風が吹いて、全部足元に戻ってきた。二回目は袋を先に開いて、今度こそ回収できた。",
-  "spoken_line": "落ち葉、戻ってきた！",
-  "future_idea": "2031年、落ち葉回収の体験ロケで風向きを読むチーム戦が人気になる。"
+  "post_text": "朝、木工体験で小さな棚を組み立てた。板を支えたままネジを回そうとして、手が一本足りない。膝でそっと押さえたら、ようやく一段目ができた。",
+  "spoken_line": "一段目、できた！",
+  "future_idea": "2031年、道具が足りない木工体験では、手元を支える補助具をみんなで試す時間が人気に。"
 }
