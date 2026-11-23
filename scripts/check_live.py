@@ -819,6 +819,7 @@ def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
     if content_type.split(";", 1)[0].strip().lower() != "text/html":
         raise RuntimeError(path + ": market dispatch is not served as HTML")
     page = page_bytes.decode("utf-8")
+    verify_adsense_markup(page, loader_expected=False)
     preview = SITE + "/og/serials/market-lab.png"
     for required in (
         '<link rel="canonical" href="' + SITE + path + '">',

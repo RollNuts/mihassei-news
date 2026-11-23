@@ -14,7 +14,7 @@ content/serials.json ────┘                │
 ```
 
 - 記事の本文、アーカイブ、連載、検索導線は静的生成。読者APIが停止しても本文は閲覧可能。
-- AdSenseの広告スクリプトは、index可能な通常記事本文と市場分析の各回・日次市況本文だけに出力する。検索への掲載可否とは別条件とし、一面・一覧・写真企画・案内ページには出力しない。所有確認メタタグと`ads.txt`は維持し、この出力制限をサイト全体の審査対象除外やGoogleによる承認とは扱わない。
+- AdSenseの広告スクリプトは、index可能な通常ニュース記事の本文だけに出力する。検索への掲載可否とは別条件とし、市場面は全文を広告なしで配信する。所有確認メタタグと`ads.txt`は維持し、この出力制限をサイト全体の審査対象除外やGoogleによる承認とは扱わない。
 - 通常のビルドは外部AI生成APIを使いません。画像生成は独立した任意の処理です。
 - `main`への更新をCloudflareのGit連携でデプロイ。GitHub Actionsではテストと公開後の読み取り検証を実施。
 - Cloudflareのビルド監視は含むパス`*`・除外`docs/*`、非本番ビルドはOFF。公開SHAがmainより古くても、祖先関係と差分が`docs/`だけだとGitで証明できる場合に限り同じ公開物として扱い、実配信SHAを報告する。記事・画像・コード等の差分は配信を待つ。
@@ -30,7 +30,7 @@ content/serials.json ────┘                │
 - 合同の週刊号は`content/photo_editions.json`から`/photo/weekly/issue-NNN/`へ生成し、7人の検証済み特集slugを目次で束ねる。既存の特集URL・画像・固定指紋・PVキーを維持し、号単位の一覧・RSSと特集間の前後リンクを出力する。`scripts/photo_editions.py`が発行日前日までの完全7JST暦日のPVと同点用文字列seed・固定順を扱う。履歴窓のAPIは`photoPopular=1&photoEnd=YYYY-MM-DD`でversion・窓・coverage・truncationを照合し、旧rolling応答を流用しない。
 - 写真の人物紹介は`/photo/models/`と各モデルのプロフィールへ生成し、検証済み公開号だけの枚数・写真グリッドを表示する。公開号の表紙を優先し、独立プロフィール写真は`photo_profile_portraits.py`で原本・採否・SHAを検証する。未掲載・写真なしのプロフィールはnoindexとし、非公開の容姿指示や体型値は出力しない。
 - 週刊ランキングは`/api/engagement?view=public&photoPopular=1`の7日実測PVを既存DOから読み、公開号だけを表示する。ストーリーは人物ごとの`content/photo_stories/<model_id>.json`と従来の`content/photo_stories.json`を`photo_stories.py`が掲載号・人物・画像SHAと照合し、検品済みの写真を参照する。音声は操作後に日本語の端末内SpeechSynthesisだけを使い、外部音声通信・自動再生・音声ファイルの追加保存は行わない。
-- 市場分析は資料`sources`、仮説`scenarios`、検証可能な`forecast`を持ち、判定時には結果の根拠を残します。
+- 市場の既刊企業連載は資料`sources`、仮説`scenarios`、検証可能な`forecast`を持ち、判定時には結果の根拠を残します。
 - RSS、構造化データ、サイトマップでは架空の未来日時を実際の掲載日時として扱いません。
 - 続報記事は既刊を上書きせず独立した記事として保存し、任意の `followup_of` に直前の関連記事slugを記録します。親記事が存在し、子記事より先に実公開されていることをビルドで検証し、公開ページでは前後を相互リンクします。
 - 詳しい検証基準は[`docs/SERIAL_EDITING_GUIDE.md`](SERIAL_EDITING_GUIDE.md)と[`scripts/forecast_ledger.py`](../scripts/forecast_ledger.py)を参照。
