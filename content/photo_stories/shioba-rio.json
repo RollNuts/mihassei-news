@@ -60,6 +60,21 @@
         "cut_id": "02",
         "image_sha256": "7ecae4d543d2a5b00bb47ec2cd2b32f46446b07de31dccd3af9ea4c6e558c641"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261123092037972000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-23T09:20:37.972+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、温室の窓辺で青い花の名前を聞いて、忘れないように手帳へ書きました。帰り道に開いたら、字が急ぎすぎて読めません。もう一度聞きに行くのも悪くないですね。",
+      "source": {
+        "issue_slug": "november-coast-city-rio-015",
+        "cut_id": "04",
+        "image_sha256": "c8c2874cc06fc7fdb7a627fd120f54e32aeaee4b111cee753f7ed24e2326bae7"
+      }
     }
   ]
 }
