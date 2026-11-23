@@ -194,8 +194,9 @@ class MarketFreshnessTests(unittest.TestCase):
         self.assertIsNone(KEY.fullmatch("2026-11-16-late"))
         legacy = next(x for x in self.reports if x["slot"] == "close")
         markup = render_market_bulletin(legacy, passthrough)
-        self.assertIn("実データの市況解説 / 18:38", markup)
-        self.assertNotIn("実データの市況解説 / 15:50", markup)
+        self.assertIn("実データの市況解説 ／ 引け後", markup)
+        self.assertIn(" 18:38</time> JST</p>", markup)
+        self.assertNotIn(" 15:50</time> JST</p>", markup)
 
     def test_new_open_report_loads_as_market_overview_and_rejects_stock_picks(self):
         report = copy.deepcopy(self.reports[-1])

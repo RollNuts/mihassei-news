@@ -8,6 +8,7 @@ JST dates, not fictional newspaper dates.
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta
+from decimal import Decimal
 from html import escape
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -88,17 +89,20 @@ def _source(source, *, asof):
     return source["url"]
 
 
+def _observed_direction(baseline, close):
+    # Compare the recorded decimal prices directly. Exactly ±0.5% is flat.
+    start = Decimal(str(baseline))
+    movement = (Decimal(str(close)) - start) * 200
+    if movement > start:
+        return "上昇"
+    if movement < -start:
+        return "下落"
+    return "横ばい"
+
+
 def _forecast_result(forecast, observed):
-    """The precise boundary is frozen at issue time: flat means +/-0.5%."""
-    start = forecast["baseline"]["value"]
-    change = 100 * (observed / start - 1)
-    direction = forecast["direction"]
-    good = (
-        (direction == "上昇" and change > 0.5)
-        or (direction == "下落" and change < -0.5)
-        or (direction == "横ばい" and -0.5 <= change <= 0.5)
-    )
-    return "的中" if good else "外れ"
+    actual = _observed_direction(forecast["baseline"]["value"], observed)
+    return "的中" if forecast["direction"] == actual else "外れ"
 
 
 def load_market_outlooks(root, *, today=None):
@@ -284,16 +288,28 @@ def forecast_reader_reason(forecast):
 
 def render_market_accuracy(events, *, before=None):
     """Accuracy for all evidenced short-term verdicts in this historical view."""
-    results = [_confirmed_result(row) for row in view_models(events, before=before)
-               if forecast_horizon(row["forecast"]["at"], row["forecast"]["reviewed_on"]) == "短期"]
-    settled = [result for result in results if result is not None]
-    total = len(settled)
+    rows = [row for row in view_models(events, before=before)
+            if forecast_horizon(row["forecast"]["at"], row["forecast"]["reviewed_on"]) == "短期"]
+    settled = [result for row in rows if (result := _confirmed_result(row)) is not None]
     hits = sum(result["outcome"] == "的中" for result in settled)
+    total = len(settled)
+    pending = len(rows) - total
+    subjects = {row["forecast"]["subject"] for row in rows}
+    scope = escape(next(iter(subjects))) + 'の短期予想' if len(subjects) == 1 else '短期相場予想'
     percent = (f'{hits * 100 / total:.1f}'.rstrip('0').rstrip('.') + '%') if total else '—'
-    count = f'的中 {hits} / 確定 {total}件' if total else '確定0件'
+    count = f'判定済み{total}件のうち{hits}件が的中' if total else '確定0件'
+    bar = (f'<meter class="market-score-meter" min="0" max="{total}" value="{hits}" aria-hidden="true"></meter>'
+           if total else '')
+    counts = ([f'外れ{total-hits}件'] if total else []) + ([f'未確定{pending}件は集計外'] if pending else [])
+    when = ''
+    if before is not None:
+        asof = before.astimezone(ZoneInfo("Asia/Tokyo"))
+        when = (f'<time datetime="{asof.isoformat(timespec="seconds")}">'
+                f'{asof.month}月{asof.day}日 {asof:%H:%M} JST 掲載時点</time>')
     return ('<div class="market-reader-accuracy" aria-label="短期相場予想の的中率">'
-            '<span>短期相場予想の的中率</span>'
-            f'<strong>{percent}</strong><span class="market-reader-count">{count}</span></div>')
+            f'<div class="market-score-heading"><b>{scope}の的中率</b>{when}</div>'
+            f'<div class="market-score-value"><strong>{percent}</strong><span class="market-reader-count">{count}</span></div>'
+            + bar + (f'<small>{"　／　".join(counts)}</small>' if counts else '') + '</div>')
 
 
 def render_market_forecast_assessment(row):
@@ -329,13 +345,16 @@ def render_market_forecast_assessment(row):
         for index, source in enumerate(fc["sources"], 1)
     )
     asof = row["asof"].astimezone(ZoneInfo("Asia/Tokyo")).isoformat(timespec="seconds")
-    return (reason_html
-            + f'<p class="market-reader-sources">当初の出典 {sources}</p>'
-            + assessment
-            + f'<div class="market-reader-result" data-outcome="{outcome}"><strong>{escape(status)}</strong>'
-            f'<span>結果日：<time datetime="{escape(fc["reviewed_on"], quote=True)}">{escape(fc["reviewed_on"])}</time></span>'
-            f'<span>集計時点：<time datetime="{asof}">{_event_day(asof)}</time> JST</span>'
-            + confirmed + '</div>')
+    actual = ''
+    if result:
+        direction = _observed_direction(fc["baseline"]["value"], result["close"])
+        actual = f'<span class="market-direction-pair">予想 <b>{escape(fc["direction"])}</b> → 実際 <b>{direction}</b></span>'
+    return (f'<div class="market-reader-result" data-outcome="{outcome}"><strong>{escape(status)}</strong>'
+            + actual + f'<span>結果日：<time datetime="{escape(fc["reviewed_on"], quote=True)}">{escape(fc["reviewed_on"])}</time></span>'
+            + confirmed + '</div>' + reason_html
+            + '<details class="market-reader-evidence"><summary>経過と出典</summary>'
+            + assessment + f'<p class="market-reader-sources">当初の出典 {sources}</p>'
+            + f'<p class="market-reader-date">集計時点：<time datetime="{asof}">{_event_day(asof)}</time> JST</p></details>')
 
 
 def _reader_forecast_card(row):
@@ -349,7 +368,7 @@ def _reader_forecast_card(row):
             + render_market_forecast_assessment(row) + '</article>')
 
 
-def render_market_outlook_board(events, *, limit=3, before=None):
+def render_market_outlook_board(events, *, limit=3, before=None, link_to_archive=True):
     if type(limit) is not int or limit < 0:
         raise ValueError("Forecast display limit must be nonnegative")
     reports = view_models(events, before=before)
@@ -360,10 +379,11 @@ def render_market_outlook_board(events, *, limit=3, before=None):
         '<a href="/serials/market-lab/">企業分析を読む</a></p>')
     past = ('<details class="market-reader-past"><summary>過去の予想</summary>'
             '<div class="market-reader-cards">' + ''.join(cards[visible:]) + '</div></details>') if cards[visible:] else ''
+    archive = f'<p><a class="serial-feed-link" href="{BASE_URL}">相場の予想をすべて見る</a></p>' if link_to_archive else ''
     return ('<section class="daily-forecast-board" id="daily-forecasts" aria-labelledby="daily-forecasts-title">'
             '<div class="market-paper-heading"><h2 id="daily-forecasts-title">相場の予想と結果</h2></div>'
             + render_market_accuracy(events, before=before) + recent + past
-            + f'<p><a class="serial-feed-link" href="{BASE_URL}">相場の予想をすべて見る</a></p></section>')
+            + archive + '</section>')
 
 
 def render_market_outlook_archive(events, layout):
@@ -381,7 +401,7 @@ def render_market_outlook_archive(events, layout):
                '<header class="serials-intro"><h1>相場の予想と結果</h1>'
                + latest_update
                + render_market_share(BASE_URL, "相場の予想と結果") + '</header>'
-               + render_market_outlook_board(events) + '</div>')
+               + render_market_outlook_board(events, link_to_archive=False) + '</div>')
     return layout("相場の予想と結果 | 未来相場観測室",
                   "日本市場の予想、その理由、確認できた結果と的中率。",
                   BASE_URL, content, active="serials",

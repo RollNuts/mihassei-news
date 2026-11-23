@@ -356,20 +356,21 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         '<div class="market-paper-brand">'
         '<div>'
         f'<h1>{h(series["title"])}</h1>'
-        '<p>市場の先行きと、その理由を読む。</p></div>'
+        '</div>'
         '</div>'
         '<nav class="market-paper-nav" aria-label="このページの案内">'
         '<a href="#market-focus">新着記事</a>'
         '<a href="/serials/market-lab/briefings/">市況一覧</a>'
-        '<a href="/serials/market-lab/outlooks/">毎日の予測</a>'
+        '<a href="/serials/market-lab/outlooks/">短期予想と成績</a>'
         '<a href="#market-stories">企業分析</a>'
-        '<a href="#market-proof">予想と結果</a>'
+        '<a href="#market-proof">企業予想の結果</a>'
         '</nav>'
         + render_market_share(series_url(series), series["title"])
         + '</header>'
         '<div class="market-paper-content">'
         '<section class="market-paper-lead" id="market-focus" aria-labelledby="market-focus-heading">'
-        '<div class="market-paper-lead-story">'
+        + render_market_accuracy(daily_outlooks or [])
+        + '<div class="market-paper-lead-story">'
         + lead_update +
         f'<h2 id="market-focus-heading"><a href="{latest_url}">{h(headline)}</a></h2>'
         f'<p class="market-paper-dek">{h(standfirst)}</p>'
@@ -385,7 +386,6 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         + follow_details +
         f'<a href="{follow_href}">理由と結果を読む →</a>'
         '</aside></section>'
-        + render_market_accuracy(daily_outlooks or [])
         + bulletins_html
         + '<section class="market-paper-stories" id="market-stories">'
         '<div class="market-paper-heading"><h2>企業分析</h2>'
