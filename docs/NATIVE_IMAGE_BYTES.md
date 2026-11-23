@@ -406,6 +406,22 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 
 
+<a id="weekly-photo-quota"></a>
+### Reserve one original in the producer’s weekly allowance
+
+Use this only when the [stock rule](EDITORIAL_LOOP.md#写真ストックと制作量) calls for a new original, after recovering outstanding files and verifying that the current execution can save and read back an actual original through its available transport. Previously received originals can go straight to the existing handoff. Load `scripts/photo_generation_quota.js` from reviewed main inside code mode. Bind `fetch`, `fetch_file`, `create_branch`, `create_file` and `update_file` from the existing GitHub connection, plus the live `stager.cloudStatus` used for original handoffs.
+
+```js
+const Q = new Function(quotaSource + "\nreturn PhotoGenerationQuota;")();
+const quota = Q.create({github, cloudStatus: stager.cloudStatus});
+// Reuse the same input and checkpoint across cells. Keep helper source and GitHub responses private.
+const next = await quota.reserveStep(input, checkpoint);
+```
+
+`input` identifies the registered `model_id`, `source_chat_url`, actual `run_id`, its offset-qualified `run_started_at`, and the stable `attempt_id` for one planned original. For `pending`, pass `next.checkpoint` to the next cell with the unchanged input; repeat only on a returned next phase. After an ambiguous write, look up that same attempt again. Preserve its ID across task retries. Only a fresh `may_generate === true` permits one call producing one original. Record an observed result with `finishStep` on the same week, run and attempt, using `week_start` from the reservation, `status` (`succeeded`, `failed` or `interrupted`) and `result_ref` pointing to the actual receipt or observed outcome. A reserved attempt with no confirmed result remains charged. Preserve existing original and checkpoint references for recovery.
+
+Each producer has one `photo-issue-plan/stock-<model_id>-<JST Sunday YYYY-MM-DD>` reservation branch per week. Keep that branch and its ledger intact for the week. If either is known to be lost, recover its original Git history before granting any further attempts. Keep the receipt and images for each shoot on its own existing candidate branch. Starting with the first eligible full week (2026-11-29 JST), the helper checks that the common policy had already reached main before that Sunday. During transition, initialize only with a reconciled baseline covering the actual earlier calls and parallel candidates. Pass `baseline = {mode:"reconciled", model_id, week_start, coverage_ref, prior_attempts}`. The producer must inspect `coverage_ref` for the full interval and parallel attempts. Each known prior attempt has `run_id`, `attempt_id`, `units` and `evidence_ref`; failed and interrupted attempts count. Even an empty `prior_attempts` needs evidence of complete coverage. A missing reservation file, an empty image inventory or an unknown chat history cannot establish a zero baseline. Pass only the compact outcome to the task log; keep the checkpoint in code mode.
+
 <a id="photo-original-handoff"></a>
 ### Existing weekly photo originals
 
