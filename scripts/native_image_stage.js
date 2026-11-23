@@ -477,7 +477,11 @@ var NativeImageStage = (function () {
       for(const name of ["fetch","update_ref"])if(typeof github[name]!=="function")throw Error("Missing preflight GitHub callback: "+name);
       return await transportPreflight(plan,options);
     }
-    async function reserveGeneration(plan,proof,claim) {
+    function generationClaimRef(plan) {
+      return {kind:"native_image_generation_claim",status:"reserved_generation_unconfirmed",
+        branch:CLAIM_BRANCH_PREFIX+plan.identity,receipt_path:CLAIM_DIR+"/"+plan.identity+".json"};
+    }
+    async function hasGenerationClaim(plan,claim) {
       try {
         const raw=await read(claim.receipt_path,claim.branch),r=JSON.parse(raw.content);
         if(r.version!==1||r.kind!==claim.kind||r.status!==claim.status||r.repository!==repository
@@ -485,8 +489,11 @@ var NativeImageStage = (function () {
           ||r.logical_run_id!==plan.logicalRunId||r.prompt_sha256!==hashText(plan.prompt))
           throw Error("Generation claim identity conflict; refusing another generation");
         claim.receipt_sha256=hashText(raw.content);
-        return false;
-      } catch(error) {if(!absentRef(error,claim.branch))throw error;}
+        return true;
+      } catch(error) {if(!absentRef(error,claim.branch))throw error;return false;}
+    }
+    async function reserveGeneration(plan,proof,claim) {
+      if(await hasGenerationClaim(plan,claim))return false;
       const receipt={version:1,kind:claim.kind,status:claim.status,repository,identity:plan.identity,
         slug:plan.slug,article_sha256:plan.articleSha256,logical_run_id:plan.logicalRunId,
         prompt_sha256:hashText(plan.prompt),reserved_at:new Date().toISOString(),
@@ -521,13 +528,18 @@ var NativeImageStage = (function () {
         if(existing.status==="saved")return {...existing,plan,transportPreflight:null};
         if(generationAttempts.has(plan.identity))throw Error("This execution already requested this image; recover its output instead of generating again");
         if(requireGenerator&&typeof options?.generate!=="function")throw Error("Provide the actual generator callback");
-        // A reservation always performs the real byte read/save/readback here.
+        phase="generation_claim_lookup";
+        const claim=generationClaimRef(plan);
+        if(await hasGenerationClaim(plan,claim)){
+          generationClaim=claim;
+          const completed=await probe(plan);
+          if(completed.status==="saved")return {...completed,plan,transportPreflight:null};
+          throw Error("Generation is already reserved at "+generationClaim.branch+"; recover the original output instead of generating again");
+        }
         phase="preflight";proof=await checkTransport(plan,options);
         phase="candidate_lookup_after_preflight";const completed=await probe(plan);
         if(completed.status==="saved")return {...completed,plan,transportPreflight:proof};
-        phase="generation_claim";
-        generationClaim={kind:"native_image_generation_claim",status:"reserved_generation_unconfirmed",
-          branch:CLAIM_BRANCH_PREFIX+plan.identity,receipt_path:CLAIM_DIR+"/"+plan.identity+".json"};
+        phase="generation_claim";generationClaim=claim;
         const acquired=await reserveGeneration(plan,proof,generationClaim);
         // A candidate can finish during reservation, including a legacy recovery.
         // Even a losing worker may recover it; neither worker replaces the claim.
@@ -776,7 +788,13 @@ var NativeImageStage = (function () {
       return boundedStep(plan,"native_reservation_steps",checkpoint,{compact:options?.compact===true},async state=>{
         if(state.phase==="saved_readback")return await savedSlice(plan,state);
         if(state.phase==="lookup"){
-          if(!await lookupSaved(plan,state))state.phase="capture";
+          if(await lookupSaved(plan,state))return;
+          const claim=generationClaimRef(plan);
+          if(await hasGenerationClaim(plan,claim)){
+            if(await lookupSaved(plan,state))return;
+            throw Error("Generation is already reserved at "+claim.branch+"; recover the original output instead of generating again");
+          }
+          state.phase="capture";
         }else if(state.phase==="capture"){
           if(typeof options?.readBytes!=="function"||!SHA.test(options.expectedProbeSha256||"")
             ||typeof options.route!=="string"||!options.route.trim()||options.route.length>500
@@ -839,10 +857,8 @@ var NativeImageStage = (function () {
           }
         }else if(state.phase==="claim_prepare"){
           if(await lookupSaved(plan,state))return;
-          state.claim={kind:"native_image_generation_claim",status:"reserved_generation_unconfirmed",
-            branch:CLAIM_BRANCH_PREFIX+plan.identity,receipt_path:CLAIM_DIR+"/"+plan.identity+".json"};
-          try{await read(state.claim.receipt_path,state.claim.branch);throw Error("Generation already reserved; recover only");}
-          catch(error){if(!absentRef(error,state.claim.branch))throw error;}
+          state.claim=generationClaimRef(plan);
+          if(await hasGenerationClaim(plan,state.claim))throw Error("Generation already reserved; recover only");
           const receipt={version:1,...state.claim,repository,identity:plan.identity,slug:plan.slug,article_sha256:plan.articleSha256,
             logical_run_id:plan.logicalRunId,prompt_sha256:hashText(plan.prompt),reserved_at:new Date().toISOString(),
             baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},transport_preflight:state.proof};
