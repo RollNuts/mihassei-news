@@ -852,5 +852,153 @@
     "exact_previous_cuts_excluded": 6,
     "retained_candidates": 14,
     "editorial_note": "既刊004・012と候補39枚を実表示で比較。既刊と同じ立ち方の水着、合成一覧、目立つロゴを除外。衣装が判別できる水着はH02・H14、H06は羽織の下のトップのみ。船の服やワンピースを水着に数えない。海辺の季節・撮影日は未確定。入稿時に編集担当が10枚と水着実数を確定する。"
+  },
+  "editorial_review": {
+    "status": "selected_pending_release_receipts",
+    "reviewed_at": "2026-11-23T20:59:45.925Z",
+    "main_commit": "d877f12386aafe635088f2d63c52b5ed9a1a2594",
+    "candidate_commit": "f39c946354d4b866e0415393a6d9749e4926f6a6",
+    "issue_edition": "issue-003",
+    "model_id": "hanase-mio",
+    "reviewed_jpeg_count": 14,
+    "face_and_body_reference_checked": true,
+    "previous_catalog_sha_overlap": 0,
+    "byte_readback_count": 10,
+    "selected": [
+      {
+        "cut_id": "01",
+        "candidate_number": "01",
+        "source_sha256": "c1ad0532908d5b527f613a63cf660c7ea868e9690749324e943d24fe66088a9f",
+        "jpeg_sha256": "64f27c8088537e890d0f069b3e0b8b8d310b00fa16f676dc8a374a6a08ebda98",
+        "source_bytes": 2230750,
+        "jpeg_bytes": 164806,
+        "review": "列車窓辺・横長近景、導入",
+        "swimwear": false,
+        "swimwear_visibility": null
+      },
+      {
+        "cut_id": "02",
+        "candidate_number": "02",
+        "source_sha256": "2a1fd0abb3e0357eb8dc223086f5e249c815b4fa43a3782e78946103f835db52",
+        "jpeg_sha256": "1eeba10e1bfd6bfbfed1e6312d15ffb5be34de1d308b019efef930fa63ee7d4d",
+        "source_bytes": 2424280,
+        "jpeg_bytes": 210807,
+        "review": "駅の地図・全身",
+        "swimwear": false,
+        "swimwear_visibility": null
+      },
+      {
+        "cut_id": "03",
+        "candidate_number": "03",
+        "source_sha256": "a36defaa15c048e590856783ac621d7ca6f789ba6987b09b3f83d48e5f6196db",
+        "jpeg_sha256": "4336b4d6c6e5ad5e4323358657f82f4b6f0e41a8655c09c1db2719396059eb00",
+        "source_bytes": 2362324,
+        "jpeg_bytes": 201731,
+        "review": "海辺の自転車・全身",
+        "swimwear": false,
+        "swimwear_visibility": null
+      },
+      {
+        "cut_id": "04",
+        "candidate_number": "04",
+        "source_sha256": "2dc13f3fd300719ef687f72ac1ce16520569aba6b01ec0c614976107a9e3ec58",
+        "jpeg_sha256": "58a1712b67f184b41121fc494d626e0ad08d2b0b24114c8eb254d6f1fbe7612e",
+        "source_bytes": 2481842,
+        "jpeg_bytes": 216653,
+        "review": "桟橋と船・全身、乗船前",
+        "swimwear": false,
+        "swimwear_visibility": null
+      },
+      {
+        "cut_id": "05",
+        "candidate_number": "11",
+        "source_sha256": "99c2e49f67df636f21720ea25afff1ddc1801de2b8b7a7199133c0e148fbf4dc",
+        "jpeg_sha256": "e6897d83518c4dc0fe2d5aaec6d9ac4cecfcb4a2a6ea83181a065e2a2248fe29",
+        "source_bytes": 2455156,
+        "jpeg_bytes": 196788,
+        "review": "テラスの果物・横長近景",
+        "swimwear": false,
+        "swimwear_visibility": null
+      },
+      {
+        "cut_id": "06",
+        "candidate_number": "07",
+        "source_sha256": "984c4b43c33e58bb2bcfe29798d0a9ebbdaf179c2c131ad44483caa5168da229",
+        "jpeg_sha256": "eccf050205b78fac6d227d4870f1829c6446ba918a94d9839b5ecb262fbf157b",
+        "source_bytes": 1954486,
+        "jpeg_bytes": 133828,
+        "review": "青ビキニ上下・木道の中景",
+        "swimwear": true,
+        "swimwear_visibility": "top_and_bottom"
+      },
+      {
+        "cut_id": "07",
+        "candidate_number": "08",
+        "source_sha256": "f51f76794b43358a7b422e808a2b9c509e59ca6fe781e8350c420e8838015534",
+        "jpeg_sha256": "b633ac841141ab6ad37e8b2596f01c4151a7e2198461938a926691324a193035",
+        "source_bytes": 2425271,
+        "jpeg_bytes": 190432,
+        "review": "柄ビキニ上下・波打ち際の横長全身",
+        "swimwear": true,
+        "swimwear_visibility": "top_and_bottom"
+      },
+      {
+        "cut_id": "08",
+        "candidate_number": "06",
+        "source_sha256": "c7cda4eb2dbfb5f1333c03ea1d0514817e69507938956838faa5869c28a5434f",
+        "jpeg_sha256": "b6e0992eecb6877663c93a767c48447d793856c9a281c77458de03741dba8773",
+        "source_bytes": 2473315,
+        "jpeg_bytes": 205088,
+        "review": "花柄水着トップのみ視認・白い羽織、海辺の店の横長近景",
+        "swimwear": true,
+        "swimwear_visibility": "top_only"
+      },
+      {
+        "cut_id": "09",
+        "candidate_number": "13",
+        "source_sha256": "06d738935962bb1ea114ee19004f1a8bd05a9d9eccfc98783a651a634e787d2e",
+        "jpeg_sha256": "ad9637c80795a3a0d76306ba589bf36d41b60bef57b8bed7e2dbe9997ded3322",
+        "source_bytes": 2056996,
+        "jpeg_bytes": 165715,
+        "review": "白シャツと短パン・手すり越しの横顔",
+        "swimwear": false,
+        "swimwear_visibility": null
+      },
+      {
+        "cut_id": "10",
+        "candidate_number": "14",
+        "source_sha256": "ab6a59f71606714a5745243d9e6121c333893988adbf08739286195d35a974ec",
+        "jpeg_sha256": "b99df3a30074c1f12bebcc95eecd4d41c8bbba399677af72dfcaf819823f3400",
+        "source_bytes": 2249717,
+        "jpeg_bytes": 151351,
+        "review": "夕焼けの柄ワンピース・全身、締め",
+        "swimwear": false,
+        "swimwear_visibility": null
+      }
+    ],
+    "reserve": [
+      "05",
+      "09",
+      "10",
+      "12"
+    ],
+    "swimwear_count": 3,
+    "swimwear_full_count": 2,
+    "swimwear_exception": "乗り物と海辺の小旅行を一続きの誌面にする旅特集。列車・地図・自転車・乗船前・朝食・展望・夕景の7枚が移動と時間の変化を担う。水着姿は3枚（06は上のみ視認、07・08は上下視認）。船上の服やワンピースを水着に含めない。",
+    "column": {
+      "title": "次の駅、その先の海。",
+      "paragraphs": [
+        "列車の窓に顔を近づけたら、海が見えました。2031年11月、南の海辺を巡る小旅行。乗り換え案内は次の列車を教えてくれるけれど、ホームで地図を広げたら、自転車で行けそうな道が見つかりました。まずはそっちへ。帰りの時間は、今度こそ先に調べました。",
+        "桟橋に着くと、船がすぐ目の前。乗る前に足元を二回踏んで、いざ出発。海辺のテラスでは果物を食べて、木道の先の浜辺を歩きました。砂の上だと自転車よりずっとゆっくりなのに、波が来るたびに足だけは忙しくなります。",
+        "海の見える窓で一杯休んで、手すりから沖を眺めました。夕方になって、ようやく来た道を思い出す余裕ができました。今日は列車も自転車も船も乗れたし、帰りの支度も済んでいます。あとは帰るだけ。なのに、もう一つ隣の駅が気になっています。"
+      ],
+      "authored_by": "weekly_editor",
+      "authored_at": "2026-11-23T20:59:45.929Z",
+      "character_main": "d877f12386aafe635088f2d63c52b5ed9a1a2594",
+      "voice_reference_commit": "14500275316072fc5b9c9abbc1695c01cf605ebd",
+      "voice_reference_path": "drafts/cast-voices/hanase-mio.json",
+      "source": "新規編集稿、過去の本人稿の回収ではない"
+    },
+    "next": "同じissue-003入稿branchへ正規prepareSuppliedCutによる10件の正式receipt、画像review、catalog、editionの差分を作り、現headでpublication-finalizeを保存する。"
   }
 }
