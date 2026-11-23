@@ -162,5 +162,16 @@
       "status": "sources_observed_not_received"
     }
   ],
-  "next_operation": "Recover the same exact source file from authorized producer Library/current runtime with matching bytes and dimensions. Do not infer generation turn or 2026-11-21 identity; save via existing original handoff, checkpoint then remote byte SHA readback, and separately inspect before stock adoption. No replacement or regeneration."
+  "next_operation": "Recover the same exact source file from authorized producer Library/current runtime with matching bytes and dimensions. Do not infer generation turn or 2026-11-21 identity; save via existing original handoff, checkpoint then remote byte SHA readback, and separately inspect before stock adoption. No replacement or regeneration.",
+  "follow_up": {
+    "checked_at": "2026-11-23T08:51:57+00:00",
+    "source_inventory_commit": "9800f777d93edbfbe85e928e70612793949b1d33",
+    "scope": "Existing producer conversation, 2026-11-21 through 2026-11-23; available project draft PNGs and project attachments checked against the eight recorded byte sizes and SHA-256 values.",
+    "observations": [
+      "The producer conversation exposes the inventory JSON and its commit. No original attachment, individual Library link or original download was visible on the corresponding messages.",
+      "No exact original was found among 232 project/attachment PNGs."
+    ],
+    "originals_recovered": 0,
+    "next_operation": "Hold these eight identities until an actual original attachment, resolvable individual Library file, or current readable PNG becomes available. The next producer run can compare that original to this inventory and continue normal checkpoint/readback. Skip the already-completed checks while references are unchanged; keep this hold separate from any other independently sourced stock."
+  }
 }
