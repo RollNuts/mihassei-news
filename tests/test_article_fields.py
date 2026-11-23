@@ -10,6 +10,20 @@ from scripts import build
 
 
 class ArticleFieldTests(unittest.TestCase):
+    def test_fictional_dateline_accepts_exact_milliseconds_and_preserves_local_time(self):
+        before = "2026-11-23T19:30:48"
+        after = "2031-11-23T19:30:48"
+        for source, display in [(".418", ".418"), (".418", ".418000"), (".100000", ".100"),
+                                ("", ".000"), (".000", ""), (".000001", ".000001")]:
+            with self.subTest(source=source, display=display):
+                self.assertTrue(build.matches_fictional_dateline(before + source + "+09:00",
+                                                                 after + display + "+09:00"))
+        for wrong in [after + ".419+09:00", after + ".4180001+09:00", after + ".418+08:00",
+                      "2031-11-23T10:30:48.418+00:00", "2030-11-23T19:30:48.418+09:00"]:
+            with self.subTest(wrong=wrong):
+                self.assertFalse(build.matches_fictional_dateline(before + ".418+09:00", wrong))
+        self.assertFalse(build.matches_fictional_dateline(before + ".418001+09:00", after + ".418+09:00"))
+
     def test_missing_fiction_company_is_reported_by_load_before_rendering(self):
         articles = json.loads((build.BASE / "content/articles.json").read_text(encoding="utf-8"))
         slug = articles[0]["slug"]

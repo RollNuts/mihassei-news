@@ -1,5 +1,72 @@
 [
   {
+    "slug": "island-club-sound-ball-remote-league",
+    "category": "スポーツ",
+    "flash": "海を越えて、初めての対戦",
+    "art": "cards",
+    "fiction_company": "響球リーグ運営会（架空）",
+    "fiction_at": "2031-11-24T07:32:29+09:00",
+    "published_at": "2026-11-24T07:32:29+09:00",
+    "publication_slot": "2026-11-24T07:30:00+09:00",
+    "title": "離島の球技クラブ、島外に出ずリーグ初戦　音を頼りに仮想の球を投げ返す",
+    "summary": "2031年、離島の球技クラブが、海を隔てた本土のチームと初めて公式戦を行った。球の位置を音で伝える新競技で、両会場の選手が実際に体を動かして投げ合う。対戦のたびに船で移動する必要がなくなり、小さな島にもリーグ戦が始まった。",
+    "paragraphs": [
+      "23日夕方、汐岬島の体育館で、地元の球技クラブの選手が右から近づく音に向かって両手を伸ばした。手のひらの小さな端末が震えると、仮想の球を受け取った合図だ。選手が左へ投げる動きをすると、海を隔てた本土の体育館で、その球が飛ぶ音が響いた。島のクラブにとって、これが響球リーグの初めての公式戦だった。",
+      "響球は、実物のボールを使わず、球が空間を移動する音を聞いて受け取り、投げ返す競技だ。選手は一人ずつ区切られた場所に立ち、手の動きをカメラで計測する。球の進む向きと速さは両会場で共有され、受け損なえば相手に一点が入る。目の見え方にかかわらず同じ音と振動でプレーできるよう、球の映像は選手には表示しない。",
+      "音で仮想の球を受け取る遠隔のキャッチボールは、2024年にはすでに体験企画として公開されていた。その後、各地で異なる機器を使っても球の位置や到着時刻が一致する仕組みが整い、響球リーグ運営会は今季、別会場からの参加を正式な試合として認めた。通信が乱れて球の到着時刻に差が出た場合は、審判がその得点を取り消し、同じ条件で投げ直す。",
+      "島ではこれまで、他のクラブとの試合には船代と宿泊費がかかり、年に数回の交流会が精いっぱいだった。遠隔試合なら島の体育館を借りるだけで参加できるが、音響機器の点検や審判の配置には費用がかかる。リーグは共通の機器を貸し出し、参加クラブの会費から保守費をまかなう。島のクラブも会費を払い、練習日に機器を点検する係を置いた。",
+      "初戦を終えた選手たちは、本土の相手と画面越しに挨拶を交わした。直接会う大会は年に一度残し、普段は離れた体育館で対戦を重ねる。島のクラブは来月の対戦日を決めると、今度は船の時刻表ではなく体育館の空き時間だけを確かめた。"
+    ],
+    "source": {
+      "kind": "企業公式技術体験発表",
+      "publisher": "ソニーグループ株式会社",
+      "published_at": "2024-05-08T00:00:00+09:00",
+      "url": "https://www.sony.com/ja/SonyInfo/News/Press/info/202405/001.html",
+      "topic": "ソニーグループは2024年5月8日、視覚障がい者の声をきっかけに開発したXRキャッチボールを5月11日のイベントで東京・横浜をつないで体験できると発表した。仮想の球は音を鳴らし、音のリズムを頼りに受け取る。2031年の汐岬島、響球リーグ、機器の共通化、会費、競技規則、試合と選手は本紙の創作であり、実在企業の競技制度や製品発表ではない。"
+    },
+    "scene_prompt": "Photorealistic horizontal 16:9 Japanese local sports newspaper documentary photograph. Inside a modest island community gymnasium, adult Japanese recreational athletes stand in separate marked safe playing spaces, one athlete reaching both hands toward an imaginary incoming ball, wearing small neutral haptic hand devices, another athlete watching from a separate lane. Simple cameras on tripods at the edge of the gym, ordinary wooden floor, bright indoor daylight, no physical ball, no dramatic holograms, no text or logos, no real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "球技",
+      "遠隔対戦",
+      "離島"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "球技",
+      "遠隔対戦"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "対戦相手は海の向こう。島の体育館にいながら、初めてリーグ戦に出場したクラブの話。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2024年に音を頼りに仮想の球をやりとりする遠隔キャッチボールが体験企画として発表された",
+      "target": "2031年の音と振動で球を扱う遠隔球技リーグに離島のクラブが正式参加する",
+      "action": "島と本土の体育館を共通機器でつなぎ、選手が仮想の球を実際の手の動きで投げ返す",
+      "outcome": "船で移動せず公式戦を行い、島のクラブが通常のリーグ日程に参加する"
+    },
+    "reader_clarity": {
+      "who": "離島の球技クラブ",
+      "action": "島の体育館から本土の選手と音で仮想の球を投げ合い、公式戦に初参加する",
+      "oddity": "移動せず別の体育館の相手と体を動かして競い、リーグ戦へ参加できる"
+    },
+    "behavior_basis": {
+      "motive": "島の選手が遠征費を抑えながら年間を通じて他のクラブと試合をしたい",
+      "ordinary_alternative": "船で遠征して年数回の交流会へ参加する",
+      "why_not": "共通機器を会費で維持すれば頻繁に遠征せず対戦でき、直接会う大会も残せる",
+      "evidence_quote": "島ではこれまで、他のクラブとの試合には船代と宿泊費がかかり、年に数回の交流会が精いっぱいだった。"
+    },
+    "plausibility_basis": {
+      "present_signal": "音を頼りに仮想の球をキャッチする体験が東京と横浜の会場をつないで2024年に発表された",
+      "continuation_force": "遠隔の身体動作と音の位置を共通規格で伝えられる機器が普及し、通信の乱れを判定する競技規則が整う",
+      "future_result": "2031年に島のクラブが本土へ遠征せず通常の公式リーグ戦に参加する"
+    }
+  },
+  {
     "slug": "students-waste-collection-reuse-boxes-win",
     "category": "社会",
     "flash": "拾う量より、出さない工夫",

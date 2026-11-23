@@ -272,6 +272,15 @@ def five_years_later(iso):
     return date.replace(year=date.year + 5).isoformat()
 
 
+def matches_fictional_dateline(published_at, fiction_at):
+    canonical = five_years_later(published_at)
+    if fiction_at == canonical:
+        return True
+    # JavaScript emits milliseconds. Only accept that spelling when it is lossless.
+    expected = datetime.fromisoformat(canonical)
+    return expected.microsecond % 1000 == 0 and fiction_at == expected.isoformat(timespec="milliseconds")
+
+
 def publication_date(a):
     """Real publication date, never the fictional dateline five years ahead."""
     return a.get("published_at") or a["source"]["published_at"][:10]
@@ -380,7 +389,7 @@ def load():
         source = a["source"]
         if not source["url"].startswith("https://"):
             raise ValueError("Source must use HTTPS")
-        if five_years_later(a["published_at"]) != a["fiction_at"]:
+        if not matches_fictional_dateline(a["published_at"], a["fiction_at"]):
             raise ValueError(
                 "Fictional datetime must keep publication month/day/time and shift only "
                 "the year by five: " + a["slug"]
