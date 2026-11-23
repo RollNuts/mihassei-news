@@ -1102,6 +1102,8 @@
     "gallery-cleaner-last-footstep-beat": {"decision":"accepted","article_sha256":"10a9ad23fe453f26a7461be871171a382a72106ec60e9bc0164de2363e5f3586","image_sha256":"6d347d02e8c1b5383cd6879b6ef75d94781a0bab4b3e161e97272efbb6d44f8e","reviewed_at":"2026-11-22T23:08:21.869Z","note":"本文一致: モップを脇に置いた清掃員が壁際の5本目の床帯へ一歩を加え、学芸員が少し離れて見守る。床5帯・小型スピーカー・音響卓が確認できる。撮影らしさ: 肌・作業服の皺・木床の反射・天井照明と影が自然で、過度な発光やCG調、手足の明白な破綻はない。1200×675 JPEGでも足と帯の関係が見え、カードの主題も保たれる。固定候補commitの原本・最終JPEGを照合。"}
   ,
     "students-waste-collection-reuse-boxes-win": {"article_sha256":"0b67397b5ace9ee444210d35d00451ff6f4af2ffeaf88b2d31546f184a8c280d","decision":"accepted","image_sha256":"468284d80aed9251cf52a30dcda0e2d07227e558c3b43aaf3f5f8b07ff07908e","reviewed_at":"2026-11-23T11:19:16.146Z","note":"固定候補commit 86ea9a455dc5ba88127b2e2883be468ae45a4ebbから原PNGと1200×675 JPEGを取得・実表示し、生成直後の原画像とも照合。駅前の二店舗に面した返却場所で制服姿の高校生3人、一人が小さな透明ごみ袋を持ち、一人が共通の持ち帰り容器を返却箱へ戻し、店主が見守る動作を確認。現本文の主役・ごみ拾いと容器返却の対比に合う。夕暮れの自然光と店の照明、布地、肌の陰影、容器の樹脂、路面の質感が現場写真として自然で、主役の手や物の融合等は目立たない。写真は削減数値・正確な重量・勝敗を証明するものではない。保存原本とJPEGの全SHA読戻し済み。"}
+  ,
+    "island-club-sound-ball-remote-league": {"article_sha256":"e1633ddfc3c579aa6e7f4ffcd3240aa3387919fc333155af54df81d640a2c4a0","decision":"accepted","image_sha256":"110f499cec8e799673dfd70f56a66d090f0a5e0e1177a5ca1634cd63b3dae8cc","reviewed_at":"2026-11-23T23:16:25.771Z","note":"固定候補commit 5fc7667d07e044d44d8f3bc0fecec6aec3dea257の原PNGと1200×675 JPEGを取得・実表示し全文と照合。島の体育館の成人選手が両手の小型端末を装着し、実物の球のない空間へ両手を伸ばす場面。後方の別区画の選手と端の三脚カメラ、木床・窓・海の背景を確認。身体動作を計測する音と振動の球技という本文に合う。肌、指、衣服の陰影、床の反射が自然で目立つ融合や余分な球・ホログラム・文字はない。試合の通信や得点、島外の対戦相手をこの写真が証明するとは扱わない。保存原本とJPEGの全SHA読戻し済み。"}
   },
   "version": 1
 }
