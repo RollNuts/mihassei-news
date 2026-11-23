@@ -544,7 +544,7 @@ var PublicationReviewContext = (function () {
         // workflow_run belongs to main. The title locates its candidate; only the
         // trusted step output below can bind the failure to this PR and CI.
         check(Number.isFinite(Date.parse(ci.created_at)), "ci_creation_time_unverified");
-        const listing = await get("/actions/workflows/verify-public-photos.yml/runs?event=workflow_run&branch=main&created="
+        const listing = await get("/actions/runs?event=workflow_run&branch=main&status=failure&created="
           + encodeURIComponent(">=" + ci.created_at) + "&per_page=100");
         check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
           && listing.total_count <= 100, "story_finalizer_inventory_incomplete");

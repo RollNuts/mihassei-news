@@ -511,8 +511,8 @@ function stoppedStory() {
     tested_main: BASE, current_main: REF };
   w.setFinalizerOutcome(outcome);
   w.hook = ({ route, url }) => {
-    if (route === "/actions/workflows/verify-public-photos.yml/runs") {
-      assert.equal(url.searchParams.get("event"), "workflow_run");
+    if (route === "/actions/runs" && url.searchParams.get("event") === "workflow_run") {
+      assert.equal(url.searchParams.get("status"), "failure");
       assert.equal(url.searchParams.get("branch"), "main");
       assert.equal(url.searchParams.get("created"), ">=" + ci.created_at);
       return { total_count: 2, workflow_runs: [{ ...finalizer, id: 109, display_title: "Another PR" }, finalizer] };
@@ -555,7 +555,7 @@ test("a title, unbound failure, active finalizer or a changed story never establ
     ? { ...changed.pr, body: "" } : undefined;
   assert.equal((await changed.read()).reason, "pr_changed_during_snapshot");
   const incomplete = stoppedStory().w;
-  incomplete.hook = ({ route }) => route === "/actions/workflows/verify-public-photos.yml/runs"
+  incomplete.hook = ({ route, url }) => route === "/actions/runs" && url.searchParams.get("event") === "workflow_run"
     ? { total_count: 101, workflow_runs: [incomplete.runs.get(102)] } : undefined;
   assert.equal((await incomplete.read({ finalizer_run_id: undefined })).reason, "story_finalizer_inventory_incomplete");
 });
