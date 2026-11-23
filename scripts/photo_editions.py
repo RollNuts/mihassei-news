@@ -392,7 +392,8 @@ def load_photo_editions(root=ROOT, *, catalog, published, now=None):
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Freeze one photo edition order using read-only PV observations")
     parser.add_argument("--catalog", type=Path, default=ROOT / "content/photo_issues.json")
-    parser.add_argument("--publication-date", required=True)
+    parser.add_argument("--publication-date", required=True,
+                        help="Actual JST date (YYYY-MM-DD); --daily uses its Sunday-start week")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--previous", type=Path)
     parser.add_argument("--seed")
@@ -403,16 +404,20 @@ def main(argv=None):
     roster = [model["id"] for model in catalog["models"]]
     if args.daily and (args.daily_bootstrap or args.previous):
         raise ValueError("A daily shuffle uses neither PV bootstrap nor a previous order")
+    schedule_date = args.publication_date
+    if args.daily:
+        day = _date(args.publication_date)
+        schedule_date = (day - timedelta(days=(day.weekday() + 1) % 7)).isoformat()
     if args.output.is_symlink():
         raise ValueError("A frozen order output cannot be a symlink")
     if args.output.exists():
         snapshot = (validate_daily_schedule if args.daily else validate_order_snapshot)(
             json.loads(args.output.read_text(encoding="utf-8")), roster)
-        if snapshot["week_start_date_jst" if args.daily else "publication_date_jst"] != args.publication_date:
+        if snapshot["week_start_date_jst" if args.daily else "publication_date_jst"] != schedule_date:
             raise ValueError("Existing frozen order belongs to another publication date")
     else:
         previous = json.loads(args.previous.read_text(encoding="utf-8"))["order"] if args.previous else []
-        snapshot = (freeze_daily_schedule(catalog, args.publication_date, seed=args.seed) if args.daily else
+        snapshot = (freeze_daily_schedule(catalog, schedule_date, seed=args.seed) if args.daily else
                     freeze_order(catalog, publication_day=args.publication_date, previous_order=previous,
                                  seed=args.seed, daily_bootstrap=args.daily_bootstrap))
         args.output.parent.mkdir(parents=True, exist_ok=True)

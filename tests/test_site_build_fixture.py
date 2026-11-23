@@ -66,36 +66,44 @@ class CISelectionTests(unittest.TestCase):
             self.assertTrue(fixture.native_image_engine_tests_required(
                 [("M", "content/future-data.json")], "pull_request"))
 
-    def test_editorial_handoff_scope_requires_only_edits_to_the_two_internal_files_on_a_pr(self):
+    def test_editorial_doc_scope_requires_only_modifications_to_listed_files(self):
         brief = "docs/DAILY_EDITORIAL_BRIEF.md"
         ideas = "docs/EDITORIAL_IDEAS.md"
+        guide = "docs/SERIAL_EDITING_GUIDE.md"
         expected = {"tests.test_site", "tests.test_site_build_fixture",
                     "tests.test_publication_finalize", "tests.test_review_release_guard"}
-        for changes in ([("M", brief)], [("M", ideas)], [("M", brief), ("M", ideas)]):
-            command = fixture.python_test_command(changes, "pull_request")
-            self.assertEqual(command[4], "tests.test_site")
-            self.assertEqual(set(command[4:]), expected)
-            self.assertFalse(fixture.native_image_engine_tests_required(changes, "pull_request"))
-            for event in ("push", "workflow_dispatch", None):
+        for changes in ([("M", brief)], [("M", ideas)], [("M", guide)],
+                        [("M", brief), ("M", ideas)], [("M", brief), ("M", guide)]):
+            for event in ("pull_request", "push"):
+                with self.subTest(changes=changes, event=event):
+                    command = fixture.python_test_command(changes, event)
+                    self.assertEqual(command[4], "tests.test_site")
+                    self.assertEqual(set(command[4:]), expected)
+                    self.assertFalse(fixture.native_image_engine_tests_required(changes, event))
+            for event in ("workflow_dispatch", None):
                 self.assertIn("discover", fixture.python_test_command(changes, event))
                 self.assertTrue(fixture.native_image_engine_tests_required(changes, event))
         other_files = ("content/articles.json", "content/market_bulletins.json", fixture.PHOTO_STORY_PATH,
-                       "docs/OPERATIONS.md", "docs/DAILY_EDITORIAL_BRIEF.md.bak",
+                       "docs/OPERATIONS.md", "docs/EDITORIAL_LOOP.md", "docs/SERIAL_EDITING_GUIDE.md.bak",
+                       "docs/DAILY_EDITORIAL_BRIEF.md.bak",
                        "scripts/build.py", "tests/site_build_fixture.py", ".github/workflows/check.yml")
         unsafe = [None, []]
-        unsafe.extend([("M", brief), ("M", path)] for path in other_files)
+        unsafe.extend([("M", doc), ("M", path)] for doc in (brief, guide) for path in other_files)
+        unsafe.extend([(status, guide)] for status in ("A", "D", "T", "R100"))
         unsafe.extend([(status, ideas)] for status in ("A", "D", "T", "R100", "?"))
         for changes in unsafe:
-            with self.subTest(changes=changes):
-                self.assertIn("discover", fixture.python_test_command(changes, "pull_request"))
-                self.assertTrue(fixture.native_image_engine_tests_required(changes, "pull_request"))
+            for event in ("pull_request", "push"):
+                with self.subTest(changes=changes, event=event):
+                    self.assertIn("discover", fixture.python_test_command(changes, event))
+                    self.assertTrue(fixture.native_image_engine_tests_required(changes, event))
 
     def test_workflow_output_is_explicit_and_missing_output_keeps_native_tests(self):
         cases = [("pull_request", [("M", fixture.PHOTO_STORY_PATH)], "false"),
                  ("pull_request", [("M", "content/market_bulletins.json")], "false"),
                  ("push", [("M", fixture.PHOTO_STORY_PATH)], "true"),
                  ("pull_request", [("M", "docs/DAILY_EDITORIAL_BRIEF.md")], "false"),
-                 ("push", [("M", "docs/DAILY_EDITORIAL_BRIEF.md")], "true"),
+                 ("push", [("M", "docs/DAILY_EDITORIAL_BRIEF.md")], "false"),
+                 ("push", [("M", "docs/SERIAL_EDITING_GUIDE.md")], "false"),
                  ("pull_request", None, "true"), ("pull_request", [], "true")]
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder) / "github-output"

@@ -46,12 +46,35 @@ var CastStoryContext = (function () {
     return result;
   }
 
+  function indexStories(stories, modelId, clock) {
+    if (!object(stories) || stories.schema_version !== 1 || !Array.isArray(stories.stories)
+        || !SLUG.test(modelId || "")) throw Error("Invalid creator context inputs");
+    const day = jstDay(clock), records = [], ids = new Set(), todayIds = [];
+    let futureToday = 0;
+    for (const story of stories.stories) {
+      if (!object(story)) throw Error("Invalid story record");
+      if (story.model_id !== modelId) continue;
+      const time = stamp(story.published_at);
+      const id = text(story.id, 100, "creator story ID");
+      if (!SLUG.test(id) || ids.has(id)) throw Error("Invalid or duplicate creator story ID");
+      ids.add(id);
+      if (time <= clock) records.push({ story, time });
+      if (jstDay(time) !== day) continue;
+      if (time <= clock) todayIds.push(id);
+      else futureToday++;
+    }
+    return { records, daily: { jst_day: day, today_has_record: todayIds.length + futureToday > 0,
+      today_story_ids: todayIds.sort(), future_today_record_count: futureToday } };
+  }
+
   function build({ catalog, stories, modelId, now } = {}) {
-    const clock = stamp(now), day = jstDay(clock);
+    const clock = stamp(now);
+    return creatorContext(catalog, indexStories(stories, modelId, clock), modelId, now, clock);
+  }
+
+  function creatorContext(catalog, index, modelId, now, clock) {
     if (!object(catalog) || catalog.schema_version !== 1 || !Array.isArray(catalog.models)
-        || !Array.isArray(catalog.issues) || !object(stories) || stories.schema_version !== 1
-        || !Array.isArray(stories.stories) || !SLUG.test(modelId || ""))
-      throw Error("Invalid creator context inputs");
+        || !Array.isArray(catalog.issues)) throw Error("Invalid creator context inputs");
     const matches = catalog.models.filter(model => object(model) && model.id === modelId);
     const model = matches[0];
     if (matches.length !== 1 || model.fictional !== true || !Number.isInteger(model.age)
@@ -98,21 +121,9 @@ var CastStoryContext = (function () {
       }
     }
 
-    const own = [], todayIds = [], used = new Map(), storyIds = new Set();
-    let todayHasRecord = false, futureTodayCount = 0, excludedStoryCount = 0;
-    for (const story of stories.stories) {
-      if (!object(story)) throw Error("Invalid story record");
-      if (story.model_id !== modelId) continue;
-      const time = stamp(story.published_at);
-      const id = text(story.id, 100, "creator story ID");
-      if (!SLUG.test(id) || storyIds.has(id)) throw Error("Invalid or duplicate creator story ID");
-      storyIds.add(id);
-      if (jstDay(time) === day) {
-        todayHasRecord = true;
-        if (time <= clock) todayIds.push(id);
-        else futureTodayCount++;
-      }
-      if (time > clock) continue;
+    const own = [], used = new Map();
+    let excludedStoryCount = 0;
+    for (const { story, time } of index.records) {
       const source = story.source;
       const photo = object(source) && bindings.get(source.issue_slug + "/" + source.cut_id + "/" + source.image_sha256);
       if (!photo || story.setting?.year !== photo.setting.year || story.setting?.month !== photo.setting.month) {
@@ -121,7 +132,7 @@ var CastStoryContext = (function () {
       }
       const body = text(story.text, 180, "creator story text");
       used.set(source.image_sha256, Math.max(used.get(source.image_sha256) ?? -Infinity, time));
-      own.push({ time, story: { id, published_at: story.published_at, text: body,
+      own.push({ time, story: { id: story.id, published_at: story.published_at, text: body,
         source: { issue_slug: source.issue_slug, cut_id: source.cut_id, image_sha256: source.image_sha256 } } });
     }
     own.sort((a, b) => b.time - a.time || compare(a.story.id, b.story.id));
@@ -141,16 +152,15 @@ var CastStoryContext = (function () {
       distinct.push(photo);
     }
     return { schema_version: 1, verification: "metadata_only", image_bytes_verified: false,
-      open_prs: "unknown", as_of: now, jst_day: day, model: persona,
-      today_has_record: todayHasRecord, today_story_ids: todayIds.sort(),
-      future_today_record_count: futureTodayCount, recent_stories: own.slice(0, 3).map(row => row.story),
+      open_prs: "unknown", as_of: now, ...index.daily, model: persona,
+      recent_stories: own.slice(0, 3).map(row => row.story),
       excluded_story_record_count: excludedStoryCount, photo_candidate_count: distinct.length,
       photos: distinct.slice(0, 5) };
   }
   function filePayload(reply, path) {
     let data = reply;
     for (let depth = 0; depth < 4; depth++) {
-      if (!object(data) || data.isError || data.error || data.error_code)
+      if (!object(data) || data.isError || data.error || data.error_code || data.truncated || data.content_truncated)
         throw Error("GitHub fetch_file failed: " + path);
       if (data.structuredContent !== undefined) { data = data.structuredContent; continue; }
       if (data.result !== undefined) { data = data.result; continue; }
@@ -161,22 +171,26 @@ var CastStoryContext = (function () {
     }
     throw Error("Unrecognized GitHub fetch_file response: " + path);
   }
-  async function read({ fetchFile, ref, modelId, now } = {}) {
-    // Pin every input to one commit, including the file the creator will append.
-    stamp(now);
-    if (typeof fetchFile !== "function" || !GIT.test(ref || "") || !SLUG.test(modelId || ""))
+  async function read({ fetchFile, ref, modelId, now, skipIfRecorded = false } = {}) {
+    const clock = stamp(now);
+    if (typeof fetchFile !== "function" || !GIT.test(ref || "") || !SLUG.test(modelId || "")
+        || typeof skipIfRecorded !== "boolean")
       throw Error("Provide fetchFile, a full immutable commit SHA, and a creator ID");
     const repository = "RollNuts/mihassei-news";
     const storyPath = "content/photo_stories/" + modelId + ".json";
-    const paths = ["content/photo_issues.json", "content/photo_stories.json", storyPath];
-    const replies = await Promise.allSettled(paths.map(path => Promise.resolve().then(() => fetchFile({
-      repository_full_name: repository, path, ref, encoding: "utf-8"
-    }))));
-    const files = replies.map((reply, index) => {
-      if (reply.status !== "fulfilled") throw Error("GitHub fetch_file failed: " + paths[index]);
-      return filePayload(reply.value, paths[index]);
-    });
-    const history = JSON.parse(files[1].content), stream = JSON.parse(files[2].content);
+    const catalogPath = "content/photo_issues.json", historyPath = "content/photo_stories.json";
+    const source = { repository, ref, story_path: storyPath, blob_shas: {} };
+    async function load(path) {
+      let reply;
+      try { reply = await fetchFile({ repository_full_name: repository, path, ref, encoding: "utf-8" }); }
+      catch (_) { throw Error("GitHub fetch_file failed: " + path); }
+      const file = filePayload(reply, path);
+      source.blob_shas[path] = file.sha;
+      return JSON.parse(file.content);
+    }
+    const [catalog, history, stream] = await Promise.all([
+      skipIfRecorded ? undefined : load(catalogPath), load(historyPath), load(storyPath)
+    ]);
     for (const doc of [history, stream]) {
       if (!object(doc) || doc.schema_version !== 1 || !Array.isArray(doc.stories))
         throw Error("Invalid creator story catalog");
@@ -184,9 +198,13 @@ var CastStoryContext = (function () {
     if (stream.stories.some(row => !object(row) || row.model_id !== modelId))
       throw Error("Creator story file contains another model");
     const stories = { schema_version: 1, stories: history.stories.concat(stream.stories) };
-    const result = build({ catalog: JSON.parse(files[0].content), stories, modelId, now });
-    return { ...result, source: { repository, ref, story_path: storyPath,
-      blob_shas: Object.fromEntries(paths.map((path, index) => [path, files[index].sha])) } };
+    const index = indexStories(stories, modelId, clock);
+    if (skipIfRecorded && index.daily.today_has_record) {
+      return { schema_version: 1, verification: "story_records_only", image_bytes_verified: false,
+        open_prs: "unknown", as_of: now, model_id: modelId, ...index.daily, source };
+    }
+    const result = creatorContext(skipIfRecorded ? await load(catalogPath) : catalog, index, modelId, now, clock);
+    return { ...result, source };
   }
   return Object.freeze({ build, read });
 })();

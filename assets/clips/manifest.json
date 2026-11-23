@@ -234,6 +234,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-21T16:32:36.937813+00:00"
+    },
+    "private-rocket-town-satellite-first-ocean-image": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "d2de5961397d86bba41e6109cbdf975faca0f23476243cf0d418f71cdc7172a6",
+      "image_sha256": "16f99ca8ed56e37ae400483f624f00a84046a91dbe5763587d05bb871ea8548b",
+      "sha256": "895907bb007c05d489f2f14ffedf279465ad161dfce41f7ffdb6ef7a6d35ba09",
+      "bytes": 151681,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-22T23:11:44.316246+00:00"
     }
   }
 }

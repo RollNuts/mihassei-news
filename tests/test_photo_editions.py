@@ -325,15 +325,21 @@ class DailyPhotoScheduleTests(unittest.TestCase):
         self.assertEqual(result["published_at"], "2026-11-16T14:00:00+09:00")
         self.assertEqual(result["modified_at"], "2026-11-17T14:00:00+09:00")
 
-    def test_cli_reuses_saved_week_without_drawing_again(self):
+    def test_daily_cli_freezes_the_current_week_and_reuses_it_only_within_that_week(self):
         source, target = self.root / "catalog.json", self.root / "schedule.json"
-        source.write_text(json.dumps(self.catalog))
-        args = ["--catalog", str(source), "--publication-date", DAY, "--output", str(target), "--daily", "--seed", SEED]
+        source.write_text(json.dumps({"models": [{"id": model_id} for model_id in IDS]}))
+        args = ["--catalog", str(source), "--output", str(target), "--daily", "--publication-date"]
         with redirect_stdout(io.StringIO()):
-            p.main(args)
+            p.main([*args, "2026-11-24", "--seed", SEED])
         original = target.read_bytes()
+        schedule = p.validate_daily_schedule(json.loads(original), IDS)
+        self.assertEqual(schedule["week_start_date_jst"], "2026-11-22")
+        self.assertEqual(schedule["seed"], SEED)
         with patch.object(p.secrets, "token_hex", side_effect=AssertionError("must not redraw")), redirect_stdout(io.StringIO()):
-            p.main(args[:-2])
+            for day in ("2026-11-22", "2026-11-28"):
+                p.main([*args, day])
+            with self.assertRaisesRegex(ValueError, "another publication date"):
+                p.main([*args, "2026-11-29"])
         self.assertEqual(target.read_bytes(), original)
 
 

@@ -927,11 +927,15 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     call.args.branch_name.startsWith(claimBranchPrefix)).length;
   await failure(() => external.service.reserveExternalGeneration(external.plan, gateOptions(external, externalCounts)),
     "same service cannot reserve the same external generation again");
+  const existingClaimWrites = external.mock.writes().length, existingProbeReads = externalCounts.reads;
   const externalFresh = stageAPI.create({runtime: external.measuredRuntime, github: external.mock.github, repository});
   await failure(() => externalFresh.reserveExternalGeneration(external.plan, gateOptions(external, externalCounts)),
     "fresh service cannot acquire the existing external generation claim");
   assert(claimCreates() === 1 && externalCounts.generated === 0 && !external.mock.branches.has(external.branch),
     "repeated external reservations neither replace the durable claim nor invoke a supplied generator");
+
+  assert(external.mock.writes().length === existingClaimWrites && externalCounts.reads === existingProbeReads,
+    "an existing external claim stops before probe I/O and Git writes");
 
   const externalInput = {...external.input, observedAt: new Date().toISOString(),
     transportPreflight: reserved.transportPreflight, generationClaim: externalClaim};
@@ -1370,6 +1374,17 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
       const mutations = calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref").length;
       assert(toolCalls <= 15 && mutations <= 2,
         "compact cold step respects 15 actual callbacks and two mutations (actual " + toolCalls + "/" + mutations + ")");
+      if (result && ["preflight_verify_commit", "preflight_verify_branch"].includes(checkpoint?.phase)) {
+        const onBranch = checkpoint.phase === "preflight_verify_branch";
+        const ref = onBranch ? preflightBranch : checkpoint.commitSha;
+        const paths = ["probe.png", "probe.jpg", "receipt.json"].map(file => preflightPrefix + file)
+          .concat(Object.keys(protectedRaw)).slice(checkpoint.verifyIndex);
+        const reads = calls.filter(call => call.name === "fetch_file").map(call => call.args);
+        assert(reads.length === paths.length && reads.every((args, i) => args.ref === ref && args.path === paths[i]) &&
+          mutations === 0 && toolCalls === paths.length + Number(onBranch) &&
+          result.phase === (onBranch ? "claim_prepare" : "preflight_publish"),
+          "one read-only cell verifies all remaining probe and protected paths on the expected ref");
+      }
       if (result) assert(result.tool_calls === toolCalls && result.mutations === mutations,
         "compact counters include actual connector and original-file rehydration callbacks");
     }
@@ -1383,7 +1398,7 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
       const result = await compactCall(context, method, metadata, checkpoint);
       if (result.status !== "pending") {
         assert(result.status === "reserved" || result.status === "saved", "compact steps finish with verified reservation or candidate");
-        return {result, checkpoint};
+        return {result, checkpoint, steps: step + 1};
       }
       const serialized = JSON.stringify(result.checkpoint);
       assert(serialized !== previous, "compact step advances its restored metadata checkpoint");
@@ -1404,6 +1419,7 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     return response;
   };
   const compactReserved = await compactDrive(compact, "reserveExternalGenerationStep", compactReservationOptions(compact));
+  assert(compactReserved.steps === 11, "an uninterrupted compact reservation takes eleven cold cells");
   assert(compactReserved.result.status === "reserved" && compact.mock.calls.some(call =>
     call.name === "fetch" && call.args.url.endsWith("/git/trees/" + nextMainTree + "?recursive=1")) &&
     compact.mock.calls.at(-1).args.url.endsWith("/actions/workflows/free-cpu-scenes.yml"),
@@ -1412,6 +1428,41 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     "compact reservation tests synthetic transport without saving an article candidate");
   await failure(() => compactCall(compact, "reserveExternalGenerationStep", compactReservationOptions(compact),
     compactReserved.checkpoint), "compact final-claim replay cannot regain generation permission");
+
+  const duplicateCalls = compact.mock.calls.length, duplicateReads = compact.stepCounters.reads;
+  const duplicate = await failure(() => compactCall(compact, "reserveExternalGenerationStep", compactReservationOptions(compact)),
+    "fresh compact reservation detects the existing claim in its first step");
+  const duplicateLookups = compact.mock.calls.slice(duplicateCalls);
+  assert(duplicate.stage === "bounded_lookup" && duplicate.message.includes("already reserved") &&
+    duplicateReads === compact.stepCounters.reads && duplicateLookups.length === 3 &&
+    duplicateLookups.every(call => call.name === "fetch_file") &&
+    duplicateLookups[1].args.ref === claimBranchPrefix + compact.plan.identity,
+    "an uncertain generation is recovery-only with no second byte probe, shared branch change, or generation");
+  const interruptedRead = await compactContext("resume-partial-preflight");
+  const readOptions = compactReservationOptions(interruptedRead);
+  const readFile = interruptedRead.mock.github.fetch_file;
+  let corruptReceipt, preflightCheckpoint;
+  interruptedRead.mock.github.fetch_file = async args => {
+    const response = await readFile(args);
+    if (corruptReceipt && args.path === preflightPrefix + "receipt.json" && response.structuredContent.content)
+      response.structuredContent.content += "changed";
+    return response;
+  };
+  for (const phase of ["preflight_verify_commit", "preflight_verify_branch"]) {
+    corruptReceipt = true;
+    const error = await failure(() => compactDrive(interruptedRead, "reserveExternalGenerationStep",
+      readOptions, preflightCheckpoint), phase + " rejects changed bytes midway through readback");
+    assert(error.message.includes("readback mismatch") && error.checkpoint.phase === phase &&
+      error.checkpoint.verifyIndex === 2 && !interruptedRead.mock.branches.has(claimBranchPrefix + interruptedRead.plan.identity),
+      phase + " retains the same two-file checkpoint used by earlier reservations before granting a claim");
+    corruptReceipt = false;
+    const resumed = await compactCall(interruptedRead, "reserveExternalGenerationStep", readOptions, error.checkpoint);
+    preflightCheckpoint = resumed.checkpoint;
+  }
+  const recoveredPreflight = await compactDrive(interruptedRead, "reserveExternalGenerationStep", readOptions, preflightCheckpoint);
+  assert(recoveredPreflight.result.status === "reserved" && interruptedRead.stepCounters.generated === 0,
+    "resumed preflight readbacks reach the guarded claim without generating");
+
   const compactFirstTime = new Date().toISOString();
   const compactStageInput = {compact: true, originalSourceRef: compact.originalRef,
     imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(fourMiBPng)}, observedAt: compactFirstTime,

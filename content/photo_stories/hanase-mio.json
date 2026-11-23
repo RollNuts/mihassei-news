@@ -45,6 +45,21 @@
         "cut_id": "01",
         "image_sha256": "9b601339697f153da340b25ee4b5c68be3d6fd0f0d1e9221aecc0c50f92df7e3"
       }
+    },
+    {
+      "id": "hanase-mio-post-20261123113744518",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-23T11:37:44.518+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、木工体験で小さな棚を組み立てた。板を支えたままネジを回そうとして、手が一本足りない。膝でそっと押さえたら、ようやく一段目ができた。",
+      "source": {
+        "issue_slug": "november-city-evening-mio-012",
+        "cut_id": "07",
+        "image_sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2"
+      }
     }
   ]
 }

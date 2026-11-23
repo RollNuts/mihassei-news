@@ -60,6 +60,21 @@
         "cut_id": "03",
         "image_sha256": "9dbe0a8f4bf88cb675e9fd1244f9cc449ec69706000b745cd6710006aab77947"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261123135827352",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-23T13:58:27.352+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後、古い劇場の資料室で紐のかかったスケッチ帳を見せてもらった。舞台袖の光まで描かれていて、ページを閉じるのが少し惜しかった。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "06",
+        "image_sha256": "ce3f082f9d399a5a2535412130d48a473c9485cb88136cb325b0e7e07bea561d"
+      }
     }
   ]
 }

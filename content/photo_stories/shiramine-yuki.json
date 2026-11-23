@@ -60,6 +60,21 @@
         "cut_id": "10",
         "image_sha256": "0c48c0c898332c12b94df01a7629106513d4445644fe7c6b60e2efa6fbd1dcc0"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261123181727352",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-23T18:17:27.352+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夕方、港の時刻表を見たら、明日の渡し船は思ったより早い便。手帳の隅に時刻を書いて、コートのポケットにしまいました。",
+      "source": {
+        "issue_slug": "november-warm-water-and-riverside-yuki-009",
+        "cut_id": "02",
+        "image_sha256": "5d69fc31719001f483bf85c3a9beee491b80eb82e72876ffa7636c3bc6c84e08"
+      }
     }
   ]
 }

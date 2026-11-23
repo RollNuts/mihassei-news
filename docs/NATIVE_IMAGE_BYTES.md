@@ -8,7 +8,7 @@ Cloud image operations use the live GitHub image-workflow stop state defined in 
 
 When the native generator is available only as a top-level tool outside code mode, use `reserveExternalGenerationStep` → one actual native tool call → `stageReservedStep`. The reservation reads an existing PNG through the actual byte callback, converts it, saves and reads back PNG/JPEG hashes, acquires a durable create-only claim, and rechecks the stop state before returning. `stageReservedStep` verifies that persisted claim and its immutable preflight against the original plan before using the existing storage path. If the generator is actually callable inside code mode, `generateAndStage` remains a convenience wrapper over the same reservation checks. Neither path generates after a failed check; a saved candidate is recovered first.
 
-`scripts/native_image_stage.js` uses one isolated `native-image-preflight/transport` branch for the transport sample. Each reservation attempt repeats the actual transfer and advances that branch with an expected-head, non-forced update; it never uses an earlier pass to authorize a different worker. Concurrent changes stop the check. The sample receipt has kind `native_image_transport_preflight`, never an article candidate, generation claim or visual approval. Its PNG is at most 512 KiB. This checks the tested route and size, not unlimited future transfers. The actual generated image still receives all ordinary integrity and readback checks.
+`scripts/native_image_stage.js` uses one isolated `native-image-preflight/transport` branch for the transport sample. A fresh reservation checks for a saved candidate and an existing claim before transferring the probe. When another worker already holds the claim, recovery reads the candidate and leaves the shared probe branch untouched. For an unclaimed plan, the worker performs its own transfer and advances the probe branch with an expected-head, non-forced update. Concurrent changes stop the check. The sample receipt has kind `native_image_transport_preflight`, never an article candidate, generation claim or visual approval. Its PNG is at most 512 KiB. This checks the tested route and size, not unlimited future transfers. The actual generated image still receives all ordinary integrity and readback checks.
 
 After the preflight, the entry point checks the candidate again, then atomically creates `native-image-generation-claim/<plan.identity>` before permitting the one generator call. Ownership requires a successful create response naming that branch, the exact commit SHA from the subsequent Git ref lookup, and matching file readback. An existing reservation blocks another worker or a fresh runtime from generating the same plan; a candidate completed during the check is recovered instead. A lost or malformed creation response does not establish ownership. The receipt's `reserved_generation_unconfirmed` status does not prove that the generator was called or completed. Reservations have no automatic expiry, replacement or deletion; use the recorded source/checkpoint for recovery, without changing the originating identity to bypass the reservation. Candidate and reservation branches remain separate, so recovery with `stage/resume/load` does not require creating a new claim.
 
@@ -406,6 +406,22 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 
 
+<a id="weekly-photo-quota"></a>
+### Reserve one original in the producer’s weekly allowance
+
+Use this only when the [stock rule](EDITORIAL_LOOP.md#写真ストックと制作量) calls for a new original, after recovering outstanding files and verifying that the current execution can save and read back an actual original through its available transport. Previously received originals can go straight to the existing handoff. Load `scripts/photo_generation_quota.js` from reviewed main inside code mode. Bind `fetch`, `fetch_file`, `create_branch`, `create_file` and `update_file` from the existing GitHub connection, plus the live `stager.cloudStatus` used for original handoffs.
+
+```js
+const Q = new Function(quotaSource + "\nreturn PhotoGenerationQuota;")();
+const quota = Q.create({github, cloudStatus: stager.cloudStatus});
+// Reuse the same input and checkpoint across cells. Keep helper source and GitHub responses private.
+const next = await quota.reserveStep(input, checkpoint);
+```
+
+`input` identifies the registered `model_id`, `source_chat_url`, actual `run_id`, its offset-qualified `run_started_at`, and the stable `attempt_id` for one planned original. For `pending`, pass `next.checkpoint` to the next cell with the unchanged input; repeat only on a returned next phase. After an ambiguous write, look up that same attempt again. Preserve its ID across task retries. Only a fresh `may_generate === true` permits one call producing one original. Record an observed result with `finishStep` on the same week, run and attempt, using `week_start` from the reservation, `status` (`succeeded`, `failed` or `interrupted`) and `result_ref` pointing to the actual receipt or observed outcome. A reserved attempt with no confirmed result remains charged. Preserve existing original and checkpoint references for recovery.
+
+Each producer has one `photo-issue-plan/stock-<model_id>-<JST Sunday YYYY-MM-DD>` reservation branch per week. Keep that branch and its ledger intact for the week. If either is known to be lost, recover its original Git history before granting any further attempts. Keep the receipt and images for each shoot on its own existing candidate branch. Starting with the first eligible full week (2026-11-29 JST), the helper checks that the common policy had already reached main before that Sunday. During transition, initialize only with a reconciled baseline covering the actual earlier calls and parallel candidates. Pass `baseline = {mode:"reconciled", model_id, week_start, coverage_ref, prior_attempts}`. The producer must inspect `coverage_ref` for the full interval and parallel attempts. Each known prior attempt has `run_id`, `attempt_id`, `units` and `evidence_ref`; failed and interrupted attempts count. Even an empty `prior_attempts` needs evidence of complete coverage. A missing reservation file, an empty image inventory or an unknown chat history cannot establish a zero baseline. Pass only the compact outcome to the task log; keep the checkpoint in code mode.
+
 <a id="photo-original-handoff"></a>
 ### Existing weekly photo originals
 
@@ -580,24 +596,55 @@ image("data:image/jpeg;base64," + runtime.toBase64(verified.bytes));
 
 On an interrupted ref update, recover with the same plan. The immutable JPEG path, SHA and source receipt are the editor's handoff. Only count the cut after its committed bytes have been read and inspected alongside the source. A blob or staging receipt alone is not acceptance. Use [the weekly editorial process](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠) for the column, formal selection and publication.
 
-For a selected individual Library file or producer-chat photo, use `original.prepareSuppliedCut` once per cut. Load `producer` from that model's existing `cast-source-drafts:drafts/cast-voices/<model_id>.json`. Use the frozen `issue`, the original candidate commit and the measured import time. Keep the source ordinal separate from the position on the page. In [issue 002, cut 09](https://github.com/RollNuts/mihassei-news/blob/778e50922ae5740e4f6d328ad4e3128b2aa434a5/maintenance/photo-issues/november-coast-city-rio-015/09/receipt-supplied-914dc376be35-ce649a006a9b.json), original 03 became published cut 09.
+For a selected Library original, a member of an existing Library ZIP, or a producer-chat photo, use `original.prepareSuppliedCut` once per cut. Load `producer` from that model's existing `cast-source-drafts:drafts/cast-voices/<model_id>.json`. Use the frozen `issue`, the original candidate commit and the measured import time. Keep the source ordinal separate from the position on the page. In [issue 002, cut 09](https://github.com/RollNuts/mihassei-news/blob/778e50922ae5740e4f6d328ad4e3128b2aa434a5/maintenance/photo-issues/november-coast-city-rio-015/09/receipt-supplied-914dc376be35-ce649a006a9b.json), original 03 became published cut 09.
 
 ```js
+// On a fixed handoff with ready-to-use candidates, select the reviewed JPEG by its exact path.
+// Two source archives can use the same original number.
+const matches = handoff.candidates.filter(row => row.jpeg.path === reviewedJpegPath);
+if (matches.length !== 1) throw Error("Expected one reviewed candidate at the pinned commit");
+const candidate = matches[0];
 const cut = original.prepareSuppliedCut({
   issue, cutId, producer, importedAt,
-  candidate: {issue: handoff.issue_candidate, model_id: handoff.model_id, source_chat_url: handoff.source_chat_url,
-    commit, source_ordinal, handoff_path, source, jpeg, transform, encoding_details},
-  readback: {commit, source_ordinal, image_bytes_verified: true,
+  candidate: {...candidate, commit},
+  readback: {commit, source_ordinal: candidate.source_ordinal, image_bytes_verified: true,
     source: {...measuredOriginal, data: originalBytes}, jpeg: {...measuredJpeg, data: jpegBytes}}
 });
 ```
 
-Take `source`, `jpeg` and the actual encoder settings from the candidate. Each measured record carries its pinned candidate path, Git blob ID (`blob`), SHA-256, byte length and dimensions. For the original, keep its observed Library link (and the file ID on individual file URLs) or its registered chat URL, turn and image number. Retrieve both byte arrays before calling the helper. GitHub Contents can return a blob ID and empty content for a whole PNG over 1 MiB. In that case use the existing split-original readback or the matching original from the producer's Library or chat. For a split original, verify the whole file and store the complete blob before using its ID. Use the per-file SHA from the fixed candidate for the comparison. Keep bytes inside code mode. `cut.files` contains two existing blob references and the formal receipt text for GitHub `create_tree`. `cut.image` carries the receipt SHA for the catalog. Add the actual visual review separately after inspecting the release files.
+For an older handoff for the **same** shoot, take the selected file, original ordinal and actual conversion settings from its fixed receipt.
+
+Read both files inside code mode. Each measured record carries its pinned path, Git blob ID (`blob`), SHA-256, length and dimensions. Keep the observed Library link and file ID or the registered chat URL, turn and image number. If GitHub Contents omits a large numbered PNG, [read its bytes at the candidate commit](IMAGE_CANDIDATE_RECEIVER.md#reading-a-saved-weekly-original). For a split original, verify the reassembled file and store its complete blob before using its ID. `cut.files` contains two existing blob references and the formal receipt text for GitHub `create_tree`. `cut.image` carries the receipt SHA for the catalog. Add the actual visual review separately after inspecting the release files.
+
+#### Stock received before a feature was assigned
+
+For a [producer handoff with `source_candidate_only: true` and a null publication number](https://github.com/RollNuts/mihassei-news/blob/fe276d1b4e698f91d6ecc5f870fab4e7a16e9b9c/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json), open the stock once for the editor's draft feature. `stockIssue` identifies the original storage location. `releaseCommit` is the fixed head used to prepare the release. The draft feature can be new to its catalog.
+
+```js
+const batch = await original.openUnassignedStock({stockIssue, commit, releaseCommit, issue});
+const cut = batch.prepareCut({sourceOrdinal, cutId, importedAt,
+  readback: {source: pngResult.structuredContent, jpeg: jpegResult.structuredContent}});
+```
+
+Read the numbered PNG with `read_weekly_candidate_png` and the recorded JPEG with GitHub `fetch_file` (`encoding: "base64"`), both at `commit`. If that PNG exists only in parts, bind the same connector as `readWeeklyPng` when creating the original handoff helper. Use the original receipt's commit, digest and source SHA for `ref`. Run each line in a separate tool cell, keeping verified bytes in code mode.
+
+```js
+const verified = await original.readOriginalStep(ref); // Continue a pending read with its state.
+const uploaded = await original.uploadNumberedOriginal(ref, verified);
+const plan = await original.prepareNumberedOriginal(ref, uploaded, uploaded.base);
+const saved = await original.publishNumberedOriginal(ref, uploaded, plan);
+```
+
+Use `saved.commit` as the stock revision for both reads and for `openUnassignedStock`. This restores the selected source at its receipt ordinal on the existing candidate branch. The editor still chooses the release cuts after visual inspection. The release receipt retains the stock paths, original ordinal and split receipt.
 
 Use the weekly editor's normal release PR. For a new release branch, use the latest `main` commit as parent and its tree as `base_tree_sha`. For an existing release PR, use its current reviewed head and tree to preserve its other edits. Keep staging files and unused stock on the pinned candidate commit. If a release PR already includes staging-only additions, exclude those additions from its proposed release tree, preserving its other edits and the original candidate commit. Reuse that PR. Add the selected images, receipts, QA and catalog changes at their release paths. Check the full PR diff against `allowed_for("photo_issue", path)`. Within `maintenance/photo-issue-plans/<issue>/`, the finalizer accepts only matching JSON files directly in that directory. Verify that the destination blob IDs match. Before advancing a release ref, reread its head, use the reviewed head as the parent and set `force: false`. If the head moved, reconcile the changes before handing off the final PR head. See [finalizer path scope](../scripts/publication_finalize.py) and [publication handoff](OPERATIONS.md).
 
 For earlier source packets with a verified full original PNG, use `runtime.convertPhoto(pngBytes)` and check its `source_png_sha256` against the retained source record. For multiple cuts, work sequentially on the existing candidate branch. Commit each PNG/JPEG pair or small batch together with its inventory entries, actual hashes and transform. Read back both files at that commit and verify their hashes before starting the next batch. After a timeout, check the existing inventory against the committed files and SHA-256 values and continue with the missing cuts. The split-receipt staging methods require their original receipt. The article converter produces 16:9 news photos.
 
-For an individual Library original, record its observed `https://chatgpt.com/space/file/libfile_...` or `https://chatgpt.com/library?file_id=libfile_...&account_id=personal` URL in the per-cut `user_supplied_photo` receipt and the matching ID in `source.library_file_id`. For ZIPs, use the observed Library query URL. A ZIP import also records `source.archive` with `format: "zip"`, its actual `filename`, `sha256`, `bytes`, and original `member` basename. Retrieve and hash the archive before extracting the member; retain the member's original bytes and the usual source SHA/format/dimensions. Archive/member names must be safe basenames, and the member extension must match the source format. These receipt fields preserve the observed archive provenance; the build verifies the saved original and JPEG without downloading Library files. Unknown generation turns remain `source.generation_turn_status: "not_retained"` and `source.generation_turn: null`; do not invent a conversation `turn_key` or `image_number`. The existing unretained prompt fields remain unchanged.
+For an individual Library original, record its observed `https://chatgpt.com/space/file/libfile_...` or `https://chatgpt.com/library?file_id=libfile_...&account_id=personal` URL in the per-cut `user_supplied_photo` receipt and the matching ID in `source.library_file_id`.
+
+For an existing ZIP, the receiver hashes the complete downloaded archive and the original bytes of the named member. The [fixed archive receipt for issue 012](https://github.com/RollNuts/mihassei-news/blob/ddb1b08236bebac209c0afea3e3401b0e54b5685/maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json) shows the Library query URL and matching file ID, `source.archive` (`format: "zip"`, filename, complete archive SHA-256 and byte count, member basename), and the extracted original's own SHA-256, byte count and dimensions. The archive and member names are single safe filenames. The member extension matches its PNG or JPEG bytes. Preserve the observed generation fields, including `"not_retained"` and `null` for unknown turns or prompts.
+
+The editor can reuse that evidence. At the pinned candidate commit, read the receipt row for the selected archive ID, member and original SHA, then read the original and prepared JPEG bytes at their recorded paths. For a numbered candidate PNG, the weekly reader above can supply its bytes. For another recorded path, use the immutable GitHub raw file at the same commit. Keep the Git blob IDs from those exact paths. Pass the receipt row's `url`, `library_file_id` and complete `archive` object with the measured original in `readback.source`; the helper compares them with `candidate.source` and verifies both images against their hashes and dimensions. A verified archive receipt and those retained files are sufficient for release preparation.
 
 Local supplied-photo conversion may use Pillow with `transform: {encoder: "Pillow", max_edge: 1200, jpeg_quality: 84, geometry: "preserve-aspect"}`. Record the actually used Pillow version in `encoding_details.pillow_version`, with `resample: "LANCZOS"`, `mode: "RGB"`, `optimize: true`, `progressive: false`, and `subsampling: 0`. Keep the original aspect ratio and the existing byte, dimension, quality and visual-review gates. Older `macOS sips` receipts and observed Library share/conversation references stay unchanged; do not relabel a new Pillow conversion as sips or rewrite a prior receipt to fit the new route.

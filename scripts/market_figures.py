@@ -17,6 +17,8 @@ from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 DATA_FILE = Path("content/market_figures.json")
+DESKTOP_SIZE = (940, 372)
+MOBILE_SIZE = (440, 436)
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 STATES = {
     "実績": "#28786e",
@@ -201,7 +203,7 @@ def figure_description(figure: dict) -> str:
 
 def render_market_svg(figure: dict, *, mobile=False) -> str:
     """Zero-baseline, self-contained chart. No script or external font/image."""
-    width, height = (440, 436) if mobile else (940, 372)
+    width, height = MOBILE_SIZE if mobile else DESKTOP_SIZE
     left = 26 if mobile else 50
     right = width - left
     bar_width = right - left
@@ -217,18 +219,17 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
         chunks = [chunks[0], chunks[1][:limit-1] + "…"]
     title_lines = "".join(
         f'<text x="{left}" y="{49 + i*27}" fill="#202629" '
-        f'font-size="{20 if mobile else 26}" font-weight="700" '
-        f'font-family="sans-serif">{escape(line)}</text>'
+        f'font-size="{20 if mobile else 26}" font-weight="700">{escape(line)}</text>'
         for i, line in enumerate(chunks)
     )
     parts = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" role="img" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        f'<svg xmlns="http://www.w3.org/2000/svg" role="img" font-family="sans-serif" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         f'<title>{escape(figure["title"])}</title>',
         f'<desc>{escape(figure_description(figure))}</desc>',
         f'<rect width="{width}" height="{height}" rx="6" fill="#f8f8f5"/>',
         f'<rect x="0" y="0" width="5" height="{height}" fill="#495862"/>',
         title_lines,
-        f'<text x="{left}" y="{104 if mobile or len(chunks) > 1 else 87}" fill="#495660" font-size="{14 if mobile else 16}" font-family="sans-serif">単位：{unit} ／ 0を基準に比較</text>',
+        f'<text x="{left}" y="{104 if mobile or len(chunks) > 1 else 87}" fill="#495660" font-size="{14 if mobile else 16}">単位：{unit} ／ 0を基準に比較</text>',
     ]
     if figure["kind"] == "bars":
         maximum = max(v["value"] for v in figure["values"])
@@ -239,8 +240,8 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
             length = round(bar_width * value["value"] / maximum) if maximum else 0
             label = escape(value["label"] + "｜" + value["state"])
             parts.extend([
-                f'<text x="{left}" y="{line}" font-size="{17 if mobile else 20}" font-family="sans-serif" fill="#263936">{label}</text>',
-                f'<text x="{right}" y="{line+26}" text-anchor="end" font-size="{18 if mobile else 20}" font-weight="700" font-family="sans-serif" fill="#163934">{escape(_amount(value["value"]))}</text>',
+                f'<text x="{left}" y="{line}" font-size="{17 if mobile else 20}" fill="#263936">{label}</text>',
+                f'<text x="{right}" y="{line+26}" text-anchor="end" font-size="{18 if mobile else 20}" font-weight="700" fill="#163934">{escape(_amount(value["value"]))}</text>',
                 f'<rect x="{left}" y="{bar_y+22}" width="{bar_width}" height="{28 if mobile else 30}" rx="5" fill="#dce5df"/>',
                 f'<rect x="{left}" y="{bar_y+22}" width="{length}" height="{28 if mobile else 30}" rx="5" fill="{color}"/>',
             ])
@@ -253,17 +254,16 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
             parts.append(f'<rect x="{x}" y="{y}" width="{piece}" height="{57 if mobile else 75}" fill="{STATES[value["state"]]}"/>')
             x += piece
         if mobile:
-            parts.append(f'<text x="{left}" y="120" fill="#163934" font-size="19" font-family="sans-serif">{escape(figure["total_label"])}：{_amount(total)}{unit}</text>')
+            parts.append(f'<text x="{left}" y="120" fill="#163934" font-size="19">{escape(figure["total_label"])}：{_amount(total)}{unit}</text>')
         else:
-            parts.append(f'<text x="{left}" y="124" fill="#163934" font-size="21" font-family="sans-serif">{escape(figure["total_label"])}：{_amount(total)}{unit}</text>')
+            parts.append(f'<text x="{left}" y="124" fill="#163934" font-size="21">{escape(figure["total_label"])}：{_amount(total)}{unit}</text>')
         for i, value in enumerate(figure["values"]):
             y0 = (259 + i*66) if mobile else 277
             x0 = left if mobile else left + i*440
             parts.extend([
                 f'<rect x="{x0}" y="{y0-18}" width="18" height="18" fill="{STATES[value["state"]]}"/>',
-                f'<text x="{x0+28}" y="{y0-3}" font-family="sans-serif" fill="#253a36" font-size="{17 if mobile else 18}">{escape(value["label"])}：{escape(_amount(value["value"]))}{unit}</text>',
+                f'<text x="{x0+28}" y="{y0-3}" fill="#253a36" font-size="{17 if mobile else 18}">{escape(value["label"])}：{escape(_amount(value["value"]))}{unit}</text>',
             ])
-    parts.append(f'<text x="{left}" y="{height-17}" font-size="{12 if mobile else 14}" fill="#495660" font-family="sans-serif">出典と数値の区分は図の下に記載</text>')
     parts.append("</svg>")
     return "".join(parts)
 
@@ -273,22 +273,30 @@ def _figure_path(series: dict, episode: dict, figure: dict, *, mobile=False) -> 
     return "serials/" + series["slug"] + "/figures/" + episode["slug"] + "/" + name
 
 
+def render_market_picture(figure: dict, desktop_path: str, mobile_path: str) -> str:
+    def versioned_url(path, *, mobile):
+        svg = render_market_svg(figure, mobile=mobile)
+        digest = sha256(svg.encode("utf-8")).hexdigest()[:12]
+        return f'/{escape(path, quote=True)}?v={digest}'
+
+    desktop_width, desktop_height = DESKTOP_SIZE
+    mobile_width, mobile_height = MOBILE_SIZE
+    return (
+        '<picture>'
+        f'<source media="(max-width:600px)" srcset="{versioned_url(mobile_path, mobile=True)}" '
+        f'type="image/svg+xml" width="{mobile_width}" height="{mobile_height}">'
+        f'<img src="{versioned_url(desktop_path, mobile=False)}" width="{desktop_width}" height="{desktop_height}" '
+        f'loading="lazy" decoding="async" alt="{escape(figure_description(figure), quote=True)}">'
+        '</picture>'
+    )
+
+
 def render_market_figure(series: dict, episode: dict, figure: dict) -> str:
-    regular = render_market_svg(figure)
-    small = render_market_svg(figure, mobile=True)
-    image = "/" + _figure_path(series, episode, figure)
-    phone = "/" + _figure_path(series, episode, figure, mobile=True)
-    image += "?v=" + sha256(regular.encode("utf-8")).hexdigest()[:12]
-    phone += "?v=" + sha256(small.encode("utf-8")).hexdigest()[:12]
-    desc = escape(figure_description(figure), quote=True)
+    picture = render_market_picture(figure, _figure_path(series, episode, figure),
+                                    _figure_path(series, episode, figure, mobile=True))
     source = escape(figure["source_url"], quote=True)
     return (
-        '<figure class="market-figure">'
-        '<picture>'
-        f'<source media="(max-width:600px)" srcset="{phone}" type="image/svg+xml">'
-        f'<img src="{image}" width="940" height="372" loading="lazy" decoding="async" alt="{desc}">'
-        '</picture>'
-        '<figcaption>'
+        f'<figure class="market-figure">{picture}<figcaption>'
         f'<strong>{escape(figure["title"])}</strong>'
         f'<p>{escape(figure["note"])}</p>'
         f'<p class="market-figure-meta">単位：{escape(figure["unit"])} ／ '

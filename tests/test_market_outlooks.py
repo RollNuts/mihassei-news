@@ -53,6 +53,15 @@ def review(**kwargs):
 
 
 class DailyOutlookTests(unittest.TestCase):
+    def test_prices_on_both_half_percent_boundaries_count_as_flat(self):
+        forecast = original()  # Fixed baseline of 3,400.00 points.
+        for close, direction in ((3382.99, "下落"), (3383.00, "横ばい"),
+                                 (3400.00, "横ばい"), (3417.00, "横ばい"), (3417.01, "上昇")):
+            with self.subTest(close=close):
+                hits = [guess for guess in ("上昇", "横ばい", "下落")
+                        if _forecast_result({**forecast, "direction": guess}, close) == "的中"]
+                self.assertEqual(hits, [direction])
+
     def test_empty_archive_never_claims_market_performance(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder = Path(tmp) / "content"
