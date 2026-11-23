@@ -21,12 +21,14 @@ import re
 try:
     from .market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from .reader_comments import render_reader_comments
-    from .market_outlooks import view_models, forecast_reader_statement, render_market_accuracy, market_forecast_url
+    from .market_outlooks import (view_models, forecast_reader_statement, forecast_reader_reason,
+                                  _confirmed_result, _status, render_market_accuracy, market_forecast_url)
     from .market_sharing import render_market_share
 except ImportError:
     from market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from reader_comments import render_reader_comments
-    from market_outlooks import view_models, forecast_reader_statement, render_market_accuracy, market_forecast_url
+    from market_outlooks import (view_models, forecast_reader_statement, forecast_reader_reason,
+                                  _confirmed_result, _status, render_market_accuracy, market_forecast_url)
     from market_sharing import render_market_share
 
 FILE = Path("content/market_bulletins.json")
@@ -470,11 +472,12 @@ def _picks(report):
             f'<span class="market-stock-direction">{escape(pick["direction"])}</span>'
             f'<h3>{escape(pick["name"])} <small>{escape(pick["code"])}・{escape(exchange)}</small></h3>'
             f'<p class="market-stock-change">{pct:+.2f}%</p>'
+            + f'<p>{escape(pick["context"])}</p>'
+            + '<details class="market-reader-archive"><summary>株価・観測時刻と出典</summary>'
             + price_html +
-            f'<p>{escape(pick["context"])}</p>'
             f'<p>分割等の確認・補正：{escape(pick["adjustment_note"])}</p>'
             f'<a href="{escape(pick["source_url"],quote=True)}" target="_blank" rel="noopener noreferrer external">価格・変動の出典を見る</a>'
-            '</article>'
+            '</details></article>'
         )
     heading = "注目銘柄の材料と値動き" if investor else "急騰と急落：日本株の注目例"
     return f'<section class="market-stock-picks"><h2>{heading}</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
@@ -501,23 +504,26 @@ def _bulletin_navigation(previous_report=None, next_report=None):
 
 
 def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None, next_report=None):
-    slot_name = _coverage_label(report)
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
-    slot_time = published_at.strftime("%H:%M")
     latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
     if latest_forecast:
         current = latest_forecast[0]
         forecast = current["forecast"]
         forecast_at = _timestamp(forecast["at"])
+        reason = forecast_reader_reason(forecast) if forecast.get("reason") else ""
+        result = _confirmed_result(current)
+        result_label = (_status(current) if result is None else
+                        f'{result["outcome"]}（確認済み終値 {result["close"]:,.2f}ポイント）')
         forecast_section = (
             '<section class="market-briefing-outlook market-reader-focus" id="daily-forecasts">'
             '<h2>掲載時点の予想</h2>'
             f'<p class="market-reader-prediction">{escape(forecast_reader_statement(forecast))}</p>'
-            f'<p class="market-briefing-forecast-meta">当初の予想：'
+            + (f'<p class="market-reader-reason"><strong>当初の理由</strong>{escape(reason)}</p>' if reason else "")
+            + '<p class="market-briefing-forecast-meta">当初の予想：'
             f'<time datetime="{escape(forecast["at"], quote=True)}">'
-            f'{forecast_at.strftime("%Y-%m-%d %H:%M")}</time> JST<br>結果日：'
-            f'<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time></p>'
+            f'{forecast_at.strftime("%Y-%m-%d %H:%M")}</time> JST ／ 結果日：'
+            f'<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time> ／ {escape(result_label)}</p>'
             f'<a href="{market_forecast_url(forecast)}">理由と結果を読む →</a>'
             '</section>'
         )
@@ -538,23 +544,28 @@ def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None,
         f'（資料日 {src["published_on"]} ／ 確認日 {src["checked_on"]}）</li>'
         for src in report["sources"]
     )
+    numbers = render_market_numbers(report["figures"], sources=report["sources"])
+    evidence = numbers + _market_conditions(report)
+    if evidence:
+        evidence = ('<details class="market-reader-archive"><summary>観測値・市場別の材料と出典</summary>'
+                    + evidence + '</details>')
+    summary = report["summary"]
+    deck = f'<p class="serial-article-dek">{escape(summary)}</p>' if summary.strip() != report["lead"].strip() else ""
     main = (
         '<div class="container serials-page serial-article serial-article--analysis market-dispatch-page">'
         f'<nav class="serial-breadcrumb"><a href="/">トップ</a> / <a href="{MARKET_URL}">未来相場観測室</a> / '
         '<a href="/serials/market-lab/briefings/">日次市況</a></nav>'
         '<header class="serial-article-head">'
-        f'<span class="serial-type">実データの市況解説 / {slot_time} {slot_name}</span>'
-        f'<h1>{escape(report["title"])}</h1><p class="serial-article-dek">{escape(report["summary"])}</p>'
-        f'<p class="serial-pub">実公開：<time datetime="{report["published_at"]}">{escape(report["published_at"])}</time></p>'
-        '<p class="serial-article-warning">架空ニュースではありません。売買助言・推奨ではありません。観測値は表示時点のリアルタイム価格ではありません。</p>'
+        f'<span class="serial-type">実データの市況解説 ／ {escape(bulletin_phase_label(report))}</span>'
+        f'<h1>{escape(report["title"])}</h1>{deck}'
+        f'<p class="serial-pub">公開 {render_bulletin_publication_time(report)} JST</p>'
         + render_market_share(bulletin_url(report), report["title"])
-        + '</header>' + render_market_freshness(report, include_publication=False)
-        + render_market_accuracy(outlooks, before=published_at) + forecast_section
-        + render_market_numbers(report["figures"], sources=report["sources"])
-        + '<div class="serial-article-body">'
+        + '</header><div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
-        + _market_conditions(report) + "".join(parts)
-        + _picks(report)
+        + forecast_section + "".join(parts) + _picks(report)
+        + render_market_freshness(report, include_publication=False) + evidence
+        + render_market_accuracy(outlooks, before=published_at)
+        + '<p class="serial-article-warning">架空ニュースではありません。株価は記載の観測日時の値です。投資助言ではありません。</p>'
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         + _bulletin_navigation(previous_report, next_report)
         + render_reader_comments('market-briefing-' + report['slug'],

@@ -3,10 +3,12 @@ import copy
 from datetime import date, datetime, timedelta
 import html
 import json
+import re
 from pathlib import Path
 import unittest
 
-from scripts.market_outlooks import (render_market_outlook_board, render_market_accuracy,
+from scripts.market_bulletins import render_market_bulletin
+from scripts.market_outlooks import (render_market_outlook_archive, render_market_outlook_board, render_market_accuracy,
                                      forecast_reader_statement, forecast_reader_reason, forecast_horizon)
 from tests.test_market_outlooks import original, review, SOURCE
 
@@ -46,7 +48,7 @@ class MarketForecastSummaryTests(unittest.TestCase):
         for label in ('短期','中期','長期'):
             self.assertIn('class="market-reader-horizon">'+label+'</span>',markup)
         self.assertIn('100%',markup)
-        self.assertIn('的中 1 / 確定 1件',markup)
+        self.assertIn('判定済み1件のうち1件が的中',markup)
         self.assertNotIn('33.3%',markup)
         self.assertIn('2027年5月17日のTOPIX',markup)
         no_short=render_market_accuracy([medium,final_review(medium,hit=False),long,final_review(long,hit=False)])
@@ -173,7 +175,7 @@ class MarketForecastSummaryTests(unittest.TestCase):
         self.assertIn('判定済み：的中',markup)
         self.assertIn('3,430.00',markup)
         self.assertIn('100%',markup)
-        self.assertIn('的中 1 / 確定 1件',markup)
+        self.assertIn('判定済み1件のうち1件が的中',markup)
         past=render_market_outlook_board(events,before=datetime.fromisoformat('2026-11-16T09:00:00+09:00'))
         self.assertIn('結果待ち',past)
         self.assertIn('確定0件',past)
@@ -197,9 +199,11 @@ class MarketForecastSummaryTests(unittest.TestCase):
         self.assertEqual(archived.count('class="market-reader-card"'),3)
         self.assertEqual(markup.count('<summary>過去の予想</summary>'),1)
         self.assertIn('75%',markup)
-        self.assertIn('的中 3 / 確定 4件',markup)
+        self.assertIn('判定済み4件のうち3件が的中',markup)
+        self.assertIn('外れ1件',markup)
+        self.assertIn('未確定2件は集計外',markup)
         self.assertIn('判定保留',markup)
-        self.assertIn('短期相場予想の的中率',markup)
+        self.assertIn('TOPIX',render_market_accuracy(events))
 
     def test_tampered_or_uncited_outcome_cannot_improve_accuracy(self):
         for change in ({'close':3300.0},{'source_url':'https://elsewhere.example/unverified'},
@@ -217,6 +221,51 @@ class MarketForecastSummaryTests(unittest.TestCase):
         for identity in ('2026-11-16-topix" onclick="bad','2026-99-16-topix','../other'):
             with self.subTest(identity=identity),self.assertRaises(ValueError):
                 render_market_outlook_board([{**original(),'id':identity}])
+
+    def test_real_results_remain_as_known_at_the_time_of_each_briefing(self):
+        root = Path(__file__).resolve().parents[1] / "content"
+        events = json.loads((root / "market_outlooks.json").read_text(encoding="utf-8"))
+        reports = json.loads((root / "market_bulletins.json").read_text(encoding="utf-8"))
+        report = next(row for row in reports if row["slug"] == "2026-11-20-close")
+        historical = render_market_bulletin(report, lambda _t, _d, _u, body, **kw: body, outlooks=events)
+        historical_score = render_market_accuracy(events, before=datetime.fromisoformat(report["published_at"]))
+        self.assertIn(historical_score, historical)
+        confirmed = render_market_accuracy(events, before=datetime.fromisoformat("2026-11-23T01:34:47+09:00"))
+        for score, percent, total, misses, pending in ((historical_score, "25%", 4, 3, 2),
+                                                      (confirmed, "20%", 5, 4, 1)):
+            visible = html.unescape(re.sub(r"<[^>]+>", "", score))
+            with self.subTest(asof=percent):
+                self.assertIn("TOPIX", visible)
+                self.assertIn(percent, visible)
+                self.assertIn(f"判定済み{total}件のうち1件が的中", visible)
+                self.assertIn(f"外れ{misses}件", visible)
+                self.assertIn(f"未確定{pending}件は集計外", visible)
+        self.assertIn("掲載時点", historical_score)
+        self.assertIn(report["published_at"], historical_score)
+        self.assertIn("JST", historical_score)
+
+    def test_archive_compares_forecast_and_actual_only_when_the_result_is_confirmed(self):
+        first = original()
+        pending = {**original(), "id":"2026-11-18-topix",
+                   "at":"2026-11-18T08:30:00+09:00", "reviewed_on":"2026-11-19"}
+        archive = render_market_outlook_archive([first, final_review(first, hit=False), pending],
+                                               lambda _t, _d, _u, body, **kw: body)
+        self.assertNotIn('>相場の予想をすべて見る</a>', archive)
+        self.assertIn('href="/serials/market-lab/outlooks/">相場の予想をすべて見る</a>',
+                      render_market_outlook_board([first]))
+        self.assertIn('<strong>0%</strong>', archive)
+        self.assertIn('判定済み1件のうち0件が的中', archive)
+        cards = dict(re.findall(r'<article class="market-reader-card" id="forecast-([^"]+)">(.*?)</article>',
+                                archive, re.S))
+        verdict, evidence = cards[first["id"]].split('<details', 1)
+        self.assertIn("判定済み：外れ", verdict)
+        self.assertIn("予想 上昇 → 実際 下落", re.sub(r"<[^>]+>", "", verdict))
+        self.assertIn('href="' + SOURCE + '"', evidence)
+        self.assertIn("結果待ち", cards[pending["id"]])
+        pending_result = re.search(r'<div class="market-reader-result"[^>]*>(.*?)</div>',
+                                   cards[pending["id"]], re.S).group(1)
+        self.assertNotIn("実際", pending_result)
+        self.assertNotIn("確認済み終値", pending_result)
 
     def test_real_pending_forecasts_keep_zero_confirmations_and_original_records(self):
         root=Path(__file__).resolve().parents[1]

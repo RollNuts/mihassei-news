@@ -40,7 +40,7 @@ if __package__:
     from .editorial_copy import reader_copy, source_reader_copy
     from .article_diagrams import reviewed_article_diagram
     from .market_bulletins import (
-        load_market_bulletins, bulletin_url, figure_url, chart_html,
+        load_market_bulletins, bulletin_url, figure_url, chart_html, render_bulletin_publication_time,
         market_bulletin_feed_xml, FEED_URL as MARKET_BULLETIN_FEED,
     )
     from .market_figures import render_market_svg
@@ -63,7 +63,7 @@ else:
     from editorial_copy import reader_copy, source_reader_copy
     from article_diagrams import reviewed_article_diagram
     from market_bulletins import (
-        load_market_bulletins, bulletin_url, figure_url, chart_html,
+        load_market_bulletins, bulletin_url, figure_url, chart_html, render_bulletin_publication_time,
         market_bulletin_feed_xml, FEED_URL as MARKET_BULLETIN_FEED,
     )
     from market_figures import render_market_svg
@@ -828,8 +828,7 @@ def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
         '<meta name="twitter:image" content="' + preview + '">',
         '<meta name="twitter:card" content="summary_large_image">',
         '<h1>' + html.escape(report["title"]) + '</h1>',
-        '<p class="serial-pub">実公開：<time datetime="' + report["published_at"] + '">'
-        + html.escape(report["published_at"]) + '</time></p>',
+        '<p class="serial-pub">公開 ' + render_bulletin_publication_time(report) + ' JST</p>',
         '"datePublished": "' + report["published_at"] + '"',
     ):
         if page.count(required) != 1:

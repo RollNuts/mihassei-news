@@ -34,7 +34,8 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn('id="market-focus"', rendered)
         self.assertIn('id="market-stories"', rendered)
         self.assertIn('href="/serials/market-lab/briefings/"', rendered)
-        self.assertIn('href="/serials/market-lab/outlooks/"', rendered)
+        self.assertIn('href="/serials/market-lab/outlooks/">短期予想と成績</a>', rendered)
+        self.assertIn('href="#market-proof">企業予想の結果</a>', rendered)
         self.assertIn('id="forecast-ledger"', rendered)
         self.assertLess(rendered.index('id="market-focus"'),
                         rendered.index('id="market-stories"'))
@@ -98,10 +99,10 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn('集計時点：<time datetime="2026-11-16T12:40:00+09:00"',follow)
         self.assertIn('href="/serials/market-lab/outlooks/#forecast-2026-11-16-topix"',follow)
         self.assertIn('確定0件',page)
-        self.assertIn('<strong>—</strong><span class="market-reader-count">確定0件</span>',page)
-        self.assertLess(page.index('11月17日のTOPIXは上昇を予想。'),page.index('class="market-reader-accuracy"'))
-        self.assertLess(page.index('</aside></section>'),page.index('class="market-reader-accuracy"'))
-        self.assertLess(page.index('class="market-reader-accuracy"'),page.index('id="market-stories"'))
+        self.assertIn('<strong>—</strong>', page)
+        self.assertIn('未確定1件は集計外', page)
+        self.assertEqual(page.count('class="market-reader-accuracy"'), 1)
+        self.assertLess(page.index('class="market-reader-accuracy"'), page.index('11月17日のTOPIXは上昇を予想。'))
         self.assertEqual(events,before)
 
     def test_front_page_reports_missing_assessment_without_borrowing_another_forecasts_review(self):
@@ -166,6 +167,7 @@ class MarketPaperReadabilityTests(unittest.TestCase):
             "statement": "TOPIXの将来の方向を資料に基づき検討する。",
             "stance": "中立", "reviewed_on": "2026-11-17",
             "subject": "TOPIX", "direction": "横ばい",
+            "reason": "円の上昇が輸出企業の重荷に。",
         }]
         result = render_market_bulletin(bulletin, passthrough, outlooks=prior)
         self.assertIn("何が動いたか", result)
@@ -173,12 +175,18 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertNotIn(prior[0]["statement"], result)
         self.assertIn("TOPIX", result)
         self.assertIn("横ばい", result)
+        self.assertIn(prior[0]["reason"], result)
+        self.assertIn("結果待ち", result)
+        self.assertLess(result.index('class="market-dispatch-lead"'), result.index('id="daily-forecasts"'))
+        self.assertLess(result.index("何が動いたか"), result.index('class="market-reader-accuracy"'))
         self.assertIn("結果日", result)
         self.assertLess(result.index('id="daily-forecasts"'), result.index("何が動いたか"))
         self.assertNotIn("その後の変更", result)
         self.assertNotIn("検証記録", result)
         self.assertNotIn("daily-forecast-card", result)
         self.assertNotIn("PUBLIC FORECAST LOG", result)
+        repeated = render_market_bulletin(dict(bulletin, summary=bulletin["lead"]), passthrough)
+        self.assertEqual(repeated.count(bulletin["lead"]), 1)
 
     def test_front_page_compacts_older_company_articles_without_deleting_links(self):
         market = copy.deepcopy(self.market)
