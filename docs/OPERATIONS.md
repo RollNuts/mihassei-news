@@ -80,6 +80,8 @@
 
 実ログが`Main runtime changed since CI; fresh CI is required`など新しいCIを要求した場合は、実行コード以外の差分でも旧headの許可で押し通さない。旧許可を外して保存・読み戻し、同PRへ最新mainを通常mergeする。本文・採用画像・字幕・既刊と予測履歴の保持を確かめ、kind別の必要確認を満たした新headでCIと承認参照を更新する。現在の実コードが認めるdocs-only等の例外を勝手に広げず、成功済みの無関係なCIや古いattemptを流用しない。
 
+本人近況の承認後にこの停止を調べる時は、初読一覧の`outside_scope`にあるPR・headと、同headの実CIを下記の`readHandoffStatus`へ渡す。`finalizer_run_id`を省くと当該CI実行・attemptの表示名から既存runを1回探す。許可を後で記入した時の実行は`Publication head <head> (PR #<番号>)`の実run IDを渡す。`attention`の理由が`latest_main_requires_fresh_ci`なら、同PR・head・CIに結び付いた失敗であり、`tested_main`と`current_main`は停止時の値。現担当と最新の実行状況を照合してから上の手順を使う。
+
 通常統合のPRに対応外ファイルを通すための`publication-finalize`許可を付けない。現headの必要CIと既存統合条件を満たして通常mergeし、返却merge SHAに対応する既存の本番確認へ進む。放送室は既存動画処理の最終commit・MP4・字幕の配信まで追い、統合だけで完了としない。
 
 待機で終了する場合は、同PRの既存引継ぎへ現head・実CI/run参照・未完工程・次操作・次に受け取る既存担当1人のtask IDと受取条件を保存・読み戻す。対応する既存の機械処理へ渡し、機械処理対象外の次操作は上記の既存回収担当から次の通常枠を持つ1人に指定する。受取担当は新規作業より先に同PRを照合する。担当や工程を確定せず「元担当へ返す」「次回確認」だけで同じ未完を持ち越さない。
