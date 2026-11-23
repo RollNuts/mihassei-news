@@ -316,10 +316,10 @@ def _render_market_editorial_hub(series, layout, figures, bulletins, outlook, da
         if latest_view:
             interim = (f'<p class="market-reader-date">最新の評価：<time datetime="{h(latest_view["at"])}">'
                        f'{h(latest_view["at"][:16].replace("T", " "))}</time> '
-                       f'JST　{h(latest_view["stance"])}（{h(latest_view["trend"])}）</p>')
+                       f'JST　{h(latest_view["stance"])}の見方</p>')
         next_cards.append(
             '<div class="market-upcoming">'
-            f'<span class="market-reader-horizon">{h(forecast_market_scope(fc))}</span>'
+            f'<span class="market-reader-horizon">{h(forecast_market_scope(fc))}・終値で判定</span>'
             f'<p class="market-reader-prediction">{h(forecast_reader_statement(fc))}</p>'
             f'<p class="market-reader-date"><time datetime="{h(fc["at"])}">'
             f'{h(fc["at"][:16].replace("T", " "))}</time> JSTの当初の予想</p>'
