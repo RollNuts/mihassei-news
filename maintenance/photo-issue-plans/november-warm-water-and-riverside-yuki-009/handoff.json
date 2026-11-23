@@ -643,7 +643,7 @@
     "usable_stock_count_from_this_inventory": 0,
     "usable_stock_elsewhere": "unknown",
     "weekly_generation_attempts": "unknown",
-    "next_operation": "Recover the denied original through supported Library authorization/connector egress; retain existing observed IDs and SHA, then save under a new editorially chosen unpublished fixed plan with remote byte-level SHA and visual review. If the connector still denies, leave pending; no re-generation.",
+    "next_operation": "第3号の白峰ゆき担当はこの6枚の転送を打ち切り、別場面の未掲載原本を探す。既刊との目視比較はissue_003_screeningを参照。新規生成は既存の週残数・保存事前確認を満たした時だけ。別の号で具体的な採用理由が生じた素材だけ、正規の参照から受渡しを再開する。",
     "last_transport_attempt": {
       "date": "2026-11-22",
       "main_sha": "06fac53567bda004f041b298f118809f372cacd3",
@@ -657,6 +657,56 @@
       "remote_receipt_created": false,
       "remote_sha_readback": false,
       "notes": "The six archived originals have local exact SHA and dimensions but no remote original receipt, and published #009 already uses the other ten. Do not resend the ten, retry the unchanged denied path, or generate replacements."
+    },
+    "issue_003_screening": {
+      "checked_at": "2026-11-23T09:38:06+00:00",
+      "edition": "issue-003",
+      "model_id": "shiramine-yuki",
+      "compared_at_main": "296e61892fecedeb2b9e7476bfc0c4f06d79dc48",
+      "comparison": [
+        "november-a-longer-breath-yuki-005",
+        "november-warm-water-and-riverside-yuki-009"
+      ],
+      "scope": "元ZIPからSHA・寸法を照合した6枚を、既刊005・009の掲載JPEG20枚と目視比較。第3号の事前選定。",
+      "candidates_for_this_feature": 0,
+      "reviewed_sources": [
+        {
+          "source_sha256": "dceebd70ca767d915e5c890f71b5607b5133b8c41bc66396184bb7622fce276a",
+          "archive_ordinal": 5,
+          "decision": "hold_visible_mark",
+          "note": "紺の水着の胸元に白いロゴ状の印が見える。原画像で保留を継続する。"
+        },
+        {
+          "source_sha256": "f58f1726ad48fc5f9298d5eb695bcc1b346857d90874edf26b273a4384fd54b4",
+          "archive_ordinal": 4,
+          "decision": "skip_this_edition",
+          "note": "顔の横にグラスを掲げた白いブラウスの着席像。005の01と同じ場面と小道具。"
+        },
+        {
+          "source_sha256": "a85f288b1af7e794a0f70841c819d76a9a3f6878055e5b4e306e6e836a855ce7",
+          "archive_ordinal": 5,
+          "decision": "skip_this_edition",
+          "note": "頬杖をつく白いブラウス姿。机のグラスと夜の店内が005の01や009の夕食と重なる。"
+        },
+        {
+          "source_sha256": "6f70e3b1e72d0a157a5c1ce04c1a9022a72387f4924b61050dde095f9b816175",
+          "archive_ordinal": 6,
+          "decision": "skip_this_edition",
+          "note": "頬に手を添え、反対の手にグラスを持つ。食卓に座る近景は同組の4・5番と近い。"
+        },
+        {
+          "source_sha256": "a8e2b17c652e96acb44d7eb1948f1f3b5e1c2dbd31d0bb09b8670e05cc9c3b27",
+          "archive_ordinal": 8,
+          "decision": "skip_this_edition",
+          "note": "テーブルをやや広く捉えているが、淡色のブラウスとグラスのある夜の会食は既刊と重なる。"
+        },
+        {
+          "source_sha256": "094ead8a73b5e3978b8c3ad74150696bc696bfc88a8bb2fc665001dbcea55e01",
+          "archive_ordinal": 10,
+          "decision": "skip_this_edition",
+          "note": "縦位置で腰まで写した白いブラウスとグラスの夕食。005の01や009の09に近い。"
+        }
+      ]
     }
   }
 }
