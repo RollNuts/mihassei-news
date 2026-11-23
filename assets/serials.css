@@ -490,6 +490,10 @@ a:focus-visible{outline:3px solid #c96047;outline-offset:3px}
 .market-score-meter::-webkit-meter-bar{height:7px;border:0;background:#dce3df;border-radius:2px}
 .market-score-meter::-webkit-meter-optimum-value{background:#346655;border-radius:2px}
 .market-score-meter::-moz-meter-bar{background:#346655;border-radius:2px}
+.market-reader-accuracy .market-score-basis{margin:12px 0 6px;font-size:13px;line-height:1.65;color:#34473e}
+.market-score-ranges{display:flex;gap:4px 13px;flex-wrap:wrap;padding:0;margin:0;list-style:none;font-size:12px;line-height:1.7}
+.market-score-ranges li{white-space:nowrap}
+.market-score-example{display:block;margin-top:7px;color:#285b50;text-decoration:underline;text-underline-offset:3px;font-size:12px;line-height:1.7}
 .market-reader-evidence{margin:10px 0;font-size:13px}
 .market-reader-evidence>summary{cursor:pointer;padding:9px 0;color:#315649;font-weight:650}
 .market-reader-result+.market-reader-reason{margin-top:12px}

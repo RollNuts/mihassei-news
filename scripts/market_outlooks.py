@@ -100,6 +100,18 @@ def _observed_direction(baseline, close):
     return "横ばい"
 
 
+def _change_label(baseline, close):
+    start = Decimal(str(baseline))
+    change = (Decimal(str(close)) - start) * 100 / start
+    rounded = change.quantize(Decimal("0.01"))
+    # Rounding must not make a directional verdict look exactly flat.
+    if abs(rounded) == Decimal("0.5") and abs(change) > abs(rounded):
+        return "＋0.5%超" if change > 0 else "−0.5%未満"
+    if not rounded:
+        return "0.00%" if not change else "変化幅0.01%未満"
+    return ("＋" if change > 0 else "−") + f'{abs(rounded):.2f}%'
+
+
 def _forecast_result(forecast, observed):
     actual = _observed_direction(forecast["baseline"]["value"], observed)
     return "的中" if forecast["direction"] == actual else "外れ"
@@ -290,8 +302,8 @@ def render_market_accuracy(events, *, before=None):
     """Accuracy for all evidenced short-term verdicts in this historical view."""
     rows = [row for row in view_models(events, before=before)
             if forecast_horizon(row["forecast"]["at"], row["forecast"]["reviewed_on"]) == "短期"]
-    settled = [result for row in rows if (result := _confirmed_result(row)) is not None]
-    hits = sum(result["outcome"] == "的中" for result in settled)
+    settled = [(row["forecast"], result) for row in rows if (result := _confirmed_result(row)) is not None]
+    hits = sum(result["outcome"] == "的中" for _, result in settled)
     total = len(settled)
     pending = len(rows) - total
     subjects = {row["forecast"]["subject"] for row in rows}
@@ -306,10 +318,23 @@ def render_market_accuracy(events, *, before=None):
         asof = before.astimezone(ZoneInfo("Asia/Tokyo"))
         when = (f'<time datetime="{asof.isoformat(timespec="seconds")}">'
                 f'{asof.month}月{asof.day}日 {asof:%H:%M} JST 掲載時点</time>')
+    example = ''
+    if settled:
+        fc, result = max(settled, key=lambda pair: (pair[0]["reviewed_on"], pair[0]["at"]))
+        day = _day(fc["reviewed_on"])
+        move = _change_label(fc["baseline"]["value"], result["close"])
+        actual = _observed_direction(fc["baseline"]["value"], result["close"])
+        example = (f'<a class="market-score-example" href="{market_forecast_url(fc)}">'
+                   f'{day.month}/{day.day}判定　{escape(fc["direction"])}予想 → {actual}（{move}）で{result["outcome"]}</a>')
     return ('<div class="market-reader-accuracy" aria-label="短期相場予想の的中率">'
             f'<div class="market-score-heading"><b>{scope}の的中率</b>{when}</div>'
             f'<div class="market-score-value"><strong>{percent}</strong><span class="market-reader-count">{count}</span></div>'
-            + bar + (f'<small>{"　／　".join(counts)}</small>' if counts else '') + '</div>')
+            + bar + (f'<small>{"　／　".join(counts)}</small>' if counts else '')
+            + '<p class="market-score-basis">予想時に記録した基準終値と、判定日の終値を比較します。'
+              '対象は公表から7日以内に判定する予想です。実際の方向が予想と合えば的中です。</p>'
+            + '<ul class="market-score-ranges" aria-label="終値の変化率と判定">'
+              '<li>上昇 <b>＋0.5%超</b></li><li>横ばい <b>±0.5%以内</b></li><li>下落 <b>−0.5%未満</b></li></ul>'
+            + example + '</div>')
 
 
 def render_market_forecast_assessment(row):
@@ -338,7 +363,12 @@ def render_market_forecast_assessment(row):
         )
     status = _status(row)
     outcome = 'hit' if result and result["outcome"] == '的中' else 'miss' if result else 'pending'
-    confirmed = f'<span>確認済み終値 {result["close"]:,.2f}ポイント</span>' if result else ''
+    base = fc["baseline"]
+    base_day = _day(base["date"])
+    basis = (f'<span>基準終値 <time datetime="{base_day}">{base_day.month}/{base_day.day}</time> '
+             f'{base["value"]:,.2f}ポイント</span>')
+    confirmed = (f'<span>確認済み終値 {result["close"]:,.2f}ポイント（{_change_label(base["value"], result["close"])}）</span>'
+                 if result else '')
     sources = ''.join(
         f'<a href="{escape(_https(source["url"]),quote=True)}" title="{escape(source["title"],quote=True)}" '
         f'target="_blank" rel="noopener noreferrer external">資料{index}</a>'
@@ -351,7 +381,7 @@ def render_market_forecast_assessment(row):
         actual = f'<span class="market-direction-pair">予想 <b>{escape(fc["direction"])}</b> → 実際 <b>{direction}</b></span>'
     return (f'<div class="market-reader-result" data-outcome="{outcome}"><strong>{escape(status)}</strong>'
             + actual + f'<span>結果日：<time datetime="{escape(fc["reviewed_on"], quote=True)}">{escape(fc["reviewed_on"])}</time></span>'
-            + confirmed + '</div>' + reason_html
+            + basis + confirmed + '</div>' + reason_html
             + '<details class="market-reader-evidence"><summary>経過と出典</summary>'
             + assessment + f'<p class="market-reader-sources">当初の出典 {sources}</p>'
             + f'<p class="market-reader-date">集計時点：<time datetime="{asof}">{_event_day(asof)}</time> JST</p></details>')
