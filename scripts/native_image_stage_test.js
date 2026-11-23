@@ -927,11 +927,15 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     call.args.branch_name.startsWith(claimBranchPrefix)).length;
   await failure(() => external.service.reserveExternalGeneration(external.plan, gateOptions(external, externalCounts)),
     "same service cannot reserve the same external generation again");
+  const existingClaimWrites = external.mock.writes().length, existingProbeReads = externalCounts.reads;
   const externalFresh = stageAPI.create({runtime: external.measuredRuntime, github: external.mock.github, repository});
   await failure(() => externalFresh.reserveExternalGeneration(external.plan, gateOptions(external, externalCounts)),
     "fresh service cannot acquire the existing external generation claim");
   assert(claimCreates() === 1 && externalCounts.generated === 0 && !external.mock.branches.has(external.branch),
     "repeated external reservations neither replace the durable claim nor invoke a supplied generator");
+
+  assert(external.mock.writes().length === existingClaimWrites && externalCounts.reads === existingProbeReads,
+    "an existing external claim stops before probe I/O and Git writes");
 
   const externalInput = {...external.input, observedAt: new Date().toISOString(),
     transportPreflight: reserved.transportPreflight, generationClaim: externalClaim};
@@ -1425,6 +1429,15 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   await failure(() => compactCall(compact, "reserveExternalGenerationStep", compactReservationOptions(compact),
     compactReserved.checkpoint), "compact final-claim replay cannot regain generation permission");
 
+  const duplicateCalls = compact.mock.calls.length, duplicateReads = compact.stepCounters.reads;
+  const duplicate = await failure(() => compactCall(compact, "reserveExternalGenerationStep", compactReservationOptions(compact)),
+    "fresh compact reservation detects the existing claim in its first step");
+  const duplicateLookups = compact.mock.calls.slice(duplicateCalls);
+  assert(duplicate.stage === "bounded_lookup" && duplicate.message.includes("already reserved") &&
+    duplicateReads === compact.stepCounters.reads && duplicateLookups.length === 3 &&
+    duplicateLookups.every(call => call.name === "fetch_file") &&
+    duplicateLookups[1].args.ref === claimBranchPrefix + compact.plan.identity,
+    "an uncertain generation is recovery-only with no second byte probe, shared branch change, or generation");
   const interruptedRead = await compactContext("resume-partial-preflight");
   const readOptions = compactReservationOptions(interruptedRead);
   const readFile = interruptedRead.mock.github.fetch_file;

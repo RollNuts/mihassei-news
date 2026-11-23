@@ -12,10 +12,47 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 from urllib.parse import urlsplit
+from xml.etree import ElementTree as ET
 
 ROOT=Path(__file__).resolve().parents[1]
 
 class DeploymentWorkflowTests(unittest.TestCase):
+    def test_live_rss_images_match_the_article_and_current_version(self):
+        from scripts import check_live
+        articles = [{"slug": "train"}, {"slug": "puzzle"}]
+        selected = {
+            "train": "/generated/train.jpg?v=123456789abc",
+            "puzzle": "/og/articles/puzzle.png?v=0abc12345678",
+        }
+        media = "{http://search.yahoo.com/mrss/}"
+        entries = []
+        for article in articles:
+            slug = article["slug"]
+            entry = ET.Element("item")
+            ET.SubElement(entry, "link").text = check_live.SITE + "/articles/" + slug + "/"
+            for tag in ("thumbnail", "content"):
+                ET.SubElement(entry, media + tag, url=check_live.SITE + selected[slug])
+            entries.append(entry)
+
+        urls = {}
+        with patch.object(check_live, "social_image", side_effect=lambda a: selected[a["slug"]]) as select:
+            check_live.verify_article_feed_images(entries, articles, "/feed.xml", urls)
+            check_live.verify_article_feed_images(entries, articles, "/feeds/test.xml", urls)
+            self.assertEqual(select.call_count, len(articles))
+
+        for index, tags, replacement in (
+            (0, ("thumbnail", "content"), selected["puzzle"]),
+            (0, ("thumbnail", "content"), "/generated/train.jpg?v=000000000000"),
+            (1, ("content",), "/images/puzzle.svg"),
+            (1, ("thumbnail",), selected["train"]),
+        ):
+            with self.subTest(index=index, tags=tags, replacement=replacement):
+                changed = copy.deepcopy(entries)
+                for tag in tags:
+                    changed[index].find(media + tag).set("url", check_live.SITE + replacement)
+                with self.assertRaisesRegex(RuntimeError, articles[index]["slug"] + " RSS media:"):
+                    check_live.verify_article_feed_images(changed, articles, "/feed.xml", urls)
+
     def test_live_artwork_checks_follow_actual_text_free_article_design(self):
         checker=(ROOT/"scripts/check_live.py").read_text(encoding="utf-8")
         self.assertIn('b"data-visual-topic="',checker)
