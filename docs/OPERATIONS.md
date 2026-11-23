@@ -79,7 +79,7 @@
 
 実ログが`Main runtime changed since CI; fresh CI is required`など新しいCIを要求した場合は、実行コード以外の差分でも旧headの許可で押し通さない。旧許可を外して保存・読み戻し、同PRへ最新mainを通常mergeする。本文・採用画像・字幕・既刊と予測履歴の保持を確かめ、kind別の必要確認を満たした新headでCIと承認参照を更新する。現在の実コードが認めるdocs-only等の例外を勝手に広げず、成功済みの無関係なCIや古いattemptを流用しない。
 
-本人近況の承認後にこの停止を調べる時は、初読一覧の`outside_scope`にあるPR・headと、同headの実CIを下記の`readHandoffStatus`へ渡す。`finalizer_run_id`を省くと当該CI実行・attemptの表示名から既存runを1回探す。許可を後で記入した時の実行は`Publication head <head> (PR #<番号>)`の実run IDを渡す。`attention`の理由が`latest_main_requires_fresh_ci`なら、同PR・head・CIに結び付いた失敗であり、`tested_main`と`current_main`は停止時の値。現担当と最新の実行状況を照合してから上の手順を使う。
+ニュース・市況・本人近況の承認済みPRが未統合なら、同じPR・head・実CIを下記の`readHandoffStatus`へ渡す。本人近況のPR・headは初読一覧の`outside_scope`で確認できる。`finalizer_run_id`を省くと当該CI実行・attemptに対応する失敗runを1回探す。許可を後で記入した場合は`Publication head <head> (PR #<番号>)`の実run IDを渡す。`latest_main_requires_fresh_ci`は、種別・PR・head・CIが一致した失敗ログに基づく。`tested_main`と`current_main`は停止時の値なので、現担当と最新の実行状況を照合して上の手順で復旧する。
 
 通常統合のPRに対応外ファイルを通すための`publication-finalize`許可を付けない。現headの必要CIと既存統合条件を満たして通常mergeし、返却merge SHAに対応する既存の本番確認へ進む。放送室は既存動画処理の最終commit・MP4・字幕の配信まで追い、統合だけで完了としない。
 
