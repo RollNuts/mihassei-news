@@ -60,6 +60,21 @@
         "cut_id": "02",
         "image_sha256": "2d5201a360579e805a4bf6622dd70b4188b397087506eb8dbf0989dcd5f225cc"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261123154636284",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-23T15:46:36.284+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後の練習前、立ち位置の目印に色テープを貼った。私のだけ斜めで、直したら隣の子の印とくっついちゃった😂",
+      "source": {
+        "issue_slug": "november-hikari-city-and-pool-013",
+        "cut_id": "01",
+        "image_sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb"
+      }
     }
   ]
 }
