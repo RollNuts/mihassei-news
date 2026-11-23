@@ -21,13 +21,13 @@ import re
 try:
     from .market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from .reader_comments import render_reader_comments
-    from .market_outlooks import (view_models, forecast_reader_statement, forecast_reader_reason,
+    from .market_outlooks import (view_models, forecast_reader_statement, forecast_display_unit, pending_market_forecasts, forecast_reader_reason,
                                   _confirmed_result, _status, render_market_accuracy, market_forecast_url)
     from .market_sharing import render_market_share
 except ImportError:
     from market_figures import render_market_svg, figure_description, render_market_numbers, STATES
     from reader_comments import render_reader_comments
-    from market_outlooks import (view_models, forecast_reader_statement, forecast_reader_reason,
+    from market_outlooks import (view_models, forecast_reader_statement, forecast_display_unit, pending_market_forecasts, forecast_reader_reason,
                                   _confirmed_result, _status, render_market_accuracy, market_forecast_url)
     from market_sharing import render_market_share
 
@@ -480,7 +480,7 @@ def _picks(report):
             '</details></article>'
         )
     heading = "注目銘柄の材料と値動き" if investor else "急騰と急落：日本株の注目例"
-    return f'<section class="market-stock-picks"><h2>{heading}</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
+    return f'<section class="market-stock-picks" id="market-picks"><h2>{heading}</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
 
 
 def _bulletin_navigation(previous_report=None, next_report=None):
@@ -506,7 +506,9 @@ def _bulletin_navigation(previous_report=None, next_report=None):
 def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None, next_report=None):
     # Never render a later forecast/update as though it existed at publication.
     published_at = _timestamp(report["published_at"])
-    latest_forecast = view_models(outlooks, before=published_at) if outlooks else []
+    latest_forecast = pending_market_forecasts(outlooks, before=published_at)
+    if not latest_forecast:
+        latest_forecast = view_models(outlooks, before=published_at)[:1]
     if latest_forecast:
         current = latest_forecast[0]
         forecast = current["forecast"]
@@ -514,7 +516,11 @@ def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None,
         reason = forecast_reader_reason(forecast) if forecast.get("reason") else ""
         result = _confirmed_result(current)
         result_label = (_status(current) if result is None else
-                        f'{result["outcome"]}（確認済み終値 {result["close"]:,.2f}ポイント）')
+                        f'{result["outcome"]}（確認済み終値 {result["close"]:,.2f}{escape(forecast_display_unit(forecast))}）')
+        other_forecasts = ''.join(
+            f'<li><a href="{market_forecast_url(row["forecast"])}">{escape(forecast_reader_statement(row["forecast"]))}</a></li>'
+            for row in latest_forecast[1:]
+        )
         forecast_section = (
             '<section class="market-briefing-outlook market-reader-focus" id="daily-forecasts">'
             '<h2>掲載時点の予想</h2>'
@@ -525,7 +531,7 @@ def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None,
             f'{forecast_at.strftime("%Y-%m-%d %H:%M")}</time> JST ／ 結果日：'
             f'<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time> ／ {escape(result_label)}</p>'
             f'<a href="{market_forecast_url(forecast)}">理由と結果を読む →</a>'
-            '</section>'
+            + (f'<ul class="market-related-outlooks">{other_forecasts}</ul>' if other_forecasts else '') + '</section>'
         )
     else:
         forecast_section = (

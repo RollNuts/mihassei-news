@@ -245,9 +245,13 @@ class MarketForecastSummaryTests(unittest.TestCase):
         self.assertIn("掲載時点", historical_score)
         self.assertIn(report["published_at"], historical_score)
         self.assertIn("JST", historical_score)
-        self.assertIn('#forecast-2026-11-18-topix">11/19判定　上昇予想 → 横ばい（−0.46%）で外れ', historical_score)
         self.assertNotIn('#forecast-2026-11-19-topix', historical_score)
-        self.assertIn('#forecast-2026-11-19-topix">11/20判定　横ばい予想 → 下落（−3.92%）で外れ', confirmed)
+        for score, source_day, answer in (
+                (historical_score, "2026-11-18", "11/19判定　上昇予想 → 横ばい（−0.46%）で外れ"),
+                (confirmed, "2026-11-19", "11/20判定　横ばい予想 → 下落（−3.92%）で外れ")):
+            link = score.split(f'#forecast-{source_day}-topix">', 1)[1].split("</a>", 1)[0]
+            self.assertIn(answer, re.sub(r"<[^>]+>", "", link))
+            self.assertLess(score.index(answer), score.index("TOPIXの短期予想の的中率"))
 
     def test_real_result_cards_show_the_original_baseline_and_official_target_close(self):
         path = Path(__file__).resolve().parents[1] / 'content/market_outlooks.json'
