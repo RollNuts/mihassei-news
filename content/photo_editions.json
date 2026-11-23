@@ -172,6 +172,31 @@
         ],
         "frozen_at_utc": "2026-11-15T12:42:24.683645+00:00"
       }
+    },
+    {
+      "number": 3,
+      "slug": "issue-003",
+      "state": "draft",
+      "legacy": false,
+      "release_mode": "daily",
+      "title": "週刊グラビア 第3号",
+      "summary": "7人の写真と本人コラム。",
+      "features": [],
+      "schedule": {
+        "schema_version": 1,
+        "week_start_date_jst": "2026-11-22",
+        "seed": "3bfff9395d82e71f3fa5f9024723b80b",
+        "order": [
+          "hanase-mio",
+          "tsukishiro-rena",
+          "kiritani-sumire",
+          "shiramine-yuki",
+          "shioba-rio",
+          "amane-hikari",
+          "nagino-saya"
+        ],
+        "frozen_at_utc": "2026-11-23T01:02:11.900818+00:00"
+      }
     }
   ]
 }
