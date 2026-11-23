@@ -508,12 +508,26 @@
       "new6": {
         "name": "shiramine_yuki_originals_6.zip",
         "sha256": "aeee6fb40a2d6b7a22ef2ae829733af81d53943c89773dd8781299a9a6752bd2",
-        "delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f"
+        "delivery_turn": "1b506d57-e867-4bc2-be2e-476e5778827f",
+        "library_lookup": {
+          "file_name": "shiramine_yuki_originals_6.zip",
+          "library_file_id": "libfile_fde3_f-c4fe5f7cb0b08191a185574d495f2499_3e0ce6a2e8348191be296e0419d0b8cc",
+          "lookup_scope": "authenticated_library_exact_filename",
+          "library_version": null,
+          "library_archive_bytes_verified": false
+        }
       },
       "previous10": {
         "name": "shiramine_yuki_previous_10_originals.zip",
         "sha256": "1b29199cdef63e072c6031c954ef74361b49e8e9d5c7a9b02311ac7163477393",
-        "delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a"
+        "delivery_turn": "5f0a47e0-f9e0-459b-ad75-ad600774469a",
+        "library_lookup": {
+          "file_name": "shiramine_yuki_previous_10_originals.zip",
+          "library_file_id": "libfile_fde3_f-883a072bc6bc8191b62073ee11afd789_3e0ce6a2e8348191be296e0419d0b8cc",
+          "lookup_scope": "authenticated_library_exact_filename",
+          "library_version": null,
+          "library_archive_bytes_verified": false
+        }
       }
     },
     "observed_sources": [
