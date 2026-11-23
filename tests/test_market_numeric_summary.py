@@ -141,11 +141,11 @@ class MarketNumericSummaryTests(unittest.TestCase):
         without = render_episode_page(market, market["episodes"][0], passthrough)
         self.assertNotIn('class="market-data-summary"', without)
 
-    def test_existing_bulletin_table_is_before_prose_with_real_source(self):
+    def test_bulletin_table_preserves_sourced_numbers_after_the_story(self):
         report = load_market_bulletins(ROOT)[-1]
         original = copy.deepcopy(report)
         page = render_market_bulletin(report, passthrough)
-        self.assertLess(page.index('class="market-data-summary"'), page.index('class="serial-article-body"'))
+        self.assertLess(page.index('class="serial-prose-section"'), page.index('class="market-data-summary"'))
         self.assertIn(f'href="{escape(report["figures"][0]["source_url"], quote=True)}"', page)
         self.assertEqual(report, original)
 

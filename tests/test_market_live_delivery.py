@@ -74,8 +74,8 @@ class LatestMarketLiveDeliveryTests(unittest.TestCase):
         files = self.same_publication_and_observation_fixture()
         page, mime = files[self.url]
         stamp = self.latest["published_at"]
-        publication = ('<p class="serial-pub">実公開：<time datetime="' + stamp + '">'
-                       + html.escape(stamp) + '</time></p>').encode()
+        publication = ('<p class="serial-pub">公開 <time datetime="' + stamp + '">'
+                       + stamp[:16].replace("T", " ") + '</time> JST</p>').encode()
         self.assertEqual(page.count(publication), 1)
         stale = publication.replace(stamp.encode(), b"2000-01-01T00:00:00+09:00")
         for replacement in (b"", stale, publication + publication):
