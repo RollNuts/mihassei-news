@@ -598,6 +598,112 @@ function suppliedCutFixture(cutId) {
   return {receipt, input:{issue:rio, cutId, producer:rioProducer, candidate, readback, importedAt:receipt.imported_at}};
 }
 
+// Use archived bytes in an offline stock-only handoff shaped like Rena's 334f466 record.
+function unassignedStockFixture() {
+  const {input} = suppliedCutFixture("09");
+  const {source, jpeg, transform, encoding_details} = input.candidate, measured = input.readback;
+  const releaseCommit = sha1("editor head"), commit = sha1("materialized stock"), receiptCommit = sha1("split receipt");
+  const stockIssue = "reserve-storage", prefix = "maintenance/photo-issue-plans/" + stockIssue + "/";
+  const issue = {...rio, slug:"editor-draft", state:"draft", published_at:null, images:{}};
+  const parts = [];
+  for (let start=0; start<source.bytes; start+=512*1024) {
+    const chunk = measured.source.data.subarray(start, start+512*1024);
+    parts.push({index:parts.length, blob:sha1(parts.length), sha256:hash(chunk)});
+  }
+  const receipt = {version:1, status:"originals_only_unreviewed", issue:stockIssue, ...rioProducer,
+    delivery_turn:"064ecc91-b742-4a98-b2e6-96034bdc11d5", assets:[{source_sha256:source.sha256,
+      source_bytes:source.bytes, width:source.width, height:source.height, source_ordinal:1, generation_turn:null, parts}]};
+  const jpegPath = prefix+"prepared-jpegs/reserve-source01.jpg", sourcePath = prefix+"originals/01.png";
+  const item = {source_ordinal:1, source_sha256:source.sha256, source_bytes:source.bytes, source_filename:source.file_name,
+    source_dimensions:{width:source.width,height:source.height}, library:{url:source.url,library_file_id:source.library_file_id},
+    prepared_jpeg:{...jpeg,commit:sha1("original JPEG"),path:jpegPath,git_blob_sha:measured.jpeg.blob}, transform, encoding_details,
+    source_visual_screening:"passed_candidate_screening", jpeg_visual_screening:"passed_candidate_screening", formal_editorial_adoption:"pending"};
+  const handoff = {version:1,kind:"photo_original_recovery_handoff",repository:repo,...rioProducer,source_candidate:stockIssue,
+    status:"originals_verified_and_jpegs_prepared_editorial_adoption_pending", candidate_branch:"photo-issue-plan/"+stockIssue,
+    source_candidate_only:true,publication_number_assigned:null,generation_turn:null,generation_turn_status:"not_retained",
+    generation_prompt:null,generation_prompt_status:"not_retained",items:[item],
+    prepared_jpeg_storage:{commit:item.prepared_jpeg.commit,path_prefix:prefix+"prepared-jpegs/"},
+    originals_receipt:{commit:receiptCommit,path:prefix+"originals/receipt.json",sha256:hash(JSON.stringify(receipt))}};
+  const inventory = {live:[],editing:[],originals:[{type:"file",path:sourcePath,sha:measured.source.blob,size:source.bytes}],
+    jpegs:[{type:"file",path:jpegPath,sha:measured.jpeg.blob,size:jpeg.bytes}]};
+  const requests = [];
+  const github = {
+    async fetch({url}) {
+      const path = url.split("/"+repo)[1]; requests.push(path);
+      if (path === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:main}};
+      if (path === "/git/ref/heads/"+handoff.candidate_branch) return {ref:"refs/heads/"+handoff.candidate_branch,object:{sha:commit}};
+      if (path === "/contents/"+prefix+"originals?ref="+commit) return {content:JSON.stringify(inventory.originals)};
+      if (path === "/contents/"+prefix+"prepared-jpegs?ref="+commit) return {content:JSON.stringify(inventory.jpegs)};
+      throw Error("Unexpected transport " + path);
+    },
+    async fetch_file({ref,path,encoding}) {
+      requests.push([ref,path]);
+      let data;
+      if (ref === commit && path === prefix+"handoff.json") data = handoff;
+      else if (ref === receiptCommit && path === prefix+"originals/receipt.json") data = receipt;
+      else if (ref === "cast-source-drafts" && path === "drafts/cast-voices/"+rioProducer.model_id+".json") data = rioProducer;
+      else if ([main,releaseCommit].includes(ref) && path === "content/photo_issues.json") {
+        data = {schema_version:1,issues:ref === main ? inventory.live : inventory.editing};
+      } else throw Error("Unexpected file " + ref + "/" + path);
+      return {content:JSON.stringify(data),encoding};
+    }
+  };
+  const params = {stockIssue,commit,releaseCommit,issue};
+  const readback = {source:{status:"read",mime_type:"image/png",commit,path:sourcePath,sha256:source.sha256,bytes:source.bytes,
+    width:source.width,height:source.height,image_url:dataUrl(measured.source.data)},
+    jpeg:{sha:measured.jpeg.blob,encoding:"base64",content:measured.jpeg.data.toString("base64")}};
+  const api = helper.create({runtime:{...bytes,sha256:hash},github});
+  return {open:()=>api.openUnassignedStock(params),params,handoff,receipt,inventory,requests,item,
+    cut:{sourceOrdinal:1,cutId:"09",importedAt:input.importedAt,readback}};
+}
+
+test("an editor can prepare an unassigned split-receipt original for a first draft at a different slug", async () => {
+  const fixture = unassignedStockFixture(), {cut,item,params,handoff,requests} = fixture;
+  const batch = await fixture.open(), reads = requests.length;
+  const result = batch.prepareCut(cut), record = JSON.parse(result.files[2].content);
+  assert.equal(result.status, "prepared_not_published");
+  assert.equal(record.issue_slug, params.issue.slug);
+  assert.deepEqual([record.cut_id,record.model_id,record.source.sha256,record.jpeg.sha256], ["09",rio.model_id,item.source_sha256,item.prepared_jpeg.sha256]);
+  assert.equal(record.source.url, item.library.url);
+  assert.equal(record.source.generation_turn, null);
+  assert.ok(record.source.path.startsWith("maintenance/photo-issues/"+params.issue.slug+"/09/"));
+  assert.deepEqual(record.recovery_reference, {source_issue:params.stockIssue, handoff_sha256:hash(JSON.stringify(handoff)),
+    originals_receipt_commit:handoff.originals_receipt.commit, originals_receipt_path:handoff.originals_receipt.path,
+    originals_receipt_sha256:handoff.originals_receipt.sha256, candidate_commit:params.commit, source_ordinal:1,
+    source_path:cut.readback.source.path, jpeg_path:item.prepared_jpeg.path, original_blob_sha:result.files[0].sha,
+    jpeg_blob_sha:cut.readback.jpeg.sha, handoff_path:"maintenance/photo-issue-plans/"+params.stockIssue+"/handoff.json"});
+  assert.deepEqual(batch.prepareCut(cut),result);
+  assert.throws(()=>batch.prepareCut({...cut,cutId:"08"}), /already selected/);
+  assert.equal(requests.length,reads);
+  assert.equal(requests.filter(req=>req[1]==="content/photo_issues.json").length,2);
+  assert.ok(requests.length <= 15);
+});
+
+test("unassigned stock rejects reassignment, swapped evidence, published originals and repeated sources", async () => {
+  const fixture = unassignedStockFixture(), {handoff,item,inventory,params,cut} = fixture;
+  async function rejected() {
+    await assert.rejects(async () => (await fixture.open()).prepareCut(cut));
+  }
+  for (const [object,key,bad] of [
+    [handoff,"publication_number_assigned",14], [handoff,"source_candidate_only",false],
+    [handoff,"source_chat_url",chat], [handoff,"model_id","another-model"],
+    [handoff.originals_receipt,"sha256",hash("different original receipt")],
+    [item,"formal_editorial_adoption","accepted"], [item,"source_ordinal",2],
+    [inventory,"originals",[]], [item.prepared_jpeg,"git_blob_sha",sha1("another JPEG")],
+    [item.prepared_jpeg,"commit",main],
+    [cut.readback.source,"commit",main], [cut.readback.source,"path",item.prepared_jpeg.path],
+    [cut.readback.source,"image_url","data:image/png;base64,AAAA"], [cut.readback.jpeg,"sha",sha1("other blob")],
+    [handoff,"items",[item,{...item,source_ordinal:2}]], [params.issue,"state","published"],
+    [inventory,"live",[{state:"published",images:{"01":{source_png_sha256:item.source_sha256}}}]],
+    [inventory,"editing",[{...params.issue,model_id:"another-model"}]],
+    [inventory,"editing",[{...params.issue,images:{"09":{source_sha256:hash("different original")}}}]],
+    [inventory,"editing",[{...params.issue,images:{"02":{source_sha256:item.source_sha256}}}]]
+  ]) {
+    const before=object[key]; object[key]=bad;
+    try { await rejected(); } finally { object[key]=before; }
+  }
+});
+
 for (const [cut, ordinal, encoder] of [["03",11,"Pillow"],["09",3,"jpeg-js"]]) {
   test("prepares the retained " + encoder + " photo from original " + ordinal + " for cut " + cut, () => {
     const api = helper.create({runtime:{...bytes, sha256:hash}});

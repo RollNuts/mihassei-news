@@ -605,10 +605,13 @@ var PhotoOriginalHandoff = (() => {
     const publishCheckpoint = (packet, plan) => publishRecord(packet, plan, true);
     // Inputs come from the registered producer draft, fixed candidate handoff and completed byte readback.
     // The caller owns visual review, the PR tree and the final publication validator.
-    function prepareSuppliedCut({issue, cutId, producer, candidate, readback, importedAt}) {
-      const prefix = planPrefix(issue.slug);
+    function prepareSuppliedCut(input) {
+      return prepareCut(input, input.issue.slug);
+    }
+    function prepareCut({issue, cutId, producer, candidate, readback, importedAt}, sourceIssue, stockEvidence = {}) {
+      const prefix = planPrefix(sourceIssue);
       const snapshot = issue.model_snapshot;
-      requireThat(typeof cutId === "string" && /^(?:0[1-9]|10)$/.test(cutId) && candidate?.issue === issue.slug &&
+      requireThat(typeof cutId === "string" && /^(?:0[1-9]|10)$/.test(cutId) && candidate?.issue === sourceIssue &&
         typeof issue.model_id === "string" && SLUG.test(issue.model_id) && candidate.model_id === issue.model_id &&
         snapshot?.id === issue.model_id && typeof snapshot.master?.sha256 === "string" && HASH.test(snapshot.master.sha256) &&
         (!("body_profile" in snapshot || "body_profile_sha256" in snapshot) ||
@@ -648,7 +651,7 @@ var PhotoOriginalHandoff = (() => {
       const sourcePath = dir + "source-" + source.sha256 + (png ? ".png" : ".jpg");
       const jpegPath = "assets/generated/photo-issue-" + issue.slug + "-" + cutId + ".jpg";
       const receiptPath = dir + "receipt-supplied-" + source.sha256.slice(0,12) + "-" + jpeg.sha256.slice(0,12) + ".json";
-      const recovery = {candidate_commit:candidate.commit, source_ordinal:candidate.source_ordinal,
+      const recovery = {...stockEvidence, candidate_commit:candidate.commit, source_ordinal:candidate.source_ordinal,
         source_path:source.path, jpeg_path:jpeg.path, original_blob_sha:readback.source.blob, jpeg_blob_sha:readback.jpeg.blob};
       if (candidate.handoff_path !== undefined) {
         requireThat(isCandidatePath(candidate.handoff_path, prefix) && candidate.handoff_path.endsWith(".json"), "Invalid candidate handoff path");
@@ -669,7 +672,102 @@ var PhotoOriginalHandoff = (() => {
         {path:receiptPath, mode:"100644", type:"blob", content}],
       image:{...publicationJpeg, source_sha256:source.sha256, provenance}};
     }
-    return {upload, uploadDataUrl, prepare, publish, readOriginal, prepareSuppliedCut,
+    // An original saved before a publication number was assigned keeps its own immutable storage paths.
+    async function openUnassignedStock({stockIssue, commit, releaseCommit, issue}) {
+      const prefix = planPrefix(stockIssue), handoffPath = prefix + "handoff.json";
+      planPrefix(issue.slug);
+      requireThat(stockIssue !== issue.slug && GIT.test(commit) && GIT.test(releaseCommit), "Expected fixed stock and release revisions");
+      const file = await git("fetch_file", {ref:commit, path:handoffPath, encoding:"utf-8"});
+      requireThat(file.encoding === "utf-8" && file.content, "Missing stock handoff");
+      const stock = JSON.parse(file.content), original = stock.originals_receipt;
+      requireThat(stock.version === 1 && stock.kind === "photo_original_recovery_handoff" && stock.repository === REPO &&
+        stock.status === "originals_verified_and_jpegs_prepared_editorial_adoption_pending" &&
+        stock.source_candidate_only === true && stock.publication_number_assigned === null &&
+        stock.source_candidate === stockIssue && stock.candidate_branch === "photo-issue-plan/" + stockIssue &&
+        Array.isArray(stock.items) && stock.items.length > 0 && stock.items.length <= 30 &&
+        original?.path === directory(stockIssue) + "/receipt.json" && GIT.test(stock.prepared_jpeg_storage?.commit) &&
+        stock.prepared_jpeg_storage.path_prefix === prefix + "prepared-jpegs/", "Expected an unassigned original-stock handoff");
+      const record = await originalRecord({issue:stockIssue, commit:original.commit, receipt_sha256:original.sha256,
+        source_sha256:stock.items[0].source_sha256});
+      requireThat(matchesProducer(stock, record), "Stock and original receipt belong to different producers");
+      await checkProducer(record);
+      const stockHead = await reviewHead(stock.candidate_branch);
+      if (stockHead !== commit) {
+        const lineage = await get("/compare/" + commit + "..." + stockHead + "?per_page=1");
+        requireThat(lineage.merge_base_commit?.sha === commit && lineage.status === "ahead", "Stock commit is outside its candidate branch");
+      }
+      const live = await reviewHead("main");
+      async function catalog(ref) {
+        const file = await git("fetch_file", {ref, path:"content/photo_issues.json", encoding:"utf-8"});
+        const data = JSON.parse(file.content);
+        requireThat(data.schema_version === 1 && Array.isArray(data.issues), "Invalid edition catalog");
+        return data.issues;
+      }
+      const current = await catalog(live), editing = releaseCommit === live ? current : await catalog(releaseCommit);
+      const targets = editing.filter(i => i.slug === issue.slug);
+      requireThat(issue.state === "draft" && issue.model_id === stock.model_id && HASH.test(issue.issue_sha256) &&
+        targets.length <= 1 && targets.every(i => i.state === "draft" && i.model_id === issue.model_id &&
+          i.issue_sha256 === issue.issue_sha256 && i.model_snapshot.master.sha256 === issue.model_snapshot.master.sha256 &&
+          i.model_snapshot.body_profile_sha256 === issue.model_snapshot.body_profile_sha256) &&
+        !current.some(i => i.slug === issue.slug && i.state === "published"), "Expected the editor's fixed draft for this producer");
+      const used = new Set();
+      for (const edition of [...current.filter(i => i.state === "published"), ...editing, issue]) {
+        for (const image of Object.values(edition.images)) {
+          const digest = image.source_sha256 ?? image.source_png_sha256;
+          if (edition.state === "published") requireThat(HASH.test(digest), "Published original identity is missing");
+          if (digest) used.add(digest);
+          if (image.sha256) used.add(image.sha256);
+        }
+      }
+      async function directoryAtCommit(name) {
+        const entries = await get("/contents/" + prefix + name + "?ref=" + commit);
+        requireThat(Array.isArray(entries), "Missing stock directory at the fixed revision");
+        return new Map(entries.filter(f => f.type === "file" && GIT.test(f.sha)).map(f => [f.path, f]));
+      }
+      const originals = await directoryAtCommit("originals"), jpegs = await directoryAtCommit("prepared-jpegs");
+      const evidence = {source_issue:stockIssue, handoff_sha256:hashText(file.content), originals_receipt_commit:original.commit,
+        originals_receipt_path:original.path, originals_receipt_sha256:original.sha256};
+      const chosen = new Map();
+      return {prepareCut({sourceOrdinal, cutId, readback, importedAt}) {
+        const rows = stock.items.filter(i => i.source_ordinal === sourceOrdinal), row = rows[0];
+        requireThat(rows.length === 1 && Number.isSafeInteger(sourceOrdinal) && sourceOrdinal > 0 && sourceOrdinal <= 99 &&
+          row.formal_editorial_adoption === "pending" && row.source_visual_screening === "passed_candidate_screening" &&
+          row.jpeg_visual_screening === "passed_candidate_screening" &&
+          stock.items.filter(i => i.source_sha256 === row.source_sha256 || i.prepared_jpeg.sha256 === row.prepared_jpeg.sha256).length === 1 &&
+          issue.shots.some(shot => shot.id === cutId) && !issue.images[cutId] && !targets[0]?.images[cutId] &&
+          !used.has(row.source_sha256) && !used.has(row.prepared_jpeg.sha256),
+        "Source already used, ambiguous, or unavailable for this cut");
+        requireThat([...chosen].every(([cut, hash]) => (cut === cutId) === (hash === row.source_sha256)),
+          "Stock source or publication cut already selected in this batch");
+        const asset = completeAsset(record, row.source_sha256);
+        const sourcePath = prefix + "originals/" + String(sourceOrdinal).padStart(2,"0") + ".png";
+        const sourceEntry = originals.get(sourcePath), saved = row.prepared_jpeg, jpegEntry = jpegs.get(saved.path);
+        const png = readback.source, {width,height} = row.source_dimensions;
+        requireThat(asset.source_ordinal === sourceOrdinal && asset.width === width && asset.height === height &&
+          asset.source_bytes === row.source_bytes && sourceEntry?.size === row.source_bytes &&
+          png?.status === "read" && png.mime_type === "image/png" && png.commit === commit && png.path === sourcePath &&
+          png.sha256 === row.source_sha256 && png.width === width && png.height === height && png.bytes === row.source_bytes &&
+          typeof png.image_url === "string" && png.image_url.startsWith("data:image/png;base64,") &&
+          png.image_url.length === 22 + 4 * Math.ceil(row.source_bytes/3) &&
+          saved.commit === stock.prepared_jpeg_storage.commit && jpegEntry?.sha === saved.git_blob_sha && jpegEntry.size === saved.bytes,
+        "Stock files differ from the fixed original and JPEG");
+        const source = {path:sourcePath, format:"png", sha256:row.source_sha256, bytes:row.source_bytes, width,height,
+          url:row.library.url, library_file_id:row.library.library_file_id, file_id:row.library.file_id,
+          file_name:row.source_filename, library_file_version:row.library.library_file_version,
+          generation_turn:stock.generation_turn, generation_turn_status:stock.generation_turn_status,
+          generation_prompt:stock.generation_prompt, generation_prompt_status:stock.generation_prompt_status};
+        const jpeg = {path:saved.path, sha256:saved.sha256, bytes:saved.bytes, width:saved.width, height:saved.height, blob:jpegEntry.sha};
+        const candidate = {issue:stockIssue, model_id:stock.model_id, source_chat_url:stock.source_chat_url, commit,
+          source_ordinal:sourceOrdinal, handoff_path:handoffPath, source, jpeg, transform:row.transform, encoding_details:row.encoding_details};
+        const measured = {commit, image_bytes_verified:true, source_ordinal:sourceOrdinal,
+          source:{...source, blob:sourceEntry.sha, data:runtime.fromBase64(png.image_url)},
+          jpeg:{...jpeg, data:verifiedJpeg(readback.jpeg, jpeg)}};
+        const result = prepareCut({issue, cutId, producer:record, candidate, readback:measured, importedAt}, stockIssue, evidence);
+        chosen.set(cutId, row.source_sha256);
+        return result;
+      }};
+    }
+    return {upload, uploadDataUrl, prepare, publish, readOriginal, prepareSuppliedCut, openUnassignedStock,
       prepareCheckpoint, publishCheckpoint, restoreCheckpoint, readCheckpointOriginal,
       readOriginalStep, readCheckpointOriginalStep, uploadReviewJpeg, prepareReviewJpeg, publishReviewJpeg, readReviewJpeg};
   }
