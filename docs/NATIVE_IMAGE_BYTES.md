@@ -612,9 +612,21 @@ const cut = original.prepareSuppliedCut({
 });
 ```
 
-For an older `sources` or `items` handoff, assemble the same candidate fields from the selected file and its fixed receipt. Use the issue recorded there, its registered producer, original ordinal, source and JPEG paths, and actual conversion settings.
+For an older handoff for the **same** shoot, take the selected file, original ordinal and actual conversion settings from its fixed receipt.
 
 Read both files inside code mode. Each measured record carries its pinned path, Git blob ID (`blob`), SHA-256, length and dimensions. Keep the observed Library link and file ID or the registered chat URL, turn and image number. If GitHub Contents omits a large numbered PNG, [read its bytes at the candidate commit](IMAGE_CANDIDATE_RECEIVER.md#reading-a-saved-weekly-original). For a split original, verify the reassembled file and store its complete blob before using its ID. `cut.files` contains two existing blob references and the formal receipt text for GitHub `create_tree`. `cut.image` carries the receipt SHA for the catalog. Add the actual visual review separately after inspecting the release files.
+
+#### Stock received before a feature was assigned
+
+For a [producer handoff with `source_candidate_only: true` and a null publication number](https://github.com/RollNuts/mihassei-news/blob/fe276d1b4e698f91d6ecc5f870fab4e7a16e9b9c/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json), open the stock once for the editor's draft feature. `stockIssue` identifies the original storage location. `releaseCommit` is the fixed head used to prepare the release. The draft feature can be new to its catalog.
+
+```js
+const batch = await original.openUnassignedStock({stockIssue, commit, releaseCommit, issue});
+const cut = batch.prepareCut({sourceOrdinal, cutId, importedAt,
+  readback: {source: pngResult.structuredContent, jpeg: jpegResult.structuredContent}});
+```
+
+Read the numbered PNG with `read_weekly_candidate_png` and the recorded JPEG with GitHub `fetch_file` (`encoding: "base64"`), both at `commit`. If the selected PNG exists only in parts, use `readOriginalStep` with its original receipt and SHA. Save the verified whole bytes once as `originals/NN.png` on its existing candidate branch using the storage guard and a non-forced update against its observed head. Reread both assets and the handoff at that new commit. The resulting release receipt preserves the stock paths, original ordinal and split receipt; the release files use the editor's feature slug and cut number.
 
 Use the weekly editor's normal release PR. For a new release branch, use the latest `main` commit as parent and its tree as `base_tree_sha`. For an existing release PR, use its current reviewed head and tree to preserve its other edits. Keep staging files and unused stock on the pinned candidate commit. If a release PR already includes staging-only additions, exclude those additions from its proposed release tree, preserving its other edits and the original candidate commit. Reuse that PR. Add the selected images, receipts, QA and catalog changes at their release paths. Check the full PR diff against `allowed_for("photo_issue", path)`. Within `maintenance/photo-issue-plans/<issue>/`, the finalizer accepts only matching JSON files directly in that directory. Verify that the destination blob IDs match. Before advancing a release ref, reread its head, use the reviewed head as the parent and set `force: false`. If the head moved, reconcile the changes before handing off the final PR head. See [finalizer path scope](../scripts/publication_finalize.py) and [publication handoff](OPERATIONS.md).
 
