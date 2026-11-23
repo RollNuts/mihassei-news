@@ -626,7 +626,16 @@ const cut = batch.prepareCut({sourceOrdinal, cutId, importedAt,
   readback: {source: pngResult.structuredContent, jpeg: jpegResult.structuredContent}});
 ```
 
-Read the numbered PNG with `read_weekly_candidate_png` and the recorded JPEG with GitHub `fetch_file` (`encoding: "base64"`), both at `commit`. If the selected PNG exists only in parts, use `readOriginalStep` with its original receipt and SHA. Save the verified whole bytes once as `originals/NN.png` on its existing candidate branch using the storage guard and a non-forced update against its observed head. Reread both assets and the handoff at that new commit. The resulting release receipt preserves the stock paths, original ordinal and split receipt; the release files use the editor's feature slug and cut number.
+Read the numbered PNG with `read_weekly_candidate_png` and the recorded JPEG with GitHub `fetch_file` (`encoding: "base64"`), both at `commit`. If that PNG exists only in parts, bind the same connector as `readWeeklyPng` when creating the original handoff helper. Use the original receipt's commit, digest and source SHA for `ref`. Run each line in a separate tool cell, keeping verified bytes in code mode.
+
+```js
+const verified = await original.readOriginalStep(ref); // Continue a pending read with its state.
+const uploaded = await original.uploadNumberedOriginal(ref, verified);
+const plan = await original.prepareNumberedOriginal(ref, uploaded, uploaded.base);
+const saved = await original.publishNumberedOriginal(ref, uploaded, plan);
+```
+
+Use `saved.commit` as the stock revision for both reads and for `openUnassignedStock`. This restores the selected source at its receipt ordinal on the existing candidate branch. The editor still chooses the release cuts after visual inspection. The release receipt retains the stock paths, original ordinal and split receipt.
 
 Use the weekly editor's normal release PR. For a new release branch, use the latest `main` commit as parent and its tree as `base_tree_sha`. For an existing release PR, use its current reviewed head and tree to preserve its other edits. Keep staging files and unused stock on the pinned candidate commit. If a release PR already includes staging-only additions, exclude those additions from its proposed release tree, preserving its other edits and the original candidate commit. Reuse that PR. Add the selected images, receipts, QA and catalog changes at their release paths. Check the full PR diff against `allowed_for("photo_issue", path)`. Within `maintenance/photo-issue-plans/<issue>/`, the finalizer accepts only matching JSON files directly in that directory. Verify that the destination blob IDs match. Before advancing a release ref, reread its head, use the reviewed head as the parent and set `force: false`. If the head moved, reconcile the changes before handing off the final PR head. See [finalizer path scope](../scripts/publication_finalize.py) and [publication handoff](OPERATIONS.md).
 

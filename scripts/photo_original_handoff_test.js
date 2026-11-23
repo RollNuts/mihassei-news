@@ -46,6 +46,12 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
         return {path:".github/workflows/free-cpu-scenes.yml",state:state.active ? "active" : "disabled_manually"};
       if (path === "/compare/main..." + main + "?per_page=1")
         return state.comparison ?? {base_commit:{sha:main},merge_base_commit:{sha:main},status:"identical"};
+      if (path.startsWith("/compare/")) {
+        const [base, head] = path.slice(9).split("?")[0].split("...");
+        let cursor = head;
+        while (cursor && cursor !== base) cursor = commits.get(cursor)?.parents[0]?.sha;
+        return {merge_base_commit:{sha:cursor}, status:cursor === base ? "ahead" : "diverged"};
+      }
       if (path.startsWith("/git/commits/")) return commits.get(path.slice(13));
       if (path.startsWith("/git/trees/")) {
         const id = path.split("/")[3].split("?")[0];
@@ -89,7 +95,9 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
     async update_ref({branch_name,expected_sha,force,sha}) {
       assert.equal(force,false);
       if (branches.get(branch_name)!==expected_sha) throw Error("branch moved");
-      branches.set(branch_name,sha);if (state.lost) throw Error("lost response");return {sha};
+      if (!state.discardUpdate) branches.set(branch_name,sha);
+      if (state.lost) throw Error("lost response");
+      return {sha};
     }
   };
   for (const name of ["create_blob","create_tree","create_commit","create_branch","update_ref"]) {
@@ -110,6 +118,14 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
     cloudStatus:async () => state.guard ? state.guard() : ({state:state.active && state.writes.length < state.stopAfterWrites &&
       state.writes.filter(name => name === "create_blob").length < state.stopAfterBlobs
       ?"active":"disabled",public:true,main_commit_sha:state.liveMain ?? main,jpeg_bytes:123}),
+    readWeeklyPng:async ({commit,path,expected_sha256}) => {
+      state.reads.push("weekly PNG");
+      const entry = trees.get(commits.get(commit).tree.sha).find(f => f.path === path);
+      const input = blobs.get(entry.sha);
+      assert.equal(hash(input), expected_sha256, "Numbered PNG bytes differ");
+      return {structuredContent:{status:"read", mime_type:"image/png", commit, path,
+        sha256:hash(input), bytes:input.length, ...bytes.inspectPng(input), image_url:dataUrl(input)}};
+    },
     readCandidatePng:fileAdapter ? async () => {
       state.fileReads++;
       return {structuredContent:{status:"read",mime_type:"image/png",sha256:hash(input),bytes:input.length,...info,
@@ -473,6 +489,101 @@ test("bounded readback rejects edited, reordered, skipped and cross-reference pr
   const final=await api.publish(input,await api.prepare(input,advanced.commit));
   await assert.rejects(api.readOriginalStep({issue:input.issue,...final,source_sha256:sha},good),/readback state/);
   assert.deepEqual(Buffer.from((await api.readCheckpointOriginalStep(ref,good)).bytes),large);
+});
+
+test("restores only the chosen numbered PNG under the candidate lease in bounded cells", async () => {
+  const source = largePng(), sha = hash(source), {api,state,resetGuard} = setup(source);
+  const partial = await api.uploadDataUrl(dataUrl(source),sha,0,2);
+  const end = await api.uploadDataUrl(dataUrl(source),sha,2,2);
+  const input = {...packet(), assets:[{...partial, parts:[...partial.parts,...end.parts], source_ordinal:4}]};
+  const staged = await api.publish(input, await api.prepare(input));
+  const ref = {issue:input.issue,...staged,source_sha256:sha};
+  const step = await api.readOriginalStep(ref,null,2);
+  assert.equal(step.status, "readback_pending");
+  const verified = await api.readOriginalStep(ref,step.state,2);
+  const writes = state.writes.length;
+  await assert.rejects(api.uploadNumberedOriginal(ref,step),/completed split/);
+  await assert.rejects(api.uploadNumberedOriginal(ref,{...verified,bytes:new Uint8Array(source.length)}),/PNG changed/);
+  state.active = false;
+  await assert.rejects(api.uploadNumberedOriginal(ref,verified),/stopped/);
+  assert.equal(writes, state.writes.length);
+  state.active = true;
+
+  async function cell(operation) {
+    resetGuard();
+    const before = state.writes.length + state.reads.length;
+    const result = await operation();
+    assert.ok(state.writes.length + state.reads.length - before <= 15);
+    return result;
+  }
+  const upload = await cell(()=>api.uploadNumberedOriginal(ref,verified));
+  assert.match(upload.path,/originals\/04\.png$/);
+  const plan = await cell(()=>api.prepareNumberedOriginal(ref,upload,upload.base));
+  const baseFiles = state.trees.get(state.commits.get(upload.base).tree.sha);
+  const proposedFiles = state.trees.get(state.commits.get(plan.commit).tree.sha);
+  const extra = {path:"other.txt",type:"blob",mode:"100644",sha:sha1("unowned")};
+  proposedFiles.push(extra);
+  await assert.rejects(api.publishNumberedOriginal(ref,upload,plan),/other candidate files/);
+  proposedFiles.pop();
+  const pathEntry = proposedFiles.find(f => f.path === upload.path), badBlob = sha1("wrong");
+  state.blobs.set(badBlob,Buffer.from("wrong"));
+  pathEntry.sha = badBlob;
+  await assert.rejects(api.publishNumberedOriginal(ref,{...upload,blob:badBlob},plan),/bytes differ/);
+  pathEntry.sha = upload.blob;
+  const part = baseFiles.find(f => f.path.endsWith("part002"));
+  part.mode = "120000";
+  await assert.rejects(api.publishNumberedOriginal(ref,upload,plan),/changed candidate parts/);
+  part.mode = "100644";
+  baseFiles.push({path:upload.path,mode:"120000",type:"blob",sha:upload.blob});
+  await assert.rejects(api.prepareNumberedOriginal(ref,upload,upload.base),/Occupied numbered/);
+  baseFiles.pop();
+  baseFiles.push({path:upload.path,mode:"100644",type:"blob",sha:badBlob});
+  await assert.rejects(api.prepareNumberedOriginal(ref,upload,upload.base),/occupied numbered/);
+  baseFiles.pop();
+
+  state.active = false;
+  await assert.rejects(api.publishNumberedOriginal(ref,upload,plan),/stopped/);
+  assert.equal(state.branches.get(staged.branch),upload.base);
+  state.active = true;
+  state.lost = true;
+  await assert.rejects(cell(()=>api.publishNumberedOriginal(ref,upload,plan)),/lost response/);
+  assert.equal(state.branches.get(staged.branch),plan.commit);
+  state.lost = false;
+  const afterWrite = state.writes.length;
+  const saved = await cell(()=>api.publishNumberedOriginal(ref,upload,plan));
+  assert.equal(saved.commit,plan.commit);
+  assert.deepEqual(Buffer.from(state.blobs.get(saved.blob)),source);
+  const oldHead = {...upload,base:upload.base};
+  await assert.rejects(api.prepareNumberedOriginal(ref,oldHead,upload.base),/branch moved/);
+  const again = await cell(()=>api.uploadNumberedOriginal(ref,verified));
+  const noChange = await cell(()=>api.prepareNumberedOriginal(ref,again,again.base));
+  assert.equal(noChange.base,noChange.commit);
+  assert.deepEqual(await cell(()=>api.publishNumberedOriginal(ref,again,noChange)),saved);
+  assert.equal(state.writes.length,afterWrite);
+});
+
+test("confirms a newly advanced numbered original against the live ref in a cold cell", async () => {
+  const {api,state,resetGuard} = setup(), input = packet(), sha = hash(png);
+  input.assets = [{...await api.uploadDataUrl(dataUrl(png),sha),source_ordinal:2}];
+  const staged = await api.publish(input,await api.prepare(input));
+  const ref = {issue:input.issue,...staged,source_sha256:sha};
+  // A producer's branch can be several commits ahead of its immutable split receipt.
+  const base = sha1("advanced candidate");
+  state.commits.set(base,{sha:base,tree:state.commits.get(staged.commit).tree,parents:[{sha:staged.commit}]});
+  state.branches.set(staged.branch,base);
+  const upload = await api.uploadNumberedOriginal(ref,await api.readOriginalStep(ref));
+  const plan = await api.prepareNumberedOriginal(ref,upload,base);
+  state.discardUpdate = true;
+  await assert.rejects(api.publishNumberedOriginal(ref,upload,plan),/update not confirmed/);
+  assert.equal(state.branches.get(staged.branch),base);
+  state.discardUpdate = false;
+  resetGuard();
+  const callbacksBefore = state.reads.length + state.writes.length;
+  const saved = await api.publishNumberedOriginal(ref,upload,plan);
+  const callbacks = state.reads.length + state.writes.length - callbacksBefore;
+  assert.ok(callbacks <= 15, "Cold publish used " + callbacks + " callbacks");
+  assert.equal(saved.commit,plan.commit);
+  assert.equal(state.branches.get(staged.branch),saved.commit);
 });
 
 test("a completed receipt stages one verified JPEG on its own branch and recovers a lost lease reply", async () => {
