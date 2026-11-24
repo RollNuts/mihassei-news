@@ -484,7 +484,136 @@
         }
       ],
       "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/1ac6e092f6e338eb7dbe958722ccd1933603b900/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
-      "weekly_quota_next_step": "当週の台帳 photo-issue-plan/stock-tsukishiro-rena-2026-11-22 のgeneration-attempts.jsonから通常の予約を再開する。予約前に最新の確認済みmain（https://github.com/RollNuts/mihassei-news/blob/main/docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport）に従い、本人枠で実際に使える原本経路を checkOriginalTransport で検証する。生成ツールと返却形式も別途確認して1枚を予約する。"
+      "weekly_quota_next_step": "当週の台帳 photo-issue-plan/stock-tsukishiro-rena-2026-11-22 のgeneration-attempts.jsonから通常の予約を再開する。予約前に最新の確認済みmain（https://github.com/RollNuts/mihassei-news/blob/main/docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport）に従い、本人枠で実際に使える原本経路を checkOriginalTransport で検証する。生成ツールと返却形式も別途確認して1枚を予約する。",
+      "editorial_screening_20261125": {
+        "status": "observations_only_no_adoption_guard_timeout",
+        "observed_at": "2026-11-24T21:00:53.309Z",
+        "main_ref": "86f34d4e3464dd6bcda3669a25ebb5c13afb748a",
+        "candidate_ref": "ebe598e1dd566d42a0a021783d3820f831cab5fa",
+        "viewed_jpegs": 9,
+        "master_reference": "assets/generated/photo-master-tsukishiro-rena-aec46a830a8a.jpg",
+        "published_catalog_sha_overlap": 0,
+        "possible_pool_cuts": [
+          {
+            "source_ordinal": 2,
+            "source_sha256": "4fa2d6d6f14c14963d4faa4bc992f3022305c2a1c4acf20c0eb73fd26ecc0f4d",
+            "jpeg": {
+              "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+              "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source02.jpg",
+              "sha256": "b4c32a5ce25280c6a068b92e1eabc1b382e396bca15575a13b575ed77310e08f",
+              "git_blob_sha": "02561288f62e296463f7cfdab277a38291de6d36",
+              "bytes": 179184,
+              "width": 800,
+              "height": 1200
+            },
+            "swimwear_visible": true,
+            "both_pieces_visible": true,
+            "note": "灰色、プール階段で頬杖をつき足先まで写る縦位置。06と近似だが目線に変化。"
+          },
+          {
+            "source_ordinal": 3,
+            "source_sha256": "dbf8d1196a4886a72d2bd9fd49ae66c0e33f65e7816d5cb2c3f514ee68161afa",
+            "jpeg": {
+              "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+              "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source03.jpg",
+              "sha256": "5777db7f8db9ae887a338323e618600adde44e5d6303419ae3798fb45538bfed",
+              "git_blob_sha": "14edbfd7ea051417e524b83b785d2d12e27083af",
+              "bytes": 145450,
+              "width": 800,
+              "height": 1200
+            },
+            "swimwear_visible": true,
+            "both_pieces_visible": true,
+            "note": "白、通路で髪に触れる縦位置。04と近似だが動作が明快。"
+          },
+          {
+            "source_ordinal": 5,
+            "source_sha256": "50407360e672b4fe4f4daddf1917e2ecd43f27dd39163cda2ec024e17ee14787",
+            "jpeg": {
+              "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+              "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source05.jpg",
+              "sha256": "b8040fa9922ba5e74d5673e12a32a3a390853be7715d34e48eb121de5f802719",
+              "git_blob_sha": "87ee82781280f16ee9329a75e613966caf8679f9",
+              "bytes": 159518,
+              "width": 1200,
+              "height": 800
+            },
+            "swimwear_visible": true,
+            "both_pieces_visible": true,
+            "note": "珊瑚色、曇り窓と横向きの水辺。"
+          },
+          {
+            "source_ordinal": 7,
+            "source_sha256": "d0e48375980014de5148d76069f4ca71edfac3bb710a9d647f03bb6711c3d36c",
+            "jpeg": {
+              "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+              "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source07.jpg",
+              "sha256": "977f8fc68e754218a4724ab0f5c52d1a08860615456f38569560ddfa37262f22",
+              "git_blob_sha": "46bf7c931b2be6b90044bafad33773ae71609e51",
+              "bytes": 143534,
+              "width": 800,
+              "height": 1200
+            },
+            "swimwear_visible": true,
+            "both_pieces_visible": true,
+            "note": "青、タオルのある椅子で窓外を見る斜めの構図。"
+          },
+          {
+            "source_ordinal": 8,
+            "source_sha256": "b572fa959f96ee1fe845d8262a399944bae109ebccee56e479dec6eeb74b3b8d",
+            "jpeg": {
+              "commit": "83e2028f2290282cc0ab7f4b602675c189d9aab9",
+              "path": "maintenance/photo-issue-plans/november-indoor-pool-rena-014/prepared-jpegs/rena-reserve-source08.jpg",
+              "sha256": "a65b332d51f21685067d14df2a9e04f5dec7b655823e81baaf11ccb668311c41",
+              "git_blob_sha": "2d97b91e4c920ced44013bc5d279e297253d8abc",
+              "bytes": 217879,
+              "width": 1200,
+              "height": 800
+            },
+            "swimwear_visible": true,
+            "both_pieces_visible": false,
+            "note": "淡い青、水面の目線と横長の背景。01と近似。上のみ視認。"
+          }
+        ],
+        "near_duplicates_to_hold": [
+          1,
+          6,
+          4
+        ],
+        "supplement": {
+          "candidate_commit": "c4f3835f929a30a99bccf38b1231ddc54de3a06d",
+          "candidate_branch": "photo-issue-plan/november-rena-after-rehearsal",
+          "handoff_path": "maintenance/photo-issue-plans/november-rena-after-rehearsal/handoff.json",
+          "candidate_number": "02",
+          "release_feature_slug_for_prepareSuppliedCut": "november-rena-after-rehearsal",
+          "source_sha256": "91096bf5dda31eb589d9d4bdb8ab69fef40d878fda410dcf1b04ca500d9598d1",
+          "jpeg_sha256": "ee6354cc724c18cbbb88d9785793bcfde0b84ce09f2bf0eec26030531382b2a4",
+          "state": "verified_original_and_jpeg_pending_formal_selection",
+          "scene": "明るい砂浜から波を背に上体を起こす横位置。既刊の浜辺を歩く写真と異なる。",
+          "comparison": "元の8候補・月城れなの既刊と完全一致または同構図の再圧縮なし。元turnと原画像番号は補足のhandoffに保持。"
+        },
+        "max_distinct_count": 6,
+        "possible_swimwear_count": 6,
+        "possible_both_pieces_count": 5,
+        "formal_adoption_count": 0,
+        "minimum_shortfall": 4,
+        "required_new_distinct_cuts": [
+          "衣装室でコートを合わせる全身・引き",
+          "楽屋の窓辺で台本を読む横顔・手元",
+          "稽古場で床の印をまたぐ全身（動作）",
+          "帰りのバス停または夜の街でイヤホンを外す横顔（服姿）"
+        ],
+        "guard": {
+          "operation": "read_image_control",
+          "nonce": "RenaWeeklyNov25SelectionWrite0600B",
+          "error": "image control unavailable",
+          "reason": "timeout",
+          "effect": "No image adoption, image saving, or publication. Text-only failure/observations handoff."
+        },
+        "column_status": "pending_final_four_cuts",
+        "next_owner_task": "6af874ba79b88191b77bbe8e7b7e2b2e",
+        "next_operation": "本人の既存枠で最新guardと原本保存経路を確認し、別場面の未掲載原本4枚以上を優先回収。原本・JPEG・receipt・固定commit・SHAを渡す。既存9枚の再送・再変換不要。次の編集枠は同候補で10枚・最新guardが揃った時に正式採否・入稿へ進む。"
+      }
     },
     "weekly_generation_coverage": {
       "model_id": "tsukishiro-rena",
