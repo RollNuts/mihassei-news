@@ -72,6 +72,17 @@ var CastStoryContext = (function () {
     return creatorContext(catalog, indexStories(stories, modelId, clock), modelId, now, clock);
   }
 
+  function photoLocation({ issue_slug, cut_id, image_sha256 }) {
+    if (typeof issue_slug !== "string" || !SLUG.test(issue_slug)
+        || typeof cut_id !== "string" || !CUT.test(cut_id)
+        || typeof image_sha256 !== "string" || !SHA.test(image_sha256))
+      throw Error("Invalid creator photo reference");
+    return {
+      path: "assets/generated/photo-issue-" + issue_slug + "-" + cut_id + ".jpg",
+      url: "/photo/weekly/" + issue_slug + "/" + cut_id + ".jpg?v=" + image_sha256.slice(0, 12)
+    };
+  }
+
   function creatorContext(catalog, index, modelId, now, clock) {
     if (!object(catalog) || catalog.schema_version !== 1 || !Array.isArray(catalog.models)
         || !Array.isArray(catalog.issues)) throw Error("Invalid creator context inputs");
@@ -107,13 +118,13 @@ var CastStoryContext = (function () {
         if (!object(image) || !object(review) || review.decision !== "accepted"
             || !SHA.test(image.sha256 || "") || review.issue_sha256 !== issue.issue_sha256
             || review.image_sha256 !== image.sha256 || review.cut_id !== shot.id
-            || review.master_sha256 !== snapshot.master.sha256
-            || image.path !== "assets/generated/photo-issue-" + issue.slug + "-" + shot.id + ".jpg") continue;
+            || review.master_sha256 !== snapshot.master.sha256) continue;
+        const source = { issue_slug: issue.slug, cut_id: shot.id, image_sha256: image.sha256 };
+        const location = photoLocation(source);
+        if (image.path !== location.path) continue;
         const reviewed = stamp(review.reviewed_at);
         if (reviewed > published || reviewed > clock) continue;
-        const photo = { issue_slug: issue.slug, cut_id: shot.id, image_sha256: image.sha256,
-          issue_sha256: issue.issue_sha256, path: image.path,
-          url: "/photo/weekly/" + issue.slug + "/" + shot.id + ".jpg?v=" + image.sha256.slice(0, 12),
+        const photo = { ...source, issue_sha256: issue.issue_sha256, ...location,
           alt: text(shot.alt, 300, "creator photo alt"),
           setting: { year: setting.year, month: setting.month } };
         candidates.push({ photo, published });
@@ -171,10 +182,10 @@ var CastStoryContext = (function () {
     }
     throw Error("Unrecognized GitHub fetch_file response: " + path);
   }
-  async function read({ fetchFile, ref, modelId, now, skipIfRecorded = false } = {}) {
+  async function read({ fetchFile, ref, modelId, now, skipIfRecorded = false, compactPhotos = false } = {}) {
     const clock = stamp(now);
     if (typeof fetchFile !== "function" || !GIT.test(ref || "") || !SLUG.test(modelId || "")
-        || typeof skipIfRecorded !== "boolean")
+        || typeof skipIfRecorded !== "boolean" || typeof compactPhotos !== "boolean")
       throw Error("Provide fetchFile, a full immutable commit SHA, and a creator ID");
     const repository = "RollNuts/mihassei-news";
     const storyPath = "content/photo_stories/" + modelId + ".json";
@@ -204,8 +215,12 @@ var CastStoryContext = (function () {
         open_prs: "unknown", as_of: now, model_id: modelId, ...index.daily, source };
     }
     const result = creatorContext(skipIfRecorded ? await load(catalogPath) : catalog, index, modelId, now, clock);
+    if (compactPhotos) {
+      result.photos = result.photos.map(({ issue_slug, cut_id, image_sha256, alt, setting }) =>
+        ({ issue_slug, cut_id, image_sha256, alt, setting }));
+    }
     return { ...result, source };
   }
-  return Object.freeze({ build, read });
+  return Object.freeze({ build, read, photoLocation });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = CastStoryContext;
