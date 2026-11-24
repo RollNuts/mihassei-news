@@ -124,8 +124,10 @@ def _url(value):
     return value
 
 
-def _amount(value):
-    if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+def _amount(value, *, signed=False):
+    if type(value) not in (int, float) or not math.isfinite(value):
+        raise ValueError("Market figures require finite numeric quantities")
+    if value < 0 and not signed:
         raise ValueError("Market figures require nonnegative finite quantities")
     return value
 
@@ -312,7 +314,7 @@ def load_market_bulletins(root, *, now=None):
                 raise ValueError("Chart requires two comparable sourced numbers")
             for value in values:
                 _txt(value.get("label") if isinstance(value, dict) else None, "chart label", maximum=18)
-                _amount(value.get("value"))
+                _amount(value.get("value"), signed=fig["kind"] == "bars" and fig["unit"] in ("%", "％"))
                 if value.get("state") not in STATES:
                     raise ValueError("Chart must label actual, forecast or derived numbers")
             if fig["kind"] == "composition":
