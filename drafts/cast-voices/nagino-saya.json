@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "nagino-saya",
   "name": "凪野さや",
-  "created_date": "2026-11-24",
+  "created_date": "2026-11-25",
   "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
   "photo_reference": {
     "issue_slug": "november-water-and-quiet-hours-saya-010",
-    "cut_id": "10",
-    "image_sha256": "7a4edf6f36d3c283353a5cb1d108ead68e821667d4762385a2503ccdd62283b1"
+    "cut_id": "09",
+    "image_sha256": "eaec9ea808601033289773116b681cb7f3ed0a2e30cbb4da7b2fcc57fdbe9df1"
   },
-  "post_text": "朝、温かい水に足をつけていたら、そばの人がタオルを貸してくれました。もう帰るつもりだったのに、つい話し込んでしまって。",
-  "spoken_line": "もう少しだけ。",
+  "post_text": "昨夜の食事で教わったナプキンの折り方、朝の食卓で試してみました。途中で分からなくなって、結局いつもの四角に。",
+  "spoken_line": "あれ、どこを折るんだっけ。",
   "future_idea": null
 }
