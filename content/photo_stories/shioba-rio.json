@@ -75,6 +75,21 @@
         "cut_id": "04",
         "image_sha256": "c8c2874cc06fc7fdb7a627fd120f54e32aeaee4b111cee753f7ed24e2326bae7"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261124091739225000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-24T09:17:39.225+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "雨上がりの路地を歩いていたら、軒先から雫がひとつ。傘をもう一度開くほどでもなくて、そのまま歩きました。こういう時だけ、少し判断が早い私です。",
+      "source": {
+        "issue_slug": "november-coast-city-rio-015",
+        "cut_id": "06",
+        "image_sha256": "079d44996d071a88f8a833cd1d86ae5d99a1599e56fd9f35e4e200ec05cafd28"
+      }
     }
   ]
 }
