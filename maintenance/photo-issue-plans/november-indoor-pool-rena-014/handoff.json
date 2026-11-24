@@ -483,6 +483,43 @@
           "comparison": "元の8候補・月城れなの既刊と完全一致または同構図の再圧縮なし。元turnと原画像番号は補足のhandoffに保持。"
         }
       ]
+    },
+    "weekly_generation_coverage": {
+      "model_id": "tsukishiro-rena",
+      "week_start": "2026-11-22",
+      "from": "2026-11-22T00:00:00+09:00",
+      "through": "2026-11-24T15:13:00+09:00",
+      "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+      "producer_results": [
+        {
+          "displayed_at": "2026-11-22T21:29:53.647+09:00",
+          "pr": 948,
+          "head": "9fd0b580f33b346a59e274cc4cf5211609576839",
+          "calls": 0,
+          "basis": "当週の消費数が確定できず生成を見送ったと本人の実行結果で明記。既存原本8枚を照合。"
+        },
+        {
+          "displayed_at": "2026-11-23T20:41:49.646+09:00",
+          "pr": 992,
+          "head": "95371ced73e54b27e60c96982fef5f7c9f6ab729",
+          "calls": 0,
+          "basis": "保存試験が BLOCKED_FILE_REFERENCE で停止。生成予約も追加制作もしていないと本人の実行結果で明記。"
+        }
+      ],
+      "candidate_heads": [
+        {
+          "branch": "photo-issue-plan/november-indoor-pool-rena-014",
+          "commit": "1062a4f06e31b1072e5c2f5b636019081b340054",
+          "activity": "既存原本の復元と編集引継ぎ。受領済み8枚の再照合。"
+        },
+        {
+          "branch": "photo-issue-plan/november-rena-after-rehearsal",
+          "commit": "c4f3835f929a30a99bccf38b1231ddc54de3a06d",
+          "activity": "制作チャットの既存原本（turn 9ffb4e54-0bb0-4f9a-9f03-64ecacec554c）と掲載用JPEGを回収。"
+        }
+      ],
+      "prior_attempts_through_cutoff": [],
+      "next_operation": "本人がthrough以降から予約直前までの実行・失敗・中断・並行候補と当週予約先を照合する。追加呼出しがあれば合算してその根拠を保存し、不明なら予約しない。既存台帳があればそのまま継続する。移行週の初回のみ、区間照合と原本の保存実証後にこのhandoffの固定commitのGitHub blob URLをcoverage_refに使い、PhotoGenerationQuotaの通常手順で1枚分を予約する。"
     }
   },
   "usage": {
