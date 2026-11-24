@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "model_id": "hanase-mio",
+  "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+  "week_start": "2026-11-22",
+  "from": "2026-11-22T00:00:00+09:00",
+  "through": "2026-11-24T16:41:23+09:00",
+  "prior_attempts_through_cutoff": [],
+  "producer_results": [
+    {
+      "displayed_at": "2026-11-22T02:45:26.243Z",
+      "pr": 943,
+      "head": "e55f4fb05b33e8f5e7b3122c97cc0adbdbf980d4",
+      "calls": 0,
+      "basis": "保存経路と週消費が未確定で追加生成を見送り。"
+    },
+    {
+      "displayed_at": "2026-11-23T02:40:11.440Z",
+      "pr": 978,
+      "head": "2a0b3f757a4822c4c84a2ff8e3559387db7c60d5",
+      "calls": 0,
+      "basis": "016の既存14原本を読取り、追加生成0。"
+    },
+    {
+      "displayed_at": "2026-11-24T03:09:36.216Z",
+      "pr": 1004,
+      "head": "7984d8884fd54cfed9e55b66a88704960fefcd39",
+      "calls": 0,
+      "basis": "016の掲載済み10枚を除外。予備4枚の遠隔再読、追加生成0。"
+    }
+  ],
+  "candidate_heads": [
+    {
+      "branch": "photo-issue-plan/november-city-evening-mio-012",
+      "commit": "ddb1b08236bebac209c0afea3e3401b0e54b5685",
+      "activity": "当週以前の既刊。"
+    },
+    {
+      "branch": "photo-issue-plan/november-mio-on-the-move-016",
+      "commit": "108dd3cfd7df0e446615cec8ef413d3ca4d10c05",
+      "activity": "当週の取り込みは週初前から存在する2アーカイブからの素材選抜。"
+    }
+  ],
+  "weekly_reservation_branch": {
+    "name": "photo-issue-plan/stock-hanase-mio-2026-11-22",
+    "present_at_cutoff": false
+  },
+  "archive_evidence": {
+    "source_commit": "ddb1b08236bebac209c0afea3e3401b0e54b5685",
+    "path": "maintenance/photo-issue-plans/november-city-evening-mio-012/stock-recovery/receipt.json",
+    "verified_at_utc": "2026-11-19T00:20:39.926236Z",
+    "archive_sha256": [
+      "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+      "7cc6eb212a6c6b4f835268c52f24d03163f5e47e37f1385f05406c12bca754b6"
+    ],
+    "candidate_commit": "f39c946354d4b866e0415393a6d9749e4926f6a6",
+    "candidate_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+    "original_count": 14
+  },
+  "next_operation": "本人の通常枠でthrough以後の実行・失敗/中断・並行候補・週予約台帳を照合し、不明なら予約しない。新規予約前に現実行の保存と遠隔再読を実証する。予備4枚は固定016受領票を参照。"
+}
