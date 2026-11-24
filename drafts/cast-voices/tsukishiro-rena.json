@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "tsukishiro-rena",
   "name": "月城れな",
-  "created_date": "2026-11-23",
+  "created_date": "2026-11-24",
   "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
   "photo_reference": {
     "issue_slug": "november-city-pause-rena-008",
-    "cut_id": "02",
-    "image_sha256": "a8df4a907bd3b25caadeace85334f591b1fdc80891e14f00ac4063a0619910fc"
+    "cut_id": "10",
+    "image_sha256": "913d8679576b9a879f53fb101f326b321e1c1eaf5ea1628ece755009b566e435"
   },
-  "post_text": "夜、商店街で小さな陶器の皿を買った。帰って鍵を載せてみたら、思ったより似合う。何を盛るかはまだ決めていない。",
+  "post_text": "今夜は窓を少し開けて音楽を聴いた。冷たい風が入ってきて、二曲目で閉めた。冬の空気は好きだけど、長居はさせたくない。",
   "spoken_line": null,
   "future_idea": null
 }
