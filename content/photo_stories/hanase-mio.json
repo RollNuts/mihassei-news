@@ -60,6 +60,21 @@
         "cut_id": "07",
         "image_sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2"
       }
+    },
+    {
+      "id": "hanase-mio-post-20261124120754411",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-24T12:07:54.411+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼、焼き芋を新聞紙で包んでもらった。熱くて右手から左手へ何度も持ち替えたのに、最初のひと口は待ちきれなくて舌をやけどしそうになった。",
+      "source": {
+        "issue_slug": "november-mio-on-the-move-016",
+        "cut_id": "05",
+        "image_sha256": "e6897d83518c4dc0fe2d5aaec6d9ac4cecfcb4a2a6ea83181a065e2a2248fe29"
+      }
     }
   ]
 }
