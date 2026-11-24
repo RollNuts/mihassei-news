@@ -565,9 +565,14 @@ var PhotoOriginalHandoff = (() => {
       const asset = completeAsset(record, ref.source_sha256);
       let bytes;
       if (original === undefined) {
-        // One receipt, at most eight part reads, then a cold five-call guard and one blob write.
+        // Legacy one-shot reader. Cold callers budget codec imports as well as the receipt, parts and guarded write.
         requireThat(asset.parts.length <= 8, "Use readOriginalStep for originals larger than 4 MiB");
         bytes = await readParts(record, ref.commit, directory(ref.issue), ref.source_sha256);
+      } else if (original?.numberedCommit !== undefined) {
+        requireThat(GIT.test(original.numberedCommit) && Number.isSafeInteger(asset.source_ordinal) &&
+          record.assets.filter(a => a.source_ordinal === asset.source_ordinal).length === 1, "Invalid numbered original reference");
+        const path = directory(ref.issue) + "/" + String(asset.source_ordinal).padStart(2, "0") + ".png";
+        bytes = inspectOriginal(asset, await readNumberedPng(ref, path, asset, original.numberedCommit));
       } else {
         requireThat(original?.status === "original_verified" && original.image_bytes_verified === true &&
           original.commit === ref.commit && original.source_sha256 === ref.source_sha256,
@@ -643,8 +648,10 @@ var PhotoOriginalHandoff = (() => {
     }
     async function prepareReviewJpeg(ref, prepared, expectedHead) {
       const cut = reviewCut(ref, prepared);
-      requireThat(GIT.test(expectedHead) && await reviewHead(cut.branch) === expectedHead, "Candidate branch moved");
-      const {parent, files} = await parentFiles(expectedHead);
+      requireThat(GIT.test(expectedHead), "Invalid expected candidate head");
+      const head = await get("/branches/" + cut.branch), tree = head?.commit?.commit?.tree?.sha;
+      requireThat(head?.name === cut.branch && head.commit?.sha === expectedHead && GIT.test(tree), "Candidate branch moved");
+      const files = await treeFiles(tree);
       if (await reviewSource(ref, cut, files)) {
         await readReviewCut(cut, expectedHead);
         return {base:expectedHead, commit:expectedHead};
@@ -652,8 +659,8 @@ var PhotoOriginalHandoff = (() => {
       const entries = [{path:cut.path, mode:"100644", type:"blob", sha:cut.record.jpeg.blob},
         {path:cut.metaPath, mode:"100644", type:"blob", content:JSON.stringify(cut.record)}];
       const initialMain = await guard();
-      const treeId = gitId(await git("create_tree", {base_tree_sha:parent.tree.sha, tree_elements:entries}), "tree");
-      // A changed main needs a second cold storage scan; stop within the 15-call cell and retry on the same branch.
+      const treeId = gitId(await git("create_tree", {base_tree_sha:tree, tree_elements:entries}), "tree");
+      // If main moves, the fresh scan takes the slot otherwise used by create_commit.
       requireThat(await guard() === initialMain, "Main changed during review JPEG preparation");
       const result = await git("create_commit", {tree_sha:treeId, parent_sha:expectedHead,
         message:"Prepare one unreviewed photo for " + ref.issue});
@@ -684,7 +691,7 @@ var PhotoOriginalHandoff = (() => {
       const {parent:commit, files:after} = await parentFiles(plan.commit);
       requireThat(commit.parents?.length === 1 && commit.parents[0].sha === current &&
         await reviewSource(ref, cut, after), "Commit differs from prepared review JPEG");
-      const {files:before} = await parentFiles(current);
+      const before = await treeFiles(current);
       checkOnlyAdded(before.tree, after.tree, [cut.path, cut.metaPath]);
       await readReviewCut(cut, plan.commit);
       await write("update_ref", {branch_name:cut.branch, sha:plan.commit, expected_sha:current, force:false});

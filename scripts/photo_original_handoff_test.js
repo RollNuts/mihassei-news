@@ -586,6 +586,49 @@ test("confirms a newly advanced numbered original against the live ref in a cold
   assert.equal(state.branches.get(staged.branch),saved.commit);
 });
 
+test("a cold JPEG conversion can read a larger numbered original without carrying part bytes", async () => {
+  const source = largePng(1024, 980), sha = hash(source), encoded = dataUrl(source);
+  const jpeg = Buffer.from([255,216,255,217]);
+  const convertPhoto = input => {
+    assert.deepEqual(Buffer.from(input), source);
+    return {width:1024,height:980,bytes:jpeg,sha256:hash(jpeg),base64:jpeg.toString("base64")};
+  };
+  const {api,state,resetGuard} = setup(source,{convertPhoto});
+  const parts = [];
+  let slice;
+  do {
+    slice = await api.uploadDataUrl(encoded,sha,slice?.next ?? 0,2);
+    parts.push(...slice.parts);
+  } while (slice.next !== null);
+  assert.equal(parts.length,6);
+  const input = {...packet(), assets:[{...slice,parts,source_ordinal:1}]};
+  const receipt = await api.publish(input,await api.prepare(input));
+  const ref = {issue:input.issue,...receipt,source_sha256:sha};
+  const verified = await api.readOriginalStep(ref);
+  const uploaded = await api.uploadNumberedOriginal(ref,verified);
+  const plan = await api.prepareNumberedOriginal(ref,uploaded,uploaded.base);
+  const saved = await api.publishNumberedOriginal(ref,uploaded,plan);
+  resetGuard();
+  const count = () => state.writes.length + state.reads.length;
+  const before = count();
+  const prepared = await api.uploadReviewJpeg(ref,{numberedCommit:saved.commit});
+  assert.equal(6 + count() - before,13);
+  assert.equal(prepared.source_sha256,sha);
+  assert.equal(prepared.jpeg.sha256,hash(jpeg));
+  const first = await api.readOriginalStep(ref,null,3);
+  assert.equal(first.status,"readback_pending");
+  resetGuard();
+  const beforeLast = count();
+  const verifiedLast = await api.readOriginalStep(ref,first.state,3);
+  assert.deepEqual(await api.uploadReviewJpeg(ref,verifiedLast),prepared);
+  assert.equal(6 + count() - beforeLast,16);
+  const writes = state.writes.length;
+  await assert.rejects(api.uploadReviewJpeg(ref,{numberedCommit:"main"}), /Invalid numbered original/);
+  state.blobs.set(saved.blob, png);
+  await assert.rejects(api.uploadReviewJpeg(ref,{numberedCommit:saved.commit}));
+  assert.equal(state.writes.length,writes);
+});
+
 test("a completed receipt stages one verified JPEG on its own branch and recovers a lost lease reply", async () => {
   const source = largePng(320,320), sourceHash = hash(source);
   // The codec is separately tested. This fixture exercises the transport of actual distinct byte buffers.
@@ -612,19 +655,19 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
   state.active=true;
 
   // Exercise the real public cloud guard with a fresh immutable-main cache in every measured cell.
-  async function callbacks(expected, operation) {
+  async function callbacks(expected, operation, imports = 4) {
     resetGuard();
     const {length:reads} = state.reads, {length:mutations} = state.writes;
     const result = await operation();
     const count = state.reads.length - reads + state.writes.length - mutations;
     assert.equal(count, expected);
-    assert.ok(count <= 15);
+    assert.ok(imports + count <= 16, "Fresh helper/dependency reads and callbacks exceed one cell");
     return result;
   }
-  const prepared = await callbacks(6,()=>api.uploadReviewJpeg(ref,verified));
-  const recoveredBlob = await callbacks(7,()=>api.uploadReviewJpeg(ref));
+  const prepared = await callbacks(6,()=>api.uploadReviewJpeg(ref,verified),6);
+  const recoveredBlob = await callbacks(7,()=>api.uploadReviewJpeg(ref),6);
   assert.deepEqual(recoveredBlob,prepared);
-  const plan = await callbacks(13,()=>api.prepareReviewJpeg(ref,prepared,staged.commit));
+  const plan = await callbacks(12,()=>api.prepareReviewJpeg(ref,prepared,staged.commit));
   const provisional = state.trees.get(state.commits.get(plan.commit).tree.sha);
   const originalTree = state.trees.get(state.commits.get(staged.commit).tree.sha);
   assert.equal(provisional.length, originalTree.length + 2);
@@ -654,7 +697,7 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
   await assert.rejects(api.prepareReviewJpeg(ref,{...prepared,encoding_details:{...prepared.encoding_details,encoder_ref:main}},staged.commit),/Invalid prepared/);
 
   state.lost=true;
-  await callbacks(13,()=>assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/lost response/));
+  await callbacks(12,()=>assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/lost response/));
   assert.equal(state.branches.get(staged.branch),plan.commit);
   state.lost=false;
   writes = state.writes.length;

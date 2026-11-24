@@ -597,7 +597,11 @@ if (result.status === "readback_pending") {
 }
 ```
 
-A returned `staged_pending_readback` is an unreviewed candidate. With a completed split receipt and up to eight parts (4 MiB), the editor can call `await original.uploadReviewJpeg(ref)` once. It reads and hashes the complete PNG and prepares a portrait or landscape JPEG without private state across cells. For a larger packet, use `readOriginalStep(ref, state, 7)` in a runtime that can retain the private partial bytes. The seven-part bound leaves room for conversion and guarded upload in the final cell. Pass its `original_verified` result directly:
+A returned `staged_pending_readback` is an unreviewed candidate. Use the full conversion runtime to encode a review JPEG from the first available source.
+
+- If the receipt’s numbered original is already saved, run `await original.uploadReviewJpeg(ref, {numberedCommit})` with its immutable commit and the weekly PNG reader. This re-reads and verifies the whole original at the receipt ordinal, up to 8 MiB, without carrying bytes between cells.
+- For a split-only original of up to four parts (2 MiB), `await original.uploadReviewJpeg(ref)` fits in one fresh cell, including six helper/dependency reads and the live guard.
+- For a longer split-only original, use `readOriginalStep(ref, state, 3)` and retain its partial bytes privately. In the cell that finishes reconstruction, pass the verified result directly to the uploader. The three-part limit leaves room for the receipt read, conversion and guarded write, including cold imports.
 
 ```js
 if (result.status === "original_verified") {
@@ -606,7 +610,7 @@ if (result.status === "original_verified") {
 }
 ```
 
-Reuse a JPEG already listed for this source in the existing candidate handoff, including earlier paths and encoders. For a newly prepared blob, run one step per cell using the same small `ref`, `prepared` and returned plan. `expectedHead` is the observed head of the existing `photo-issue-plan/<issue>` branch.
+Reuse a JPEG already listed for this source in the existing candidate handoff, including earlier paths and encoders. For a newly prepared blob, load the verification runtime (three helpers plus SHA-256) for each metadata step. Run one step per cell using the same small `ref`, `prepared` and returned plan. `expectedHead` is the observed head of the existing `photo-issue-plan/<issue>` branch.
 
 ```js
 const plan = await original.prepareReviewJpeg(ref, prepared, expectedHead); // retain base and commit
