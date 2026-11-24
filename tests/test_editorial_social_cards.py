@@ -276,6 +276,46 @@ class EditorialSocialCardTests(unittest.TestCase):
         canonical = build.SITE + build.article_url(self.article)
         self.assertEqual(share_page_url(self.article, canonical, root=self.root), canonical + "?image=" + digest)
 
+    def test_publication_guard_checks_only_submitted_png_against_staged_svg(self):
+        from scripts.guard_generated_media_history import verify_changed_scene_pngs
+
+        def git(*args):
+            return subprocess.run(["git", *args], cwd=self.root, capture_output=True,
+                                  text=True, check=True).stdout.strip()
+
+        git("init", "-q")
+        git("config", "user.name", "Test")
+        git("config", "user.email", "test@example.invalid")
+        articles_path = self.root / "content/articles.json"
+        articles_path.parent.mkdir()
+        articles_path.write_text(json.dumps([self.article]), encoding="utf-8")
+        git("add", ".")
+        git("commit", "-qm", "Starting article and scene without a paired PNG")
+        base = git("rev-parse", "HEAD")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+
+        # The submitted material was rendered from an SVG with an extra newline.
+        wrong_hash = hashlib.sha256((self.svg + "\n").encode()).hexdigest()
+        self.png_path.write_bytes(self.png(svg_sha256=wrong_hash))
+        git("add", ".")
+        self.assertIn("exact submitted SVG", verify_changed_scene_pngs(base, root=self.root)[0])
+
+        # A locally corrected file cannot silently validate the previously staged one.
+        self.png_path.write_bytes(self.png())
+        self.assertTrue(verify_changed_scene_pngs(base, root=self.root))
+        git("add", ".")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+        self.assertEqual(verify_changed_scene_pngs("0" * 40, root=self.root), [])
+        git("commit", "-qm", "Publish the verified card")
+        base = git("rev-parse", "HEAD")
+
+        self.svg_path.write_text(self.svg + "\n", encoding="utf-8")
+        git("add", ".")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+        git("mv", str(self.png_path.relative_to(self.root)),
+            str(self.png_path.with_name("another.png").relative_to(self.root)))
+        self.assertTrue(verify_changed_scene_pngs(base, root=self.root))
+
 
 class ArticlePngCompatibilityTests(unittest.TestCase):
     def test_current_photos_keep_historical_pngs_without_changing_primary_jpeg_ogp(self):

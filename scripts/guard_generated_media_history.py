@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Block stale-photo provenance rewrites in published-news pull requests.
+"""Check published photo history and newly submitted editorial share PNGs.
 
 If an existing JPEG's SHA-256 is unchanged, its generation record is immutable.
 Editing article_sha256 to make an old image pass a new story fingerprint is not
@@ -22,6 +22,7 @@ try:
         accepted_review_matches, valid_native_text_revision, review_timestamp, SAFE_SLUG,
     )
     from .local_scene_photos import stable_seed
+    from .social_cards import reviewed_scene_png
 except ImportError:
     from cpu_photo_model import ORIGIN as CPU_ORIGIN, REFERENCE_ORIGIN
     from generated_photos import (
@@ -29,6 +30,7 @@ except ImportError:
         accepted_review_matches, valid_native_text_revision, review_timestamp, SAFE_SLUG,
     )
     from local_scene_photos import stable_seed
+    from social_cards import reviewed_scene_png
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = "assets/generated/manifest.json"
@@ -130,6 +132,41 @@ def _articles(payload: object) -> dict:
     return result
 
 
+def verify_changed_scene_pngs(base: str, *, root: Path) -> list[str]:
+    """Validate explicitly submitted share PNGs in the commit or staged test merge."""
+    pathspec = ":(glob)assets/editorial-scenes/*.png"
+    command = (["ls-files", "-z"] if base == "0" * 40 else
+               ["diff", "--cached", "--no-renames", "--diff-filter=AMT", "--name-only", "-z", base])
+    listing = subprocess.run(["git", *command, "--", pathspec], cwd=root, capture_output=True,
+                             check=True, timeout=15).stdout
+    paths = [Path(path.decode("utf-8")) for path in listing.split(b"\0") if path]
+    if not paths:
+        return []
+    if any(not SAFE_SLUG.fullmatch(path.stem) for path in paths):
+        return ["Invalid editorial share PNG filename"]
+
+    # The normal build reader validates working files. Require the index versions
+    # so a local preparation or untracked SVG cannot hide a broken committed pair.
+    inputs = [ARTICLES, *paths, *(path.with_suffix(".svg") for path in paths)]
+    tracked = subprocess.run(["git", "ls-files", "--error-unmatch", "--", *inputs],
+                             cwd=root, capture_output=True, timeout=15)
+    clean = subprocess.run(["git", "diff-files", "--quiet", "--", *inputs],
+                           cwd=root, capture_output=True, timeout=15)
+    if tracked.returncode or clean.returncode:
+        return ["Editorial share PNG verification needs the staged article, SVG and PNG in the checkout"]
+    articles_path = root / ARTICLES
+    if articles_path.is_symlink() or articles_path.parent.is_symlink():
+        return ["Editorial share PNG verification needs an ordinary article document"]
+    articles = _articles(json.loads(articles_path.read_text(encoding="utf-8")))
+    errors = []
+    for path in paths:
+        article = articles.get(path.stem)
+        if not article or reviewed_scene_png(article, root=root) is None:
+            errors.append(f"{path}: render the PNG from the exact submitted SVG and current article "
+                          f"with scripts/social_cards.py --prepare-scenes {path.stem}")
+    return errors
+
+
 def _same_json(left: object, right: object) -> bool:
     # Python considers 0, 0.0 and False equal; provenance must retain JSON types.
     return json.dumps(left, sort_keys=True, allow_nan=False) == json.dumps(right, sort_keys=True, allow_nan=False)
@@ -223,6 +260,15 @@ def main(argv: list[str] | None = None) -> int:
               file=sys.stderr)
         return 2
     base = args[0].lower()
+    try:
+        card_errors = verify_changed_scene_pngs(base, root=ROOT)
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        print("Cannot check changed editorial share PNGs: " + str(exc), file=sys.stderr)
+        return 2
+    if card_errors:
+        for err in card_errors:
+            print("::error title=Editorial share PNG::" + err, file=sys.stderr)
+        return 1
     if base == "0" * 40:
         try:
             review_path = ROOT / REVIEWS
