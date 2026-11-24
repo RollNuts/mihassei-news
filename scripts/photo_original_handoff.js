@@ -280,6 +280,7 @@ var PhotoOriginalHandoff = (() => {
       const draft = await git("fetch_file", {ref:"cast-source-drafts", path:"drafts/cast-voices/" + packet.model_id + ".json", encoding:"utf-8"});
       const producer = JSON.parse(draft.content);
       requireThat(matchesProducer(packet, producer), "Wrong producer chat");
+      return producer;
     }
     async function prepareRecord(packet, expectedHead, partial) {
       validate(packet, partial);
@@ -431,8 +432,7 @@ var PhotoOriginalHandoff = (() => {
       "Occupied numbered original destination");
       return {asset, branch, base, tree, entries, path, existing};
     }
-    async function verifyNumberedPng(ref, source, commit) {
-      const {asset, path} = source;
+    async function readNumberedPng(ref, path, asset, commit) {
       requireThat(typeof readWeeklyPng === "function", "Missing weekly PNG reader");
       const png = payload(await readWeeklyPng({issue:ref.issue, commit, path, expected_sha256:ref.source_sha256}));
       requireThat(png.status === "read" && png.mime_type === "image/png" && png.path === path && png.commit === commit &&
@@ -441,7 +441,10 @@ var PhotoOriginalHandoff = (() => {
         png.image_url.length === 22 + 4 * Math.ceil(asset.source_bytes / 3), "Numbered original readback changed");
       const bytes = runtime.fromBase64(png.image_url);
       requireThat(bytes.length === asset.source_bytes, "Numbered original byte count changed");
-      inspectOriginal(asset, bytes);
+      return bytes;
+    }
+    async function verifyNumberedPng(ref, source, commit) {
+      inspectOriginal(source.asset, await readNumberedPng(ref, source.path, source.asset, commit));
     }
     async function uploadNumberedOriginal(ref, verified) {
       const source = await numberedSource(ref, true);
@@ -743,14 +746,19 @@ var PhotoOriginalHandoff = (() => {
       else checkJpegBytes(original, source);
       checkJpegBytes(readback.jpeg.data, jpeg);
       validateReleaseEncoding(candidate);
+      return suppliedEntries(issue, cutId, candidate, retained, readback.source.blob, readback.jpeg.blob, importedAt, stockEvidence);
+    }
+    function suppliedEntries(issue, cutId, candidate, retained, sourceBlob, jpegBlob, importedAt, stockEvidence = {}) {
+      const {source, jpeg} = candidate, snapshot = issue.model_snapshot;
+      const png = source.format === undefined || source.format === "png";
       const dir = "maintenance/photo-issues/" + issue.slug + "/" + cutId + "/";
       const sourcePath = dir + "source-" + source.sha256 + (png ? ".png" : ".jpg");
       const jpegPath = "assets/generated/photo-issue-" + issue.slug + "-" + cutId + ".jpg";
       const receiptPath = dir + "receipt-supplied-" + source.sha256.slice(0,12) + "-" + jpeg.sha256.slice(0,12) + ".json";
       const recovery = {...stockEvidence, candidate_commit:candidate.commit, source_ordinal:candidate.source_ordinal,
-        source_path:source.path, jpeg_path:jpeg.path, original_blob_sha:readback.source.blob, jpeg_blob_sha:readback.jpeg.blob};
+        source_path:source.path, jpeg_path:jpeg.path, original_blob_sha:sourceBlob, jpeg_blob_sha:jpegBlob};
       if (candidate.handoff_path !== undefined) {
-        requireThat(isCandidatePath(candidate.handoff_path, prefix) && candidate.handoff_path.endsWith(".json"), "Invalid candidate handoff path");
+        requireThat(isCandidatePath(candidate.handoff_path, planPrefix(candidate.issue)) && candidate.handoff_path.endsWith(".json"), "Invalid candidate handoff path");
         recovery.handoff_path = candidate.handoff_path;
       }
       const publicationJpeg = {path:jpegPath, sha256:jpeg.sha256, bytes:jpeg.bytes, width:jpeg.width, height:jpeg.height};
@@ -763,10 +771,197 @@ var PhotoOriginalHandoff = (() => {
       const provenance = {kind:record.kind, receipt_path:receiptPath, receipt_sha256:runtime.sha256(encoded)};
       if (snapshot.body_profile_sha256) provenance.target_design_sha256 = snapshot.body_profile_sha256;
       return {status:"prepared_not_published", files:[
-        {path:sourcePath, mode:"100644", type:"blob", sha:readback.source.blob},
-        {path:jpegPath, mode:"100644", type:"blob", sha:readback.jpeg.blob},
+        {path:sourcePath, mode:"100644", type:"blob", sha:sourceBlob},
+        {path:jpegPath, mode:"100644", type:"blob", sha:jpegBlob},
         {path:receiptPath, mode:"100644", type:"blob", content}],
       image:{...publicationJpeg, source_sha256:source.sha256, provenance}};
+    }
+    async function catalog(ref) {
+      const file = await git("fetch_file", {ref, path:"content/photo_issues.json", encoding:"utf-8"});
+      const data = JSON.parse(file.content);
+      requireThat(data.schema_version === 1 && Array.isArray(data.issues), "Invalid edition catalog");
+      return data.issues;
+    }
+    // One saved editorial selection; source ordinals can repeat across different archives.
+    async function openReviewedSelection({issue, selectionCommit, releaseCommit, importedAt}) {
+      const prefix = planPrefix(issue.slug), path = prefix + "handoff.json";
+      requireThat(GIT.test(selectionCommit) && GIT.test(releaseCommit) && issue.state === "draft" &&
+        HASH.test(issue.issue_sha256) && issue.model_snapshot?.id === issue.model_id, "Expected a fixed release draft");
+      async function handoff(ref) {
+        const file = await git("fetch_file", {ref, path, encoding:"utf-8"});
+        requireThat(file.encoding === "utf-8", "Missing candidate handoff at the pinned revision");
+        const record = JSON.parse(file.content);
+        requireThat(record.version === 1 && record.kind === "weekly_photo_candidate_handoff" &&
+          record.issue === issue.slug && record.model_id === issue.model_id && record.handoff_path === path &&
+          record.branch === "photo-issue-plan/" + issue.slug && Array.isArray(record.candidates), "Wrong candidate handoff");
+        return record;
+      }
+      const selectedHandoff = await handoff(selectionCommit), review = selectedHandoff.editorial_review;
+      requireThat(review?.status === "selected_pending_release_receipts" && review.model_id === issue.model_id &&
+        GIT.test(review.candidate_commit) && Array.isArray(review.selected) && review.selected.length === 10 &&
+        review.face_and_body_reference_checked === true && review.byte_readback_count === 10 &&
+        review.reviewed_jpeg_count >= 10 && review.previous_catalog_sha_overlap === 0, "Missing completed editorial selection");
+      const commit = review.candidate_commit;
+      const sourceHandoff = commit === selectionCommit ? selectedHandoff : await handoff(commit);
+      requireThat(matchesProducer(selectedHandoff, sourceHandoff) && same(selectedHandoff.candidates, sourceHandoff.candidates),
+        "Selection and original handoff differ");
+      const producer = await checkProducer(sourceHandoff);
+      const live = await reviewHead("main"), current = await catalog(live);
+      const editing = releaseCommit === live ? current : await catalog(releaseCommit);
+      const drafts = [...current, ...editing, issue].filter(item => item.slug === issue.slug);
+      requireThat(drafts.every(item => item.state === "draft" && item.issue_sha256 === issue.issue_sha256 &&
+        item.model_id === issue.model_id && item.model_snapshot.master.sha256 === issue.model_snapshot.master.sha256 &&
+        item.model_snapshot.body_profile_sha256 === issue.model_snapshot.body_profile_sha256),
+      "Feature already published or release draft changed");
+      const used = new Set();
+      for (const feature of [...current, ...editing].filter(item => item.slug !== issue.slug)) {
+        for (const image of Object.values(feature.images)) {
+          used.add(image.source_sha256 ?? image.source_png_sha256);
+          used.add(image.sha256);
+        }
+      }
+      const available = new Map(), existing = [];
+      const rows = new Map(sourceHandoff.candidates.map(row => [row.candidate_number, row]));
+      requireThat(rows.size === sourceHandoff.candidates.length, "Ambiguous candidate numbering");
+      const numbers = new Set(), cuts = new Set();
+      for (const selection of review.selected) {
+        const cut = selection.cut_id, number = selection.candidate_number;
+        const row = rows.get(number), source = row?.source, jpeg = row?.jpeg;
+        requireThat(/^(?:0[1-9]|10)$/.test(cut) && issue.shots.some(shot => shot.id === cut) && !cuts.has(cut) &&
+          typeof number === "string" && /^[0-9]{2}$/.test(number) && !numbers.has(number) &&
+          typeof selection.review === "string" && selection.review.trim() && row && matchesProducer(row, producer) &&
+          row.issue === issue.slug && row.handoff_path === path && source?.format === "png" &&
+          source.path === prefix + "originals/" + number + ".png" && jpeg?.path === prefix + "jpeg/" + number + ".jpg" &&
+          GIT.test(source.blob) && GIT.test(jpeg.blob) && HASH.test(source.sha256) && HASH.test(jpeg.sha256) &&
+          source.sha256 === selection.source_sha256 && jpeg.sha256 === selection.jpeg_sha256 &&
+          source.bytes === selection.source_bytes && jpeg.bytes === selection.jpeg_bytes &&
+          !used.has(source.sha256) && !used.has(jpeg.sha256), "Unavailable or changed selected pair for cut " + cut);
+        cuts.add(cut);
+        numbers.add(number);
+        used.add(source.sha256);
+        used.add(jpeg.sha256);
+        const occupied = drafts.flatMap(item => Object.entries(item.images).filter(([id, image]) =>
+          id === cut || image.source_sha256 === source.sha256 || image.sha256 === jpeg.sha256));
+        requireThat(occupied.every(([id, image]) => id === cut && image.source_sha256 === source.sha256 &&
+          image.sha256 === jpeg.sha256), "Occupied release cut differs from the selection");
+        if (editing.some(item => item.slug === issue.slug && item.images[cut])) existing.push(cut);
+        else available.set(cut, row);
+      }
+      const originals = await get("/contents/" + prefix + "originals?ref=" + commit);
+      requireThat(Array.isArray(originals), "Missing original directory at the pinned revision");
+      for (const row of available.values()) {
+        requireThat(originals.some(file => file.type === "file" && file.path === row.source.path &&
+          file.sha === row.source.blob && file.size === row.source.bytes), "Original Git blob changed");
+      }
+      const cutIds = [...available.keys()].sort();
+      const master = {sha256:issue.model_snapshot.master.sha256};
+      const model_snapshot = {id:issue.model_id, master};
+      if (issue.model_snapshot.body_profile_sha256) model_snapshot.body_profile_sha256 = issue.model_snapshot.body_profile_sha256;
+      const plan = {selectionCommit, releaseCommit, mainCommit:live, candidateCommit:commit, importedAt,
+        issue:{slug:issue.slug, model_id:issue.model_id, issue_sha256:issue.issue_sha256, model_snapshot},
+        edition:review.issue_edition, selectionHash:hashText(JSON.stringify(selectedHandoff)), cutIds};
+      return {cutIds, existing:existing.sort(), selection:review, plan,
+        prepareCut(cutId) {
+          const row = available.get(cutId);
+          requireThat(row, "Cut unavailable for preparation");
+          return prepareNumberedCut(plan, row, cutId, producer);
+        }};
+    }
+    async function prepareNumberedCut(plan, row, cutId, producer) {
+      const {issue, candidateCommit:commit, importedAt} = plan;
+      const source = row.source, jpeg = row.jpeg;
+      const png = await readNumberedPng({issue:issue.slug, source_sha256:source.sha256}, source.path,
+        {source_bytes:source.bytes, width:source.width, height:source.height}, commit);
+      const saved = await git("fetch_file", {ref:commit, path:jpeg.path, encoding:"base64"});
+      requireThat(saved.sha === jpeg.blob && saved.encoding === "base64", "Selected JPEG Git blob changed");
+      const readback = {commit, source_ordinal:row.source_ordinal, image_bytes_verified:true,
+        source:{...source, data:png}, jpeg:{...jpeg, data:runtime.fromBase64(saved.content)}};
+      return prepareSuppliedCut({issue, cutId, producer, importedAt, candidate:{...row, commit}, readback});
+    }
+    function packetLocation(slug, edition) {
+      requireThat(typeof edition === "string" && /^issue-[0-9]{3,}$/.test(edition), "Expected the weekly release branch");
+      return {branch:"photo-issue/" + edition, path:planPrefix(slug) + "release-packet.json"};
+    }
+    async function startReviewedPacket(plan) {
+      const loc = packetLocation(plan.issue.slug, plan.edition);
+      requireThat(GIT.test(plan.selectionCommit) && GIT.test(plan.candidateCommit) && HASH.test(plan.selectionHash) &&
+        await reviewHead(loc.branch) === plan.releaseCommit && await guard() === plan.mainCommit,
+      "Release or main moved; reopen the selection");
+      const packet = {version:1, plan, prepared:{}};
+      const saved = await git("create_file", {...loc, content:JSON.stringify(packet),
+        message:"Start verified photo receipts for " + plan.issue.slug + " [skip ci]"});
+      return {commit:gitId(saved,"commit"), next:plan.cutIds[0] ?? null};
+    }
+    async function readPacket({slug, edition, selectionCommit}, ref) {
+      const loc = packetLocation(slug, edition);
+      const file = await git("fetch_file", {ref:ref ?? loc.branch, path:loc.path, encoding:"utf-8"});
+      const packet = JSON.parse(file.content), plan = packet.plan;
+      requireThat(file.encoding === "utf-8" && GIT.test(file.sha) && packet.version === 1 && plan.issue.slug === slug &&
+        plan.edition === edition && GIT.test(selectionCommit) && plan.selectionCommit === selectionCommit &&
+        Array.isArray(plan.cutIds) && new Set(plan.cutIds).size === plan.cutIds.length &&
+        plan.cutIds.length <= 10 && plan.cutIds.every(id => /^(?:0[1-9]|10)$/.test(id)) &&
+        Object.keys(packet.prepared).every(id => plan.cutIds.includes(id)), "Unrecognized release packet");
+      return {loc, packet, sha:file.sha};
+    }
+    async function continueReviewedPacket(ref) {
+      const {loc, packet, sha} = await readPacket(ref);
+      const {plan, prepared} = packet;
+      const cutId = plan.cutIds.find(id => !Object.hasOwn(prepared, id));
+      if (!cutId) return {next:null, prepared:Object.keys(prepared).length};
+      const selected = await packetSelection(ref, plan);
+      const row = selectedRow(selected, cutId);
+      const cut = await prepareNumberedCut(plan, row, cutId, selected);
+      prepared[cutId] = cut.image.provenance.receipt_sha256;
+      const updated = await write("update_file", {...loc, sha, content:JSON.stringify(packet),
+        message:"Verify photo cut " + cutId + " for " + ref.slug + " [skip ci]"});
+      return {commit:gitId(updated,"commit"), prepared:Object.keys(prepared).length,
+        next:plan.cutIds.find(id => !Object.hasOwn(prepared, id)) ?? null};
+    }
+    async function packetSelection(ref, plan) {
+      const file = await git("fetch_file", {ref:ref.selectionCommit, path:planPrefix(ref.slug)+"handoff.json", encoding:"utf-8"});
+      const selected = JSON.parse(file.content), review = selected.editorial_review;
+      requireThat(file.encoding === "utf-8" && hashText(JSON.stringify(selected)) === plan.selectionHash &&
+        selected.issue === ref.slug && review.issue_edition === ref.edition && review.candidate_commit === plan.candidateCommit,
+      "Selection changed since preflight");
+      return selected;
+    }
+    function selectedRow(selected, cutId) {
+      const choice = selected.editorial_review.selected.find(item => item.cut_id === cutId);
+      const row = selected.candidates.find(item => item.candidate_number === choice?.candidate_number);
+      requireThat(choice && row && row.source.sha256 === choice.source_sha256 && row.jpeg.sha256 === choice.jpeg_sha256,
+        "Missing selected pair");
+      return row;
+    }
+    async function readReviewedRelease(ref) {
+      requireThat(GIT.test(ref.commit), "Expected a fixed release head");
+      const {loc, packet, sha} = await readPacket(ref, ref.commit);
+      const plan = packet.plan, selected = await packetSelection(ref, plan);
+      const files = [], images = {};
+      for (const id of plan.cutIds) {
+        const row = selectedRow(selected, id);
+        const cut = suppliedEntries(plan.issue, id, {...row, commit:plan.candidateCommit}, releaseSource(row, row.source),
+          row.source.blob, row.jpeg.blob, plan.importedAt);
+        requireThat(cut.image.provenance.receipt_sha256 === packet.prepared[id], "Missing or changed verified receipt for cut " + id);
+        files.push(...cut.files);
+        images[id] = cut.image;
+      }
+      return {files, images, plan:packet.plan, packetPath:loc.path, packetBlob:sha};
+    }
+    async function prepareReviewedTree(ref, preflight) {
+      const release = await readReviewedRelease(ref);
+      requireThat(preflight?.releaseCommit === ref.commit && preflight.selectionCommit === ref.selectionCommit &&
+        preflight.selectionHash === release.plan.selectionHash && same(preflight.issue, release.plan.issue) &&
+        same(preflight.cutIds, release.plan.cutIds), "Release no longer matches the current preflight");
+      const {parent, files} = await parentFiles(ref.commit);
+      const destinations = new Set(release.files.map(file => file.path));
+      requireThat(files.tree.some(file => file.type === "blob" && file.mode === "100644" &&
+        file.path === release.packetPath && file.sha === release.packetBlob) &&
+        !files.tree.some(file => destinations.has(file.path) || (file.type !== "tree" &&
+          [...destinations].some(path => path.startsWith(file.path + "/")))), "Occupied release destination");
+      requireThat(await guard() === preflight.mainCommit, "Main changed; reopen the selection before building the release tree");
+      const tree = await git("create_tree", {base_tree_sha:parent.tree.sha, tree_elements:[...release.files,
+        {path:release.packetPath,mode:"100644",type:"blob",sha:null}]});
+      return {base:ref.commit, tree:gitId(tree,"tree"), cuts:Object.keys(release.images).length};
     }
     // An original saved before a publication number was assigned keeps its own immutable storage paths.
     async function openUnassignedStock({stockIssue, commit, releaseCommit, issue}) {
@@ -793,12 +988,6 @@ var PhotoOriginalHandoff = (() => {
         requireThat(lineage.merge_base_commit?.sha === commit && lineage.status === "ahead", "Stock commit is outside its candidate branch");
       }
       const live = await reviewHead("main");
-      async function catalog(ref) {
-        const file = await git("fetch_file", {ref, path:"content/photo_issues.json", encoding:"utf-8"});
-        const data = JSON.parse(file.content);
-        requireThat(data.schema_version === 1 && Array.isArray(data.issues), "Invalid edition catalog");
-        return data.issues;
-      }
       const current = await catalog(live), editing = releaseCommit === live ? current : await catalog(releaseCommit);
       const targets = editing.filter(i => i.slug === issue.slug);
       requireThat(issue.state === "draft" && issue.model_id === stock.model_id && HASH.test(issue.issue_sha256) &&
@@ -863,7 +1052,8 @@ var PhotoOriginalHandoff = (() => {
         return result;
       }};
     }
-    return {upload, uploadDataUrl, prepare, publish, readOriginal, prepareSuppliedCut, openUnassignedStock,
+    return {upload, uploadDataUrl, prepare, publish, readOriginal, prepareSuppliedCut, openReviewedSelection, openUnassignedStock,
+      startReviewedPacket, continueReviewedPacket, readReviewedRelease, prepareReviewedTree,
       uploadNumberedOriginal, prepareNumberedOriginal, publishNumberedOriginal,
       prepareCheckpoint, publishCheckpoint, restoreCheckpoint, readCheckpointOriginal,
       readOriginalStep, readCheckpointOriginalStep, uploadReviewJpeg, prepareReviewJpeg, publishReviewJpeg, readReviewJpeg};
