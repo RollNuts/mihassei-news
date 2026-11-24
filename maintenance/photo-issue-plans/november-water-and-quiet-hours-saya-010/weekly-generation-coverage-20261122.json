@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "model_id": "nagino-saya",
+  "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
+  "week_start": "2026-11-22",
+  "from": "2026-11-22T00:00:00+09:00",
+  "through": "2026-11-24T16:39:00+09:00",
+  "prior_attempts_through_cutoff": [],
+  "producer_results": [
+    {
+      "displayed_at": "2026-11-22T07:21:53.444+09:00",
+      "pr": 939,
+      "head": "98b822a7929377cd00f1dc4e66477cfdea6806a6",
+      "voice_source_commit": "b80deafdb4c690a698638937f688f91d9666b4e2",
+      "calls": 0,
+      "basis": "本人は追加生成・原本転送を実施しなかったと明記。本人枠の保存経路と当週の消費数を未確認として終了。"
+    },
+    {
+      "displayed_at": "2026-11-23T07:16:06.091+09:00",
+      "pr": 966,
+      "head": "774996a24a8ad710d86ecbda0482b7a274ad40ee",
+      "voice_source_commit": "fb376208ca4fc08e947383704275ef17bd4d81be",
+      "calls": 0,
+      "basis": "本人の戻り値は、写真生成・転送0件。既存候補と未掲載在庫を照合。"
+    },
+    {
+      "displayed_at": "2026-11-24T07:20:13.560+09:00",
+      "pr": 994,
+      "head": "17aab776324be419ebf3d34200c557625d458564",
+      "voice_source_commit": "2f36f4422555a5e3976300f66de806d7fbc855c2",
+      "calls": 0,
+      "basis": "本人の戻り値は、未掲載の確認済み在庫0枚、今回の新規生成・原本転送0件。"
+    }
+  ],
+  "task_reference": "https://chatgpt.com/c/6afcd29c-bb44-83ec-ae2a-b0ae89baec02?automationId=6af876ee7a288191a528ed41f482223b",
+  "candidate_heads": [
+    {
+      "branch": "photo-issue-plan/november-water-and-quiet-hours-saya-010",
+      "commit": "3a0fcb60dd8a4e8dab66878c8709c262164406da",
+      "activity": "既刊010の本人候補は週開始前11/18が最終更新。本人の別候補、週予約ブランチ、進行中の本人PRは確認時点で見つからず。本人の今週の新規生成数は3回分の実行結果に基づく。"
+    }
+  ],
+  "remote_read_check": {
+    "scope": "既刊010 cut01の原本と受領票をGitHubから読取。新規原本の書込と遠隔読戻しは本人の現実行で確かめる。",
+    "commit": "8a1ab08e8708586d3a9281b6eab7973c399d72a2",
+    "cut": "01",
+    "receipt_path": "maintenance/photo-issues/november-water-and-quiet-hours-saya-010/01/receipt-supplied-e91612b08fd2-eb85b5753113.json",
+    "receipt_sha256": "e0aac6888942e8d5ee5f39b879818907bc5a6cd8fcd55b83e05a5b65a9266727",
+    "source_blob": "e377eca5b682b104c4e3922bec7016187d038706",
+    "source_sha256": "e91612b08fd2d87f0d9b36ed9d5e9f57e378cb7eb0843e83c28561ee8d2f2fdc",
+    "bytes": 2547931,
+    "width": 1024,
+    "height": 1536
+  },
+  "next_operation": "本人枠でthrough以後の全実行・失敗・中断・並行候補と週の本人予約台帳を確認する。追加消費があれば根拠を追記し、不明なら予約しない。在庫不足時だけ、現実行で原本の保存・遠隔SHA読戻しの経路を実証してから固定記録をcoverage_refとして週次予約を行う。010の既刊10枚を再送しない。"
+}
