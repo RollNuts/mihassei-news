@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "model_id": "amane-hikari",
+  "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+  "week_start": "2026-11-22",
+  "from": "2026-11-22T00:00:00+09:00",
+  "through": "2026-11-24T15:49:00+09:00",
+  "prior_attempts_through_cutoff": [],
+  "producer_results": [
+    {
+      "displayed_at": "2026-11-22T15:52:20.784+09:00",
+      "pr": 945,
+      "head": "6196452ae4b705f8ac384db70ff66c3b148db973",
+      "calls": 0,
+      "basis": "本人の結果は「本日新規生成 0回」。既存予備の読取で停止。"
+    },
+    {
+      "displayed_at": "2026-11-23T15:49:08.966+09:00",
+      "pr": 986,
+      "head": "e90d63e8a4ca46c7c14d588c5825d69dc24ca46d",
+      "calls": 0,
+      "basis": "既存予備の読取はBLOCKED_FILE_REFERENCE、週消費と保存試験を確定できず追加生成を行わなかった。"
+    },
+    {
+      "displayed_at": "2026-11-24T15:46:23.196+09:00",
+      "pr": 1009,
+      "head": "34ed6e14f4d67851f626fbb0c81bf5bed7b0839b",
+      "calls": 0,
+      "basis": "週消費と保存経路が未確定で新規生成を見送り、同一参照の再試行もなし。"
+    }
+  ],
+  "candidate_heads": [
+    {
+      "branch": "photo-issue-plan/november-hikari-city-and-pool-013",
+      "commit": "4c42217d2ffb99592f651d758a43be371c35b1f9",
+      "activity": "当週、本人候補の素材パスに新しいコミットはない。生成0件の根拠は各実行結果。"
+    }
+  ],
+  "remote_read_check": {
+    "scope": "既刊013の受領済み原本を読取専用で照合。予備6枚と新原本の転送は未確認。",
+    "api": "original.readOriginal",
+    "issue": "november-hikari-city-and-pool-013",
+    "source_ordinal": 2,
+    "commit": "87215ed4dba579e8a7d1b5e53b8307e5c10fd26e",
+    "receipt_sha256": "9a74a72339b1286d156d7feea121ef4f772497afef5262acdfa99409cf3845a6",
+    "source_sha256": "14495efc77db319eb52290ea037eaded6ec0e91dc1d3e1390e39de7a3c9a85be",
+    "bytes": 2063699,
+    "width": 1024,
+    "height": 1536,
+    "helper_commit": "d59ebe279e56b99cacb985ccb81ce7b787078436",
+    "checked_at": "2026-11-24T15:53:00+09:00",
+    "transport": "既存GitHub接続から固定receiptと4分割PNGをCodeModeへ読み、総バイト・寸法・SHA256が一致。"
+  },
+  "next_operation": "本人の定期枠でthrough以降の実行、失敗・中断、並行候補、週の既存予約台帳を確認する。既知の呼出しを合算して固定根拠を残し、不明なら予約しない。移行週の初回は照合と現実行の保存実証後に、この記録の固定GitHub blob URLをcoverage_refとする。既刊10枚は再転送せず、未受領6枚は新しい読取参照が得られたときだけ再開。内蔵生成が実PNG data URLを返す経路とfile-only経路は正本に従う。"
+}
