@@ -5019,5 +5019,171 @@
         "checked_on": "2026-11-24"
       }
     ]
+  },
+  {
+    "slug": "2026-11-24-close",
+    "day": "2026-11-24",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-24T16:17:21+09:00",
+    "title": "東京株、TOPIXは大引け2.47%高　銀行業4.07%高、NTTは0.89%安",
+    "summary": "24日のTOPIXは15時30分更新の速報値で2.47%高。銀行業4.07%高、非鉄金属6.19%高に対し、情報・通信業は0.03%安。NTTは166.2円で取引を終えた。11月4日の決算では増収減益ながら通期営業利益見通しを上方修正している。",
+    "lead": "連休明けの東京株式市場は24日、TOPIXが3,764.88ポイント（前営業日20日比2.47%高）と反発しました。JPXの15時30分更新の大引け速報値です。朝から強かった非鉄金属や電気機器に加え、銀行業も上昇を維持する一方、情報・通信業は小幅安でした。",
+    "sections": [
+      {
+        "heading": "TOPIXは朝の上昇を維持、非鉄金属は上げ幅縮小",
+        "paragraphs": [
+          "24日のTOPIXは3,701.61ポイントで寄り付き、一時3,785.16まで上昇しました。15時30分の速報値は3,764.88ポイントで、朝9時39分の3,760.19をわずかに上回りました。東証グロース市場250指数も同じ15時30分更新で654.84ポイント、2.60%高となっています。日経平均は算出元が公表した大引け値で58,644.63円、3.91%高でした。"
+        ]
+      },
+      {
+        "heading": "銀行株も上昇、情報・通信業は小幅安",
+        "paragraphs": [
+          "JPXの15時30分更新値では非鉄金属6.19%高、電気機器5.88%高、銀行業4.07%高でした。非鉄金属は朝9時39分の8.08%高から上げ幅を縮めました。小売業は朝の0.35%安から0.17%高に転じましたが、情報・通信業は0.03%安、陸運業は0.54%安でした。大型株中心のTOPIX Core30は3.23%高、小型株のTOPIX Smallは1.54%高で、反発の強さは規模や業種によって異なります。"
+        ]
+      },
+      {
+        "heading": "NTTは166.2円、中間期は増収減益",
+        "paragraphs": [
+          "情報・通信業のNTT（9432）は24日の東証15時30分終値が166.2円で、20日終値167.7円から0.89%下落しました。指数が反発しても、通信株まで同じ勢いで買われたわけではありません。",
+          "NTTが11月4日に公表した2026年度中間期（2026年4〜9月）の営業収益は前年同期比8.7%増、営業利益は12.2%減でした。一方、同社は総合ICT事業の販売好調を織り込み、2027年3月までの通期営業利益見通しを1兆7,300億円へ、5月8日公表の従来見通し比1.2%引き上げました。中間期実績の減益と通期会社見通しの上方修正は別の数字です。この決算は24日の新規発表ではなく、当日の下落原因と断定できません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov24-close",
+        "kind": "bars",
+        "title": "TOPIX：20日終値と24日大引け速報",
+        "note": "JPXの現物TOPIX。24日は15時30分更新の速報値、20日は公式終値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/20終値",
+            "value": 3674.22,
+            "state": "実績"
+          },
+          {
+            "label": "11/24 速報",
+            "value": 3764.88,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "bank-ict-nov24-close",
+        "kind": "bars",
+        "title": "銀行業と情報・通信業の騰落率",
+        "note": "JPX24日15時30分更新。20日終値比の大引け速報値。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "values": [
+          {
+            "label": "銀行業",
+            "value": 4.07,
+            "state": "実績"
+          },
+          {
+            "label": "情報・通信業",
+            "value": -0.03,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "ntt-nov24-close",
+        "kind": "bars",
+        "title": "NTT：20日と24日の終値",
+        "note": "Yahoo!ファイナンスの東証現物・円建て価格。20日の通常終値と調整後終値は一致。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/20終値",
+            "value": 167.7,
+            "state": "実績"
+          },
+          {
+            "label": "11/24終値",
+            "value": 166.2,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "9432",
+        "name": "NTT",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 167.7,
+        "close": 166.2,
+        "price_kind": "close",
+        "market_date": "2026-11-24",
+        "previous_market_date": "2026-11-20",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!株価時系列の20日通常終値・調整後終値とも167.7円。24日15時30分の東証現物円建て終値166.2円と比較。独自の分割補正なし。",
+        "context": "11月4日公表の中間期は営業収益8.7%増、営業利益12.2%減。総合ICT事業の販売好調を織り込んで通期営業利益見通しは前回比1.2%上方修正。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：24日15時30分更新の主要指数・業種別指数・規模別指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：指数ファイル更新日時",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "日経平均プロフィル：24日大引けの指数値",
+        "url": "https://indexes.nikkei.co.jp/nkave/index/profile?idx=nk225",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Yahoo!ファイナンス：NTTの24日15時30分東証終値",
+        "url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Yahoo!ファイナンス：NTTの20日通常終値・調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/9432.T/history",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "NTT：2026年度第2四半期決算短信（1頁、添付2頁）",
+        "url": "https://group.ntt/jp/newsrelease/2026/11/04/pdf/261104ab.pdf",
+        "published_on": "2026-11-04",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：2026年休業日",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "NYSE：2026年休場日と通常取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      }
+    ]
   }
 ]
