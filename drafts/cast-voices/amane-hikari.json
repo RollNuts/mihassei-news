@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "amane-hikari",
   "name": "天音ひかり",
-  "created_date": "2026-11-23",
+  "created_date": "2026-11-24",
   "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
   "photo_reference": {
     "issue_slug": "november-hikari-city-and-pool-013",
-    "cut_id": "01",
-    "image_sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb"
+    "cut_id": "03",
+    "image_sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b"
   },
-  "post_text": "午後の練習前、立ち位置の目印に色テープを貼った。私のだけ斜めで、直したら隣の子の印とくっついちゃった😂",
-  "spoken_line": "目印、斜めだった！",
-  "future_idea": "2031年、舞台の立ち位置をAIが提案する制度に出演者の拒否権を導入。演出の安全と表現の自由をめぐって制作契約が改定。"
+  "post_text": "休憩中に外へ出たら風が冷たくて、みんなで日なたへ移動。温かいココアを飲みながら、次の曲の振りをこっそり合わせてた。",
+  "spoken_line": "日なた、あったかい！",
+  "future_idea": "2031年、屋外イベントの休憩場所と防寒設備を契約に明記する制度が導入され、出演者と主催者の費用分担が争点に。"
 }
