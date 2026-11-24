@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="充電ケーブルを外したモバイルバッテリーのそばで、持ち主が携帯電話の回収通知を読む創作イラスト" data-visual-topic="telephone" data-article-sha256="3183643270fb7b911afea0be2f72e4a2d12bcf6f0f23c5d868a3828e4030fdbd">
+<title>中古のバッテリーにも届く回収通知</title>
+<desc>夕方の食卓。会社員がスマートフォンを手にして警告を確認している。卓上のモバイルバッテリーは充電ケーブルから離されている。画面の三角印は使用中止の知らせを表し、実在の製品や通知画面は再現していない。</desc>
+<rect width="1200" height="675" fill="#efe8d9"/>
+<rect x="70" y="65" width="330" height="290" rx="8" fill="#cbd7d9" stroke="#778e92" stroke-width="8"/>
+<path d="M235 70V350M75 210H395" stroke="#eee8d9" stroke-width="12"/>
+<circle cx="320" cy="143" r="38" fill="#e9bf88"/>
+<path d="M76 310L158 239L221 290L294 250L394 310V350H76Z" fill="#9cacaa"/>
+<ellipse cx="845" cy="617" rx="231" ry="30" fill="#b4b1a6"/>
+<path d="M754 258Q825 216 897 257L960 478H687Z" fill="#567480"/>
+<path d="M796 238V281Q828 307 861 279V235" fill="#cf9977"/>
+<ellipse cx="827" cy="171" rx="67" ry="84" fill="#d5a07f"/>
+<path d="M764 164Q746 92 800 78Q873 59 891 125L887 185L868 139Q811 150 781 124L778 182Z" fill="#37454b"/>
+<path d="M794 179L803 179M846 179L855 179" stroke="#485056" stroke-width="6" stroke-linecap="round"/>
+<path d="M812 213Q827 222 842 211" fill="none" stroke="#8c6658" stroke-width="4"/>
+<path d="M724 290Q672 317 639 387L698 410L780 334" fill="#567480"/>
+<path d="M914 296Q958 322 923 393L881 409L859 365L888 328" fill="#567480"/>
+<path d="M50 450H1150V639H50Z" fill="#c19b71"/>
+<path d="M50 450H1150" stroke="#9b7958" stroke-width="8"/>
+<ellipse cx="391" cy="550" rx="160" ry="27" fill="#a98967"/>
+<rect x="253" y="461" width="269" height="81" rx="20" fill="#3c535e"/>
+<rect x="274" y="477" width="227" height="46" rx="9" fill="#587482"/>
+<circle cx="473" cy="500" r="6" fill="#9fb2b5"/>
+<path d="M552 504H595Q650 504 650 552Q650 594 583 594H490" fill="none" stroke="#e7e3d7" stroke-width="11" stroke-linecap="round"/>
+<rect x="540" y="494" width="25" height="20" rx="3" fill="#d9d6cb" stroke="#6f7777" stroke-width="3"/>
+<rect x="474" y="585" width="27" height="18" rx="3" fill="#d9d6cb" stroke="#6f7777" stroke-width="3"/>
+<g transform="rotate(-10 747 378)">
+<rect x="669" y="266" width="152" height="247" rx="21" fill="#283f49"/>
+<rect x="682" y="284" width="126" height="205" rx="9" fill="#eff2e9"/>
+<rect x="721" y="273" width="47" height="5" rx="2" fill="#96a5a5"/>
+<path d="M744 313L786 387H702Z" fill="#d38a4e"/>
+<path d="M744 334V359" stroke="#fff5df" stroke-width="7" stroke-linecap="round"/><circle cx="744" cy="373" r="4" fill="#fff5df"/>
+<path d="M703 412H787M703 430H772M703 448H781" stroke="#879b9b" stroke-width="7" stroke-linecap="round"/>
+</g>
+<path d="M649 385Q657 370 675 382L695 407Q706 421 699 444Q686 466 669 443L641 415Z" fill="#d5a07f"/>
+<path d="M904 382Q889 366 875 382L825 422Q815 431 822 444Q830 454 846 446L903 417Q916 407 904 382Z" fill="#d5a07f"/>
+</svg>
