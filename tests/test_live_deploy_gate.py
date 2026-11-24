@@ -245,7 +245,8 @@ class PVHealthTriggerTests(unittest.TestCase):
     def setUp(self):
         self.workflow = (ROOT / ".github/workflows/public-engagement-health.yml").read_text(encoding="utf-8")
 
-    def allowed(self, event, conclusion="success", repository="RollNuts/mihassei-news", branch="main"):
+    def allowed(self, event, conclusion="success", repository="RollNuts/mihassei-news", branch="main",
+                upstream_event="push", title=""):
         # Evaluate the actual workflow's simple boolean condition rather than
         # maintaining a second implementation of the event filter in this test.
         match = re.search(r"(?m)^    if: >-\n((?:      .*\n)+)", self.workflow)
@@ -255,7 +256,7 @@ class PVHealthTriggerTests(unittest.TestCase):
         github = SimpleNamespace(
             event_name=event, repository="RollNuts/mihassei-news",
             event=SimpleNamespace(workflow_run=SimpleNamespace(
-                conclusion=conclusion, head_branch=branch,
+                conclusion=conclusion, head_branch=branch, event=upstream_event, display_title=title,
                 head_repository=SimpleNamespace(full_name=repository))))
         return eval(expression, {"__builtins__": {}}, {"github": github})
 
@@ -282,6 +283,18 @@ class PVHealthTriggerTests(unittest.TestCase):
         for event in ("schedule", "workflow_dispatch"):
             with self.subTest(event=event):
                 self.assertTrue(self.allowed(event, conclusion=None, repository=None, branch=None))
+
+    def test_only_production_checks_start_or_supersede_a_pv_check(self):
+        verify = (ROOT / ".github/workflows/verify-public-photos.yml").read_text(encoding="utf-8")
+        manual_title = "Manual public verification"
+        self.assertIn("github.event_name == 'workflow_dispatch' && inputs.finalize_pr == '' && '"
+                      + manual_title + "'", verify.split("\non:", 1)[0])
+        self.assertTrue(self.allowed("workflow_run", upstream_event="workflow_dispatch", title=manual_title))
+        self.assertFalse(self.allowed("workflow_run", upstream_event="workflow_dispatch", title=""))
+        for upstream_event in ("workflow_run", "pull_request_target"):
+            self.assertFalse(self.allowed("workflow_run", upstream_event=upstream_event, title=manual_title))
+        self.assertNotIn("\nconcurrency:", self.workflow)
+        self.assertIn("\n    concurrency:\n      group: public-pv-health-main", self.workflow)
 
 
 class PVRecommendationDeploymentTests(unittest.TestCase):
