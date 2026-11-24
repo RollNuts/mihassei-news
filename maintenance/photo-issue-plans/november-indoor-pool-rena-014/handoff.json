@@ -490,7 +490,7 @@
       "model_id": "tsukishiro-rena",
       "week_start": "2026-11-22",
       "from": "2026-11-22T00:00:00+09:00",
-      "through": "2026-11-24T15:13:00+09:00",
+      "through": "2026-11-24T22:21:51+09:00",
       "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
       "producer_results": [
         {
@@ -506,6 +506,13 @@
           "head": "95371ced73e54b27e60c96982fef5f7c9f6ab729",
           "calls": 0,
           "basis": "保存試験が BLOCKED_FILE_REFERENCE で停止。生成予約も追加制作もしていないと本人の実行結果で明記。"
+        },
+        {
+          "displayed_at": "2026-11-24T21:25:09.859+09:00",
+          "pr": 1015,
+          "head": "ce36620a1f7886c44912c4f99fe26ab2307eda3a",
+          "calls": 0,
+          "basis": "当週履歴と現実行の原本保存経路が未確定で予約0・新規生成0。"
         }
       ],
       "candidate_heads": [
@@ -521,7 +528,19 @@
         }
       ],
       "prior_attempts_through_cutoff": [],
-      "next_operation": "本人がthrough以降から予約直前までの実行・失敗・中断・並行候補と当週予約先を照合する。追加呼出しがあれば合算してその根拠を保存し、不明なら予約しない。既存台帳があればそのまま継続する。移行週の初回のみ、区間照合と原本の保存実証後にこのhandoffの固定commitのGitHub blob URLをcoverage_refに使い、PhotoGenerationQuotaの通常手順で1枚分を予約する。"
+      "next_operation": "移行週の初回台帳を空の状態で初期化する。以後、本人は現実行の原本保存と遠隔再読を実証し、同週の既存台帳で通常のreserveStepを行い、新規許可を得た1枚だけを生成する。",
+      "since_previous_cutoff": {
+        "previous_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/6419973614824a23da2bff773073ec329e82959c/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
+        "from": "2026-11-24T15:13:00+09:00",
+        "registered_task": "6af874ba79b88191b77bbe8e7b7e2b2e",
+        "latest_result_pr": 1015,
+        "observed": "20:30定期枠の21:25の結果が登録本人チャットの終端。追加手動実行・生成中表示なし。次の本人枠は11月25日20:30。近況に既刊008のcut10を再利用。",
+        "candidate_heads": [
+          "b19063b32b2416562bb8c449ea9918adb5b26eac",
+          "c4f3835f929a30a99bccf38b1231ddc54de3a06d"
+        ],
+        "weekly_ledger_path_history_on_main_and_candidates": []
+      }
     }
   },
   "usage": {
