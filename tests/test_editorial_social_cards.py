@@ -78,18 +78,35 @@ class EditorialSocialCardTests(unittest.TestCase):
             installed = version("CairoSVG")
         except PackageNotFoundError:
             self.skipTest("Normal builds do not need the optional CairoSVG preparer")
-        if installed != "2.7.1":
-            self.skipTest("Optional CairoSVG proof needs the pinned renderer")
+        if installed not in ("2.7.1", "2.8.2"):
+            self.skipTest("Optional CairoSVG proof needs a supported renderer")
         from PIL import Image
         self.assertTrue(social_cards.prepare_scene_png(self.article, root=self.root, renderer="cairosvg"))
         with Image.open(self.png_path) as image:
             self.assertEqual(image.size, (1200, 675))
             self.assertEqual(image.convert("RGB").getpixel((10, 10)), (209, 46, 60))
             self.assertEqual(image.convert("RGB").getpixel((1190, 665)), (53, 165, 91))
-            self.assertEqual(image.info["renderer"], "CairoSVG 2.7.1")
+            self.assertEqual(image.info["renderer"], "CairoSVG " + installed)
             self.assertEqual(image.info["article_sha256"], article_fingerprint(self.article))
             self.assertEqual(image.info["svg_sha256"], hashlib.sha256(self.svg.encode()).hexdigest())
         self.assertEqual(social_cards.reviewed_scene_png(self.article, root=self.root), self.png_path.read_bytes())
+
+    def test_cairosvg_records_the_reported_version_and_reuses_current_output(self):
+        for version in ("2.7.1", "2.8.2"):
+            with self.subTest(version=version):
+                self.png_path.unlink(missing_ok=True)
+                results = [subprocess.CompletedProcess([], 0, version + "\n"),
+                           subprocess.CompletedProcess([], 0, self.png(proof=False))]
+                with patch.object(social_cards.subprocess, "run", side_effect=results) as renderer:
+                    self.assertTrue(social_cards.prepare_scene_png(self.article, root=self.root, renderer="cairosvg"))
+                    self.assertEqual(renderer.call_args_list[0].args[0], [sys.executable, "-m", "cairosvg", "--version"])
+                    self.assertEqual(renderer.call_args_list[1].kwargs["input"], self.svg_path.read_bytes())
+                    original = self.png_path.read_bytes()
+                    _, proof = social_cards._scene_png_chunks(original)
+                    self.assertEqual(proof["renderer"], "CairoSVG " + version)
+                    self.assertFalse(social_cards.prepare_scene_png(self.article, root=self.root))
+                    self.assertEqual(renderer.call_count, 2)
+                    self.assertEqual(self.png_path.read_bytes(), original)
 
     def test_preparation_rejects_a_different_renderer_version_without_writing(self):
         with patch.object(social_cards.subprocess, "run", return_value=
@@ -114,7 +131,7 @@ class EditorialSocialCardTests(unittest.TestCase):
         self.assertFalse(self.png_path.with_suffix(".png.tmp").exists())
 
     def test_normal_render_never_invokes_a_renderer_and_copies_current_png(self):
-        for backend in ("rsvg-convert 2.62.1", "CairoSVG 2.7.1"):
+        for backend in ("rsvg-convert 2.62.1", "CairoSVG 2.7.1", "CairoSVG 2.8.2"):
             with self.subTest(renderer=backend):
                 data = self.png(renderer=backend)
                 self.png_path.write_bytes(data)
@@ -258,6 +275,50 @@ class EditorialSocialCardTests(unittest.TestCase):
         review.write_text(json.dumps(payload))
         canonical = build.SITE + build.article_url(self.article)
         self.assertEqual(share_page_url(self.article, canonical, root=self.root), canonical + "?image=" + digest)
+
+    def test_publication_guard_checks_only_submitted_png_against_staged_svg(self):
+        from scripts.guard_generated_media_history import verify_changed_scene_pngs
+
+        def git(*args):
+            return subprocess.run(["git", *args], cwd=self.root, capture_output=True,
+                                  text=True, check=True).stdout.strip()
+
+        git("init", "-q")
+        git("config", "user.name", "Test")
+        git("config", "user.email", "test@example.invalid")
+        articles_path = self.root / "content/articles.json"
+        articles_path.parent.mkdir()
+        articles_path.write_text(json.dumps([self.article]), encoding="utf-8")
+        git("add", ".")
+        git("commit", "-qm", "Starting article and scene without a paired PNG")
+        base = git("rev-parse", "HEAD")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+
+        # The submitted material was rendered from an SVG with an extra newline.
+        wrong_hash = hashlib.sha256((self.svg + "\n").encode()).hexdigest()
+        self.png_path.write_bytes(self.png(svg_sha256=wrong_hash))
+        git("add", ".")
+        self.assertIn("exact submitted SVG", verify_changed_scene_pngs(base, root=self.root)[0])
+
+        # A locally corrected file cannot silently validate the previously staged one.
+        self.png_path.write_bytes(self.png())
+        self.assertTrue(verify_changed_scene_pngs(base, root=self.root))
+        git("add", ".")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+        self.assertEqual(verify_changed_scene_pngs("0" * 40, root=self.root), [])
+        # Later workspace activity must not invalidate or replace the staged inputs.
+        articles_path.write_text("[]", encoding="utf-8")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+        git("checkout", "--", "content/articles.json")
+        git("commit", "-qm", "Publish the verified card")
+        base = git("rev-parse", "HEAD")
+
+        self.svg_path.write_text(self.svg + "\n", encoding="utf-8")
+        git("add", ".")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+        git("mv", str(self.png_path.relative_to(self.root)),
+            str(self.png_path.with_name("another.png").relative_to(self.root)))
+        self.assertTrue(verify_changed_scene_pngs(base, root=self.root))
 
 
 class ArticlePngCompatibilityTests(unittest.TestCase):
