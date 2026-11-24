@@ -96,14 +96,17 @@ class MarketFreshnessTests(unittest.TestCase):
         report = self.reports[-1]
         before = copy.deepcopy(report)
         page = render_series_page(self.market, passthrough, bulletins=[report])
-        self.assertIn("最新の市況 ／ 寄り付き前", page)
+        self.assertIn("最新の市況", page)
+        self.assertNotIn("最新の市況 ／ 寄り付き前", page)
         self.assertIn('datetime="' + report["published_at"] + '"', page)
         self.assertIn("2026-11-16 08:31", page)
         self.assertIn("2026-11-13 16:59", page)
         self.assertIn("2026-11-13 17:00", page)
         lead = page.split('id="market-focus"', 1)[1].split('</section>', 1)[0]
         self.assertLess(lead.index("2026-11-16 08:31"), lead.index('<h2'))
-        self.assertLess(lead.index('class="market-paper-dek"'), lead.index("観測値"))
+        publication = lead.split('class="market-latest-update"', 1)[1].split("</p>", 1)[0]
+        self.assertNotIn("2026-11-13 16:59", publication)
+        self.assertLess(page.index("2026-11-16 08:31"), page.index("2026-11-13 16:59"))
         masthead = page.split('class="market-paper-masthead"', 1)[1].split('</header>', 1)[0]
         self.assertNotIn("観測値", masthead)
         self.assertNotIn("最終公開", page)
@@ -119,7 +122,8 @@ class MarketFreshnessTests(unittest.TestCase):
         page = render_series_page(self.market, passthrough, bulletins=[previous, report])
         lead = page.split('id="market-focus"', 1)[1].split('</section>', 1)[0]
         self.assertIn('class="market-latest-update"', lead)
-        self.assertIn("最新の市況 ／ 引け後", lead)
+        self.assertIn("最新の市況", lead)
+        self.assertNotIn("最新の市況 ／ 引け後", lead)
         self.assertIn('<time datetime="2026-11-17T16:17:14+09:00">2026-11-17 16:17</time> JST 公開', lead)
         self.assertEqual(page.count('datetime="2026-11-17T16:17:14+09:00"'), 1)
         self.assertNotIn("2031", lead)
@@ -194,7 +198,7 @@ class MarketFreshnessTests(unittest.TestCase):
         self.assertIsNone(KEY.fullmatch("2026-11-16-late"))
         legacy = next(x for x in self.reports if x["slot"] == "close")
         markup = render_market_bulletin(legacy, passthrough)
-        self.assertIn("実データの市況解説 ／ 引け後", markup)
+        self.assertIn("実データの市況解説", markup)
         self.assertIn(" 18:38</time> JST</p>", markup)
         self.assertNotIn(" 15:50</time> JST</p>", markup)
 

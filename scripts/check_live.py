@@ -197,6 +197,25 @@ def verify_generated_image(article, image: bytes, mime: str, *, root=ROOT) -> No
         raise RuntimeError(article["slug"] + ": production photo differs from the validated generation")
 
 
+def verify_article_feed_images(entries, articles, feed, image_urls):
+    """Match each RSS link and both media URLs to its current reviewed selection."""
+    if len(entries) != len(articles):
+        raise RuntimeError(feed + ": wrong number of RSS articles")
+    media_ns = "{http://search.yahoo.com/mrss/}"
+    for entry, article in zip(entries, articles):
+        slug = article["slug"]
+        if entry.findtext("link") != SITE + "/articles/" + slug + "/":
+            raise RuntimeError(f"{feed}: wrong RSS article, expected {slug}")
+        # Main and category feeds overlap. Resolve each article's asset only once.
+        if slug not in image_urls:
+            image_urls[slug] = SITE + social_image(article)
+        expected = image_urls[slug]
+        for tag in ("thumbnail", "content"):
+            nodes = entry.findall(media_ns + tag)
+            if len(nodes) != 1 or nodes[0].get("url") != expected:
+                raise RuntimeError(f"{feed}: {slug} RSS media:{tag} differs from {expected}")
+
+
 def verify_scene_social_image(article, image: bytes, mime: str, *, root=ROOT) -> None:
     paired = reviewed_scene_png(article, root=root)
     if "image/png" not in mime or len(image) < 1500:
@@ -819,6 +838,7 @@ def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
     if content_type.split(";", 1)[0].strip().lower() != "text/html":
         raise RuntimeError(path + ": market dispatch is not served as HTML")
     page = page_bytes.decode("utf-8")
+    verify_adsense_markup(page, loader_expected=False)
     preview = SITE + "/og/serials/market-lab.png"
     for required in (
         '<link rel="canonical" href="' + SITE + path + '">',
@@ -1437,22 +1457,13 @@ def check():
         raise RuntimeError("RSS feed has an unexpected Content-Type")
     feed_root=ET.fromstring(feed_bytes)
     feed_entries=feed_root.findall("./channel/item")
-    if len(feed_entries)!=min(len(articles),90):
-        raise RuntimeError("New RSS retention window is not deployed")
+    feed_image_urls = {}
+    verify_article_feed_images(feed_entries, sorted_articles[:90], "/feed.xml", feed_image_urls)
     # The RSS verifier must follow the newspaper's actual editorial sections,
     # including newly added 事件, not a stale hard-coded set.
     if any(item.findtext("category") not in set(CATEGORIES[1:])
            for item in feed_entries):
         raise RuntimeError("RSS feed category metadata missing")
-    namespace={"media":"http://search.yahoo.com/mrss/"}
-    for entry in feed_root.findall("./channel/item")[:min(5,len(articles))]:
-        thumb=entry.find("media:thumbnail",namespace)
-        media=entry.find("media:content",namespace)
-        if thumb is None or media is None or thumb.get("url")!=media.get("url"):
-            raise RuntimeError("RSS thumbnail metadata is missing or inconsistent")
-        if not thumb.get("url","").startswith(SITE+"/"):
-            raise RuntimeError("RSS image is not first-party: "+str(thumb.get("url")))
-
     checked_photos=0
     checked_diagrams=0
     for item in recent:
@@ -1627,9 +1638,8 @@ def check():
                 raise RuntimeError("Missing indexed category "+cat)
     # RSS discovery is a free returning-reader path, not a new thin index
     # page. Check first-party feeds and that every item is truly in its genre.
-    feed_namespace={"media":"http://search.yahoo.com/mrss/",
-                    "atom":"http://www.w3.org/2005/Atom"}
-    for category, total in counts.items():
+    feed_namespace={"atom":"http://www.w3.org/2005/Atom"}
+    for category in counts:
         feed="/feeds/"+category_paths[category]+".xml"
         body_bytes, content_type=get(feed)
         if "xml" not in content_type:
@@ -1642,20 +1652,8 @@ def check():
         self_link=channel.find("atom:link",feed_namespace)
         if self_link is None or self_link.get("href")!=SITE+feed:
             raise RuntimeError("Category RSS canonical link missing: "+category)
-        expected_items=sorted(
-            [a for a in articles if a["category"]==category],
-            key=lambda a:(a.get("published_at") or a["source"]["published_at"],
-                          a["source"]["published_at"]),reverse=True
-        )[:30]
-        entries=channel.findall("item")
-        if len(entries)!=min(total,30):
-            raise RuntimeError("Wrong category RSS article count: "+category)
-        for entry, article in zip(entries,expected_items):
-            if entry.findtext("link")!=SITE+"/articles/"+article["slug"]+"/":
-                raise RuntimeError("Wrong category RSS article: "+article["slug"])
-            thumb=entry.find("media:thumbnail",feed_namespace)
-            if thumb is None or not thumb.get("url","").startswith(SITE+"/"):
-                raise RuntimeError("First-party category RSS thumbnail missing")
+        expected_items = [a for a in sorted_articles if a["category"] == category][:30]
+        verify_article_feed_images(channel.findall("item"), expected_items, feed, feed_image_urls)
         if 'href="'+feed+'" type="application/rss+xml"' not in archive_html:
             raise RuntimeError("RSS feed is not discoverable: "+feed)
     print("Public category RSS OK:",len(counts))

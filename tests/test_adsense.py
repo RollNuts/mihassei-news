@@ -40,10 +40,6 @@ class AdSenseTests(unittest.TestCase):
     def body_cases(self):
         return (
             (build.article_url(self.article), {"kind": "story", "article": self.article}),
-            ("/serials/market-lab/sample-analysis/",
-             {"kind": "serial_episode", "serial": self.analysis}),
-            ("/serials/market-lab/briefings/sample-analysis/",
-             {"kind": "market_bulletin", "serial": self.analysis}),
         )
 
     def assert_account_meta(self, markup):
@@ -80,6 +76,10 @@ class AdSenseTests(unittest.TestCase):
             ("/photo/weekly/issue-001/", {"kind": "photo_edition"}),
             ("/photo/models/", {"kind": "photo_collection"}),
             ("/photo/models/sample/", {"kind": "photo_model"}),
+            ("/serials/market-lab/sample-analysis/",
+             {"kind": "serial_episode", "serial": self.analysis}),
+            ("/serials/market-lab/briefings/sample-analysis/",
+             {"kind": "market_bulletin", "serial": self.analysis}),
             ("/serials/", {}), ("/serials/market-lab/", {"serial": self.analysis}),
             ("/serials/market-lab/briefings/", {"serial": self.analysis}),
             ("/serials/market-lab/outlooks/", {"serial": self.analysis}),

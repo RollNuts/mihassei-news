@@ -207,9 +207,11 @@ def validate_merge(api, pr, run, root):
     # not expand allowed()/allowed_for() or permit edits to metric history.
     added = git(root, "diff", "--name-only", "--no-renames", "--diff-filter=A", tested + ".." + current).splitlines()
     metrics = {p: day for p in added if (day := daily_snapshot_day(p)) is not None}
-    require(all(allowed(p) or p in metrics or p == "README.md"
-                or p.startswith("docs/") and p.endswith(".md") for p in later),
-            "Main runtime changed since CI; fresh CI is required")
+    if not all(allowed(p) or p in metrics or p == "README.md"
+               or p.startswith("docs/") and p.endswith(".md") for p in later):
+        raise PublicationBlocked(pr, run["head_sha"], "latest_main", "Main runtime changed since CI; fresh CI is required",
+                                 kind=approval(pr)["kind"], ci_run_id=run["id"], ci_run_attempt=run["run_attempt"],
+                                 tested_main=tested, current_main=current)
     with tempfile.TemporaryDirectory(prefix="publication-finalize-") as folder:
         checkout = Path(folder) / "merged"
         git(root, "worktree", "add", "--detach", str(checkout), current)
@@ -276,9 +278,13 @@ def dispatch(api, revision):
 
 class PublicationBlocked(ValueError):
     """Expose the safe stopping snapshot without weakening a publication gate."""
-    def __init__(self, pr, expected_head, stage, message):
+    def __init__(self, pr, expected_head, stage, message, **context):
         super().__init__(message)
-        if pr["head"]["sha"] != expected_head:
+        if stage == "latest_main":
+            operation = ("Current owner: remove the old approval from this PR, save it and verify its removal. "
+                         "Merge latest main into this same PR without force. Verify preserved content, media and history, "
+                         "then run fresh CI and renew the approval for the new exact head under docs/OPERATIONS.md.")
+        elif pr["head"]["sha"] != expected_head:
             operation = "Current owner: review the changed head and refresh its CI and exact-head approval."
         elif pr.get("draft") is True:
             operation = "Current owner: after saving the passed current-head review, mark this same PR ready and reread draft=false."
@@ -292,7 +298,7 @@ class PublicationBlocked(ValueError):
                        "expected_head": expected_head, "current_head": pr["head"]["sha"],
                        "stage": stage, "blocking_snapshot": {
                            key: pr.get(key) for key in ("state", "draft", "mergeable", "mergeable_state")},
-                       "next_operation": operation}
+                       "next_operation": operation, **context}
 
 
 def same_approved_open_pr(pr, expected_head, attestation):

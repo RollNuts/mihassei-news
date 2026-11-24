@@ -10,7 +10,7 @@
 
 - **創作ニュース** — 出典と実際の掲載日を分けて記録し、記事ごとの静的ページを生成
 - **未発生ニュース放送室** — [一面の放送室](https://veripsa.com/#broadcast-title)で、記事の写真に短い字幕を添えた無音映像を配信
-- **未来相場観測室** — [公開時の予想と判定条件](https://veripsa.com/serials/market-lab/#forecast-ledger)を残し、後から根拠と結果を追記
+- **未来相場観測室** — [日米の市況と注目株](https://veripsa.com/serials/market-lab/)を公開資料に基づいて解説
 - **読める・見つかる** — カテゴリ、日付別アーカイブ、全文検索、関連記事、RSS、サイトマップ、OGP
 - **画像のフォールバック** — 検証済みの写真を優先し、使えなければ記事別の自作SVG・共有用PNGへ切り替え
 - **任意の読者機能** — コメント、投票、反応の集計をCloudflare Workers + SQLite Durable Objectsで実装

@@ -128,7 +128,7 @@ var PublicationReviewContext = (function () {
       && (pr.body === null || typeof pr.body === "string"), "Invalid open main PR");
     return [pr.number, pr.head.sha, pr.draft, pr.head?.repo?.full_name, pr.body];
   }
-  function handoff(pr) {
+  function handoff(pr, kinds = ["news", "market"]) {
     const body = pr.body || "", blocks = [...body.matchAll(/<!-- publication-finalize\s*\n([\s\S]*?)\n-->/g)];
     if (!body.includes("<!-- publication-finalize")) return "absent";
     if (blocks.length !== 1) return "invalid";
@@ -141,15 +141,16 @@ var PublicationReviewContext = (function () {
     // Match approval()'s marker syntax so a claim that it rejects cannot hide work.
     if (!object(claim) || !required.every(key => Object.hasOwn(claim, key))
         || !Object.keys(claim).every(key => required.includes(key) || key === "article_sha256")
-        || claim.version !== 1 || !["news", "market"].includes(claim.kind)
+        || claim.version !== 1 || !kinds.includes(claim.kind)
         || claim.first_read !== "passed" || claim.merge_after_ci !== true
         || !matches(GIT, claim.approved_head)
         || !matches(LOGIN, claim.authorized_by)
-        || !["author_run", "reviewer_run"].every(key => matches(RUN, claim[key]))
-        || claim.author_run === claim.reviewer_run || !object(claim.article_sha256)
+        || !["author_run", "reviewer_run"].every(key => matches(RUN, claim[key])))
+      return "invalid";
+    if (claim.kind !== "cast_story" && (claim.author_run === claim.reviewer_run || !object(claim.article_sha256)
         || claim.kind === "news" && !Object.keys(claim.article_sha256).length
         || !Object.entries(claim.article_sha256).every(([slug, hash]) =>
-          matches(SLUG, slug) && matches(HASH, hash)))
+          matches(SLUG, slug) && matches(HASH, hash))))
       return "invalid";
     return claim.approved_head === pr.head.sha ? "current_head_claim" : "stale";
   }
@@ -266,7 +267,10 @@ var PublicationReviewContext = (function () {
       const photo = paths.some(path => PHOTO_INPUT.test(path));
       const images = paths.filter(path => ARTICLE_IMAGE.test(path) && !path.includes("/photo-issue-"));
       if (!relevant.length && !unsupported.length && (photo || !images.length)) {
-        outside.push({ ...binding, reason: photo ? "photo_or_cast_story" : "outside_first_read_scope" });
+        const story = !pr.draft && changed.length === 1 && changed[0].status === "modified"
+          && /^content\/photo_stories\/[a-z0-9-]+\.json$/.test(paths[0]) && handoff(pr, ["cast_story"]) === "current_head_claim";
+        outside.push({ ...binding, reason: photo ? "photo_or_cast_story" : "outside_first_read_scope",
+          ...(story ? { finalizer_title_prefix: "Publication head " + pr.head.sha } : {}) });
         continue;
       }
       require(relevant.every(f => INPUTS.includes(f.filename) && f.status === "modified"
@@ -334,7 +338,7 @@ var PublicationReviewContext = (function () {
         + "Main-only changes and market outlook/serial widgets need their existing review." };
   }
   // One bounded observation of an existing handoff, not a watcher or a new
-  // approval. Run IDs must come from its real handoff; never search by title.
+  // approval. A discovered run must also supply evidence for the exact handoff.
   async function readHandoffStatus(options = {}) {
     return readStatus(options, false);
   }
@@ -431,12 +435,13 @@ var PublicationReviewContext = (function () {
       check(value.status === "completed" && value.conclusion === "success"
         && selected.status === "completed" && selected.conclusion === "success", label + "_not_successful");
     }
-    function step(selected, name) {
+    function step(selected, name, conclusion = "success") {
       check(Array.isArray(selected.steps) && selected.steps.length <= 100, "steps_unverified");
       const found = selected.steps.filter(item => item.name === name);
-      check(found.length === 1 && found[0].status === "completed" && found[0].conclusion === "success"
+      check(found.length === 1 && found[0].status === "completed" && found[0].conclusion === conclusion
         && Number.isFinite(Date.parse(found[0].started_at)) && Number.isFinite(Date.parse(found[0].completed_at))
-        && Date.parse(found[0].started_at) <= Date.parse(found[0].completed_at), "required_step_not_successful");
+        && Date.parse(found[0].started_at) <= Date.parse(found[0].completed_at),
+      conclusion === "failure" ? "failed_finalizer_step_unverified" : "required_step_not_successful");
       return found[0];
     }
     async function log(selected) {
@@ -462,7 +467,7 @@ var PublicationReviewContext = (function () {
       const start = Date.parse(execution.started_at), end = Date.parse(execution.completed_at) + 1000;
       return lines.filter(line => line.ms >= start && line.ms < end);
     }
-    async function finish(status) {
+    async function finish(status, stage) {
       // A stability recheck, with no sleep or retry, prevents old attempts/logs
       // from becoming a success if this handoff changes during the snapshot.
       result.stage = "snapshot";
@@ -475,8 +480,8 @@ var PublicationReviewContext = (function () {
       check(JSON.stringify(await latestCI()) === JSON.stringify(ciListing), "ci_changed_during_snapshot");
       check((await get("/git/ref/heads/main")).object?.sha === ref, "main_changed_during_snapshot");
       result.status = status;
-      result.stage = validationOnly ? "ci" : status === "verified" ? "delivery"
-        : status === "verification_pending" ? "live" : status.replace(/_pending$/, "");
+      result.stage = stage || (validationOnly ? "ci" : status === "verified" ? "delivery"
+        : status === "verification_pending" ? "live" : status.replace(/_pending$/, ""));
       result.reads = { repository: reads, logs: logReads };
       return result;
     }
@@ -493,7 +498,8 @@ var PublicationReviewContext = (function () {
         && (validationOnly ? typeof snapshot.draft === "boolean" && snapshot.state === "open" && snapshot.merged === false
           : snapshot.draft === false && ((snapshot.state === "open" && snapshot.merged === false)
             || (snapshot.state === "closed" && snapshot.merged === true))), "pr_head_or_state_unbound");
-      if (!validationOnly) check(handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
+      const story = !validationOnly && !snapshot.merged && handoff(snapshot, ["cast_story"]) === "current_head_claim";
+      if (!validationOnly) check(story || handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
       if (snapshot.merged) {
         check(matches(GIT, snapshot.merge_commit_sha), "merge_sha_unverified");
         const commit = await get("/git/commits/" + snapshot.merge_commit_sha);
@@ -534,16 +540,34 @@ var PublicationReviewContext = (function () {
         return await finish("ci_verified");
       }
       result.stage = "finalizer";
+      const failureScope = story ? "story" : "publication";
+      if (!snapshot.merged && finalizer_run_id === undefined) {
+        // workflow_run belongs to main. The title locates its candidate; only the
+        // trusted step output below can bind the failure to this PR and CI.
+        check(Number.isFinite(Date.parse(ci.created_at)), "ci_creation_time_unverified");
+        const listing = await get("/actions/runs?event=workflow_run&branch=main&status=failure&created="
+          + encodeURIComponent(">=" + ci.created_at) + "&per_page=100");
+        check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
+          && listing.total_count <= 100, failureScope + "_finalizer_inventory_incomplete");
+        const title = "Publication head " + head + " (CI " + ci.id + "/" + ci.run_attempt + ")";
+        const matching = listing.workflow_runs.filter(item => item.path === VERIFY && item.event === "workflow_run"
+          && item.head_branch === "main" && item.display_title === title && positive(item.id));
+        check(matching.length === 1, failureScope + "_finalizer_unverified");
+        finalizer_run_id = matching[0].id;
+      }
       const finalizer = await run(finalizer_run_id, VERIFY, ["pull_request_target", "workflow_run"],
         head, snapshot.head.ref, "finalizer", true);
       const mainFinalizer = finalizer.head_branch === "main";
+      const failed = !snapshot.merged && finalizer.status === "completed" && finalizer.conclusion === "failure";
+      if (story) check(failed, "story_finalizer_failure_unconfirmed");
       const finalizerJob = await job(finalizer, "finalize", "finalizer");
       if (ACTIVE_RUN.has(finalizer.status) && (ACTIVE_RUN.has(finalizerJob.status) || finalizerJob.conclusion === "success")) {
         check(!mainFinalizer, "finalizer_handoff_not_yet_bound");
         return await finish("finalizer_pending");
       }
-      completed(finalizer, finalizerJob, "finalizer");
-      const execution = step(finalizerJob, FINALIZE);
+      if (failed) check(finalizerJob.status === "completed" && finalizerJob.conclusion === "failure", failureScope + "_finalizer_failure_unconfirmed");
+      else completed(finalizer, finalizerJob, "finalizer");
+      const execution = step(finalizerJob, FINALIZE, failed ? "failure" : "success");
       const finalizerLines = within(await log(finalizerJob), execution);
       const outcomes = finalizerLines.flatMap(line => {
         if (!line.text.startsWith("{")) return [];
@@ -552,17 +576,38 @@ var PublicationReviewContext = (function () {
       });
       check(outcomes.length === 1, "finalizer_result_unverified");
       const outcome = outcomes[0];
-      check(outcome.status === "verification_dispatched" && snapshot.merged
-        && outcome.merge_sha === result.merge_sha, "finalizer_merge_unverified");
-      const binding = ["pr", "head", "ci_run_id", "ci_run_attempt"];
-      if (mainFinalizer || binding.some(key => Object.hasOwn(outcome, key))) {
-        check(outcome.pr === number && outcome.head === head && outcome.ci_run_id === ci.id
-          && outcome.ci_run_attempt === ci.run_attempt, "finalizer_handoff_binding_unverified");
+      if (failed) {
+        check(outcome.status === "unverified" && outcome.stage === "latest_main"
+          && handoff(snapshot, [outcome.kind]) === "current_head_claim"
+          && outcome.pr === number && outcome.expected_head === head && outcome.current_head === head
+          && outcome.ci_run_id === ci.id && outcome.ci_run_attempt === ci.run_attempt
+          && outcome.tested_main === linked[0].base.sha && matches(GIT, outcome.current_main)
+          && outcome.current_main !== outcome.tested_main, failureScope + "_failure_binding_unverified");
+      } else {
+        check(outcome.status === "verification_dispatched" && snapshot.merged
+          && outcome.merge_sha === result.merge_sha, "finalizer_merge_unverified");
+        const binding = ["pr", "head", "ci_run_id", "ci_run_attempt"];
+        if (mainFinalizer || binding.some(key => Object.hasOwn(outcome, key))) {
+          check(outcome.pr === number && outcome.head === head && outcome.ci_run_id === ci.id
+            && outcome.ci_run_attempt === ci.run_attempt, "finalizer_handoff_binding_unverified");
+        }
       }
       if (mainFinalizer) {
         const ancestry = await get("/compare/" + finalizer.head_sha + "..." + ref);
         check(["ahead", "identical"].includes(ancestry.status)
           && ancestry.merge_base_commit?.sha === finalizer.head_sha, "finalizer_not_on_fixed_main");
+      }
+      if (failed) {
+        if (outcome.current_main !== ref && !(mainFinalizer && outcome.current_main === finalizer.head_sha)) {
+          const ancestry = await get("/compare/" + outcome.current_main + "..." + ref);
+          check(ancestry.status === "ahead" && ancestry.merge_base_commit?.sha === outcome.current_main, "stopped_main_unverified");
+        }
+        await finish("attention", "latest_main");
+        result.reason = "latest_main_requires_fresh_ci";
+        result.evidence.finalizer.tested_main = outcome.tested_main;
+        result.evidence.finalizer.current_main = outcome.current_main;
+        result.next_operation = "Check the current owner and active runs before recovering this same PR under docs/OPERATIONS.md.";
+        return result;
       }
       result.stage = "live";
       check(positive(verification_run_id), "verification_run_id_required");

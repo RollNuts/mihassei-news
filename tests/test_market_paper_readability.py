@@ -1,7 +1,7 @@
 """Reader-first newspaper layout for factual markets; preserves auditable sources."""
 import json
 import copy
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 import unittest
 
@@ -12,8 +12,7 @@ from scripts.market_bulletins import render_market_bulletins_index, render_marke
 from scripts.market_outlooks import render_market_outlook_board
 from tests.test_market_forecast_summary import final_review
 from tests.test_market_investor_coverage import report, stock
-from tests.test_market_outlook_instruments import instrument_forecast
-from tests.test_market_outlooks import original, review
+from tests.test_market_outlooks import original
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -34,23 +33,19 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         rendered = render_series_page(self.market, passthrough, self.figure_data, [], self.outlook, [])
         latest = self.market["episodes"][-1]
         self.assertIn('class="container serials-page market-paper"', rendered)
-        sections = [("market-focus", "最新の市況"), ("market-next", "次の予想"),
-                    ("market-score", "答え合わせ"), ("market-stories", "企業分析")]
-        for anchor, label in sections:
-            self.assertIn(f'href="#{anchor}">{label}</a>', rendered)
-            self.assertEqual(rendered.count(f'id="{anchor}"'), 1)
-        positions = [rendered.index(f'id="{anchor}"') for anchor, _ in sections]
-        self.assertEqual(positions, sorted(positions))
+        self.assertIn('<h1>市況と注目株</h1>', rendered)
+        for section in ("market-focus", "market-stories", "market-proof"):
+            self.assertEqual(rendered.count(f'id="{section}"'), 1)
         self.assertIn('href="/serials/market-lab/briefings/"', rendered)
-        self.assertIn('href="/serials/market-lab/outlooks/">短期予想と成績</a>', rendered)
-        self.assertIn('href="#market-proof">企業予想の結果</a>', rendered)
+        history = rendered.split('id="market-proof"', 1)[1]
+        self.assertIn('href="/serials/market-lab/outlooks/"', history)
         self.assertIn('id="forecast-ledger"', rendered)
         self.assertLess(rendered.index('id="market-stories"'),
                         rendered.index('id="forecast-ledger"'))
         self.assertIn('href="/serials/market-lab/' + latest["slug"] + '/"', rendered)
         self.assertIn(latest["title"], rendered)
-        self.assertIn('最終掲載 <time datetime="' + latest["published_at"] + '">', rendered)
-        self.assertIn('href="/serials/market-lab/' + latest["slug"] + '/#article-outlook"', rendered)
+        fallback = rendered.split('id="market-focus"', 1)[1].split("</section>", 1)[0]
+        self.assertIn(f'<time datetime="{latest["published_at"]}">{latest["published_at"]}</time>', fallback)
         self.assertNotIn("詳しい検証方法", rendered)
         self.assertNotIn("判定記録", rendered)
         self.assertNotIn("確認済みの日次市況記事はまだありません", rendered)
@@ -88,85 +83,43 @@ class MarketPaperReadabilityTests(unittest.TestCase):
         self.assertIn("企業分析", markup)
         self.assertNotIn("確認済みの日次市況記事はまだありません", markup)
 
-    def test_front_page_forecast_shows_its_original_reason_and_latest_assessment(self):
-        fc={**original(),'reason':'受注が増加した。営業利益率も改善した。'}
-        latest=review(stance='弱気',reason='新たな費用増で利益率が低下した。売りが広がった。')
-        events=[fc,latest,final_review(fc)];before=copy.deepcopy(events)
-        page=render_series_page(self.market,passthrough,daily_outlooks=events,asof=datetime.fromisoformat(latest['at']))
-        follow=page.split('id="market-next"',1)[1].split('id="market-score"',1)[0]
-        self.assertIn('11月17日のTOPIXは上昇を予想。',follow)
-        self.assertIn('datetime="' + fc['at'] + '"', follow)
-        self.assertIn(fc['reason'],follow)
-        self.assertIn('最新の評価：', follow)
-        self.assertIn('2026-11-16 12:40', follow)
-        self.assertIn('弱気の見方', follow)
-        self.assertNotIn('暫定的に逆行', follow)
-        self.assertIn('終値で判定', follow)
-        self.assertNotIn(latest['reason'], follow)
-        self.assertNotIn('基準終値', follow)
-        self.assertNotIn('評価の出典', follow)
-        self.assertIn('href="/serials/market-lab/outlooks/#forecast-2026-11-16-topix"',follow)
-        self.assertIn('確定0件',page)
-        self.assertIn('<strong>—</strong>', page)
-        self.assertIn('未確定1件は集計外', page)
-        self.assertEqual(page.count('class="market-reader-accuracy"'), 1)
-        self.assertLess(page.index('11月17日のTOPIXは上昇を予想。'), page.index('class="market-reader-accuracy"'))
-        self.assertEqual(events,before)
-
-    def test_front_page_reports_missing_assessment_without_borrowing_another_forecasts_review(self):
-        older={**original(),'id':'2026-11-15-topix','at':'2026-11-15T08:30:00+09:00',
-               'reviewed_on':'2026-11-16'}
-        fc={**original(),'reason':'受注が増加した。営業利益率も改善した。'}
-        unrelated=review(forecast_id=older['id'],stance='弱気',at='2026-11-16T16:40:00+09:00')
-        events=[older,fc,unrelated]
-        page=render_series_page(self.market,passthrough,daily_outlooks=events,asof=datetime.fromisoformat(unrelated['at']))
-        follow=page.split('id="market-next"',1)[1].split('id="market-score"',1)[0]
-        self.assertIn(fc['reason'],follow)
-        self.assertIn('11月17日のTOPIXは上昇を予想。', follow)
-        self.assertNotIn('最新の評価：', follow)
-        self.assertNotIn(unrelated['reason'],follow)
-        self.assertNotIn('弱気（',follow)
-
-    def test_article_prices_have_no_forecast_or_accuracy_until_a_dated_outlook_exists(self):
-        nasdaq = stock(code="AAPL", name="Test Apple", close=113.50)
-        tokyo = stock(code="5016", name="Test JP", exchange="東証", currency="JPY",
-                      observed_at="2026-11-16T15:30:00+09:00")
+    def test_latest_report_links_its_observed_stock_moves_and_material_before_the_stream(self):
+        nasdaq = stock(code="AAPL", name="米国のテスト企業", close=113.50,
+                       context="売上高の見通しを上方修正した。次の決算で営業利益率を確認する。")
+        tokyo = stock(code="5016", name="日本のテスト企業", exchange="東証", currency="JPY",
+                      observed_at="2026-11-16T15:30:00+09:00", close=98, direction="下落",
+                      context="銅の販売単価が低下した。数量の変化は次の開示で確かめる。")
         bulletin = report([nasdaq, tokyo])
-        page = render_series_page(self.market, passthrough, bulletins=[bulletin], daily_outlooks=[original()],
-                                  asof=datetime.fromisoformat(bulletin["published_at"]))
-        market = page.split('id="market-focus"', 1)[1].split('id="market-next"', 1)[0]
-        next_forecast = page.split('id="market-next"', 1)[1].split('id="market-score"', 1)[0]
-        scores = page.split('id="market-score"', 1)[1].split('id="market-stories"', 1)[0]
-        self.assertIn('class="market-quote-strip"', market)
-        self.assertIn("記事で扱う銘柄の値動き", market)
-        detail_section = f'href="/serials/market-lab/briefings/{bulletin["slug"]}/#market-picks"'
-        self.assertIn(detail_section, market)
-        detail = render_market_bulletin(bulletin, passthrough)
-        self.assertIn('id="market-picks"', detail)
+        forecast = original()
+        events = [forecast, final_review(forecast)]
+        before = copy.deepcopy([bulletin, events])
+        page = render_series_page(self.market, passthrough, bulletins=[report(day="2026-11-16"), bulletin],
+                                  daily_outlooks=events)
+        anchors = ["market-focus", "market-picks", "market-desk", "market-stories", "market-proof"]
+        offsets = [page.index(f'id="{anchor}"') for anchor in anchors]
+        self.assertEqual(sorted(offsets), offsets)
+        picks = page[offsets[1]:offsets[2]]
+        self.assertIn(f'href="/serials/market-lab/briefings/{bulletin["slug"]}/#market-picks"', picks)
         for pick in (nasdaq, tokyo):
-            self.assertIn(pick["name"], market)
-            self.assertIn(pick["code"], detail)
-            self.assertNotIn(pick["name"], next_forecast)
-            self.assertNotIn(pick["name"], scores)
-        self.assertIn("11月17日のTOPIXは上昇を予想。", next_forecast)
-        self.assertIn("TOPIXの短期予想の的中率", scores)
-        self.assertIn("未確定1件は集計外", scores)
-        self.assertEqual(scores.count('class="market-reader-accuracy"'), 1)
+            self.assertIn(pick["name"], picks)
+            self.assertIn(pick["context"].split("。")[0], picks)
+        self.assertIn("<h2>注目株</h2>", picks)
+        self.assertIn("+13.50%", picks)
+        self.assertIn("-2.00%", picks)
+        for indicator in ('id="market-next"', 'id="market-score"', 'class="market-reader-accuracy"',
+                          forecast["statement"], forecast["reason"]):
+            self.assertNotIn(indicator, page)
+        self.assertEqual([bulletin, events], before)
 
-    def test_published_japan_us_and_company_forecasts_link_to_their_own_originals(self):
-        forecasts = [instrument_forecast(key) for key in ("nikkei225", "sp500", "nasdaq-aapl")]
-        at = datetime.fromisoformat("2026-11-16T12:40:00+09:00")
-        page = render_series_page(self.market, passthrough, daily_outlooks=forecasts, asof=at)
-        next_forecast = page.split('id="market-next"', 1)[1].split('id="market-score"', 1)[0]
-        dispatch = report()
-        article = render_market_bulletin(dispatch, passthrough, outlooks=forecasts)
-        article_forecasts = article.split('id="daily-forecasts"', 1)[1].split("</section>", 1)[0]
-        for fc, scope in zip(forecasts, ("日本の主要225銘柄", "米国の大型株", "米国の個別株")):
-            with self.subTest(subject=fc["subject"]):
-                link = f'href="/serials/market-lab/outlooks/#forecast-{fc["id"]}"'
-                self.assertIn(scope, next_forecast)
-                self.assertIn(link, next_forecast)
-                self.assertIn(link, article_forecasts)
+    def test_latest_report_without_picks_does_not_borrow_an_older_company_or_create_an_empty_section(self):
+        old_pick = stock(name="前号のみのテスト銘柄")
+        older = report([old_pick], day="2026-11-16")
+        newer = report(day="2026-11-17")
+        page = render_series_page(self.market, passthrough, bulletins=[older, newer])
+        self.assertNotIn('id="market-picks"', page)
+        self.assertNotIn('href="#market-picks"', page)
+        self.assertNotIn(old_pick["name"], page)
+        self.assertIn(f'href="/serials/market-lab/briefings/{older["slug"]}/"', page)
 
     def test_article_leads_with_prediction_and_result_without_method_panels(self):
         episode = self.market["episodes"][-1]
@@ -200,39 +153,23 @@ class MarketPaperReadabilityTests(unittest.TestCase):
                 self.assertIn("単位：", src)
                 self.assertIn("<desc>", src)
 
-    def test_intraday_story_leads_with_a_short_outlook_then_evidence(self):
-        bulletin = {
-            "slug": "2026-11-16-noon", "slot": "noon", "day": "2026-11-16",
-            "published_at": "2026-11-16T12:40:00+09:00",
-            "title": "後場の市場動向を読む", "summary": "公開資料で確かめた市場動向。",
-            "lead": "前場の情勢を説明します。",
-            "sections": [{"heading": "何が動いたか", "paragraphs": ["確認済みの数値について説明します。"]}],
-            "sources": [], "figures": [], "picks": [],
-        }
-        prior = [{
-            "type": "forecast", "id": "2026-11-16-topix",
-            "at": "2026-11-16T08:10:00+09:00",
-            "statement": "TOPIXの将来の方向を資料に基づき検討する。",
-            "stance": "中立", "reviewed_on": "2026-11-17",
-            "subject": "TOPIX", "direction": "横ばい",
-            "reason": "円の上昇が輸出企業の重荷に。",
-        }]
-        result = render_market_bulletin(bulletin, passthrough, outlooks=prior)
-        self.assertIn("何が動いたか", result)
-        self.assertIn('class="market-briefing-outlook market-reader-focus"', result)
-        self.assertNotIn(prior[0]["statement"], result)
-        self.assertIn("TOPIX", result)
-        self.assertIn("横ばい", result)
-        self.assertIn(prior[0]["reason"], result)
-        self.assertIn("結果待ち", result)
-        self.assertLess(result.index('class="market-dispatch-lead"'), result.index('id="daily-forecasts"'))
-        self.assertLess(result.index("何が動いたか"), result.index('class="market-reader-accuracy"'))
-        self.assertIn("結果日", result)
-        self.assertLess(result.index('id="daily-forecasts"'), result.index("何が動いたか"))
-        self.assertNotIn("その後の変更", result)
-        self.assertNotIn("検証記録", result)
-        self.assertNotIn("daily-forecast-card", result)
-        self.assertNotIn("PUBLIC FORECAST LOG", result)
+    def test_daily_story_leads_with_the_stock_material_and_preserves_the_original_prose(self):
+        company = stock(name="テスト企業", context="新工場の稼働日を公表した。")
+        bulletin = report([company])
+        forecast = original()
+        result = render_market_bulletin(bulletin, passthrough, outlooks=[forecast, final_review(forecast)])
+        lead = result.index('class="market-dispatch-lead"')
+        picks = result.index('id="market-picks"')
+        prose = result.index('class="serial-prose-section"')
+        self.assertLess(lead, picks)
+        self.assertLess(picks, prose)
+        self.assertIn(company["context"], result[picks:prose])
+        self.assertIn(company["code"], result[picks:prose])
+        for paragraph in bulletin["sections"][0]["paragraphs"]:
+            self.assertIn(paragraph, result[prose:])
+        self.assertNotIn('id="daily-forecasts"', result)
+        self.assertNotIn('class="market-reader-accuracy"', result)
+        self.assertNotIn(forecast["statement"], result)
         repeated = render_market_bulletin(dict(bulletin, summary=bulletin["lead"]), passthrough)
         self.assertEqual(repeated.count(bulletin["lead"]), 1)
 
@@ -265,9 +202,8 @@ class MarketPaperReadabilityTests(unittest.TestCase):
 
     def test_mobile_paper_has_single_column_and_no_external_css(self):
         css = (ROOT / "assets/serials.css").read_text(encoding="utf-8")
-        self.assertIn(".market-paper-lead{display:grid", css)
-        self.assertIn("@media(max-width:780px)", css)
-        self.assertIn(".market-paper-lead{grid-template-columns:minmax(0,1fr)", css)
+        mobile = css.split("@media(max-width:660px){", 1)[1].split("\n}", 1)[0]
+        self.assertIn(".market-stock-grid{grid-template-columns:1fr}", mobile)
         self.assertIn(".market-article-jump", css)
         self.assertIn(".market-paper-ledger", css)
         self.assertNotIn("@import", css)

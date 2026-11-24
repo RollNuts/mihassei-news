@@ -56,7 +56,7 @@ class SerialTests(unittest.TestCase):
                     report = bulletins[-1]
                     label = datetime.fromisoformat(report["published_at"]).strftime("%Y-%m-%d %H:%M")
                     update = series_html.split('<p class="market-latest-update">', 1)[1].split('</p>', 1)[0]
-                    self.assertIn('最新の市況 ／', update)
+                    self.assertIn('<strong>最新の市況</strong>', update)
                     self.assertIn(f'<time datetime="{report["published_at"]}">{label}</time> JST 公開', update)
                 else:
                     self.assertRegex(series_html, r'最終(?:掲載|公開).*?<time datetime="')

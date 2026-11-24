@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from datetime import date, datetime, time, timedelta
 from email.utils import format_datetime
-from hashlib import sha256
 from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -19,16 +18,12 @@ import math
 import re
 
 try:
-    from .market_figures import render_market_svg, figure_description, render_market_numbers, STATES
+    from .market_figures import render_market_svg, render_market_picture, render_market_numbers, STATES
     from .reader_comments import render_reader_comments
-    from .market_outlooks import (view_models, forecast_reader_statement, forecast_display_unit, pending_market_forecasts, forecast_reader_reason,
-                                  _confirmed_result, _status, render_market_accuracy, market_forecast_url)
     from .market_sharing import render_market_share
 except ImportError:
-    from market_figures import render_market_svg, figure_description, render_market_numbers, STATES
+    from market_figures import render_market_svg, render_market_picture, render_market_numbers, STATES
     from reader_comments import render_reader_comments
-    from market_outlooks import (view_models, forecast_reader_statement, forecast_display_unit, pending_market_forecasts, forecast_reader_reason,
-                                  _confirmed_result, _status, render_market_accuracy, market_forecast_url)
     from market_sharing import render_market_share
 
 FILE = Path("content/market_bulletins.json")
@@ -389,20 +384,16 @@ def figure_url(report, figure, mobile=False):
 
 
 def chart_html(report, fig):
-    regular = render_market_svg(fig)
-    compact = render_market_svg(fig, mobile=True)
-    full_url = "/" + figure_url(report, fig) + "?v=" + sha256(regular.encode()).hexdigest()[:12]
-    phone_url = "/" + figure_url(report, fig, mobile=True) + "?v=" + sha256(compact.encode()).hexdigest()[:12]
+    picture = render_market_picture(fig, figure_url(report, fig),
+                                    figure_url(report, fig, mobile=True))
     src = next(src for src in report["sources"] if src["url"] == fig["source_url"])
+    observed = _timestamp(fig["observed_at"])
     return (
         '<figure class="market-figure market-dispatch-figure">'
-        '<picture>'
-        f'<source media="(max-width:600px)" srcset="{escape(phone_url,quote=True)}" type="image/svg+xml">'
-        f'<img src="{escape(full_url,quote=True)}" width="940" height="372" loading="lazy" decoding="async" alt="{escape(figure_description(fig),quote=True)}">'
-        '</picture><figcaption>'
+        f'{picture}<figcaption>'
         f'<strong>{escape(fig["title"])}</strong>'
         f'<p>{escape(fig["note"])}</p>'
-        f'<p class="market-figure-meta">観測時点：<time datetime="{fig["observed_at"]}">{escape(fig["observed_at"])}</time> ／ 単位：{escape(fig["unit"])}</p>'
+        f'<p class="market-figure-meta">観測時点：<time datetime="{fig["observed_at"]}">{observed:%Y年%m月%d日 %H:%M}（日本時間）</time> ／ 単位：{escape(fig["unit"])}</p>'
         f'<a href="{escape(fig["source_url"],quote=True)}" target="_blank" rel="noopener noreferrer external">出典：{escape(src["title"])}</a>'
         '</figcaption></figure>'
     )
@@ -428,16 +419,14 @@ def _market_conditions(report):
     )
 
 
-def _picks(report):
+def render_stock_picks(report, *, link_to_report=False):
     if not report.get("picks"):
         return ""
     rows = []
     investor = report.get("coverage") == "investor"
     for pick in report["picks"]:
         pct = (pick["close"] / pick["previous_close"] - 1) * 100
-        positive = pct > 0
-        modifier = ("market-stock-pick--up" if positive else "market-stock-pick--down"
-                    if pct < 0 else "market-stock-pick--flat" if investor else "")
+        modifier = "up" if pct > 0 else "down" if pct < 0 else "flat"
         exchange = pick["exchange"] if investor else "東証"
         if investor:
             currency = escape(pick["currency"])
@@ -467,20 +456,32 @@ def _picks(report):
                 f'<p>前日終値：{pick["previous_close"]:,.2f}円 ／ 観測値：{pick["close"]:,.2f}円</p>'
                 f'<p>観測：{escape(pick["observed_at"])}</p>'
             )
-        rows.append(
-            f'<article class="market-stock-pick {modifier}">'
-            f'<span class="market-stock-direction">{escape(pick["direction"])}</span>'
-            f'<h3>{escape(pick["name"])} <small>{escape(pick["code"])}・{escape(exchange)}</small></h3>'
-            f'<p class="market-stock-change">{pct:+.2f}%</p>'
-            + f'<p>{escape(pick["context"])}</p>'
-            + '<details class="market-reader-archive"><summary>株価・観測時刻と出典</summary>'
+        anchor = "stock-" + ("tse" if exchange == "東証" else exchange.lower()) + "-" + pick["code"]
+        name = escape(pick["name"])
+        if link_to_report:
+            name = f'<a href="{bulletin_url(report)}#{escape(anchor, quote=True)}">{name}</a>'
+        if investor:
+            session = f'{pick["market_date"][5:].replace("-", "/")} {price_label}'
+            comparison = f'{session}（{pick["previous_market_date"][5:].replace("-", "/")}終値比）'
+        else:
+            comparison = f'{_timestamp(pick["observed_at"]):%m/%d %H:%M} 時点（前日終値比）'
+        detail = "" if link_to_report else (
+            '<details class="market-reader-archive"><summary>株価・観測時刻と出典</summary>'
             + price_html +
             f'<p>分割等の確認・補正：{escape(pick["adjustment_note"])}</p>'
             f'<a href="{escape(pick["source_url"],quote=True)}" target="_blank" rel="noopener noreferrer external">価格・変動の出典を見る</a>'
-            '</details></article>'
+            '</details>'
         )
-    heading = "注目銘柄の材料と値動き" if investor else "急騰と急落：日本株の注目例"
-    return f'<section class="market-stock-picks" id="market-picks"><h2>{heading}</h2><p>網羅的な騰落率ランキングではなく、一次資料等で確認できた個別例です。</p><div class="market-stock-grid">' + "".join(rows) + '</div></section>'
+        rows.append(
+            f'<article class="market-stock-pick market-stock-pick--{modifier}" id="{escape(anchor, quote=True)}">'
+            f'<small class="market-pick-symbol">{escape(exchange)}・{escape(pick["code"])}</small>'
+            f'<h3>{name}</h3><p class="market-stock-change">{pct:+.2f}%</p>'
+            f'<small class="market-pick-session">{escape(comparison)}</small>'
+            f'<p class="market-pick-context">{escape(pick["context"])}</p>{detail}</article>'
+        )
+    source = f'<a href="{bulletin_url(report)}#market-picks">株価と出典</a>' if link_to_report else ""
+    return ('<section class="market-stock-picks" id="market-picks"><div class="market-paper-heading">'
+            f'<h2>注目株</h2>{source}</div><div class="market-stock-grid">' + "".join(rows) + '</div></section>')
 
 
 def _bulletin_navigation(previous_report=None, next_report=None):
@@ -504,40 +505,6 @@ def _bulletin_navigation(previous_report=None, next_report=None):
 
 
 def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None, next_report=None):
-    # Never render a later forecast/update as though it existed at publication.
-    published_at = _timestamp(report["published_at"])
-    latest_forecast = pending_market_forecasts(outlooks, before=published_at)
-    if not latest_forecast:
-        latest_forecast = view_models(outlooks, before=published_at)[:1]
-    if latest_forecast:
-        current = latest_forecast[0]
-        forecast = current["forecast"]
-        forecast_at = _timestamp(forecast["at"])
-        reason = forecast_reader_reason(forecast) if forecast.get("reason") else ""
-        result = _confirmed_result(current)
-        result_label = (_status(current) if result is None else
-                        f'{result["outcome"]}（確認済み終値 {result["close"]:,.2f}{escape(forecast_display_unit(forecast))}）')
-        other_forecasts = ''.join(
-            f'<li><a href="{market_forecast_url(row["forecast"])}">{escape(forecast_reader_statement(row["forecast"]))}</a></li>'
-            for row in latest_forecast[1:]
-        )
-        forecast_section = (
-            '<section class="market-briefing-outlook market-reader-focus" id="daily-forecasts">'
-            '<h2>掲載時点の予想</h2>'
-            f'<p class="market-reader-prediction">{escape(forecast_reader_statement(forecast))}</p>'
-            + (f'<p class="market-reader-reason"><strong>当初の理由</strong>{escape(reason)}</p>' if reason else "")
-            + '<p class="market-briefing-forecast-meta">当初の予想：'
-            f'<time datetime="{escape(forecast["at"], quote=True)}">'
-            f'{forecast_at.strftime("%Y-%m-%d %H:%M")}</time> JST ／ 結果日：'
-            f'<time datetime="{forecast["reviewed_on"]}">{forecast["reviewed_on"]}</time> ／ {escape(result_label)}</p>'
-            f'<a href="{market_forecast_url(forecast)}">理由と結果を読む →</a>'
-            + (f'<ul class="market-related-outlooks">{other_forecasts}</ul>' if other_forecasts else '') + '</section>'
-        )
-    else:
-        forecast_section = (
-            '<p class="market-briefing-more"><a href="/serials/market-lab/outlooks/">'
-            '市場の予想と結果を読む →</a></p>'
-        )
     parts = []
     for i, section in enumerate(report["sections"]):
         parts.append(f'<section class="serial-prose-section"><h2>{escape(section["heading"])}</h2>')
@@ -555,22 +522,22 @@ def render_market_bulletin(report, layout, outlooks=(), *, previous_report=None,
     if evidence:
         evidence = ('<details class="market-reader-archive"><summary>観測値・市場別の材料と出典</summary>'
                     + evidence + '</details>')
-    summary = report["summary"]
-    deck = f'<p class="serial-article-dek">{escape(summary)}</p>' if summary.strip() != report["lead"].strip() else ""
     main = (
         '<div class="container serials-page serial-article serial-article--analysis market-dispatch-page">'
         f'<nav class="serial-breadcrumb"><a href="/">トップ</a> / <a href="{MARKET_URL}">未来相場観測室</a> / '
         '<a href="/serials/market-lab/briefings/">日次市況</a></nav>'
         '<header class="serial-article-head">'
-        f'<span class="serial-type">実データの市況解説 ／ {escape(bulletin_phase_label(report))}</span>'
-        f'<h1>{escape(report["title"])}</h1>{deck}'
+        f'<span class="serial-type">実データの市況解説</span>'
+        f'<h1>{escape(report["title"])}</h1>'
         f'<p class="serial-pub">公開 {render_bulletin_publication_time(report)} JST</p>'
-        + render_market_share(bulletin_url(report), report["title"])
+        + '<div class="market-report-actions">'
+        + ('<a href="#market-picks">注目株へ ↓</a>' if report.get("picks") else '')
+        + '<details class="market-share-menu"><summary>共有</summary>'
+        + render_market_share(bulletin_url(report), report["title"]) + '</details></div>'
         + '</header><div class="serial-article-body">'
         f'<p class="market-dispatch-lead">{escape(report["lead"])}</p>'
-        + forecast_section + "".join(parts) + _picks(report)
+        + render_stock_picks(report) + "".join(parts)
         + render_market_freshness(report, include_publication=False) + evidence
-        + render_market_accuracy(outlooks, before=published_at)
         + '<p class="serial-article-warning">架空ニュースではありません。株価は記載の観測日時の値です。投資助言ではありません。</p>'
         + '<section class="serial-references"><h2>確認した公開資料</h2><ol>' + source_html + '</ol></section>'
         + _bulletin_navigation(previous_report, next_report)

@@ -86,7 +86,7 @@ class InvestorCoverageTests(unittest.TestCase):
         original = copy.deepcopy(item)
         self.assertEqual(load(item), original)
         output = render_market_bulletin(item, content_layout)
-        for text in ('注目銘柄の材料と値動き', '123A・東証', 'ABCDE・NASDAQ', 'BRK.B・NYSE',
+        for text in ('<h2>注目株</h2>', '東証・123A', 'NASDAQ・ABCDE', 'NYSE・BRK.B',
                      '101.00 JPY', '99.25 USD', '途中値：', '終値：',
                      '2026-11-13', '2026-11-16（米国東部時間）', '2026-11-16（日本時間）'):
             self.assertIn(text, output)
@@ -98,8 +98,8 @@ class InvestorCoverageTests(unittest.TestCase):
         self.assertNotIn('現在の指数（JPX）', output)
         self.assertIn('<time datetime="2026-11-17T06:00:00+09:00">2026-11-17 06:00</time> JST', output)
         self.assertNotIn('2026-11-17T06:00:00+09:00 JST', output)
-        self.assertNotIn('market-stock-pick--down"><span class="market-stock-direction">横ばい', output)
-        self.assertIn('market-stock-pick--flat"><span class="market-stock-direction">横ばい', output)
+        self.assertNotIn('market-stock-pick--down" id="stock-nyse-BRK.B"', output)
+        self.assertIn('market-stock-pick--flat" id="stock-nyse-BRK.B"', output)
         self.assertIn('日米株の材料と値動き', render_market_bulletins_index([item]))
 
     def test_existing_four_slots_allow_zero_or_one_example_without_a_mover_quota(self):
@@ -267,7 +267,7 @@ class InvestorCoverageTests(unittest.TestCase):
         item['picks'] = [up, down]
         loaded = load(item)
         output = render_market_bulletin(loaded, content_layout)
-        self.assertIn('急騰と急落：日本株の注目例', output)
+        self.assertIn('<h2>注目株</h2>', output)
         self.assertIn('前日終値：100.00円 ／ 観測値：110.00円', output)
         item['picks'][0] = stock(direction='急騰', close=110)
         with self.assertRaisesRegex(ValueError, 'Japanese-listed'):

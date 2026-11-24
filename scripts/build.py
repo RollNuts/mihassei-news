@@ -272,6 +272,15 @@ def five_years_later(iso):
     return date.replace(year=date.year + 5).isoformat()
 
 
+def matches_fictional_dateline(published_at, fiction_at):
+    canonical = five_years_later(published_at)
+    if fiction_at == canonical:
+        return True
+    # JavaScript emits milliseconds. Only accept that spelling when it is lossless.
+    expected = datetime.fromisoformat(canonical)
+    return expected.microsecond % 1000 == 0 and fiction_at == expected.isoformat(timespec="milliseconds")
+
+
 def publication_date(a):
     """Real publication date, never the fictional dateline five years ahead."""
     return a.get("published_at") or a["source"]["published_at"][:10]
@@ -380,7 +389,7 @@ def load():
         source = a["source"]
         if not source["url"].startswith("https://"):
             raise ValueError("Source must use HTTPS")
-        if five_years_later(a["published_at"]) != a["fiction_at"]:
+        if not matches_fictional_dateline(a["published_at"], a["fiction_at"]):
             raise ValueError(
                 "Fictional datetime must keep publication month/day/time and shift only "
                 "the year by five: " + a["slug"]
@@ -865,10 +874,10 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
         mast_subtitle = "架空の成人モデルと、5年後を暮らす写真とコラム。"
     elif path == "/serials/":
         publication_label = "市場分析"
-        mast_subtitle = "公開資料に基づく市場予測と検証。"
+        mast_subtitle = "日米の市況と注目株。"
     elif serial is not None and serial["kind"] == "analysis":
         publication_label = "市場分析"
-        mast_subtitle = "公開資料から、相場の先を考える。"
+        mast_subtitle = "日米の市況と注目株。"
     elif serial is not None and serial["kind"] == "fiction":
         publication_label = "創作小説"
         mast_subtitle = "手掛かりを追って楽しむ、架空の推理小説。"
@@ -967,7 +976,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
             "isAccessibleForFree": True,
             "image": [og_image],
             "articleSection": "推理小説" if serial["kind"] == "fiction" else (
-                "実データの日次市況" if kind == "market_bulletin" else "株式市場予測")
+                "実データの日次市況" if kind == "market_bulletin" else "企業分析")
         })
         if serial.get("title"):
             metadata["isPartOf"] = {
@@ -1110,11 +1119,7 @@ def layout(title, desc, path, main, active="", kind="website", article=None, fee
     noindex_page = path in ("/saved/", "/404.html") or not indexable
     robots_tag = '<meta name="robots" content="noindex,follow">' if noindex_page else ""
     image_preview_tag = "" if noindex_page else '<meta name="robots" content="max-image-preview:large">'
-    adsense_body_page = (
-        (kind == "story" and article is not None)
-        or (kind in ("serial_episode", "market_bulletin") and serial is not None
-            and serial.get("kind") == "analysis" and bool(serial.get("episode")))
-    )
+    adsense_body_page = kind == "story" and article is not None
     adsense_script = (f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_CLIENT}" '
                       'crossorigin="anonymous"></script>' if adsense_body_page and not noindex_page else "")
     serial_progress_script = (script_tag("serial-progress.js")
@@ -1915,7 +1920,7 @@ def editorial_policy():
 <h1>編集方針</h1></header>
 <div class="about-copy">
 <h2>創作と市場分析</h2>
-<p>ニュース記事はフィクションです。「未来相場観測室」は現実の公開資料に基づく市場分析で、出典・予測日・検証条件を示します。投資助言や売買の勧誘ではありません。</p>
+<p>ニュース記事はフィクションです。「未来相場観測室」は現実の公開資料に基づく市場分析で、日米の市況と注目株を出典とともに伝えます。投資助言や売買の勧誘ではありません。</p>
 <h2>出典・画像</h2>
 <p>着想元の公開情報や投稿は、本文末尾の「着想元を見る」から確認できます。参照先が記事内の創作内容を裏付けるものではありません。</p>
 <p>企画・執筆・合成画像の制作に生成AIを使用しています。実写風の合成画像は「再現イメージ（合成）」と表示し、写真素材には出典・クレジットを添えます。</p>
