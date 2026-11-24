@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "model_id": "kiritani-sumire",
+  "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+  "week_start": "2026-11-22",
+  "baseline": {
+    "mode": "reconciled",
+    "model_id": "kiritani-sumire",
+    "week_start": "2026-11-22",
+    "coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/afb645ff6dc218592b3ec3ad53f2874dc9e687cb/maintenance/photo-issue-plans/stock-kiritani-sumire-2026-11-22/weekly-generation-coverage-20261122.json",
+    "prior_attempts": []
+  },
+  "attempts": []
+}
