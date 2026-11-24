@@ -468,7 +468,21 @@
         "帰りのバス停で片方のイヤホンを外す、夜の横顔。",
         "水着着用の屋内施設で、異なる色の水着にタオルを肩掛けして回廊を歩く引き。"
       ],
-      "next_operation": "既存の本人原本から不足分を優先して選ぶ。5場面は選定の例で、同じ役割の別カットも使える。近似組は各1枚まで。11月22日の新規生成は0枚と記録されているが当週の呼出し総数は未確定。新規生成は既存の週残枠・原本保存の確認後に本人の通常枠で扱う。"
+      "next_operation": "室内から選べるのは01/08、02/06、03/04から各1枚と05、07で最大5枚。別場面の浜辺1枚はsupplementsに原本・掲載用JPEG受領済み。親候補8枚の記録・選定上限は維持。6枚すべてが正式採用されてもあと4枚が必要。夜景の赤いドレスは既刊003の01・08に近く候補に数えない。本人は別場面の既存原本を追加し、週刊編集で本人確認・季節設定・正式採否・本人コラムをまとめる。浜辺のprepareSuppliedCutには明記したslugを使い、親の室内候補はopenUnassignedStockで同じ下書きへ準備する。",
+      "supplements": [
+        {
+          "candidate_commit": "c4f3835f929a30a99bccf38b1231ddc54de3a06d",
+          "candidate_branch": "photo-issue-plan/november-rena-after-rehearsal",
+          "handoff_path": "maintenance/photo-issue-plans/november-rena-after-rehearsal/handoff.json",
+          "candidate_number": "02",
+          "release_feature_slug_for_prepareSuppliedCut": "november-rena-after-rehearsal",
+          "source_sha256": "91096bf5dda31eb589d9d4bdb8ab69fef40d878fda410dcf1b04ca500d9598d1",
+          "jpeg_sha256": "ee6354cc724c18cbbb88d9785793bcfde0b84ce09f2bf0eec26030531382b2a4",
+          "state": "verified_original_and_jpeg_pending_formal_selection",
+          "scene": "明るい砂浜から波を背に上体を起こす横位置。既刊の浜辺を歩く写真と異なる。",
+          "comparison": "元の8候補・月城れなの既刊と完全一致または同構図の再圧縮なし。元turnと原画像番号は補足のhandoffに保持。"
+        }
+      ]
     }
   },
   "usage": {
