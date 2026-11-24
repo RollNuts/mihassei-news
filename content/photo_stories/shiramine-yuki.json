@@ -75,6 +75,21 @@
         "cut_id": "02",
         "image_sha256": "5d69fc31719001f483bf85c3a9beee491b80eb82e72876ffa7636c3bc6c84e08"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261124181612093",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-24T18:16:12.093+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝の船で少し冷えたので、宿に戻って毛布を膝にかけました。読みかけの本を開いたら、いつの間にか窓の外が真っ暗に。",
+      "source": {
+        "issue_slug": "november-a-longer-breath-yuki-005",
+        "cut_id": "03",
+        "image_sha256": "27f49d3f0f1674e7568699fabf914ffa08476bb4d97d19b94d8fa7d2ddf38f8b"
+      }
     }
   ]
 }
