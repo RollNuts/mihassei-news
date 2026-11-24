@@ -3,7 +3,8 @@ run-name: >-
   ${{ github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' &&
       format('Publication head {0} (CI {1}/{2})', github.event.workflow_run.head_sha, github.event.workflow_run.id, github.event.workflow_run.run_attempt) ||
       github.event_name == 'pull_request_target' && contains(github.event.pull_request.body, '<!-- publication-finalize') &&
-      format('Publication head {0} (PR #{1})', github.event.pull_request.head.sha, github.event.pull_request.number) || '' }}
+      format('Publication head {0} (PR #{1})', github.event.pull_request.head.sha, github.event.pull_request.number) ||
+      github.event_name == 'workflow_dispatch' && inputs.finalize_pr == '' && 'Manual public verification' || '' }}
 on:
   push:
     branches: [main]
