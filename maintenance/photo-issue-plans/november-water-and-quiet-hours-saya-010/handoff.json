@@ -472,7 +472,7 @@
     "status": "received_from_existing_model_producer_not_editorially_accepted"
   },
   "producer_handoff": {
-    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/a8e640125cd0188e7537ca8d3d6d9c2ae645cc13/maintenance/photo-issue-plans/november-water-and-quiet-hours-saya-010/weekly-generation-coverage-20261122.json",
-    "next_operation": "11/24 16:39 JSTまでの本人3枠を照合済み。以後の本人実行、並行候補、週の予約、現実行の保存経路を確認する。"
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/16c7a5d7eb14dd2c52fc6e556d35cfb4c326796c/maintenance/photo-issue-plans/november-water-and-quiet-hours-saya-010/weekly-generation-coverage-20261122.json",
+    "next_operation": "当週の正規台帳 photo-issue-plan/stock-nagino-saya-2026-11-22 を使う。現在の本人枠で原本を返す画像ツールを確認し、最新mainの docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport で実際の返却経路を検証後、通常の1枚予約へ進む。"
   }
 }
