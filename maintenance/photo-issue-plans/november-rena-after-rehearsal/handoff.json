@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "kind": "weekly_photo_candidate_handoff",
+  "status": "prepared_unpublished_unreviewed",
+  "issue": "november-rena-after-rehearsal",
+  "model_id": "tsukishiro-rena",
+  "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+  "branch": "photo-issue-plan/november-rena-after-rehearsal",
+  "handoff_path": "maintenance/photo-issue-plans/november-rena-after-rehearsal/handoff.json",
+  "producer_registry": {
+    "commit": "3d95e9e87230d00cb2e2bd39bb68df1bb3962794",
+    "path": "drafts/cast-voices/tsukishiro-rena.json"
+  },
+  "candidates": [
+    {
+      "candidate_number": "02",
+      "issue": "november-rena-after-rehearsal",
+      "model_id": "tsukishiro-rena",
+      "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+      "source_ordinal": 1,
+      "handoff_path": "maintenance/photo-issue-plans/november-rena-after-rehearsal/handoff.json",
+      "source": {
+        "format": "png",
+        "path": "maintenance/photo-issue-plans/november-rena-after-rehearsal/originals/02.png",
+        "blob": "28cf80813f6da96c2cc4d0331c55dba874e6cc94",
+        "sha256": "91096bf5dda31eb589d9d4bdb8ab69fef40d878fda410dcf1b04ca500d9598d1",
+        "bytes": 2118164,
+        "width": 1536,
+        "height": 1024,
+        "url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
+        "turn_key": "9ffb4e54-0bb0-4f9a-9f03-64ecacec554c",
+        "image_number": 1,
+        "file_name": "Sunlit Beach Portrait with Soft Waves.png",
+        "generation_prompt": null,
+        "generation_prompt_status": "not_retained"
+      },
+      "jpeg": {
+        "path": "maintenance/photo-issue-plans/november-rena-after-rehearsal/jpeg/02.jpg",
+        "blob": "47e1dd4859557c10bf512349f89300edbb5fb0bc",
+        "sha256": "ee6354cc724c18cbbb88d9785793bcfde0b84ce09f2bf0eec26030531382b2a4",
+        "bytes": 122624,
+        "width": 1200,
+        "height": 800
+      },
+      "transform": {
+        "encoder": "Pillow",
+        "jpeg_quality": 84,
+        "max_edge": 1200,
+        "geometry": "preserve-aspect"
+      },
+      "encoding_details": {
+        "pillow_version": "11.3.0",
+        "resample": "LANCZOS",
+        "mode": "RGB",
+        "optimize": true,
+        "progressive": false,
+        "subsampling": 0
+      },
+      "scene_note": "砂浜で上体を起こし、波打ち際を背に振り向く。"
+    }
+  ]
+}
