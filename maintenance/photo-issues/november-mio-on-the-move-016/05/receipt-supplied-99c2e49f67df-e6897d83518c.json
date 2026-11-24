@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "kind": "user_supplied_photo",
+  "issue_slug": "november-mio-on-the-move-016",
+  "cut_id": "05",
+  "model_id": "hanase-mio",
+  "imported_at": "2026-11-24T00:14:51.256Z",
+  "review_reference_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+  "source": {
+    "archive": {
+      "format": "zip",
+      "filename": "hanase_mio_highres_19.zip",
+      "sha256": "5b12c08bdcaa99147012a66e7dcf9b6b7a9dbed5207eec003a7650b14ef2f531",
+      "bytes": 41555760,
+      "member": "hanase_mio_01_terrace_breakfast.png"
+    },
+    "format": "png",
+    "sha256": "99c2e49f67df636f21720ea25afff1ddc1801de2b8b7a7199133c0e148fbf4dc",
+    "bytes": 2455156,
+    "width": 1536,
+    "height": 1024,
+    "url": "https://chatgpt.com/library?file_id=libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc&account_id=personal",
+    "library_file_id": "libfile_fde3_f-cd3d743c988c8191a14a357847b8a9b1_3e0ce6a2e8348191be296e0419d0b8cc",
+    "generation_turn": null,
+    "generation_turn_status": "not_retained",
+    "generation_prompt": null,
+    "generation_prompt_status": "not_retained",
+    "path": "maintenance/photo-issues/november-mio-on-the-move-016/05/source-99c2e49f67df636f21720ea25afff1ddc1801de2b8b7a7199133c0e148fbf4dc.png"
+  },
+  "jpeg": {
+    "path": "assets/generated/photo-issue-november-mio-on-the-move-016-05.jpg",
+    "sha256": "e6897d83518c4dc0fe2d5aaec6d9ac4cecfcb4a2a6ea83181a065e2a2248fe29",
+    "bytes": 196788,
+    "width": 1200,
+    "height": 800
+  },
+  "transform": {
+    "encoder": "jpeg-js",
+    "max_edge": 1200,
+    "jpeg_quality": 84,
+    "geometry": "preserve-aspect"
+  },
+  "encoding_details": {
+    "encoder_ref": "1031ccd7a63c641c16afb2430279d1598530a85c",
+    "resample": "bilinear",
+    "mode": "RGB"
+  },
+  "recovery_reference": {
+    "candidate_commit": "f39c946354d4b866e0415393a6d9749e4926f6a6",
+    "source_ordinal": 1,
+    "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/11.png",
+    "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/11.jpg",
+    "original_blob_sha": "437dd99f21c34057a6aebe7a24eddd00972b9eda",
+    "jpeg_blob_sha": "1897af83b006ca527899496599de2d2cb38a8ff5",
+    "handoff_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json"
+  }
+}
