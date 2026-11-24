@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "model_id": "shiramine-yuki",
+  "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+  "week_start": "2026-11-22",
+  "from": "2026-11-22T00:00:00+09:00",
+  "through": "2026-11-24T16:30:00+09:00",
+  "prior_attempts_through_cutoff": [],
+  "producer_results": [
+    {
+      "displayed_at": "2026-11-22T18:18:14.370+09:00",
+      "pr": 946,
+      "head": "d5292ef8dbdfda05ec239cab8c5ce6dd5d22c9f2",
+      "voice_source_commit": "3bb94915368f9ac10aa4e1605872a55312cb773b",
+      "calls": 0,
+      "basis": "本人は新規生成0枚、再生成なしと報告。作業は既存6枚の検証と遠隔転送まで。転送結果はBLOCKED_FILE_REFERENCE。"
+    },
+    {
+      "displayed_at": "2026-11-23T18:19:10.680+09:00",
+      "pr": 990,
+      "head": "7cf08b7656ca3a9e42cd06ccf0a839c488c312a3",
+      "voice_source_commit": "4f96585467667dd499532ceac5762cef1f162c67",
+      "calls": 0,
+      "basis": "本人は既存2アーカイブを照合し、重複転送・新規生成をしなかったと明記。新規生成0枚。"
+    }
+  ],
+  "candidate_heads": [
+    {
+      "branch": "photo-issue-plan/november-warm-water-and-riverside-yuki-009",
+      "commit": "001ef6e6a94014c87cfd05e65913ed5e3758452d",
+      "week_commits": [
+        "e126c998e1c84c176b6251b55559661c8a20e5fd",
+        "d237bb0b655627cc399691e0d94e2bbb3141d501",
+        "001ef6e6a94014c87cfd05e65913ed5e3758452d"
+      ],
+      "activity": "原本の保存拒否、既刊との目視比較、既存Library参照の記録。本人の候補は1本。当週の本人予約ブランチと未統合の本人PRは照合時点で見つからず。生成0の根拠は本人の各実行結果。"
+    }
+  ],
+  "remote_read_check": {
+    "scope": "既刊009 cut01だけをGitHubから読み、実バイトと既存受領票を照合。新規原本の保存経路は当日の本人実行で確かめる。",
+    "commit": "8a1ab08e8708586d3a9281b6eab7973c399d72a2",
+    "cut": "01",
+    "source_blob": "0614d5fda804609fa9135fb14bbe145bee8baf0b",
+    "receipt_path": "maintenance/photo-issues/november-warm-water-and-riverside-yuki-009/01/receipt-supplied-023592d3948e-5a9a3d0d0101.json",
+    "receipt_sha256": "59796a9ee4fb2bd00e0615af32da36101b8487231d4bf824ade44d1e95453649",
+    "source_sha256": "023592d3948e1f4cad355bf64d87e6435c42ff90db2977bcbbb743fdb9c94d69",
+    "bytes": 1857614,
+    "width": 1024,
+    "height": 1536
+  },
+  "next_operation": "本人の定期枠でthrough以降の失敗・中断を含む全実行、並行候補、当週の本人予約台帳を再確認。新規消費があれば根拠を足し、不明なら予約しない。第3号で除外済みの旧6枚を再送せず、現実行で原本の保存と遠隔読戻しを実証し、新しい場面を補充する条件がそろった時だけ固定GitHub blob URLをcoverage_refとして予約する。"
+}
