@@ -481,16 +481,22 @@ var PhotoOriginalHandoff = (() => {
     const readOriginalStep = (ref, state = null, limit = 8) => readOriginalStepRecord(ref, state, false, limit);
     const readCheckpointOriginalStep = (ref, state = null) => readOriginalStepRecord(ref, state, true);
     // Restore only the requested split original. The stock receipt determines the numbered destination.
+    async function numberedRevision(ref, commit) {
+      requireThat(GIT.test(ref.commit) && GIT.test(commit), "Invalid immutable original reference");
+      // The connector accepts immutable SHAs on both sides. Reversing the comparison
+      // returns the proposed commit, tree and parents without paging its intervening history.
+      const lineage = await get("/compare/" + commit + "..." + ref.commit + "?per_page=1");
+      const revision = lineage.base_commit;
+      requireThat(revision?.sha === commit && GIT.test(revision.commit?.tree?.sha) &&
+        lineage.merge_base_commit?.sha === ref.commit &&
+        lineage.status === (commit === ref.commit ? "identical" : "behind"), "Receipt commit is outside its candidate branch");
+      return revision;
+    }
     async function numberedSource(ref, verifyOwner) {
       const dir = directory(ref.issue), branch = "photo-issue-plan/" + ref.issue;
       requireThat(GIT.test(ref.commit), "Invalid immutable original reference");
-      // Comparing in reverse returns the named candidate head and its tree. An ancestor
-      // receipt contributes no additional commits to the response.
-      const lineage = await get("/compare/" + encodeURIComponent(branch) + "..." + ref.commit + "?per_page=1");
-      const base = lineage.base_commit?.sha, tree = lineage.base_commit?.commit?.tree?.sha;
-      requireThat(GIT.test(base) && GIT.test(tree), "Unverified candidate branch");
-      requireThat(lineage.merge_base_commit?.sha === ref.commit &&
-        lineage.status === (base === ref.commit ? "identical" : "behind"), "Receipt commit is outside its candidate branch");
+      const head = await get("/branches/" + branch), base = head.commit?.sha, tree = head.commit?.commit?.tree?.sha;
+      requireThat(head.name === branch && GIT.test(base) && GIT.test(tree), "Unverified candidate branch");
       const entries = (await treeFiles(tree)).tree;
       const record = await originalRecord(ref, entries), asset = completeAsset(record, ref.source_sha256);
       requireThat(Number.isSafeInteger(asset.source_ordinal) &&
@@ -521,6 +527,7 @@ var PhotoOriginalHandoff = (() => {
     }
     async function uploadNumberedOriginal(ref, verified) {
       const source = await numberedSource(ref, true);
+      if (source.base !== ref.commit) await numberedRevision(ref, source.base);
       requireThat(verified?.status === "original_verified" && verified.image_bytes_verified === true &&
         verified.commit === ref.commit && verified.source_sha256 === ref.source_sha256 &&
         verified.bytes instanceof Uint8Array && verified.bytes.length === source.asset.source_bytes,
@@ -560,11 +567,11 @@ var PhotoOriginalHandoff = (() => {
       const result = {branch:source.branch, commit:plan.commit, path:source.path, blob:uploaded.blob};
       if (source.existing) {
         requireThat(source.base === plan.commit, "Candidate branch moved beyond this numbered original");
+        const landed = await numberedRevision(ref, source.base);
+        requireThat(landed.commit.tree.sha === source.tree, "Commit differs from prepared numbered original");
         if (plan.base !== plan.commit) {
           // A lost reply does not certify the commit. Check its parent and only permitted addition.
-          const landed = await get("/git/commits/" + plan.commit);
-          requireThat(landed.sha === plan.commit && landed.tree?.sha === source.tree &&
-            landed.parents?.length === 1 && landed.parents[0].sha === plan.base, "Commit differs from prepared numbered original");
+          requireThat(landed.parents?.length === 1 && landed.parents[0].sha === plan.base, "Commit differs from prepared numbered original");
           checkOnlyAdded((await parentFiles(plan.base)).files.tree, source.entries, [source.path]);
         }
         await verifyNumberedPng(ref, source, source.base);
@@ -572,12 +579,15 @@ var PhotoOriginalHandoff = (() => {
         return {status:"numbered_original_staged", ...result};
       }
       requireThat(!readbackOnly, "Numbered original branch update not confirmed");
-      requireThat(source.base === plan.base && plan.commit !== source.base, "Candidate branch moved without this original");
-      const prepared = await parentFiles(plan.commit);
-      requireThat(prepared.parent.parents?.length === 1 && prepared.parent.parents[0].sha === source.base &&
-        prepared.files.tree.some(f => f.path === source.path && f.mode === "100644" && f.type === "blob" &&
+      requireThat(source.base === plan.base && plan.commit !== source.base && plan.commit !== ref.commit,
+        "Candidate branch moved without this original");
+      // The split receipt is a strict ancestor of this commit, whose only parent is the live head.
+      const prepared = await numberedRevision(ref, plan.commit);
+      requireThat(prepared.parents?.length === 1 && prepared.parents[0].sha === source.base, "Commit differs from prepared numbered original");
+      const files = await treeFiles(prepared.commit.tree.sha);
+      requireThat(files.tree.some(f => f.path === source.path && f.mode === "100644" && f.type === "blob" &&
           f.sha === uploaded.blob), "Commit differs from prepared numbered original");
-      checkOnlyAdded(source.entries, prepared.files.tree, [source.path]);
+      checkOnlyAdded(source.entries, files.tree, [source.path]);
       await verifyNumberedPng(ref, source, plan.commit);
       await write("update_ref", {branch_name:source.branch, sha:plan.commit, expected_sha:source.base, force:false});
       return {status:"submitted_pending_branch_readback", ...result};

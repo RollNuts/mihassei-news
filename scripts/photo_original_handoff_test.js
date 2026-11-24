@@ -54,17 +54,17 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
           status:state.liveMain && state.liveMain!==main ? "behind" : "identical"};
       if (path.startsWith("/compare/")) {
         const [base, head] = path.slice(9).split("?")[0].split("...");
-        const branch = decodeURIComponent(base);
-        if (branch.startsWith("photo-issue-plan/")) {
-          const tip = branches.get(branch);
-          let ancestor = tip;
-          while (ancestor && ancestor !== head) ancestor = commits.get(ancestor)?.parents[0]?.sha;
-          return {base_commit:{sha:tip,commit:{tree:commits.get(tip)?.tree}}, merge_base_commit:{sha:ancestor},
-            status:tip === head ? "identical" : ancestor === head ? "behind" : "diverged"};
-        }
-        let cursor = head;
-        while (cursor && cursor !== base) cursor = commits.get(cursor)?.parents[0]?.sha;
-        return {merge_base_commit:{sha:cursor}, status:cursor === base ? "ahead" : "diverged"};
+        assert.match(base,/^[0-9a-f]{40}$/,"Connector requires SHA or main in comparisons");
+        assert.match(head,/^[0-9a-f]{40}$/);
+        const ancestor = (start,expected) => {
+          let cursor=start;
+          while (cursor && cursor !== expected) cursor=commits.get(cursor)?.parents[0]?.sha;
+          return cursor;
+        };
+        const common = ancestor(base,head) ?? ancestor(head,base);
+        const status = base === head ? "identical" : common === head ? "behind" : common === base ? "ahead" : "diverged";
+        return {base_commit:{sha:base,commit:{tree:commits.get(base)?.tree},parents:commits.get(base)?.parents},
+          merge_base_commit:{sha:common},status};
       }
       if (path.startsWith("/git/commits/")) return commits.get(path.slice(13));
       if (path.startsWith("/git/trees/")) {
@@ -699,9 +699,13 @@ test("numbered upload, prepare, submit and exact readback each fit 16 calls incl
   }
   const upload = await cell(() => api.uploadNumberedOriginal(ref,verified));
   const plan = await cell(() => api.prepareNumberedOriginal(ref,upload,base));
-  state.branches.set(staged.branch,main);
+  await assert.rejects(cell(() => api.submitNumberedOriginal({...ref,commit:plan.commit},upload,plan)),
+    /Candidate branch moved without this original/);
+  const advanced = state.commits.get(base);
+  advanced.parents = [{sha:main}]; // Same candidate paths and bytes, but no ancestry from the receipt.
   await assert.rejects(cell(() => api.submitNumberedOriginal(ref,upload,plan)), /outside its candidate branch/);
-  state.branches.set(staged.branch,base);
+  await assert.rejects(cell(() => api.uploadNumberedOriginal(ref,verified)), /outside its candidate branch/);
+  advanced.parents = [{sha:staged.commit}];
   state.discardUpdate = true;
   const submit = () => cell(() => api.submitNumberedOriginal(ref,upload,plan));
   const confirm = () => cell(() => api.confirmNumberedOriginal(ref,upload,plan));
