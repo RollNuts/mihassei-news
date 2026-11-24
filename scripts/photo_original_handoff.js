@@ -829,9 +829,15 @@ var PhotoOriginalHandoff = (() => {
       const saved = await git("fetch_file",{ref:commit,path,encoding:"utf-8"});
       if (saved.encoding!=="utf-8" || saved.content!==JSON.stringify(record) || !GIT.test(saved.sha)) return null;
       const expected = new Map([[path,saved.sha]]);
-      for (const asset of record.assets) for (const part of asset.parts)
-        expected.set(partPath(dir,asset.source_sha256,part.index),part.blob);
+      const numbered = new Set();
+      for (const asset of record.assets) {
+        for (const part of asset.parts) expected.set(partPath(dir,asset.source_sha256,part.index),part.blob);
+        if (!partial && record.assets.filter(a=>a.source_ordinal===asset.source_ordinal).length===1)
+          numbered.add(dir + "/" + String(asset.source_ordinal).padStart(2, "0") + ".png");
+      }
       for (const entry of files.filter(f=>f.path.startsWith(dir+"/"))) {
+        // Later numbered copies are checked against the original SHA when used. This result attests only the split receipt.
+        if (numbered.delete(entry.path) && entry.type==="blob" && entry.mode==="100644" && GIT.test(entry.sha)) continue;
         requireThat(entry.type==="blob" && entry.mode==="100644" && expected.get(entry.path)===entry.sha, "Concurrent transfer files differ");
         expected.delete(entry.path);
       }

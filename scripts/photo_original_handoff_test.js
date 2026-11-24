@@ -448,6 +448,17 @@ test("producer checkpoint, append, finalization and lost replies fit fresh 16-ca
   const beforeRecovery=state.writes.length;
   assert.equal((await cell(receiptOptions,recovery.checkpoint)).commit,receiptHead);
   assert.equal(state.writes.length,beforeRecovery);
+  // A later editor may have restored a numbered copy alongside the frozen split receipt.
+  const entries = state.trees.get(receiptTree);
+  const numbered = {path:base+"originals/01.png", mode:"100644", type:"blob", sha:sha1("numbered")};
+  entries.push(numbered);
+  assert.equal((await cell(receiptOptions,recovery.checkpoint)).commit,receiptHead);
+  assert.equal(state.writes.length,beforeRecovery);
+  numbered.mode="120000";
+  await assert.rejects(cell(receiptOptions,recovery.checkpoint),/Concurrent transfer files differ/);
+  numbered.mode="100644"; numbered.path=base+"originals/99.png";
+  await assert.rejects(cell(receiptOptions,recovery.checkpoint),/Concurrent transfer files differ/);
+  entries.pop();
   const newer=await cell(options,commit.checkpoint,{...input,assets:[first]});
   await assert.rejects(cell(options,newer.checkpoint,{...input,assets:[first]}),/Concurrent transfer record differs/);
   const part=state.trees.get(receiptTree).find(f=>f.path.startsWith(base+"originals/")&&f.path.includes(".png.part"));
