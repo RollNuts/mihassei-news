@@ -764,7 +764,7 @@ function unassignedStockFixture() {
     width:source.width,height:source.height,image_url:dataUrl(measured.source.data)},
     jpeg:{sha:measured.jpeg.blob,encoding:"base64",content:measured.jpeg.data.toString("base64")}};
   const api = helper.create({runtime:{...bytes,sha256:hash},github});
-  return {open:()=>api.openUnassignedStock(params),params,handoff,receipt,inventory,requests,item,
+  return {open:()=>api.openUnassignedStock(params),params,handoff,receipt,inventory,requests,item,github,
     cut:{sourceOrdinal:1,cutId:"09",importedAt:input.importedAt,readback}};
 }
 
@@ -1244,4 +1244,158 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
   const readback = await cell(api=>api.readReviewedRelease(ref),8);
   assert.equal(Object.keys(readback.images).length,10);
   assert.equal(history.size,11);
+});
+
+test("fresh bounded cells stage mixed shoots on one release and recover the exact cut after a lost update", async () => {
+  const indoor = unassignedStockFixture(), beach = suppliedCutFixture("03").input;
+  const {issue, releaseCommit} = indoor.params, edition = "issue-003", branch = "photo-issue/"+edition;
+  const stockIssue = "separate-beach-shoot", prefix = "maintenance/photo-issue-plans/"+stockIssue+"/";
+  const commit = sha1("beach source"), candidateNumber = "02", importedAt = "2026-11-24T00:00:00Z";
+  const source = {...beach.candidate.source, format:"png",path:prefix+"originals/02.png",blob:beach.readback.source.blob};
+  if (source.image_number) source.image_number = 1;
+  const jpeg = {...beach.candidate.jpeg,path:prefix+"jpeg/02.jpg",blob:beach.readback.jpeg.blob};
+  const row = {...beach.candidate,issue:stockIssue,handoff_path:prefix+"handoff.json",source_ordinal:1,candidate_number:candidateNumber,source,jpeg};
+  const stock = {version:1,kind:"weekly_photo_candidate_handoff",issue:stockIssue,branch:"photo-issue-plan/"+stockIssue,
+    handoff_path:row.handoff_path,...rioProducer,candidates:[row]};
+  let head = releaseCommit, nowMain = main, active = true, loseReply = false, extraChange = false;
+  const trees = new Map([[releaseCommit,[]]]), commits = new Map(), contents = new Map();
+  const originals = [{path:source.path,type:"file",sha:source.blob,size:source.bytes}];
+  const read = (text) => JSON.parse(JSON.stringify(text));
+  async function cell(operation) {
+    let calls = 6;
+    function call() { assert.ok(++calls <= 16, "Exceeded 16 cold callbacks"); }
+    const github = {
+      async fetch({url}) {
+        call();
+        const path = url.split("/"+repo)[1];
+        if (path === "/branches/"+branch) return {name:branch,commit:{sha:head,commit:{tree:{sha:head}}}};
+        if (path === "/git/ref/heads/"+branch) return {ref:"refs/heads/"+branch,object:{sha:head}};
+        if (path === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:nowMain}};
+        for (const [candidateBranch, pinned] of [[indoor.handoff.candidate_branch,indoor.params.commit],[stock.branch,commit]]) {
+          const later = sha1("later "+pinned);
+          if (path === "/git/ref/heads/"+candidateBranch) return {ref:"refs/heads/"+candidateBranch,object:{sha:later}};
+          if (path === "/compare/"+pinned+"..."+later+"?per_page=1") return {status:"ahead",merge_base_commit:{sha:pinned}};
+        }
+        if (path === "/contents/"+prefix+"originals?ref="+commit) return originals;
+        if (path.startsWith("/git/commits/")) {
+          const rev = path.split("/").pop(); assert.ok(trees.has(rev));
+          return {sha:rev,tree:{sha:rev}};
+        }
+        if (path.startsWith("/git/trees/")) {
+          const rev=path.split("/").pop().split("?")[0]; assert.ok(trees.has(rev));
+          return {sha:rev,truncated:false,tree:trees.get(rev)};
+        }
+        if (path.startsWith("/compare/")) {
+          const [base, rev] = path.slice(9).split("?")[0].split("...");
+          assert.equal(commits.get(rev).base,base);
+          const files = trees.get(rev).filter(f=>!trees.get(base).some(old=>old.path===f.path))
+            .map(f=>({filename:f.path,sha:f.sha,status:"added"}));
+          if (extraChange) files.push({filename:"README.md",status:"modified"});
+          return {status:"ahead",total_commits:1,merge_base_commit:{sha:base},commits:[{sha:rev,parents:[{sha:base}]}],files};
+        }
+        return indoor.github.fetch({url});
+      },
+      async fetch_file(args) {
+        call();
+        if (args.ref === commit && args.path === row.handoff_path) return {encoding:"utf-8",content:JSON.stringify(stock)};
+        if (args.ref === commit && args.path === jpeg.path) return {encoding:"base64",sha:jpeg.blob,content:beach.readback.jpeg.data.toString("base64")};
+        if (args.ref === indoor.params.commit && args.path === indoor.item.prepared_jpeg.path) return indoor.cut.readback.jpeg;
+        if (trees.has(args.ref) && args.path === "content/photo_issues.json") return {encoding:"utf-8",content:'{"schema_version":1,"issues":[]}'};
+        const file = trees.get(args.ref)?.find(f=>f.path===args.path);
+        if (file) return {encoding:"utf-8",sha:file.sha,content:contents.get(file.sha)};
+        return indoor.github.fetch_file(args);
+      },
+      async create_tree({base_tree_sha:base,tree_elements:entries}) {
+        call(); const tree = sha1([base,entries]), list = [...trees.get(base)];
+        for (const f of entries) {
+          assert.ok(!list.some(e=>e.path===f.path));
+          const sha = f.sha ?? sha1(f.content); if (f.content) contents.set(sha,f.content);
+          list.push({path:f.path, type:f.type, mode:f.mode, sha});
+        }
+        trees.set(tree,list); return {sha:tree};
+      },
+      async create_commit({tree_sha:tree,parent_sha:base}) {
+        call(); const rev = sha1([tree,base]); commits.set(rev,{base}); trees.set(rev,trees.get(tree)); return {sha:rev};
+      },
+      async update_ref({branch_name,sha,force,expected_sha}) {
+        call(); assert.equal(branch_name,branch);assert.equal(force,false);assert.equal(expected_sha,head);
+        head=sha; if(loseReply) throw Error("response lost"); return {object:{sha}};
+      }
+    };
+    const api = helper.create({github,runtime:{...bytes,sha256:hash},cloudStatus:async()=>{
+      for(let i=0;i<5;i++) call();
+      return {state:active?"active":"stopped",public:true,main_commit_sha:nowMain,jpeg_bytes:0};
+    },readWeeklyPng:async args=>{
+      call(); if (args.issue===indoor.params.stockIssue) return indoor.cut.readback.source;
+      assert.deepEqual(args,{issue:stockIssue,commit,path:source.path,expected_sha256:source.sha256});
+      return {status:"read",mime_type:"image/png",commit,path:source.path,sha256:source.sha256,width:source.width,
+        height:source.height,bytes:source.bytes,image_url:dataUrl(beach.readback.source.data)};
+    }});
+    return read(await operation(api));
+  }
+  const blockedHash = hash("another photo in the indoor near-twin group");
+  indoor.handoff.items.push({...indoor.item,source_ordinal:2,source_sha256:blockedHash,
+    prepared_jpeg:{...indoor.item.prepared_jpeg,sha256:hash("another jpeg")}});
+  indoor.handoff.editorial={near_similar_source_ordinal_groups:[[1,2]]};
+  const first = await cell(async api=>(await api.openUnassignedStock(indoor.params)).planCut({sourceOrdinal:1,cutId:"01",importedAt}));
+  const firstCut = await cell(api=>api.readStockCut(first));
+  const tree = await cell(api=>api.prepareStockCutTree(edition,first));
+  const firstCommit = await cell(api=>api.commitStockCutTree(first,tree));
+  const saveFirst = ()=>cell(api=>api.publishStockCut(edition,first,firstCommit));
+  extraChange=true;
+  await assert.rejects(saveFirst,/unverified release/);
+  extraChange=false;active=false;
+  await assert.rejects(saveFirst,/stopped/);
+  active=true;nowMain=sha1("unrelated new main");
+  await assert.rejects(saveFirst,/Main moved/);
+  nowMain=main;loseReply=true;
+  await assert.rejects(saveFirst,/response lost/);
+  loseReply=false;
+  assert.deepEqual((await saveFirst()).image,firstCut.image);
+  const makeSecond = (cutId="02")=>cell(api=>api.planNumberedStockCut({issue,stockIssue,commit,releaseCommit:head,
+    cutId,candidateNumber,importedAt}));
+  stock.candidates.push({...row,candidate_number:"08",source_ordinal:2,source:{...source,sha256:first.candidate.source.sha256},
+    jpeg:{...jpeg,sha256:first.candidate.jpeg.sha256}});
+  stock.editorial={near_similar_source_ordinal_groups:[[1,2]]};
+  const similar = await makeSecond();
+  await assert.rejects(cell(api=>api.prepareStockCutTree(edition,similar)),/near-similar/);
+  delete stock.editorial;stock.candidates.pop();
+  const sourceHash = source.sha256;
+  source.sha256 = blockedHash;
+  const copiedTwin = await makeSecond();
+  await assert.rejects(cell(api=>api.checkStockSiblings(copiedTwin)),/earlier selection excludes/);
+  source.sha256 = sourceHash;
+  const second = await makeSecond(), secondCut = await cell(api=>api.readStockCut(second));
+  await assert.rejects(cell(api=>api.prepareStockCutTree(edition,second)),/Check earlier stock/);
+  const siblings = await cell(api=>api.checkStockSiblings(second));
+  const secondTree = await cell(api=>api.prepareStockCutTree(edition,second,siblings));
+  const secondCommit = await cell(api=>api.commitStockCutTree(second,secondTree));
+  await cell(api=>api.publishStockCut(edition,second,secondCommit));
+  const firstReceived = JSON.parse(firstCut.files[2].content), secondReceived = JSON.parse(secondCut.files[2].content);
+  assert.deepEqual([firstReceived.recovery_reference.source_ordinal,secondReceived.recovery_reference.source_ordinal],[1,1]);
+  assert.equal(secondReceived.recovery_reference.source_path,prefix+"originals/02.png");
+  assert.equal(secondReceived.recovery_reference.source_issue,stockIssue);
+  assert.equal(firstReceived.recovery_reference.originals_receipt_sha256,indoor.handoff.originals_receipt.sha256);
+  assert.equal(trees.get(head).length,6);
+  assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"01",commit:firstCommit.commit})),firstCut.image);
+  assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"01",commit:head})),firstCut.image);
+  assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"02",commit:head})),secondCut.image);
+  assert.equal((await cell(api=>api.prepareStockCutTree(edition,first))).commit,head);
+  const again=await makeSecond("03");
+  await assert.rejects(cell(api=>api.prepareStockCutTree(edition,again)),/Repeated/);
+  await assert.rejects(cell(api=>api.readStockCut({...second,candidate:{...row,commit,source:{...source,path:"README.md"}}})),/Invalid or changed/);
+  // Nine checked sibling receipts still fit a cold cell. Their individual bytes never enter the conversation.
+  const ninthPlan = await makeSecond("10"), originalTree = trees.get(head);
+  const extras = [];
+  for (let n=3;n<=9;n++) {
+    const id = String(n).padStart(2,"0"), path=secondCut.image.provenance.receipt_path.replace("/02/","/"+id+"/");
+    const contentsText = JSON.stringify({...secondReceived,cut_id:id});
+    const blob = sha1(contentsText);
+    contents.set(blob,contentsText);
+    extras.push({path,sha:blob,type:"blob",mode:"100644"});
+  }
+  trees.set(head,[...originalTree,...extras]);
+  assert.match(await cell(api=>api.checkStockSiblings(ninthPlan)),/^[0-9a-f]{64}$/);
+  trees.set(head,originalTree);
+  await assert.rejects(cell(api=>api.publishStockCut("issue-004",second,secondCommit)),/Wrong stock commit/);
 });

@@ -111,6 +111,19 @@ NativeImageBytesTests.fetchSources=async function(api,sources){
     return {encoding:"utf-8",content:sources[key]};
   }
   for(const wrapper of ["structuredContent","result"]){
+    const requests = [];
+    const verifier = await api.verificationRuntime(async args => {
+      requests.push(args.path);
+      return {[wrapper]: record(args)};
+    });
+    assert(requests.length === 1 && requests[0] === api.SOURCES.sha.path,
+      wrapper+" photo readback needs only the pinned digest dependency");
+    assert(verifier.sha256(verifier.fromBase64("YWJj")) === "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      && verifier.inspectPng === api.inspectPng && !verifier.convertPhoto,
+      wrapper+" verification preserves byte and PNG checks without loading a converter");
+    await rejects(() => api.verificationRuntime(async args => ({
+      [wrapper]: {...record(args), content:sources.sha+"\n"}
+    })),wrapper+" changed digest dependency is rejected on readback");
     const loaded=await api.fetchSources(async args=>({[wrapper]:record(args)}));
     assert(keys.every(key=>loaded[key]===sources[key]),wrapper+" source bytes preserved exactly");
     assert(api.initialize(loaded).sha256("abc")==="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",

@@ -237,22 +237,45 @@ var NativeImageBytes = (function () {
     for (const part of parts) { pixels.set(part, offset); offset += part.length; }
     return pixels.buffer;
   }
-  async function fetchSources(fetchFile) {
-    const keys=Object.keys(SOURCES),result=await Promise.allSettled(keys.map(key=>{const {sha256,...args}=SOURCES[key];return fetchFile({...args,encoding:"utf-8"});})),sources={};
-    for(let i=0;i<keys.length;i++){
-      const r=result[i];if(r.status!=="fulfilled")throw Error("Source fetch failed: "+keys[i]);
-      const outer=r.value,s=outer?.structuredContent??outer?.result;
-      if(outer?.isError||outer?.error_code||outer?.error||s?.isError||s?.error_code||s?.error
-        ||s?.encoding!=="utf-8"||typeof s.content!=="string")throw Error("Invalid source response: "+keys[i]);
-      sources[keys[i]]=s.content;
+  async function fetchDependencySources(fetchFile, keys) {
+    const reads = await Promise.allSettled(keys.map(key => {
+      const {sha256, ...args} = SOURCES[key];
+      return fetchFile({...args, encoding:"utf-8"});
+    }));
+    const sources = {};
+    for (const [i, read] of reads.entries()) {
+      const key = keys[i];
+      if (read.status !== "fulfilled") throw Error("Source fetch failed: "+key);
+      const outer = read.value, file = outer?.structuredContent ?? outer?.result;
+      if (outer?.isError || outer?.error_code || outer?.error || file?.isError || file?.error_code || file?.error ||
+          file?.encoding !== "utf-8" || typeof file.content !== "string") throw Error("Invalid source response: "+key);
+      sources[key] = file.content;
     }
     return sources;
   }
+  function fetchSources(fetchFile) {
+    return fetchDependencySources(fetchFile, Object.keys(SOURCES));
+  }
+  function verificationBytes(shaSource) {
+    const mod = {exports:{}};
+    new Function("module", shaSource)(mod);
+    const sha256 = mod.exports;
+    if (typeof sha256 !== "function" || sha256("abc") !== "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad") {
+      throw Error("SHA-256 self-test failed");
+    }
+    if (sha256(shaSource) !== SOURCES.sha.sha256) throw Error("Pinned source SHA mismatch: sha");
+    return {sha256,extractC2PA,fromBase64,toBase64,utf8,inspectPng};
+  }
+  async function verificationRuntime(fetchFile) {
+    const {sha} = await fetchDependencySources(fetchFile, ["sha"]);
+    return verificationBytes(sha);
+  }
   function initialize(sources) {
     for(const key of Object.keys(SOURCES))if(typeof sources[key]!=="string")throw Error("Missing dependency source: "+key);
-    const mod={exports:{}};new Function("module",sources.sha)(mod);const sha256=mod.exports;
-    if(typeof sha256!=="function"||sha256("abc")!=="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")throw Error("SHA-256 self-test failed");
-    for(const key of Object.keys(SOURCES))if(sha256(sources[key])!==SOURCES[key].sha256)throw Error("Pinned source SHA mismatch: "+key);
+    const verified = verificationBytes(sources.sha), {sha256} = verified;
+    for (const key of ["upng", "encode"]) {
+      if (sha256(sources[key]) !== SOURCES[key].sha256) throw Error("Pinned source SHA mismatch: "+key);
+    }
     const UPNG=new Function(sources.upng+"\nreturn UPNG;")(),encode=new Function("module","window",sources.encode+"\nreturn encode;")(undefined,undefined);
     function convert(input) {
       const bytes=typeof input==="string"?fromBase64(input):new Uint8Array(input),info=pngChunks(bytes),receipt=extractC2PA(bytes);
@@ -278,8 +301,8 @@ var NativeImageBytes = (function () {
         transform:{encoder:"jpeg-js", max_edge:1200, jpeg_quality:84, geometry:"preserve-aspect"},
         encoding_details:{encoder_ref:SOURCES.encode.ref, resample:"bilinear", mode:"RGB"}};
     }
-    return {convert,convertPhoto,sha256,extractC2PA,fromBase64,toBase64,utf8,inspectPng};
+    return {...verified,convert,convertPhoto};
   }
-  return {SOURCES,fetchSources,initialize,fromBase64,toBase64,utf8,inspectPng,extractC2PA};
+  return {SOURCES,fetchSources,initialize,verificationRuntime,fromBase64,toBase64,utf8,inspectPng,extractC2PA};
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = NativeImageBytes;
