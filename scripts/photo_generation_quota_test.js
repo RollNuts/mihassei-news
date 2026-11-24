@@ -1,9 +1,8 @@
 const {test} = require("node:test");
 const assert = require("node:assert/strict");
 const {createHash} = require("node:crypto");
-const quota = require("./photo_generation_quota.js");
-const stage = require("./native_image_stage.js");
-const bytes = require("./native_image_bytes.js");
+const {readFileSync} = require("node:fs");
+const {join} = require("node:path");
 
 const repository = "RollNuts/mihassei-news";
 const actors = {
@@ -64,8 +63,11 @@ function fixture() {
       if (path.startsWith("/git/trees/")) {
         const sha = path.slice("/git/trees/".length).split("?")[0];
         assert.ok(trees.has(sha));
-        return jsonReply({sha, truncated:false, tree:Object.entries(trees.get(sha))
-          .map(([path, content]) => ({path, sha:blob(content), type:"blob", mode:"100644"}))});
+        const tree = Object.entries(trees.get(sha)).map(([path, content]) => ({
+          path, sha:blob(content), type:"blob", mode:"100644", size:Buffer.byteLength(content)
+        }));
+        if (state.overCapTree === sha) tree.push({path:"assets/generated/collection.jpg",type:"blob",size:1536*1024*1024+1});
+        return jsonReply({sha, truncated:false, tree});
       }
       if (path.startsWith("/branches/")) {
         const name = path.slice("/branches/".length), sha = refs.get(name);
@@ -93,6 +95,9 @@ function fixture() {
     },
     async fetch_file({ref, path, encoding}) {
       assert.equal(encoding, "utf-8");
+      if (commits.has(ref) && ["scripts/photo_generation_quota.js","scripts/native_image_stage.js"].includes(path)) {
+        return reply({encoding, content:readFileSync(join(__dirname,"..",path),"utf8")});
+      }
       if (ref === "cast-source-drafts") {
         const model = /^drafts\/cast-voices\/([a-z-]+)\.json$/.exec(path)?.[1];
         assert.ok(Object.hasOwn(actors, model));
@@ -130,14 +135,25 @@ function fixture() {
       return operation(args);
     };
   }
-  function coldApi(calls) {
+  let reviewedRef; // Public run metadata survives a new cell; helpers and their caches do not.
+  async function coldApi(calls) {
     const adapter = Object.fromEntries(Object.entries(github).map(([name, operation]) => [name, async args => {
       calls.push(name);
       return operation(args);
     }]));
-    const guard = stage.create({github:adapter, repository, runtime:{...bytes,
-      sha256:data => createHash("sha256").update(data).digest("hex"),
-      convert:() => assert.fail("Quota operations cannot generate or convert images")},
+    if (!reviewedRef) {
+      const response = await adapter.fetch({url:"https://api.github.com/repos/"+repository+"/git/ref/heads/main"});
+      const ref = JSON.parse(response.result.content);
+      assert.equal(ref.ref, "refs/heads/main");
+      reviewedRef = ref.object.sha;
+    }
+    async function load(path, name) {
+      const file = await adapter.fetch_file({repository_full_name:repository,ref:reviewedRef,path,encoding:"utf-8"});
+      return new Function(file.result.content+"\nreturn "+name+";")();
+    }
+    const quota = await load("scripts/photo_generation_quota.js","PhotoGenerationQuota");
+    const stage = await load("scripts/native_image_stage.js","NativeImageStage");
+    const guard = stage.create({github:adapter, repository, controlOnly:true,
       readCloudWorkflow:async ({nonce}) => {
         calls.push("read_image_control");
         state.events.push({name:"read_image_control"});
@@ -149,11 +165,11 @@ function fixture() {
   async function step(method, input, checkpoint) {
     const calls = [];
     try {
-      return await coldApi(calls)[method](input, checkpoint && JSON.parse(JSON.stringify(checkpoint)));
+      return await (await coldApi(calls))[method](input, checkpoint && JSON.parse(JSON.stringify(checkpoint)));
     } finally {
       const mutations = calls.filter(name => /^(create_|update_)/.test(name)).length;
       state.cells.push({phase:checkpoint?.phase || "start", calls:calls.length, mutations});
-      assert.ok(calls.length <= 15 && mutations <= 2, "cold cell " + (checkpoint?.phase || "start") +
+      assert.ok(calls.length <= 16 && mutations <= 2, "cold cell " + (checkpoint?.phase || "start") +
         " used " + calls.length + " real callbacks and " + mutations + " mutations");
     }
   }
@@ -182,8 +198,10 @@ function fixture() {
   const contents = sha => trees.get(commits.get(sha).tree);
   function advanceMain() {
     const parent = refs.get("main"), sha = digest([parent, "next main"]);
-    commits.set(sha, {parent, tree:commits.get(parent).tree});
+    const files = {...contents(parent), "maintenance/volume.txt":sha}, tree = digest(files);
+    commits.set(sha, {parent, tree}); trees.set(tree, files);
     refs.set("main", sha);
+    return tree;
   }
   return {api, drive, step, beforePhase, state, refs, contents, main, advanceMain};
 }
@@ -355,7 +373,9 @@ test("a final checkpoint is single-use even when exact replays race and main mov
   ]);
   assert.equal(grantCount(results), 1);
   assert.equal((await env.step("reserveStep", input, checkpoint)).may_generate, false);
-  assert.ok(env.state.events.some(e => e.url?.endsWith("/git/commits/" + env.refs.get("main"))));
+  const writeIndex = env.state.events.findIndex(e => e.name === "update_file");
+  assert.ok(env.state.events.slice(writeIndex+1).some(e => e.url?.endsWith("/branches/main")));
+  assert.ok(env.state.events.slice(writeIndex+1).some(e => e.url?.includes("/git/trees/")));
 });
 
 test("rollout initialization handles main advancing after the branch seed within cold callback limits", async () => {
@@ -385,4 +405,46 @@ test("losing the branch-only seed reply gives no rights and a fresh lookup can s
   const result = await env.api().reserve(input);
   assert.equal(result.used, 20);
   assert.equal((await env.api().reserve(input)).may_generate, false);
+});
+
+
+test("both final operations recheck new main volume and live stop after CAS in a cold cell", async () => {
+  for (const method of ["reserveStep","finishStep"]) {
+    for (const afterWrite of ["active","stopped","over-cap"]) {
+      const env = currentWeek(), input = request("final", {baseline:reconciled(19)});
+      let finalInput, checkpoint;
+      if (method === "reserveStep") {
+        finalInput = input;
+        checkpoint = await env.beforePhase(input, "publish");
+      } else {
+        const grant = await env.api().reserve(input);
+        finalInput = {...rio, run_id:input.run_id, attempt_id:input.attempt_id, week_start:grant.week_start,
+          status:"succeeded", result_ref:priorEvidence};
+        checkpoint = (await env.step(method, finalInput)).checkpoint;
+      }
+      let newTree;
+      env.state.afterRef = () => {
+        newTree = env.advanceMain();
+        if (afterWrite === "over-cap") env.state.overCapTree = newTree;
+        if (afterWrite === "stopped") env.state.active = false;
+      };
+      const offset = env.state.events.length;
+      const result = env.step(method, finalInput, checkpoint);
+      if (afterWrite === "active") {
+        assert.equal((await result).may_generate, method === "reserveStep");
+      } else {
+        await assert.rejects(result, /Cloud image operations stopped/);
+      }
+      const events = env.state.events.slice(offset);
+      const write = events.findIndex(e => e.name === "update_file");
+      assert.ok(write > 0);
+      assert.ok(events.slice(write+1).some(e => e.url?.endsWith("/git/trees/"+newTree+"?recursive=1")));
+      if (afterWrite !== "over-cap") assert.equal(events.at(-1).name,"read_image_control");
+      assert.equal(env.state.cells.at(-1).calls, afterWrite === "over-cap" ? 14 : 15);
+      env.state.active = true; env.state.overCapTree = null;
+      const retry = await env.drive(method,finalInput);
+      assert.equal(retry.status,"already_recorded");
+      assert.equal(retry.may_generate,false);
+    }
+  }
 });

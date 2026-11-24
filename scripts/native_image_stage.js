@@ -17,7 +17,7 @@ var NativeImageStage = (function () {
   function create({runtime,github,repository,readCloudWorkflow,manifestPatch,controlOnly=false}) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
     const gitMethods = controlOnly ? ["fetch"] : ["fetch_file","create_blob","create_tree","create_commit","create_branch"];
-    const byteMethods = controlOnly ? ["sha256","utf8"] : ["convert","sha256","fromBase64","toBase64","utf8"];
+    const byteMethods = controlOnly ? [] : ["convert","sha256","fromBase64","toBase64","utf8"];
     for (const name of gitMethods) if (typeof github[name] !== "function") throw Error("Missing GitHub callback: "+name);
     for (const name of byteMethods) if (typeof runtime[name] !== "function") throw Error("Missing byte runtime: "+name);
     if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
@@ -75,12 +75,12 @@ var NativeImageStage = (function () {
         const repo=await fetchJSON("");
         if(typeof repo.full_name!=="string"||repo.full_name.toLowerCase()!==repository.toLowerCase()
           ||repo.private!==false||repo.visibility!=="public")throw Error("Repository is not confirmed public");
-        const commitSha=await branchHead("main");
+        const main=await fetchJSON("/branches/main");
+        const commitSha=main.commit?.sha, treeSha=main.commit?.commit?.tree?.sha;
+        if(main.name!=="main"||!GIT.test(commitSha||"")||!GIT.test(treeSha||""))throw Error("Invalid current main branch response");
         if(generatedSnapshot?.commitSha!==commitSha){
-          const commit=await fetchJSON("/git/commits/"+commitSha);
-          if(commit.sha!==commitSha||!GIT.test(commit.tree?.sha||""))throw Error("Invalid current main commit response");
-          const tree=await fetchJSON("/git/trees/"+commit.tree.sha+"?recursive=1");
-          if(tree.sha!==commit.tree.sha||tree.truncated!==false||!Array.isArray(tree.tree))throw Error("Incomplete generated-JPEG tree");
+          const tree=await fetchJSON("/git/trees/"+treeSha+"?recursive=1");
+          if(tree.sha!==treeSha||tree.truncated!==false||!Array.isArray(tree.tree))throw Error("Incomplete generated-JPEG tree");
           let jpegBytes=0;
           for(const entry of tree.tree){
             if(typeof entry.path!=="string")throw Error("Invalid Git tree path");
@@ -96,7 +96,9 @@ var NativeImageStage = (function () {
         // while byte conversion, claim creation or candidate recovery is busy.
         let workflow;
         if(readCloudWorkflow){
-          const nonce=hashText(JSON.stringify([repository,Date.now(),++workflowNonce,Math.random(),Math.random()]));
+          // The stop authority echoes a per-request freshness challenge, including across cold cells.
+          const randomHex=Array.from({length:4},()=>Math.floor(Math.random()*0x100000000).toString(16).padStart(8,"0")).join("");
+          const nonce=Date.now().toString(16).padStart(16,"0")+(++workflowNonce).toString(16).padStart(16,"0")+randomHex;
           countStep();const raw=payload(await readCloudWorkflow({nonce}));
           workflow=typeof raw.content==="string"?JSON.parse(raw.content):raw;
           const checked=Date.parse(workflow.checked_at),age=Date.now()-checked;

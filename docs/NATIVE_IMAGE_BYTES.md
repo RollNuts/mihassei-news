@@ -409,11 +409,14 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 <a id="weekly-photo-quota"></a>
 ### Reserve one original in the producer’s weekly allowance
 
-Use this only when the [stock rule](EDITORIAL_LOOP.md#写真ストックと制作量) calls for a new original, after recovering outstanding files and verifying that the current execution can save and read back an actual original through its available transport. Previously received originals can go straight to the existing handoff. Load `scripts/photo_generation_quota.js` from reviewed main inside code mode. Bind `fetch`, `fetch_file`, `create_branch`, `create_file` and `update_file` from the existing GitHub connection, plus the live `stager.cloudStatus` used for original handoffs.
+Use this only when the [stock rule](EDITORIAL_LOOP.md#写真ストックと制作量) calls for a new original, after recovering outstanding files and verifying that the current execution can save and read back an actual original through its available transport. Previously received originals can go straight to the existing handoff. Retain the reviewed main commit for the run alongside the checkpoint. In each fresh cell, use GitHub `fetch_file` at that commit to load just `scripts/photo_generation_quota.js` and `scripts/native_image_stage.js`. Bind `fetch`, `fetch_file`, `create_branch`, `create_file` and `update_file` from the existing GitHub connection and the live `read_image_control` callback. The two imports and one quota step fit within 16 calls, including when main advances.
 
 ```js
 const Q = new Function(quotaSource + "\nreturn PhotoGenerationQuota;")();
-const quota = Q.create({github, cloudStatus: stager.cloudStatus});
+const stage = new Function(stageSource + "\nreturn NativeImageStage;")();
+const {cloudStatus} = stage.create({controlOnly:true, github, repository:"RollNuts/mihassei-news",
+  readCloudWorkflow: ({nonce}) => readImageControl({nonce})});
+const quota = Q.create({github, cloudStatus});
 // Reuse the same input and checkpoint across cells. Keep helper source and GitHub responses private.
 const next = await quota.reserveStep(input, checkpoint);
 ```
