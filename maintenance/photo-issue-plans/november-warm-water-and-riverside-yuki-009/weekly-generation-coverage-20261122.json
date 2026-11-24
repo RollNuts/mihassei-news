@@ -4,7 +4,7 @@
   "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
   "week_start": "2026-11-22",
   "from": "2026-11-22T00:00:00+09:00",
-  "through": "2026-11-24T16:30:00+09:00",
+  "through": "2026-11-24T22:20:27+09:00",
   "prior_attempts_through_cutoff": [],
   "producer_results": [
     {
@@ -22,6 +22,14 @@
       "voice_source_commit": "4f96585467667dd499532ceac5762cef1f162c67",
       "calls": 0,
       "basis": "本人は既存2アーカイブを照合し、重複転送・新規生成をしなかったと明記。新規生成0枚。"
+    },
+    {
+      "displayed_at": "2026-11-24T18:16:49.638+09:00",
+      "pr": 1013,
+      "head": "a6a12e9cc8d1e4d0aa805e7a41aed4aa384d16e8",
+      "voice_source_commit": "1e8d86436977ca8fb6f277910749948b5909bbc1",
+      "calls": 0,
+      "basis": "本人の終了結果は新規生成0枚、在庫追加0枚。16:30の固定記録を読み、後続消費・新規保存経路の実証に至らず見送り。選外6枚の再送なし。"
     }
   ],
   "candidate_heads": [
@@ -34,6 +42,11 @@
         "001ef6e6a94014c87cfd05e65913ed5e3758452d"
       ],
       "activity": "原本の保存拒否、既刊との目視比較、既存Library参照の記録。本人の候補は1本。当週の本人予約ブランチと未統合の本人PRは照合時点で見つからず。生成0の根拠は本人の各実行結果。"
+    },
+    {
+      "branch": "photo-issue-plan/november-warm-water-and-riverside-yuki-009",
+      "commit": "ca2188890792b800c0de056b186f9847c0a59e17",
+      "activity": "週内の既存候補に追加されたのは16:30時点の確認記録と参照だけ。以降の本人枠は既刊005のJPEGを読戻して近況だけを公開。"
     }
   ],
   "remote_read_check": {
@@ -48,5 +61,16 @@
     "width": 1024,
     "height": 1536
   },
-  "next_operation": "本人の定期枠でthrough以降の失敗・中断を含む全実行、並行候補、当週の本人予約台帳を再確認。新規消費があれば根拠を足し、不明なら予約しない。第3号で除外済みの旧6枚を再送せず、現実行で原本の保存と遠隔読戻しを実証し、新しい場面を補充する条件がそろった時だけ固定GitHub blob URLをcoverage_refとして予約する。"
+  "next_operation": "この記録を固定参照にして空の移行週台帳を一度だけ初期化する。台帳が作成済みなら、以後の本人枠は同じ週refを取得して通常の1枚予約・結果記録を使う。新規原本の実保存・遠隔SHA読戻しの実証と停止・容量保護を維持する。既刊の照合や空台帳の作成は生成許可ではない。",
+  "previous_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/fc3d525c21c25a38bfbf5ff8bf080de399ac2205/maintenance/photo-issue-plans/november-warm-water-and-riverside-yuki-009/weekly-generation-coverage-20261122.json",
+  "activation_evidence": {
+    "scheduled_task_id": "6af90a64315c8191be052e007606deff",
+    "last_owner_result_at": "2026-11-24T18:16:49.638+09:00",
+    "next_regular_run": "2026-11-25T18:15:00+09:00",
+    "observations": "登録済み本人チャットと定期枠の最新は終了済みの11/24 18:16。別の実行は表示されず、次回は翌日18:15。本人原文の最終変更は18:16。本人候補1本、進行中の本人PRなし。予約の新規ref作成直前にも同じ候補・原文・未統合PR・既存週refを照合し、動いた場合は中断する。",
+    "registered_voice_commit": "1e8d86436977ca8fb6f277910749948b5909bbc1",
+    "reviewed_main": "1d9b571b914d6c323a3821e46d23ae0d8e354f95",
+    "ledger_branch": "photo-issue-plan/stock-shiramine-yuki-2026-11-22",
+    "ledger_path": "maintenance/photo-issue-plans/stock-shiramine-yuki-2026-11-22/generation-attempts.json"
+  }
 }
