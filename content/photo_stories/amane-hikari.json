@@ -75,6 +75,21 @@
         "cut_id": "01",
         "image_sha256": "aeffd0c4a529a9181ace87fc71883f2d102b09079499ce0e61b9d6f774b6c2eb"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261124154547610",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-24T15:45:47.610+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "休憩中に外へ出たら風が冷たくて、みんなで日なたへ移動。温かいココアを飲みながら、次の曲の振りをこっそり合わせてた。",
+      "source": {
+        "issue_slug": "november-hikari-city-and-pool-013",
+        "cut_id": "03",
+        "image_sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b"
+      }
     }
   ]
 }
