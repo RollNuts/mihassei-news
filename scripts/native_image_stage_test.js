@@ -645,6 +645,13 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     assert(context.mock.writes().length === 0, label + " cannot bypass callback verification via stage");
   }
 
+  const inspection = await scenario("weekly-photo-guard");
+  const guard = stageAPI.create({controlOnly:true, repository,
+    runtime:{sha256:runtime.sha256, utf8:runtime.utf8}, github:{fetch:inspection.mock.github.fetch}});
+  const inspectionStatus = await guard.cloudStatus();
+  assert(Object.keys(guard).join(",") === "cloudStatus" && inspectionStatus.state === "active" &&
+    inspectionStatus.jpeg_bytes === 5120 && inspectionStatus.main_commit_sha === baseCommitSha,
+    "weekly photo inspection runs the existing guard with read-only dependencies");
   const cloudReady = await scenario("cloud-status");
   const readyStatus = await cloudReady.service.cloudStatus();
   assert(readyStatus.state === "active" && readyStatus.public === true &&

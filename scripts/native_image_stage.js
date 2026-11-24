@@ -14,14 +14,17 @@ var NativeImageStage = (function () {
   const CLAIM_DIR="maintenance/native-image-generation-claims";
   const CLOUD_WORKFLOW="free-cpu-scenes.yml", JPEG_CAP=1536*1024*1024;
   const FUTURE_CLOCK_TOLERANCE_MS=1000;
-  function create({runtime,github,repository,readCloudWorkflow,manifestPatch}) {
+  function create({runtime,github,repository,readCloudWorkflow,manifestPatch,controlOnly=false}) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
-    for(const name of ["fetch_file","create_blob","create_tree","create_commit","create_branch"])if(typeof github[name]!=="function")throw Error("Missing GitHub callback: "+name);
-    for(const name of ["convert","sha256","fromBase64","toBase64","utf8"])if(typeof runtime[name]!=="function")throw Error("Missing byte runtime: "+name);
+    const gitMethods = controlOnly ? ["fetch"] : ["fetch_file","create_blob","create_tree","create_commit","create_branch"];
+    const byteMethods = controlOnly ? ["sha256","utf8"] : ["convert","sha256","fromBase64","toBase64","utf8"];
+    for (const name of gitMethods) if (typeof github[name] !== "function") throw Error("Missing GitHub callback: "+name);
+    for (const name of byteMethods) if (typeof runtime[name] !== "function") throw Error("Missing byte runtime: "+name);
     if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
     const hashText=s=>runtime.sha256(runtime.utf8(s)), transientInputs=new Map();
     const activeGenerations=new Set(), generationAttempts=new Map();
     let generatedSnapshot, workflowNonce=0, stepUsage=null;
+    if (controlOnly) return {cloudStatus};
     function countStep(mutation=false){
       if(!stepUsage)return;
       if(stepUsage.calls>=15||mutation&&stepUsage.mutations>=2)throw Error("Bounded image step callback budget exceeded");
