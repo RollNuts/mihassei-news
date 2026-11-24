@@ -306,6 +306,10 @@ class EditorialSocialCardTests(unittest.TestCase):
         git("add", ".")
         self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
         self.assertEqual(verify_changed_scene_pngs("0" * 40, root=self.root), [])
+        # Later workspace activity must not invalidate or replace the staged inputs.
+        articles_path.write_text("[]", encoding="utf-8")
+        self.assertEqual(verify_changed_scene_pngs(base, root=self.root), [])
+        git("checkout", "--", "content/articles.json")
         git("commit", "-qm", "Publish the verified card")
         base = git("rev-parse", "HEAD")
 

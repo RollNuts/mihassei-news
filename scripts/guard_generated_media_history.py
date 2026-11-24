@@ -12,6 +12,7 @@ import json
 import hashlib
 import re
 import subprocess
+import tempfile
 import sys
 from pathlib import Path
 
@@ -145,25 +146,25 @@ def verify_changed_scene_pngs(base: str, *, root: Path) -> list[str]:
     if any(not SAFE_SLUG.fullmatch(path.stem) for path in paths):
         return ["Invalid editorial share PNG filename"]
 
-    # The normal build reader validates working files. Require the index versions
-    # so a local preparation or untracked SVG cannot hide a broken committed pair.
+    # CI and the finalizer validate the index, including a staged test merge.
+    # Build tests may have rewritten working files without changing their bytes.
     inputs = [ARTICLES, *paths, *(path.with_suffix(".svg") for path in paths)]
-    tracked = subprocess.run(["git", "ls-files", "--error-unmatch", "--", *inputs],
-                             cwd=root, capture_output=True, timeout=15)
-    clean = subprocess.run(["git", "diff-files", "--quiet", "--", *inputs],
-                           cwd=root, capture_output=True, timeout=15)
-    if tracked.returncode or clean.returncode:
-        return ["Editorial share PNG verification needs the staged article, SVG and PNG in the checkout"]
-    articles_path = root / ARTICLES
-    if articles_path.is_symlink() or articles_path.parent.is_symlink():
-        return ["Editorial share PNG verification needs an ordinary article document"]
-    articles = _articles(json.loads(articles_path.read_text(encoding="utf-8")))
     errors = []
-    for path in paths:
-        article = articles.get(path.stem)
-        if not article or reviewed_scene_png(article, root=root) is None:
-            errors.append(f"{path}: render the PNG from the exact submitted SVG and current article "
-                          f"with scripts/social_cards.py --prepare-scenes {path.stem}")
+    with tempfile.TemporaryDirectory() as folder:
+        snapshot = Path(folder)
+        staged = subprocess.run(["git", "checkout-index", "--prefix=" + folder + "/", "--", *inputs],
+                                cwd=root, capture_output=True, timeout=15)
+        if staged.returncode:
+            return ["Editorial share PNG verification needs the staged article, SVG and PNG"]
+        articles_path = snapshot / ARTICLES
+        if articles_path.is_symlink():
+            return ["Editorial share PNG verification needs an ordinary article document"]
+        articles = _articles(json.loads(articles_path.read_text(encoding="utf-8")))
+        for path in paths:
+            article = articles.get(path.stem)
+            if not article or reviewed_scene_png(article, root=snapshot) is None:
+                errors.append(f"{path}: render the PNG from the exact submitted SVG and current article "
+                              f"with scripts/social_cards.py --prepare-scenes {path.stem}")
     return errors
 
 
