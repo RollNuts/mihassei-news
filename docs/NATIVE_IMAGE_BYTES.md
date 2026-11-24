@@ -32,9 +32,14 @@ Bind `readImageControl` below to the actually exposed `read_image_control` MCP t
 
 ### Native tool outside code mode: one bounded step per cell
 
-Initialize the reviewed two helper sources and three pinned dependencies in **each** code-mode cell (five connector reads). The actual GPT runtime does not retain `store`/`load` values between cells. Prepare the original plan once in a separate cell, print its small JSON, then retain that exact plan and each returned checkpoint in the existing task result/handoff. Paste those metadata objects into the next cell; never print PNG/JPEG data URLs or base64. Use `compact: true` for the steps below. Version 2 checkpoints contain references, hashes and Git object SHAs, not image bytes; old version 1 checkpoints and raw archives remain readable.
+Pin the reviewed main SHA once and retain it with the original plan, probe references and version 2 checkpoint. In each fresh cell fetch `scripts/native_image_bytes.js` and `scripts/native_image_stage.js` from that SHA and evaluate them as `bytesAPI` and `stageAPI`. Bind the existing GitHub callbacks and the live read-only image control. The cell needs these shared inputs:
 
-The old whole-macro reservation needs at least 75 connector callbacks plus the PNG read. Each step allows at most 15 callbacks and two mutations, including cold guard reads and any original-PNG read; the five initialization reads are additional. The platform's total limit and whether it applies per cell or per turn are not assumed. Every write still checks public visibility, current-main JPEG capacity and the live stop authority. Compact staging supports original PNGs **up to 4 MiB** (eight 512 KiB parts); the reader's 8 MiB download bound does not establish save capacity.
+```js
+const services = {bytes:bytesAPI, fetchFile:github.fetch_file, github,
+  repository:"RollNuts/mihassei-news", readCloudWorkflow:({nonce})=>readImageControl({nonce})};
+```
+
+`compactStep` loads the one pinned hash dependency for metadata work and the three pinned dependencies for conversion. Each operation fits 16 calls including both helper imports, original-file reads, live guards and up to two writes. Paste only the compact metadata into the next cell. Version 2 supports PNGs up to 4 MiB in eight 512 KiB parts. Old version 1 checkpoints and raw archives retain their existing recovery path.
 
 #### Resume a reservation
 
@@ -44,9 +49,8 @@ Call **one** step per code-mode cell. Use the original `plan` and the preceding 
 try {
   if (checkpoint && checkpoint.version !== 2) throw Error("Expected a compact reservation checkpoint");
   const {probeSource, expectedProbeSha256, probeSourceRef, route} = probe;
-  const result = await stager.reserveExternalGenerationStep(plan, {
-    compact: true, probeSource, expectedProbeSha256, probeSourceRef, route, readBytes
-  }, checkpoint);
+  const step = await stageAPI.compactStep(services, "reserveExternalGenerationStep", checkpoint);
+  const result = await step(plan, {probeSource, expectedProbeSha256, probeSourceRef, route, readBytes});
   if (result.status === "pending") text({status: result.status, phase: result.phase, checkpoint: result.checkpoint});
   else if (result.status === "reserved") text({status: result.status, plan: result.plan,
     transportPreflight: result.transportPreflight, generationClaim: result.generationClaim});
@@ -73,7 +77,8 @@ const input = checkpoint ? {readBytes} : {
 };
 try {
   if (checkpoint && checkpoint.version !== 2) throw Error("Expected a compact save checkpoint");
-  const result = await stager.stageReservedStep(plan, input, checkpoint);
+  const step = await stageAPI.compactStep(services, "stageReservedStep", checkpoint);
+  const result = await step(plan, input);
   text(result.status === "pending" ? result : {
     status: result.status, commitSha: result.commitSha, branch: result.branch,
     receipt_sha256: result.receipt_sha256, jpegPath: result.jpegPath,
@@ -85,7 +90,7 @@ try {
 }
 ```
 
-The helper reacquires only that exact original file for conversion/upload/receipt phases and checks its original PNG and pinned JPEG hashes. A missing original file or changed bytes stops saving; never retimestamp or regenerate. Original PNG chunks/C2PA are preserved in the existing raw archive, not copied into the checkpoint. Immutable source/JPEG/protected-file checks remain sliced; the final readback reconstructs and verifies the complete source, conversion/C2PA correspondence, baseline and branch before `saved`. Its maximum eight-part readback fits 15 core callbacks including the resumed claim check. A completed candidate remains readable while stopped. Print and retain only the compact checkpoint or the small final refs/hashes above, not the whole receipt (which can carry C2PA bytes). For visual review, use a separate cell with `const images = await stager.load(plan, savedCommitSha)` against that exact verified immutable commit, then emit `images.sourcePngDataUrl` and `images.jpegDataUrl` as images; never pass that byte-bearing object to `text`/`notify`. Candidate saving, visual acceptance and public delivery remain separate.
+The helper reacquires only that exact original file for conversion/upload/receipt phases and checks its original PNG and pinned JPEG hashes. A missing original file or changed bytes stops saving; never retimestamp or regenerate. Original PNG chunks/C2PA are preserved in the existing raw archive, not copied into the checkpoint. The readback checks the actual JPEG and protected files at one immutable candidate commit. Its next cell reconstructs every source part, reproduces the JPEG and C2PA metadata, and confirms the candidate branch before returning `saved`. A completed candidate remains readable while stopped. Print and retain only the compact checkpoint or the small final refs/hashes above, not the whole receipt (which can carry C2PA bytes). For visual review, use a separate cell with `const images = await stager.load(plan, savedCommitSha)` against that exact verified immutable commit, then emit `images.sourcePngDataUrl` and `images.jpegDataUrl` as images; never pass that byte-bearing object to `text`/`notify`. Candidate saving, visual acceptance and public delivery remain separate.
 
 The older `reserveExternalGeneration`/`stageReserved` macros remain compatible for an executor with enough callback capacity; do not fall back to them after this runtime reports a call limit.
 
@@ -397,7 +402,7 @@ The separate staging fixtures run in the same plain JavaScript runtime:
 
 ```js
 const runStageTests = new Function(stageTestSource + "\nreturn NativeImageStageTests;")();
-const report = await runStageTests(stageAPI, runtime);
+const report = await runStageTests(stageAPI, runtime, {sources, byteHelperSource, stageHelperSource});
 ```
 
 They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real image generation or publication. They cover exact byte readback, a source larger than 1 MiB, reuse without writes, branch/readback interruption, checkpoint recovery, ambiguous lookup failures, article binding and exact integer seeds. The generating entry point also checks zero generator calls after acquisition/save/readback failures, a standalone transport diagnostic without claims, distinct probe/reservation/candidate receipts, repeated real checks on the fixed branch, recovery of candidates saved during the preflight, and at most one generator call across independent workers and fresh-runtime retries. Lost or malformed claim responses cannot authorize generation, and lookup failures retain the reservation reference. A live transport check must use the actual worker's callbacks; successful current-chat transfer alone does not prove a scheduled worker received the same tools.
