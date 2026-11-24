@@ -16,10 +16,9 @@
 | サイト日次改善 | 毎日02:15 | 水曜は同じタスクで[週次SEO・UX点検](SEARCH_INDEX_REFRESH.md)を担当し、検索流入・登録状況・主要ページの導線を確認する。他の曜日は表示・操作の不具合、明示された未完画像と公開待ちを回収する |
 | 週刊グラビア編集・公開 | 毎日06:00 JST | 日曜〜土曜の7人を週初めに一度だけシャッフルして固定し、毎日当日担当1人の新しい10枚とコラムを公開する。既刊第1号は保持し、新号は公開済み特集だけを目次へ順に追加する。素材は既存のモデル別GPT制作チャットから受領し、編集・掲載担当は新規生成をしない。日次近況は下記の人物別既存タスクへ分担し、編集は未完了の復旧だけを扱う。新しいタスク・workflowは作らない。既存7人の制作タスクは毎日の近況と、EDITORIAL_LOOP「写真ストックと制作量」に定める在庫連動の補充・原本受渡しを同じ既存枠で行う。100枚は累計目標で、追加の枠や臨時起動による埋め合わせはしない。形式・固定順・遅延・品質・プロフィールはEDITORIAL_LOOPを正本とする |
 | 未来相場観測室 | 平日08:30（寄り前）・09:40（寄り後）・12:40（後場）・15:50（引け後）の4枠 | 週20枠。確認できた日米の市況と注目株の値動き・公表材料を既存枠で届ける。新材料がない枠は見送る。記事・出典・既刊の扱いは[SERIAL_EDITING_GUIDE](SERIAL_EDITING_GUIDE.md#未来相場観測室の市況と注目株)を参照 |
-| X朝 | 毎日08:00 | 本人が手動投稿する原稿。送信・予約はしない |
+| X朝・X夜 | 一時停止 | 手動投稿の原稿案と配信後の編集メモ。記事紹介の自動投稿・送達監視は下記の担当が継続する |
 | X自動投稿（記事紹介のみ） | cron 09:05〜21:05＋同一枠の複数再確認＋記事公開push 09:00〜21:59 | 通常ニュースと株連載（選定はsocial-bot/article-picks/README.md）から論理7枠（09:05〜21:05、2時間刻み）ごとに最大1本、記事レーンで1日最大7本。同一枠のcron/push重複と、Buffer実送信時刻からの最低2時間間隔を別々に判定する。Actionsの遅延時刻や停止済み旧レーンの履歴を記事枠消費には使わないが、同じXチャンネルの実送信は間隔判定へ含める。送信中・直近の予約・時刻不明の送信は安全側でその枠を見送り、後から埋め合わせない。選定記事はBuffer `shareNow`で即時送信を依頼し、通常キュー待ちにしない。`createPost`の同一成功応答からstatus・createdAt・sentAt・externalLink等の初期provider証拠を保存する。state保存だけ失敗した復旧ではsentAt/dueAtを優先し、送信途中ならcreatedAtから元の論理枠へ帰属させ、各枠約30分後に読み取り専用の送達監査で再照合する。workflow完了直後の監査ではBuffer `sending`を15分以内なら正常な送信中として扱い、15分超だけ要確認にする。`error`時はBufferの表示用messageとHTTPS supportUrlだけを保存し、rawErrorは扱わない。各論理枠は主チェックに加えて同一枠内で複数回再確認し、定時cronが一部欠落・遅延しても次枠まで待たない。詳細時刻はsocial-bot/README.mdとworkflowを正本とする。既存のslot/slug/provider重複防止と同一concurrencyで二重送信を防ぐ。公開pushもcron欠落時の補助で、07:30/23:30枠はBufferへ接続しない。旧シュール・useful・漫画は自動送信しない。危機ニュースは自動除外 |
 | X配信監視・夜間の未公開原稿回収（補助） | 毎日22:40 | workflow側の各論理枠の再確認・送達監査を主系とし、GPTの補助確認は前回の取得成功時点以降の新しい送達・実投稿・実異常を1日1回まとめて扱う。Xの必要な確認後、下記「既存PRの停止・公開待ちの回収」の条件を満たす初読・承認後・通常統合の明示未完を同じ実行で最大1PR回収する。正常な履歴の再監査・追加起動・定例報告を増やさない |
-| X夜 | 毎日23:00 | 21:05の最終記事紹介後に実配信・反応を読み、翌日への編集メモ。日曜は週次比較も実施 |
 
 | 内容 | 正本 |
 | --- | --- |
@@ -150,11 +149,11 @@ GPTは許可の保存と再読後に「CI・公開検証へ移譲済み」とし
 
 ### 7人の近況
 
-日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。当日分の投稿記録があれば、当日のID・未来時刻の件数と照合元だけを返す。未投稿の日に写真台帳を取得し、本人設定・直近3投稿・既刊写真候補を返す。
+日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。当日分の投稿記録があれば、当日のID・未来時刻の件数と照合元だけを返す。未投稿なら本人設定・直近3投稿・写真候補の説明と出典を読む。選んだ1枚の保存パスと版付きURLは、その候補を`C.photoLocation(photo)`に渡して取得する。
 
 ```js
 const C = new Function(helperSource + "\nreturn CastStoryContext;")();
-text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString(), skipIfRecorded: true}));
+text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString(), skipIfRecorded: true, compactPhotos: true}));
 ```
 
 `fetchFile`は実際に露出したGitHubの`fetch_file`へ束縛する。`story_records_only`は当日記録の照合、`metadata_only`は投稿準備用のメタデータ照合を示す。どちらも実画像と本番配信は未確認。`open_prs: unknown`を0件とせず、本人のPRだけ別に確認する。当日既刊があれば追加しない。新規投稿は返却された `source.story_path`（本人専用ファイル）へ原文を1件追記し、そのファイルの `blob_shas` を照合して通常のPRへ進める。CLIの `adopt_cast_story.py --write` も同じ場所を使う。採用時は下記の既存原文・写真照合を通す。

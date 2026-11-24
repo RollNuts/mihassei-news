@@ -263,6 +263,9 @@ test("daily creator reads both story streams, omits the catalog on a recorded JS
   assert.equal(Object.hasOwn(result, "photos"), false);
   assert.deepEqual(transport.calls.map(call => call.path), ["content/photo_stories.json", result.source.story_path]);
   assert.deepEqual(Object.keys(result.source.blob_shas).sort(), transport.calls.map(call => call.path).sort());
+  const compactReader = reader(input);
+  assert.deepEqual(await context.read({ ...args, fetchFile: compactReader.fetchFile, compactPhotos: true }), result);
+  assert.deepEqual(compactReader.calls, transport.calls);
 
   input.stories.stories = [];
   const futureOnly = await context.read({ ...args, fetchFile: reader(input).fetchFile });
@@ -285,4 +288,23 @@ test("on a new JST day daily mode returns the same full input without rereading 
   assert.equal(transport.calls.length, 3);
   assert.equal(new Set(transport.calls.map(call => call.path)).size, 3);
   assert(transport.calls.every(call => call.ref === REF));
+});
+
+test("compact candidates keep the same order and recover the selected location without another read", async () => {
+  const input = fixture(), args = { ref: REF, modelId: input.modelId, now: NOW, skipIfRecorded: true };
+  input.stories.stories.push(story(input, 1, "2026-11-17T13:00:00Z", "03"));
+  const [first, second] = [reader(input), reader(input)];
+  const full = await context.read({ ...args, fetchFile: first.fetchFile });
+  const compact = await context.read({ ...args, fetchFile: second.fetchFile, compactPhotos: true });
+  const photos = full.photos.map(({ issue_slug, cut_id, image_sha256, alt, setting }) =>
+    ({ issue_slug, cut_id, image_sha256, alt, setting }));
+  assert.deepEqual(compact, { ...full, photos });
+  for (const [i, photo] of compact.photos.entries()) {
+    assert.deepEqual(context.photoLocation(photo), { path: full.photos[i].path, url: full.photos[i].url });
+  }
+  assert.deepEqual(second.calls, first.calls);
+  const photo = compact.photos[0];
+  assert.throws(() => context.photoLocation({ ...photo, issue_slug: "../another" }), /photo reference/);
+  assert.throws(() => context.photoLocation({ ...photo, cut_id: "00" }), /photo reference/);
+  assert.throws(() => context.photoLocation({ ...photo, image_sha256: "missing" }), /photo reference/);
 });
