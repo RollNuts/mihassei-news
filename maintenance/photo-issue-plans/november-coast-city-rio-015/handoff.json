@@ -557,9 +557,9 @@
     }
   },
   "post_publication_stock": {
-    "as_of_jst": "2026-11-23",
-    "basis_main_sha": "f435ac3f9be35deaf3157d30c64a2c06796fa1c4",
-    "source_candidate_commit": "be7b3336d87d596c783021895729efe3f274ba44",
+    "as_of_jst": "2026-11-24",
+    "basis_main_sha": "7ede25e612846bce4a108a9e6fa5503d8895f650",
+    "source_candidate_commit": "32d3e90e2f3d1ed16042a2c1c936d756d24af55a",
     "published_issue": "november-coast-city-rio-015",
     "published_original_pairs": 10,
     "originals_already_saved": 14,
@@ -570,19 +570,16 @@
       12
     ],
     "near_duplicate_hold_ordinals": [
+      1,
       5
     ],
-    "pending_review_ordinals": [
-      1,
-      6,
-      12
-    ],
-    "known_usable_unpublished_count": 0,
-    "pending_review_count": 3,
+    "pending_review_ordinals": [],
+    "known_usable_unpublished_count": 2,
+    "pending_review_count": 0,
     "confirmed_transit_pending_count": 0,
     "unknown_unreceived_count": null,
-    "next_issue_shortfall_confirmed": 10,
-    "next_issue_shortfall_if_all_pending_pass": 7,
+    "next_issue_shortfall_confirmed": 8,
+    "next_issue_shortfall_if_all_pending_pass": 8,
     "inventory_target": 30,
     "weekly_attempts": {
       "week_start_jst": "2026-11-22",
@@ -590,7 +587,7 @@
       "known_consumed": null,
       "remaining": null,
       "new_attempts_in_this_run": 0,
-      "evidence": "No generation-attempts.json at existing candidate; actual same-week generation call count not independently reconstructed; do not infer zero."
+      "evidence": "2026-11-24 stock-shioba-rio reservation branch search returned no match; task peek exposes current/latest run only, not complete historical image calls and interrupted attempts. Full week 2026-11-22–28 consumption still unconfirmed; no reservation."
     },
     "preflight": {
       "cloud_guard": "active",
@@ -601,8 +598,56 @@
         "error_class": "BLOCKED_FILE_REFERENCE",
         "message": "this file is unavailable for connector egress"
       },
-      "generation_permitted": false
+      "generation_permitted": false,
+      "previous_probe_retained": true,
+      "current_note": "read_weekly_candidate_png is now exposed but only for saved candidate paths; not a new-source transport proof. Do not re-fetch saved originals or repeat unchanged blocked local path. Current run no new source returned.",
+      "current_guard": {
+        "state": "active",
+        "checked_at": "2026-11-24T00:19:02.537Z",
+        "archive_bytes": 56850145
+      }
     },
-    "next_action": "Keep 01/06/12 in original candidate without redelivery; editor visual-review for usable stock, preserve 05 hold; producer must first prove native file-reference/PNG read and remote SHA readback and reconstruct weekly attempts before new generation. Use same candidate, no repeated uploads."
+    "next_action": "Retain 06/12 as two reviewed unpublished stock (clothed), hold 01/05. Next issue needs at least 8 distinct originals, prioritize new swimwear shots with varied framing. Reconcile actual weekly attempts and prove new-original transport before reservation or generation; no duplicate transfer. Existing editing team to select only after ten usable distinct photos.",
+    "usable_original_ordinals": [
+      6,
+      12
+    ],
+    "stock_review": {
+      "reviewed_at_utc": "2026-11-24T00:19:01.722Z",
+      "candidate_commit": "32d3e90e2f3d1ed16042a2c1c936d756d24af55a",
+      "prior_raw_verification_commit": "be7b3336d87d596c783021895729efe3f274ba44",
+      "basis_main_sha": "7ede25e612846bce4a108a9e6fa5503d8895f650",
+      "review_method": "Previously verified original SHA and immutable raw/JPEG blob identities matched candidate tree; new full JPEG SHA recomputation and actual visual display on 2026-11-24, compared to published 015 cut09/10 and 002 cut02/10. No raw re-fetch or retransmission.",
+      "decisions": [
+        {
+          "ordinal": 1,
+          "raw_sha256": "269d29d999039eda179343bb4e10ef11351a2f8e3da9c546c004ac907c8dcabc",
+          "jpeg_sha256": "e325237f9aa3cc06e8c9561b4c9504cc3e4db4a65510e17a1098235448ec0cce",
+          "decision": "hold_near_duplicate",
+          "reason": "015 cut09と別SHA・異なるズボンだが海沿いの柵、ベージュコート、歩行姿勢、縦全身構図が近く、次号の独立候補として保留。"
+        },
+        {
+          "ordinal": 5,
+          "raw_sha256": "038149cc1fc32ea7ed38bcacf27984d2c5dad7c073e6c88818bb57efc4dd6e77",
+          "jpeg_sha256": "db282cb4046d8cd2231edd0697d68ab120b88851b7bd056ddf7e2639ba79b549",
+          "decision": "hold_near_duplicate",
+          "reason": "既存保留を維持：01との近似。"
+        },
+        {
+          "ordinal": 6,
+          "raw_sha256": "56413ed388635c9a9082fdbaa01ab778e277de2dda7d2d702ab555bd2718e935",
+          "jpeg_sha256": "886ff1a7a957a9fd3e92bc32de0f45c08d01b992e909c6822e16b4dec6fa221b",
+          "decision": "usable_unpublished_stock",
+          "reason": "窓辺のバー、黒いブラウス、両手でグラス、横顔の座り構図。015 cut10の赤いドレスの後ろ姿及び002 cut10の頬杖近景と区別できる。"
+        },
+        {
+          "ordinal": 12,
+          "raw_sha256": "1007b76600e69ff08f8be8d6e69a8c4c80f0b6e005e9d6b534aea721620dc617",
+          "jpeg_sha256": "e3adef693bf0ae033459071634f556594121db1cbe1096f1c29f937d260c42c0",
+          "decision": "usable_unpublished_stock",
+          "reason": "山と湖を背景に白ニットとチェック柄、横長の正面寄り。既刊の雪山遠景や海沿いの写真と明確に異なる。"
+        }
+      ]
+    }
   }
 }
