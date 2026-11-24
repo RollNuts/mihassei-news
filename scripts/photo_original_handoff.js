@@ -468,22 +468,21 @@ var PhotoOriginalHandoff = (() => {
     // Restore only the requested split original. The stock receipt determines the numbered destination.
     async function numberedSource(ref, verifyOwner) {
       const dir = directory(ref.issue), branch = "photo-issue-plan/" + ref.issue;
-      const head = await get("/branches/" + branch), base = head.commit?.sha, tree = head.commit?.commit?.tree?.sha;
-      requireThat(head.name === branch && GIT.test(base) && GIT.test(tree), "Unverified candidate branch");
+      requireThat(GIT.test(ref.commit), "Invalid immutable original reference");
+      // Comparing in reverse returns the named candidate head and its tree. An ancestor
+      // receipt contributes no additional commits to the response.
+      const lineage = await get("/compare/" + encodeURIComponent(branch) + "..." + ref.commit + "?per_page=1");
+      const base = lineage.base_commit?.sha, tree = lineage.base_commit?.commit?.tree?.sha;
+      requireThat(GIT.test(base) && GIT.test(tree), "Unverified candidate branch");
+      requireThat(lineage.merge_base_commit?.sha === ref.commit &&
+        lineage.status === (base === ref.commit ? "identical" : "behind"), "Receipt commit is outside its candidate branch");
       const entries = (await treeFiles(tree)).tree;
       const record = await originalRecord(ref, entries), asset = completeAsset(record, ref.source_sha256);
       requireThat(Number.isSafeInteger(asset.source_ordinal) &&
         record.assets.filter(a => a.source_ordinal === asset.source_ordinal).length === 1 &&
         asset.parts.every(p => entries.some(f => f.path === partPath(dir, asset.source_sha256, p.index) &&
           f.type === "blob" && f.mode === "100644" && f.sha === p.blob)), "Ambiguous ordinal or changed candidate parts");
-      if (verifyOwner) {
-        await checkProducer(record);
-        if (ref.commit !== base) {
-          const lineage = await get("/compare/" + ref.commit + "..." + base + "?per_page=1");
-          requireThat(lineage.merge_base_commit?.sha === ref.commit && lineage.status === "ahead",
-            "Receipt commit is outside its candidate branch");
-        }
-      }
+      if (verifyOwner) await checkProducer(record);
       const path = dir + "/" + String(asset.source_ordinal).padStart(2, "0") + ".png";
       const existing = entries.find(f => f.path === path);
       requireThat(!entries.some(f => path.startsWith(f.path + "/") && (f.type !== "tree" || f.mode !== "040000")) &&
@@ -539,26 +538,42 @@ var PhotoOriginalHandoff = (() => {
         message:"Restore numbered photo original for " + ref.issue});
       return {base:expectedHead, commit:gitId(commit, "commit")};
     }
-    async function publishNumberedOriginal(ref, uploaded, plan) {
+    async function numberedPublication(ref, uploaded, plan, readbackOnly) {
       const source = await numberedSource(ref, true);
       checkNumberedUpload(ref, source, uploaded);
       requireThat(plan?.base === uploaded.base && GIT.test(plan.commit), "Invalid numbered original plan");
-      let commit = source.base;
+      const result = {branch:source.branch, commit:plan.commit, path:source.path, blob:uploaded.blob};
       if (source.existing) {
-        await verifyNumberedPng(ref, source, commit);
-      } else {
-        requireThat(commit === plan.base && plan.commit !== commit, "Candidate branch moved without this original");
-        const prepared = await parentFiles(plan.commit);
-        requireThat(prepared.parent.parents?.length === 1 && prepared.parent.parents[0].sha === commit &&
-          prepared.files.tree.some(f => f.path === source.path && f.mode === "100644" && f.type === "blob" &&
-            f.sha === uploaded.blob), "Commit differs from prepared numbered original");
-        checkOnlyAdded(source.entries, prepared.files.tree, [source.path]);
-        await verifyNumberedPng(ref, source, plan.commit);
-        await write("update_ref", {branch_name:source.branch, sha:plan.commit, expected_sha:commit, force:false});
-        commit = await reviewHead(source.branch);
-        requireThat(commit === plan.commit, "Numbered original branch update not confirmed");
+        requireThat(source.base === plan.commit, "Candidate branch moved beyond this numbered original");
+        if (plan.base !== plan.commit) {
+          // A lost reply does not certify the commit. Check its parent and only permitted addition.
+          const landed = await get("/git/commits/" + plan.commit);
+          requireThat(landed.sha === plan.commit && landed.tree?.sha === source.tree &&
+            landed.parents?.length === 1 && landed.parents[0].sha === plan.base, "Commit differs from prepared numbered original");
+          checkOnlyAdded((await parentFiles(plan.base)).files.tree, source.entries, [source.path]);
+        }
+        await verifyNumberedPng(ref, source, source.base);
+        requireThat(await reviewHead(source.branch) === plan.commit, "Numbered original branch update not confirmed");
+        return {status:"numbered_original_staged", ...result};
       }
-      return {status:"numbered_original_staged", branch:source.branch, commit, path:source.path, blob:uploaded.blob};
+      requireThat(!readbackOnly, "Numbered original branch update not confirmed");
+      requireThat(source.base === plan.base && plan.commit !== source.base, "Candidate branch moved without this original");
+      const prepared = await parentFiles(plan.commit);
+      requireThat(prepared.parent.parents?.length === 1 && prepared.parent.parents[0].sha === source.base &&
+        prepared.files.tree.some(f => f.path === source.path && f.mode === "100644" && f.type === "blob" &&
+          f.sha === uploaded.blob), "Commit differs from prepared numbered original");
+      checkOnlyAdded(source.entries, prepared.files.tree, [source.path]);
+      await verifyNumberedPng(ref, source, plan.commit);
+      await write("update_ref", {branch_name:source.branch, sha:plan.commit, expected_sha:source.base, force:false});
+      return {status:"submitted_pending_branch_readback", ...result};
+    }
+    const submitNumberedOriginal = (ref, uploaded, plan) => numberedPublication(ref, uploaded, plan, false);
+    const confirmNumberedOriginal = (ref, uploaded, plan) => numberedPublication(ref, uploaded, plan, true);
+    async function publishNumberedOriginal(ref, uploaded, plan) {
+      const saved = await submitNumberedOriginal(ref, uploaded, plan);
+      if (saved.status === "numbered_original_staged") return saved;
+      requireThat(await reviewHead(saved.branch) === saved.commit, "Numbered original branch update not confirmed");
+      return {...saved, status:"numbered_original_staged"};
     }
     async function uploadReviewJpeg(ref, original) {
       const record = await originalRecord(ref);
@@ -1384,7 +1399,7 @@ var PhotoOriginalHandoff = (() => {
     return {upload, uploadDataUrl, checkOriginalTransport, prepare, publish, readOriginal, prepareSuppliedCut, openReviewedSelection, openUnassignedStock,
       startReviewedPacket, continueReviewedPacket, readReviewedRelease, prepareReviewedTree,
       planNumberedStockCut, readStockCut, readStagedStockCut, checkStockSiblings, prepareStockCutTree, commitStockCutTree, publishStockCut,
-      uploadNumberedOriginal, prepareNumberedOriginal, publishNumberedOriginal,
+      uploadNumberedOriginal, prepareNumberedOriginal, submitNumberedOriginal, confirmNumberedOriginal, publishNumberedOriginal,
       prepareCheckpoint, publishCheckpoint, restoreCheckpoint, readCheckpointOriginal,
       readOriginalStep, readCheckpointOriginalStep, uploadReviewJpeg, prepareReviewJpeg, publishReviewJpeg, readReviewJpeg};
   }

@@ -48,6 +48,14 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
         return state.comparison ?? {base_commit:{sha:main},merge_base_commit:{sha:main},status:"identical"};
       if (path.startsWith("/compare/")) {
         const [base, head] = path.slice(9).split("?")[0].split("...");
+        const branch = decodeURIComponent(base);
+        if (branch.startsWith("photo-issue-plan/")) {
+          const tip = branches.get(branch);
+          let ancestor = tip;
+          while (ancestor && ancestor !== head) ancestor = commits.get(ancestor)?.parents[0]?.sha;
+          return {base_commit:{sha:tip,commit:{tree:commits.get(tip)?.tree}}, merge_base_commit:{sha:ancestor},
+            status:tip === head ? "identical" : ancestor === head ? "behind" : "diverged"};
+        }
         let cursor = head;
         while (cursor && cursor !== base) cursor = commits.get(cursor)?.parents[0]?.sha;
         return {merge_base_commit:{sha:cursor}, status:cursor === base ? "ahead" : "diverged"};
@@ -562,7 +570,7 @@ test("restores only the chosen numbered PNG under the candidate lease in bounded
   assert.equal(state.writes.length,afterWrite);
 });
 
-test("confirms a newly advanced numbered original against the live ref in a cold cell", async () => {
+test("numbered upload, prepare, submit and exact readback each fit 16 calls including cold imports", async () => {
   const {api,state,resetGuard} = setup(), input = packet(), sha = hash(png);
   input.assets = [{...await api.uploadDataUrl(dataUrl(png),sha),source_ordinal:2}];
   const staged = await api.publish(input,await api.prepare(input));
@@ -571,19 +579,48 @@ test("confirms a newly advanced numbered original against the live ref in a cold
   const base = sha1("advanced candidate");
   state.commits.set(base,{sha:base,tree:state.commits.get(staged.commit).tree,parents:[{sha:staged.commit}]});
   state.branches.set(staged.branch,base);
-  const upload = await api.uploadNumberedOriginal(ref,await api.readOriginalStep(ref));
-  const plan = await api.prepareNumberedOriginal(ref,upload,base);
+  const verified = await api.readOriginalStep(ref);
+  async function cell(operation) {
+    resetGuard();
+    const before = state.reads.length + state.writes.length;
+    try {return await operation();}
+    finally {
+      const calls = 4 + state.reads.length + state.writes.length - before;
+      assert.ok(calls <= 16, "Cold verification imports and callbacks: " + calls);
+    }
+  }
+  const upload = await cell(() => api.uploadNumberedOriginal(ref,verified));
+  const plan = await cell(() => api.prepareNumberedOriginal(ref,upload,base));
+  state.branches.set(staged.branch,main);
+  await assert.rejects(cell(() => api.submitNumberedOriginal(ref,upload,plan)), /outside its candidate branch/);
+  state.branches.set(staged.branch,base);
   state.discardUpdate = true;
-  await assert.rejects(api.publishNumberedOriginal(ref,upload,plan),/update not confirmed/);
+  const submit = () => cell(() => api.submitNumberedOriginal(ref,upload,plan));
+  const confirm = () => cell(() => api.confirmNumberedOriginal(ref,upload,plan));
+  assert.equal((await submit()).status,"submitted_pending_branch_readback");
+  const attempts = state.writes.length;
+  await assert.rejects(confirm(),/update not confirmed/);
+  assert.equal(state.writes.length,attempts);
   assert.equal(state.branches.get(staged.branch),base);
   state.discardUpdate = false;
-  resetGuard();
-  const callbacksBefore = state.reads.length + state.writes.length;
-  const saved = await api.publishNumberedOriginal(ref,upload,plan);
-  const callbacks = state.reads.length + state.writes.length - callbacksBefore;
-  assert.ok(callbacks <= 15, "Cold publish used " + callbacks + " callbacks");
+  state.lost = true;
+  await assert.rejects(submit(), /lost response/);
+  state.lost = false;
+  const saved = await confirm();
+  assert.equal(saved.status,"numbered_original_staged");
   assert.equal(saved.commit,plan.commit);
   assert.equal(state.branches.get(staged.branch),saved.commit);
+  assert.equal(state.writes.length,attempts+1);
+
+  const landedFiles = state.trees.get(state.commits.get(saved.commit).tree.sha);
+  landedFiles.push({path:"content/articles.json",type:"blob",mode:"100644",sha:sha1("unrelated change")});
+  await assert.rejects(confirm(), /other candidate files/);
+  landedFiles.pop();
+  const later = sha1("later candidate with the same PNG");
+  state.commits.set(later,{sha:later,tree:state.commits.get(saved.commit).tree,parents:[{sha:saved.commit}]});
+  state.branches.set(staged.branch,later);
+  await assert.rejects(confirm(), /moved beyond/);
+  assert.equal(state.writes.length,attempts+1);
 });
 
 test("a cold JPEG conversion can read a larger numbered original without carrying part bytes", async () => {

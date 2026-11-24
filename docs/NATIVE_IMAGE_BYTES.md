@@ -682,10 +682,12 @@ Read the numbered PNG with `read_weekly_candidate_png` and the recorded JPEG wit
 const verified = await original.readOriginalStep(ref); // Continue a pending read with its state.
 const uploaded = await original.uploadNumberedOriginal(ref, verified);
 const plan = await original.prepareNumberedOriginal(ref, uploaded, uploaded.base);
-const saved = await original.publishNumberedOriginal(ref, uploaded, plan);
+const submitted = await original.submitNumberedOriginal(ref, uploaded, plan);
+// In the next cell if submission is pending or its reply was lost:
+const saved = await original.confirmNumberedOriginal(ref, uploaded, plan);
 ```
 
-Use `saved.commit` as the stock revision for both reads and for `openUnassignedStock`. This restores the selected source at its receipt ordinal on the existing candidate branch. The editor still chooses the release cuts after visual inspection. The release receipt retains the stock paths, original ordinal and split receipt.
+Use the commit returned with `numbered_original_staged` as the stock revision for both reads and for `openUnassignedStock`. Keep the same plan for confirmation. A pending response still needs a readback of the exact candidate head and PNG. If the branch moved, reopen its current head before preparing another update. The editor still chooses the release cuts after visual inspection. The release receipt retains the stock paths, original ordinal and split receipt.
 
 Use the weekly editor's normal release PR. For a new release branch, use the latest `main` commit as parent and its tree as `base_tree_sha`. For an existing release PR, use its current reviewed head and tree to preserve its other edits. Keep staging files and unused stock on the pinned candidate commit. If a release PR already includes staging-only additions, exclude those additions from its proposed release tree, preserving its other edits and the original candidate commit. Reuse that PR. Add the selected images, receipts, QA and catalog changes at their release paths. Check the full PR diff against `allowed_for("photo_issue", path)`. Within `maintenance/photo-issue-plans/<issue>/`, the finalizer accepts only matching JSON files directly in that directory. Verify that the destination blob IDs match. Before advancing a release ref, reread its head, use the reviewed head as the parent and set `force: false`. If the head moved, reconcile the changes before handing off the final PR head. See [finalizer path scope](../scripts/publication_finalize.py) and [publication handoff](OPERATIONS.md).
 
