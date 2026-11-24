@@ -13,6 +13,7 @@
     ]
   },
   "producer_handoff": {
-    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/3dec5796f9ad0f3aebc280779b7c228bbe735d83/maintenance/photo-issue-plans/november-mio-on-the-move-016/weekly-generation-coverage-20261122.json"
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/0ceca247dc55f020f0b8202f4bac0b6afd081660/maintenance/photo-issue-plans/november-mio-on-the-move-016/weekly-generation-coverage-20261122.json",
+    "weekly_quota_next_step": "当週の正規台帳 photo-issue-plan/stock-hanase-mio-2026-11-22 を使う。現在の本人枠で原本を返す画像ツールを確認し、最新mainの docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport で実際の返却経路を検証後、通常の1枚予約へ進む。"
   }
 }
