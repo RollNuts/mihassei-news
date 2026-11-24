@@ -10,7 +10,7 @@
 <path stroke="#80664f" stroke-width="12" d="M301 60v375M53 382h498"/>
 <path fill="#e6c68f" d="M580 45h574v376H580z"/>
 <circle cx="1010" cy="130" r="61" fill="#f8f0df" stroke="#78644c" stroke-width="9"/>
-<path d="M1010 82v14m48 34h-13m-35 48v-14m-48-34h13M1010 130v-31m0 31 29 17" fill="none" stroke="#78644c" stroke-width="7" stroke-linecap="round"/>
+<path d="M1010 82v14m48 34h-13m-35 48v-14m-48-34h13M1010 130v-42m0 42-21 36" fill="none" stroke="#78644c" stroke-width="7" stroke-linecap="round"/>
 <path fill="#eee8db" stroke="#8a7967" stroke-width="10" d="M634 240h470v227H634z"/>
 <path fill="#d6e2df" d="M649 256h440v91H649z"/>
 <path stroke="#a7b4ad" stroke-width="8" d="M647 349h443M672 325h98m36 0h98m36 0h116"/>
