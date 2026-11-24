@@ -35,6 +35,29 @@ var PhotoOriginalHandoff = (() => {
   function matchesProducer(packet, producer) {
     return producer?.model_id === packet.model_id && producer.source_chat_url === packet.source_chat_url;
   }
+  function similarSourceGroups(handoff, rows) {
+    const groups = handoff.editorial?.near_similar_source_ordinal_groups;
+    if (groups === undefined) return [];
+    requireThat(Array.isArray(groups), "Invalid near-similar group list");
+    return groups.map(group => {
+      requireThat(Array.isArray(group) && group.length >= 2, "Invalid near-similar group");
+      const hashes = group.map(ordinal => {
+        const matches = rows.filter(row => row.source_ordinal === ordinal);
+        requireThat(Number.isSafeInteger(ordinal) && ordinal > 0 && matches.length === 1,
+          "Unknown or ambiguous near-similar source ordinal");
+        const hash = handoff.kind === "photo_original_recovery_handoff"
+          ? matches[0].source_sha256 : matches[0].source?.sha256;
+        requireThat(typeof hash === "string" && HASH.test(hash), "Missing near-similar source hash");
+        return hash;
+      });
+      requireThat(new Set(hashes).size === group.length, "Repeated near-similar source");
+      return hashes;
+    });
+  }
+  function checkDistinctSelection(groups, selectedHashes) {
+    requireThat(groups.every(group => group.filter(hash => selectedHashes.has(hash)).length <= 1),
+      "Near-similar photos must not be selected together in this feature");
+  }
   function validReviewSize(jpeg) {
     return Number.isInteger(jpeg.bytes) && jpeg.bytes >= 16000 && jpeg.bytes <= 700 * 1024 &&
       [jpeg.width, jpeg.height].every(n => Number.isInteger(n) && n >= 320 && n <= 1200);
@@ -805,6 +828,11 @@ var PhotoOriginalHandoff = (() => {
       const sourceHandoff = commit === selectionCommit ? selectedHandoff : await handoff(commit);
       requireThat(matchesProducer(selectedHandoff, sourceHandoff) && same(selectedHandoff.candidates, sourceHandoff.candidates),
         "Selection and original handoff differ");
+      const selectedHashes = new Set(review.selected.map(cut => cut.source_sha256));
+      checkDistinctSelection(similarSourceGroups(selectedHandoff, selectedHandoff.candidates), selectedHashes);
+      if (sourceHandoff !== selectedHandoff) {
+        checkDistinctSelection(similarSourceGroups(sourceHandoff, sourceHandoff.candidates), selectedHashes);
+      }
       const producer = await checkProducer(sourceHandoff);
       const live = await reviewHead("main"), current = await catalog(live);
       const editing = releaseCommit === live ? current : await catalog(releaseCommit);
@@ -995,15 +1023,18 @@ var PhotoOriginalHandoff = (() => {
           i.issue_sha256 === issue.issue_sha256 && i.model_snapshot.master.sha256 === issue.model_snapshot.master.sha256 &&
           i.model_snapshot.body_profile_sha256 === issue.model_snapshot.body_profile_sha256) &&
         !current.some(i => i.slug === issue.slug && i.state === "published"), "Expected the editor's fixed draft for this producer");
-      const used = new Set();
-      for (const edition of [...current.filter(i => i.state === "published"), ...editing, issue]) {
+      const groups = similarSourceGroups(stock, stock.items);
+      const used = new Set(), featureSources = new Set();
+      for (const edition of [...current.filter(i => i.state === "published" || i.slug === issue.slug), ...editing, issue]) {
         for (const image of Object.values(edition.images)) {
           const digest = image.source_sha256 ?? image.source_png_sha256;
           if (edition.state === "published") requireThat(HASH.test(digest), "Published original identity is missing");
+          if (edition.slug === issue.slug && digest) featureSources.add(digest);
           if (digest) used.add(digest);
           if (image.sha256) used.add(image.sha256);
         }
       }
+      checkDistinctSelection(groups, featureSources);
       async function directoryAtCommit(name) {
         const entries = await get("/contents/" + prefix + name + "?ref=" + commit);
         requireThat(Array.isArray(entries), "Missing stock directory at the fixed revision");
@@ -1013,7 +1044,8 @@ var PhotoOriginalHandoff = (() => {
       const evidence = {source_issue:stockIssue, handoff_sha256:hashText(file.content), originals_receipt_commit:original.commit,
         originals_receipt_path:original.path, originals_receipt_sha256:original.sha256};
       const chosen = new Map();
-      return {prepareCut({sourceOrdinal, cutId, readback, importedAt}) {
+      const nearSimilarGroups = stock.editorial?.near_similar_source_ordinal_groups ?? [];
+      return {nearSimilarGroups, prepareCut({sourceOrdinal, cutId, readback, importedAt}) {
         const rows = stock.items.filter(i => i.source_ordinal === sourceOrdinal), row = rows[0];
         requireThat(rows.length === 1 && Number.isSafeInteger(sourceOrdinal) && sourceOrdinal > 0 && sourceOrdinal <= 99 &&
           row.formal_editorial_adoption === "pending" && row.source_visual_screening === "passed_candidate_screening" &&
@@ -1024,6 +1056,7 @@ var PhotoOriginalHandoff = (() => {
         "Source already used, ambiguous, or unavailable for this cut");
         requireThat([...chosen].every(([cut, hash]) => (cut === cutId) === (hash === row.source_sha256)),
           "Stock source or publication cut already selected in this batch");
+        checkDistinctSelection(groups, new Set([...featureSources, row.source_sha256]));
         const asset = completeAsset(record, row.source_sha256);
         const sourcePath = prefix + "originals/" + String(sourceOrdinal).padStart(2,"0") + ".png";
         const sourceEntry = originals.get(sourcePath), saved = row.prepared_jpeg, jpegEntry = jpegs.get(saved.path);
@@ -1049,6 +1082,7 @@ var PhotoOriginalHandoff = (() => {
           jpeg:{...jpeg, data:verifiedJpeg(readback.jpeg, jpeg)}};
         const result = prepareCut({issue, cutId, producer:record, candidate, readback:measured, importedAt}, stockIssue, evidence);
         chosen.set(cutId, row.source_sha256);
+        featureSources.add(row.source_sha256);
         return result;
       }};
     }

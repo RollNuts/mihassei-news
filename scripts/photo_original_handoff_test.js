@@ -771,6 +771,7 @@ function unassignedStockFixture() {
 test("an editor can prepare an unassigned split-receipt original for a first draft at a different slug", async () => {
   const fixture = unassignedStockFixture(), {cut,item,params,handoff,requests} = fixture;
   const batch = await fixture.open(), reads = requests.length;
+  assert.deepEqual(batch.nearSimilarGroups, []);
   const result = batch.prepareCut(cut), record = JSON.parse(result.files[2].content);
   assert.equal(result.status, "prepared_not_published");
   assert.equal(record.issue_slug, params.issue.slug);
@@ -788,6 +789,30 @@ test("an editor can prepare an unassigned split-receipt original for a first dra
   assert.equal(requests.length,reads);
   assert.equal(requests.filter(req=>req[1]==="content/photo_issues.json").length,2);
   assert.ok(requests.length <= 15);
+});
+
+test("stock respects the editor's similar pairs in one feature, including a reopened draft", async () => {
+  const {open, cut, item, inventory, handoff, params} = unassignedStockFixture();
+  const groups = [[1,8], [2,6], [3,4]];
+  handoff.editorial = {near_similar_source_ordinal_groups:groups};
+  for (let ordinal=2; ordinal<=8; ordinal++) {
+    handoff.items.push({...item, source_ordinal:ordinal, source_sha256:hash("original " + ordinal),
+      prepared_jpeg:{...item.prepared_jpeg, sha256:hash("jpeg " + ordinal)}});
+  }
+  const batch = await open();
+  assert.deepEqual(batch.nearSimilarGroups, groups);
+  const first = batch.prepareCut(cut);
+  assert.deepEqual(batch.prepareCut(cut), first);
+  assert.throws(() => batch.prepareCut({...cut, cutId:"08", sourceOrdinal:8}), /Near-similar photos/);
+  inventory.editing = [{...params.issue, images:{"09":first.image}}];
+  const reopened = await open();
+  assert.throws(() => reopened.prepareCut({...cut, cutId:"08", sourceOrdinal:8}), /Near-similar photos/);
+  inventory.editing = [{...params.issue, slug:"previous-feature", images:{"08":{source_sha256:hash("original 8")}}}];
+  assert.deepEqual((await open()).prepareCut(cut), first);
+  for (const invalid of [null, 1, [[1]], [[1,1]], [[1,9]], [[1,"8"]]]) {
+    handoff.editorial.near_similar_source_ordinal_groups = invalid;
+    await assert.rejects(open, /near-similar/);
+  }
 });
 
 test("unassigned stock rejects reassignment, swapped evidence, published originals and repeated sources", async () => {
@@ -1016,7 +1041,7 @@ function reviewedSelectionFixture() {
   }
   const api = helper.create({runtime:{...bytes,sha256:hash}, github, readWeeklyPng});
   const open = () => api.openReviewedSelection({issue, selectionCommit, releaseCommit, importedAt:"2026-11-24T00:00:00Z"});
-  return {open, rows, review, issue, inventory, files, reads, originals, github, readWeeklyPng, releaseCommit, selectionCommit};
+  return {open, rows, review, handoff, issue, inventory, files, reads, originals, github, readWeeklyPng, releaseCommit, selectionCommit};
 }
 
 test("saved editorial selection prepares ten existing pairs, resumes at a matching draft, and preserves real source ordinals", async () => {
@@ -1042,6 +1067,15 @@ test("saved editorial selection prepares ten existing pairs, resumes at a matchi
     assert.equal(result.image.sha256, row.jpeg.sha256);
     assert.ok(!Object.hasOwn(result.image, "review"));
   }
+});
+
+test("numbered selection resolves similarity by source ordinal and refuses ambiguous archive ordinals", async () => {
+  const {open, rows, handoff} = reviewedSelectionFixture();
+  rows.forEach((row, index) => { row.source_ordinal = index + 1; });
+  handoff.editorial = {near_similar_source_ordinal_groups:[[1,8]]};
+  await assert.rejects(open, /Near-similar photos/);
+  rows[1].source_ordinal = 1;
+  await assert.rejects(open, /ambiguous near-similar/);
 });
 
 test("saved selection refuses substitutions, duplicate cuts, occupied releases and corrupted pairs", async () => {
