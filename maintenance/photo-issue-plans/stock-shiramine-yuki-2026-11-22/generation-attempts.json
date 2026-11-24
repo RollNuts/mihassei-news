@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "model_id": "shiramine-yuki",
+  "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
+  "week_start": "2026-11-22",
+  "baseline": {
+    "mode": "reconciled",
+    "model_id": "shiramine-yuki",
+    "week_start": "2026-11-22",
+    "coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/d8fd62b94ec42c8a4cb50beaa8776931a224b5b1/maintenance/photo-issue-plans/november-warm-water-and-riverside-yuki-009/weekly-generation-coverage-20261122.json",
+    "prior_attempts": []
+  },
+  "attempts": []
+}
