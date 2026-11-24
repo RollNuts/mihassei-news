@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "model_id": "hanase-mio",
+  "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+  "source_handoff": {
+    "commit": "108dd3cfd7df0e446615cec8ef413d3ca4d10c05",
+    "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+    "reserve": [
+      "05",
+      "09",
+      "10",
+      "12"
+    ]
+  },
+  "producer_handoff": {
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/3dec5796f9ad0f3aebc280779b7c228bbe735d83/maintenance/photo-issue-plans/november-mio-on-the-move-016/weekly-generation-coverage-20261122.json"
+  }
+}
