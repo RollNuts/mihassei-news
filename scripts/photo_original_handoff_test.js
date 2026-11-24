@@ -1377,6 +1377,7 @@ test("fresh bounded cells stage mixed shoots on one release and recover the exac
   assert.equal(secondReceived.recovery_reference.source_issue,stockIssue);
   assert.equal(firstReceived.recovery_reference.originals_receipt_sha256,indoor.handoff.originals_receipt.sha256);
   assert.equal(trees.get(head).length,6);
+  assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"01",commit:firstCommit.commit})),firstCut.image);
   assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"01",commit:head})),firstCut.image);
   assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"02",commit:head})),secondCut.image);
   assert.equal((await cell(api=>api.prepareStockCutTree(edition,first))).commit,head);
