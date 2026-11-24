@@ -4,7 +4,7 @@
   "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
   "week_start": "2026-11-22",
   "from": "2026-11-22T00:00:00+09:00",
-  "through": "2026-11-24T16:39:00+09:00",
+  "through": "2026-11-24T22:53:37+09:00",
   "prior_attempts_through_cutoff": [],
   "producer_results": [
     {
@@ -52,5 +52,17 @@
     "width": 1024,
     "height": 1536
   },
-  "next_operation": "本人枠でthrough以後の全実行・失敗・中断・並行候補と週の本人予約台帳を確認する。追加消費があれば根拠を追記し、不明なら予約しない。在庫不足時だけ、現実行で原本の保存・遠隔SHA読戻しの経路を実証してから固定記録をcoverage_refとして週次予約を行う。010の既刊10枚を再送しない。"
+  "next_operation": "当週の正規台帳 photo-issue-plan/stock-nagino-saya-2026-11-22 を使う。現在の本人枠で原本を返す画像ツールを確認し、最新mainの docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport で実際の返却経路を検証後、通常の1枚予約へ進む。",
+  "since_previous_cutoff": {
+    "from": "2026-11-24T16:39:00+09:00",
+    "previous_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/a8e640125cd0188e7537ca8d3d6d9c2ae645cc13/maintenance/photo-issue-plans/november-water-and-quiet-hours-saya-010/weekly-generation-coverage-20261122.json",
+    "regular_run_chat": "https://chatgpt.com/c/6afcd29c-bb44-83ec-ae2a-b0ae89baec02?automationId=6af876ee7a288191a528ed41f482223b",
+    "latest_result_pr": 994,
+    "observed": "別管理の定期枠は11月24日07:20の#994が終端。登録制作チャットの最新は11月19日の温泉衣装の返信。両方に追加の手動制作・進行中表示なし。",
+    "next_regular_slot": "2026-11-25T07:15:00+09:00",
+    "candidate_heads": {
+      "photo-issue-plan/november-water-and-quiet-hours-saya-010": "38ab52b20d0e382da401db73246586ad7d95aad2"
+    },
+    "weekly_ledger_path_history_on_main_and_candidates": []
+  }
 }
