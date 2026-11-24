@@ -95,8 +95,8 @@
     "prompt_updated_and_read_back": true,
     "final_prompt_sha256": "67668502b0323d198a792dc558ed71e2e190aaa0344afad98a4fa6a659266182",
     "completed_originals_will_not_be_regenerated_or_retransferred": true,
-    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/9ae4942230b254c13c07d01691ef95fcbedfbca7/maintenance/photo-issue-plans/november-hikari-city-and-pool-013/weekly-generation-coverage-20261122.json",
-    "weekly_quota_next_step": "移行週の11月22日から24日15:49 JSTまでは本人の3枠を照合済み。以後の区間と当週予約先を確認し、固定参照にあるnext_operationを続ける。公開済み原本02でGitHub読戻しを確認した記録はremote_read_checkを参照。"
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/c6921e0800a828f16d643c552c54348208531ec2/maintenance/photo-issue-plans/november-hikari-city-and-pool-013/weekly-generation-coverage-20261122.json",
+    "weekly_quota_next_step": "当週の正規台帳 photo-issue-plan/stock-amane-hikari-2026-11-22 を使う。現在の本人枠で原本を返す画像ツールを確認し、最新mainの docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport で実際の返却経路を検証後、通常の1枚予約へ進む。"
   },
   "usage": {
     "additional_automation_tasks": 0,
