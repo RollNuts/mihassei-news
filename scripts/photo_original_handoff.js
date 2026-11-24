@@ -7,14 +7,18 @@ var PhotoOriginalHandoff = (() => {
   const GIT = /^[0-9a-f]{40}$/, HASH = /^[0-9a-f]{64}$/;
   const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const UUID = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/;
+  const PROBE = {ref:"1d9b571b914d6c323a3821e46d23ae0d8e354f95", path:"assets/favicon-192.png",
+    blob:"6608aa987c11d56ea9d7910eb4c0770bb529da9d", sha256:"3713afa375160c13556a90f2347b151725ac5922498211d2d980c7c58176c40e",
+    bytes:3395};
   const PART = 512 * 1024, MAX = 8 * 1024 * 1024;
   function requireThat(condition, message) {
     if (!condition) throw Error(message);
   }
   function payload(reply) {
     const data = reply?.structuredContent ?? reply?.result ?? reply;
+    const code = data?.error_code ?? reply?.error_code;
     requireThat(data && !reply.isError && !data.isError && !reply.error && !data.error &&
-      !reply.error_code && !data.error_code, "Photo transport tool failed");
+      !reply.error_code && !data.error_code, "Photo transport tool failed" + (/^[a-zA-Z0-9_-]{1,48}$/.test(String(code ?? "")) ? " (" + code + ")" : ""));
     return data;
   }
   function gitId(data, kind) {
@@ -207,6 +211,38 @@ var PhotoOriginalHandoff = (() => {
     async function uploadDataUrl(dataUrl, expectedSha, start = 0, count = 1) {
       sourceReference(expectedSha, start, count);
       return uploadPng(dataUrl, expectedSha, start, count);
+    }
+    async function checkOriginalTransport({route, file} = {}) {
+      let operation = "select_route";
+      try {
+        requireThat(route === "inline_png" || route === "file", "Missing original PNG route");
+        if (route === "file") requireThat(file && typeof readCandidatePng === "function", "Missing file handle or readCandidatePng");
+        // The public fixture is already reachable. Its guarded write deduplicates to the same Git blob.
+        async function readFixture() {
+          const ref = await git("fetch_file", {ref:PROBE.ref, path:PROBE.path, encoding:"base64"});
+          requireThat(ref.sha === PROBE.blob && ref.encoding === "base64" && typeof ref.content === "string" &&
+            ref.content.length <= 8192, "Unexpected probe file");
+          const bytes = runtime.fromBase64(ref.content);
+          requireThat(bytes.length === PROBE.bytes && runtime.sha256(bytes) === PROBE.sha256, "Probe bytes changed");
+          return bytes;
+        }
+        operation = "fetch_file";
+        const bytes = await readFixture();
+        operation = route === "file" ? "readCandidatePng/upload" : "uploadDataUrl";
+        const saved = route === "file" ? await upload(file, PROBE.sha256) :
+          await uploadDataUrl("data:image/png;base64," + runtime.toBase64(bytes), PROBE.sha256);
+        requireThat(saved.next === null && saved.parts.length === 1 && saved.parts[0].blob === PROBE.blob, "Unconfirmed probe blob");
+        operation = "fetch_file_readback";
+        await readFixture();
+        return {status:"verified", route, sha256:PROBE.sha256, blob:PROBE.blob, bytes:PROBE.bytes};
+      } catch (error) {
+        // Do not echo unknown connector payloads or file references into a task log.
+        const detail = String(error?.message ?? "");
+        const message = detail.startsWith("Cloud image operations stopped:") ? "Cloud image operations stopped" : detail;
+        const safe = /^(?:Missing original PNG route|Missing file handle or readCandidatePng|Unexpected probe file|Probe bytes changed|Unconfirmed probe blob|Cloud image operations stopped|Photo transport tool failed(?: [(][a-zA-Z0-9_-]{1,48}[)])?|Unexpected original PNG response|Original PNG changed|Invalid Git blob response)$/;
+        return {status:"blocked", route:["inline_png","file"].includes(route) ? route : null, operation,
+          reason:safe.test(message) ? message : "Transport callback failed", ...(Number.isInteger(error?.status) ? {http_status:error.status} : {})};
+      }
     }
     function validate(packet, partial = false) {
       const {issue, model_id, source_chat_url, delivery_turn, assets} = packet;
@@ -1338,7 +1374,7 @@ var PhotoOriginalHandoff = (() => {
       requireThat((ack.sha ?? ack.commit_sha ?? ack.object?.sha) === prepared.commit, "Unconfirmed stock release ref");
       return {status:"submitted_pending_branch_readback",commit:prepared.commit};
     }
-    return {upload, uploadDataUrl, prepare, publish, readOriginal, prepareSuppliedCut, openReviewedSelection, openUnassignedStock,
+    return {upload, uploadDataUrl, checkOriginalTransport, prepare, publish, readOriginal, prepareSuppliedCut, openReviewedSelection, openUnassignedStock,
       startReviewedPacket, continueReviewedPacket, readReviewedRelease, prepareReviewedTree,
       planNumberedStockCut, readStockCut, readStagedStockCut, checkStockSiblings, prepareStockCutTree, commitStockCutTree, publishStockCut,
       uploadNumberedOriginal, prepareNumberedOriginal, publishNumberedOriginal,

@@ -690,6 +690,73 @@ function readbackFile(record, path, expectedBlob) {
   return {path, blob, data, sha256:hash(data), bytes:data.length, width:record.width, height:record.height};
 }
 
+function originalTransportFixture({active = true, changedReadback = false, fileError = false} = {}) {
+  const path = "assets/favicon-192.png", ref = "1d9b571b914d6c323a3821e46d23ae0d8e354f95";
+  const file = readbackFile({path}, path, "6608aa987c11d56ea9d7910eb4c0770bb529da9d");
+  assert.equal(file.sha256, "3713afa375160c13556a90f2347b151725ac5922498211d2d980c7c58176c40e");
+  const calls = [];
+  const github = {
+    async fetch_file(args) {
+      assert.deepEqual(args, {repository_full_name:repo, ref, path, encoding:"base64"});
+      const bin = changedReadback && calls.includes("create_blob") ? png : file.data;
+      calls.push("fetch_file");
+      return {encoding:"base64", sha:file.blob, content:bin.toString("base64")};
+    },
+    async create_blob(args) {
+      calls.push("create_blob");
+      assert.deepEqual(args, {repository_full_name:repo, content:file.data.toString("base64"), encoding:"base64"});
+      return {sha:file.blob};
+    }
+  };
+  const handle = "fixture-file-handle";
+  const readCandidatePng = async ({file:actual}) => {
+    calls.push("readCandidatePng");
+    assert.equal(actual, handle);
+    if (fileError) return {isError:true, error_code:"BLOCKED_FILE_REFERENCE"};
+    return {status:"read", mime_type:"image/png", sha256:file.sha256, bytes:file.bytes,
+      ...bytes.inspectPng(file.data), image_url:dataUrl(file.data)};
+  };
+  const api = helper.create({github, readCandidatePng, runtime:{...bytes, sha256:hash},
+    cloudStatus:async () => ({public:true, state:active ? "active" : "disabled", main_commit_sha:main, jpeg_bytes:123})});
+  return {api, calls, file, handle};
+}
+
+test("original transport checks inline and file bytes by writing only the existing immutable blob", async () => {
+  for (const route of ["inline_png", "file"]) {
+    const {api, calls, file, handle} = originalTransportFixture();
+    const result = await api.checkOriginalTransport({route, ...(route === "file" ? {file:handle} : {})});
+    assert.deepEqual(result, {status:"verified", route, sha256:file.sha256, blob:file.blob, bytes:file.bytes});
+    const fileReads = route === "file" ? ["readCandidatePng"] : [];
+    assert.deepEqual(calls, ["fetch_file", ...fileReads, "create_blob", "fetch_file"]);
+  }
+});
+
+test("original transport blocks a disabled workflow and rejects substituted readback bytes", async () => {
+  const stopped = originalTransportFixture({active:false});
+  assert.deepEqual(await stopped.api.checkOriginalTransport({route:"inline_png"}), {
+    status:"blocked", route:"inline_png", operation:"uploadDataUrl", reason:"Cloud image operations stopped"
+  });
+  assert.deepEqual(stopped.calls, ["fetch_file"]);
+
+  const changed = originalTransportFixture({changedReadback:true});
+  assert.deepEqual(await changed.api.checkOriginalTransport({route:"inline_png"}), {
+    status:"blocked", route:"inline_png", operation:"fetch_file_readback", reason:"Probe bytes changed"
+  });
+  assert.deepEqual(changed.calls, ["fetch_file", "create_blob", "fetch_file"]);
+});
+
+test("a missing or unreadable file handle cannot pass the original transport check via inline bytes", async () => {
+  const {api, calls, handle} = originalTransportFixture({fileError:true});
+  assert.deepEqual(await api.checkOriginalTransport({route:"file"}), {
+    status:"blocked", route:"file", operation:"select_route", reason:"Missing file handle or readCandidatePng"
+  });
+  assert.deepEqual(calls, []);
+  assert.deepEqual(await api.checkOriginalTransport({route:"file", file:handle}), {
+    status:"blocked", route:"file", operation:"readCandidatePng/upload", reason:"Photo transport tool failed (BLOCKED_FILE_REFERENCE)"
+  });
+  assert.deepEqual(calls, ["fetch_file", "readCandidatePng"]);
+});
+
 // #963 retained the published bytes and the source and JPEG paths at the candidate commit.
 // Reconstruct the caller's readback from those bytes without fetching the old branch in CI.
 function suppliedCutFixture(cutId) {

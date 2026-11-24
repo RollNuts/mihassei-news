@@ -3,7 +3,7 @@
  * Pass NativeImageStage and an initialized NativeImageBytes runtime. The PNG is
  * pngjs/PngSuite's 32x32 fixture, not an ImageGen output or provider receipt.
  */
-var NativeImageStageTests = async function (stageAPI, runtime) {
+var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   "use strict";
   const checks = [];
   function assert(condition, label) {
@@ -1373,12 +1373,41 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     assert(JSON.stringify(restored(checkpoint)) === text, "compact checkpoint serializes without callbacks or typed arrays");
   }
   async function compactCall(context, method, metadata, checkpoint) {
-    const service = stageAPI.create({runtime: context.measuredRuntime, github: context.mock.github, repository});
     const beforeCalls = context.mock.calls.length, beforeReads = context.stepCounters.reads;
-    let result;
+    let result, imports=0;
+    const retained = checkpoint === undefined ? undefined : restored(checkpoint);
     try {
-      result = await service[method](context.plan, compactInput(context, metadata),
-        checkpoint === undefined ? undefined : restored(checkpoint));
+      // The synthetic 4 MiB source uses a fixture converter, but all helper
+      // sources and pinned dependencies go through the production cold loader.
+      if(coldSources){
+        const readSource = async args => {
+          imports++;
+          let content;
+          if(args.ref===baseCommitSha && args.path==="scripts/native_image_bytes.js")content=coldSources.byteHelperSource;
+          else if(args.ref===baseCommitSha && args.path==="scripts/native_image_stage.js")content=coldSources.stageHelperSource;
+          else{
+            const dep=Object.entries(B.SOURCES).find(([,source])=>source.path===args.path&&
+              source.ref===args.ref&&source.repository_full_name===args.repository_full_name);
+            demand(dep,"Only a pinned dependency may be fetched");
+            content=coldSources.sources[dep[0]];
+          }
+          return {result:{encoding:"utf-8",content}};
+        };
+        const load = async(path,name)=>new Function((await readSource({ref:baseCommitSha,path})).result.content+"\nreturn "+name+";")();
+        const B=await load("scripts/native_image_bytes.js","NativeImageBytes");
+        const S=await load("scripts/native_image_stage.js","NativeImageStage");
+        const bytes={...B,initialize(sources){return {...B.initialize(sources),convert:context.measuredRuntime.convert};}};
+        const readCloudWorkflow=async ({nonce})=>{
+          const response=await context.mock.github.fetch({url:"https://api.github.com/repos/"+repository+"/actions/workflows/free-cpu-scenes.yml"});
+          const raw=response.result??response.structuredContent;
+          return {result:{...JSON.parse(raw.content),version:1,repository,nonce,checked_at:new Date().toISOString()}};
+        };
+        const step=await S.compactStep({bytes,fetchFile:readSource,repository,github:context.mock.github,readCloudWorkflow},method,retained);
+        result=await step(context.plan,compactInput(context,metadata));
+      }else{
+        const service=stageAPI.create({runtime:context.measuredRuntime,github:context.mock.github,repository});
+        result=await service[method](context.plan,compactInput(context,metadata),retained);
+      }
       if (result.status === "pending") checkCompactCheckpoint(context, method, result.checkpoint);
       return result;
     } catch (error) {
@@ -1387,8 +1416,8 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     } finally {
       const calls = context.mock.calls.slice(beforeCalls), toolCalls = calls.length + context.stepCounters.reads - beforeReads;
       const mutations = calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref").length;
-      assert(toolCalls <= 15 && mutations <= 2,
-        "compact cold step respects 15 actual callbacks and two mutations (actual " + toolCalls + "/" + mutations + ")");
+      assert(toolCalls+imports <= 16 && mutations <= 2,
+        "compact "+method+"/"+(retained?.phase||"lookup")+" cold cell used "+imports+" imports + "+toolCalls+" calls, "+mutations+" mutations");
       if (result && ["preflight_verify_commit", "preflight_verify_branch"].includes(checkpoint?.phase)) {
         const onBranch = checkpoint.phase === "preflight_verify_branch";
         const ref = onBranch ? preflightBranch : checkpoint.commitSha;
@@ -1431,6 +1460,16 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
       compact.mock.cloud.commit = {sha: nextMain, tree: {sha: nextMainTree}};
       compact.mock.cloud.tree = {...compact.mock.cloud.tree, sha: nextMainTree};
     }
+    return response;
+  };
+  const createCompactBlob = compact.mock.github.create_blob;
+  let mainRevisions=0;
+  compact.mock.github.create_blob = async args => {
+    const response=await createCompactBlob(args);
+    const current=(++mainRevisions).toString(16).padStart(40,"0"),tree=runtime.sha256(current).slice(0,40);
+    compact.mock.cloud.mainSha=current;
+    compact.mock.cloud.commit={sha:current,tree:{sha:tree}};
+    compact.mock.cloud.tree={...compact.mock.cloud.tree,sha:tree};
     return response;
   };
   const compactReserved = await compactDrive(compact, "reserveExternalGenerationStep", compactReservationOptions(compact));
@@ -1538,12 +1577,41 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(compact.originalBytes)}}),
   "compact original PNG larger than 4 MiB is rejected");
   assert(compact.mock.writes().length === writesBeforeCompactCap, "compact source cap rejects before writes even with a saved identity");
+  const readExisting=()=>compactCall(compact,"reserveExternalGenerationStep",compactReservationOptions(compact));
+  const savedCheck=(await readExisting()).checkpoint;
+  const savedTree=compact.mock.resolve(compact.branch), savedJpeg=savedTree.get(prefix+"candidate.jpg");
+  savedTree.set(prefix+"candidate.jpg",{...savedJpeg,bytes:Uint8Array.of(0)});
+  await failure(()=>compactCall(compact,"reserveExternalGenerationStep",{},savedCheck),"compact JPEG readback detects corrupt bytes before saving a witness");
+  savedTree.set(prefix+"candidate.jpg",savedJpeg);
+  const sourceCheck=(await compactCall(compact,"reserveExternalGenerationStep",{},savedCheck)).checkpoint;
+  const firstPart=compactSaved.receipt.source.parts[0],goodPart=savedTree.get(firstPart.path);
+  savedTree.set(firstPart.path,{...goodPart,bytes:Uint8Array.of(0)});
+  await failure(()=>compactCall(compact,"reserveExternalGenerationStep",{},sourceCheck),"split readback verifies each immutable source after the JPEG");
+  savedTree.set(firstPart.path,goodPart);
+
+  const stopOnClaim=await compactContext("compact-stop-after-claim");
+  const stopCreate=stopOnClaim.mock.github.create_branch;
+  stopOnClaim.mock.github.create_branch=async args=>{
+    const response=await stopCreate(args);
+    if(args.branch_name.startsWith(claimBranchPrefix))stopOnClaim.mock.cloud.workflow.state="disabled_manually";
+    return response;
+  };
+  const stoppedCompactClaim=await failure(()=>compactDrive(stopOnClaim,"reserveExternalGenerationStep",compactReservationOptions(stopOnClaim)),
+    "a stop after claim creation blocks the final generation grant");
+  assert(stoppedCompactClaim.stage==="bounded_claim_final"&&stopOnClaim.mock.branches.has(claimBranchPrefix+stopOnClaim.plan.identity),
+    "the stopped claim remains available for recovery without a new permit");
+  stopOnClaim.mock.cloud.workflow.state="active";
+  await failure(()=>compactCall(stopOnClaim,"reserveExternalGenerationStep",compactReservationOptions(stopOnClaim),stoppedCompactClaim.checkpoint),
+    "a resumed workflow cannot generate again from a stopped final grant");
   const compactLost = await compactContext("compact-lost-claim", {claimLostResponse: true});
   const compactLostError = await failure(() => compactDrive(compactLost, "reserveExternalGenerationStep",
     compactReservationOptions(compactLost)), "lost compact claim response cannot grant generation permission");
   assert(compactLostError.stage === "bounded_claim_final" &&
     compactLostError.message.includes("Injected lost generation-claim response"),
     "claim final preserves the connector's specific failure message with its phase and checkpoint");
+  const lostReport=JSON.parse(JSON.stringify(compactLostError));
+  assert(lostReport.phase==="bounded_claim_final"&&lostReport.message===compactLostError.message&&
+    lostReport.checkpoint.phase==="claim_final","a serialized catch preserves the actual failure without granting ownership");
   assert(compactLost.mock.branches.has(claimBranchPrefix + compactLost.plan.identity) &&
     !compactLost.mock.branches.has(compactLost.branch), "lost compact claim stays create-only and unconfirmed");
   await failure(() => compactCall(compactLost, "reserveExternalGenerationStep", compactReservationOptions(compactLost),
