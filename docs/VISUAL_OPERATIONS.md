@@ -79,7 +79,9 @@ ChatGPT内蔵画像は、本人が依頼した実写風写真の生成・取り�
 
 `origin: chatgpt-imagegen`、実際の生成物の識別根拠、原PNG/JPEG SHA、指示、現在の記事SHAを保存する。実際のツール出力ファイル名のUUIDと、PNG内C2PA claimのasset instanceIDは区別し、未取得のbackend job IDを捏造しない。C2PAから取得した場合はその根拠を記し、署名・証明書を検証していなければ検証済みとは書かない。旧CPU候補の原生成記録・正確な整数seed・不採用理由は履歴に保持する。`visual_strategy: cpu-photo` と現SHAの`accepted`は、新JPEGの実画像・本文・scene_promptの一致を確認した同じ変更で記録する。写真が未完了なら適合する代替を維持し、イラスト掲載や生成成功だけで実写化完了としない。追加の外部API契約や有料GPUを導入しない。
 
-写真が使えない場合、本文に合う専用SVGを `assets/editorial-scenes/` に用意する。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。追加・修正時は `python3 scripts/social_cards.py --prepare-scenes 記事slug` で共有用PNGも用意し、実表示する。既定は既存の `rsvg-convert 2.62.1`。同じ版を使えない環境では、導入済みの `CairoSVG 2.7.1` を `--renderer cairosvg` で明示的に選べる。実際の描画ソフト名・版と記事・SVGの指紋をPNG内へ記録し、この2種類以外の描画ソフトや版は採用しない。同じ原本の検証済みPNGはどちらで作ったものも再利用し、通常ビルドは整合するPNGをコピーするだけで描画ソフトを起動・importしない。記事変更後に古い挿絵を自動流用しない。未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外し、安全なイラスト／承認済み素材で記事閲覧を続ける。
+写真が使えない場合、本文に合う専用SVGを `assets/editorial-scenes/` に用意する。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。本文や場面が変わったら改めて検品し、未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外す。
+
+共有PNGは、対象PRに保存したSVGの実ファイルから `python3 scripts/social_cards.py --prepare-scenes 記事slug` で描画し、実表示する。GitHub接続で取得するときは固定commitのContents APIの `content` をbase64復号する。表示テキストからの転記は末尾改行を変えることがある。既定は `rsvg-convert 2.62.1`、GPT環境では導入済みのCairoSVG（2.7.1または2.8.2）を `--renderer cairosvg` で使える。通常ビルドは記事・SVG・描画ソフトの記録が一致する既存PNGを使う。PNG追加・更新時のCIは同じ版のSVGと突き合わせる。
 
 `visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。2026-11-06 22:00 JST以降の新作では `illustration_reason` も必要で、`readable_text_or_ui / precise_count_or_absence / complex_relationship / comparison_layout / brand_character_safety` のどれかに限る。単一人物・単一物体・単純な行為で成立する場面は写真を既定とし、**写真向けの scene_prompt を書いたまま illustration に振り分けない**。`editorial_mix.py --day` は一日の `cpu-photo / illustration` 件数と `visual_next` を出し、イラストが過半になった日は次の候補で写真向きの場面も比較する。ただし題材の質を落として写真比率を合わせない。
 
