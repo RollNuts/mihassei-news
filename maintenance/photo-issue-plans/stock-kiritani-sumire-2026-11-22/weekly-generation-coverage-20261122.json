@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "model_id": "kiritani-sumire",
+  "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+  "week_start": "2026-11-22",
+  "from": "2026-11-22T00:00:00+09:00",
+  "through": "2026-11-24T16:29:39+09:00",
+  "prior_attempts_through_cutoff": [],
+  "producer_results": [
+    {
+      "displayed_at": "2026-11-22T05:18:18.752Z",
+      "pr": 944,
+      "head": "a60ed9cba5baceb3c147b1e4e4d6bbfe0e930676",
+      "calls": 0,
+      "basis": "新規画像・動画生成0件。既存8枚を測定し、制作日は未特定。"
+    },
+    {
+      "displayed_at": "2026-11-23T05:01:16.047Z",
+      "pr": 982,
+      "head": "cceae14429e5a7fe425dcb151b8f2fc3d33133cf",
+      "calls": 0,
+      "basis": "新規写真・動画生成0件。既存の8枚の観測記録を保存。"
+    },
+    {
+      "displayed_at": "2026-11-24T04:50:46.113Z",
+      "pr": 1005,
+      "head": "c6dcb5bcd108e4b8c2e732e6034929274fe25a98",
+      "calls": 0,
+      "basis": "週消費未確定で追加生成は見送り。未受領8枚の回収は0件。"
+    }
+  ],
+  "candidate_heads": [
+    {
+      "branch": "photo-issue-plan/november-rooftop-pool-sumire-011",
+      "commit": "da1529583e980a6607853aadf126146eac5818ac",
+      "activity": "当週以前の既刊素材。"
+    },
+    {
+      "branch": "photo-issue-plan/stock-kiritani-sumire-2026-11-22",
+      "commit": "5e22bd68041fe6c64f075bc5bcf61d16e0222033",
+      "activity": "本人の当週ストック候補兼予約先。素材ディレクトリには8枚の未受領一覧のみ。予約台帳なし。"
+    }
+  ],
+  "source_hold": {
+    "commit": "5e22bd68041fe6c64f075bc5bcf61d16e0222033",
+    "inventory_path": "maintenance/photo-issue-plans/stock-kiritani-sumire-2026-11-22/source-inventory-unreceived-20261122.json",
+    "status": "sources_observed_not_received",
+    "count": 8
+  },
+  "next_operation": "本人の定期枠でthrough以降の実行・失敗・中断・並行候補・週予約台帳を照合。不明なら予約を止める。未受領8枚は新しい読取参照が得られたときに再開。新規予約の前に現実行で実原本の保存と再読を実証し、移行週の予約は正本に従う。"
+}
