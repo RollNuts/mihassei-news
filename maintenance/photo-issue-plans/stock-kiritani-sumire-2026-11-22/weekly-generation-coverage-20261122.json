@@ -4,7 +4,7 @@
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "week_start": "2026-11-22",
   "from": "2026-11-22T00:00:00+09:00",
-  "through": "2026-11-24T16:29:39+09:00",
+  "through": "2026-11-24T16:43:45+09:00",
   "prior_attempts_through_cutoff": [],
   "producer_results": [
     {
@@ -47,5 +47,19 @@
     "status": "sources_observed_not_received",
     "count": 8
   },
-  "next_operation": "本人の定期枠でthrough以降の実行・失敗・中断・並行候補・週予約台帳を照合。不明なら予約を止める。未受領8枚は新しい読取参照が得られたときに再開。新規予約の前に現実行で実原本の保存と再読を実証し、移行週の予約は正本に従う。"
+  "next_operation": "今週の既存在庫ブランチに初回台帳を移行する。移行時の予約・生成は0。本人は新作の保存・再読を現実行で実証し、通常のreserveStepで1枚分の新規許可を受けた後に生成する。8つの未受領原本は新しい読取参照を得た時に回収する。",
+  "since_previous_cutoff": {
+    "from": "2026-11-24T16:29:39+09:00",
+    "previous_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/12fb2a7d4a505651fdf082dfc7e93483b09e52d6/maintenance/photo-issue-plans/stock-kiritani-sumire-2026-11-22/weekly-generation-coverage-20261122.json",
+    "registered_task": "a19de4abc04c8191855705d2da45cac4",
+    "producer_chat": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
+    "latest_result_pr": 1005,
+    "observed": "登録済み本人チャットの最後の結果は11/24 13:50。前回照合以降の本人枠・手動の生成依頼・実行中表示はなく、次の本人枠は翌日13:45。",
+    "candidate_heads": [
+      "f682f33c7acb7e96817f5f5b8cbe552ea70b7ad8",
+      "da1529583e980a6607853aadf126146eac5818ac"
+    ],
+    "ledger_path_history": [],
+    "inventory_only_branch_base": "197063819fa7e1f8093d42925ea8a72b9e35817a"
+  }
 }
