@@ -93,7 +93,7 @@
 - **画像引継ぎ（屋内ビーチ、完了）:** `indoor-beach-friends-exchange-ripples`／記事SHA `0e2a45ebc481758a`／写真SHA `c3552d3b1fad` はPR #728で実配信済み。原生成claim・失敗は保持し、同じ写真を再生成しない。週刊用の別撮影は下記の担当PRへ分離。
 <a id="weekly-stock-handoff"></a>
 
-- **第3号の先頭・花瀬みお** — 06:00の週刊編集GPTは[固定済みの順番](https://github.com/RollNuts/mihassei-news/blob/902a050903ec5b73c446db3f07420f31c64cd27a/content/photo_editions.json)と[みお016の14組](https://github.com/RollNuts/mihassei-news/blob/f39c946354d4b866e0415393a6d9749e4926f6a6/maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json)から再開する。14組は未採用。原本・JPEGを[既存候補の手順](NATIVE_IMAGE_BYTES.md#existing-weekly-photo-originals)で照合し、目視で選んだ10枚と本人コラムを通常公開する。
+- **第3号** — 花瀬みお「次の駅、その先の海。」の10枚と本人コラムを[本番で確認済み](https://veripsa.com/photo/weekly/november-mio-on-the-move-016/)。週刊編集は[第3号の固定順と掲載済み特集](../content/photo_editions.json)を照合し、先頭の未掲載者から続ける。
 - **月城れな** — 受領済み8枚には似た構図が3組あり、第3号に使えるのは最大5枚。れな担当は[不足5枚の場面案](https://github.com/RollNuts/mihassei-news/blob/7f4a06f9048224efc7df0c9b3913060edf1b5219/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json)を手がかりに別場面の未掲載原本を探す。11月23日の実行は原本の保存試験で停止し、新規生成0枚。
 - **桐谷すみれ** — [本人の原本一覧と回収結果](https://github.com/RollNuts/mihassei-news/blob/5e22bd68041fe6c64f075bc5bcf61d16e0222033/maintenance/photo-issue-plans/stock-kiritani-sumire-2026-11-22/source-inventory-unreceived-20261122.json)に8枚のSHAを記録、受領0枚。すみれ担当は新たに取得可能な原本参照が見つかったらSHAを照合して渡す。
 - **汐羽りおの繰越** — [第2号最終特集](https://veripsa.com/photo/weekly/november-coast-city-rio-015/)の10枚とコラムは配信済み。[りお015の未掲載候補](https://github.com/RollNuts/mihassei-news/blob/be7b3336d87d596c783021895729efe3f274ba44/maintenance/photo-issue-plans/november-coast-city-rio-015/handoff.json)は元01・06・12。05は01と近似で保留。
