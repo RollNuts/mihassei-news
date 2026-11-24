@@ -6,6 +6,9 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from xml.etree import ElementTree
+
+from scripts.market_figures import STATES, render_market_svg
 
 from scripts.market_bulletins import (
     load_market_bulletins, render_market_bulletin,
@@ -76,6 +79,40 @@ class UnsafeMarkup(HTMLParser):
 
 
 class InvestorCoverageTests(unittest.TestCase):
+    def test_signed_sector_returns_extend_to_either_side_of_zero(self):
+        for quantities in ((4.07, -0.03), (-2.0, -1.0), (0, -1.0), (0, 0)):
+            item = report()
+            chart = item['figures'][0]
+            chart.update(unit='%', title='業種別の前日比')
+            for row, value in zip(chart['values'], quantities):
+                row['value'] = value
+            saved = load(item)['figures'][0]
+            for mobile in (False, True):
+                with self.subTest(quantities=quantities, mobile=mobile):
+                    svg = ElementTree.fromstring(render_market_svg(saved, mobile=mobile))
+                    bars = svg.findall(f"{{*}}rect[@fill='{STATES['実績']}']")
+                    self.assertEqual(len(bars), 2)
+                    zeros = svg.findall('{*}line')
+                    self.assertEqual(len(zeros), 2 if min(quantities) < 0 else 0)
+                    for index, (bar, value) in enumerate(zip(bars, quantities)):
+                        x, width = int(bar.get('x')), int(bar.get('width'))
+                        self.assertGreaterEqual(width, 0)
+                        self.assertEqual(width == 0, value == 0)
+                        if zeros:
+                            axis = int(zeros[index].get('x1'))
+                            self.assertEqual(x + width if value < 0 else x, axis)
+                    self.assertIn(f'{quantities[1]:g}%', svg.find('{*}desc').text)
+
+    def test_percent_bars_do_not_allow_negative_prices_or_composition_shares(self):
+        for kind, unit, value in (('bars', '円', -1), ('composition', '%', -1),
+                                  ('bars', '%', float('nan')), ('bars', '%', True)):
+            with self.subTest(kind=kind, unit=unit, value=value):
+                item = report()
+                item['figures'][0].update(kind=kind, unit=unit)
+                item['figures'][0]['values'][0]['value'] = value
+                with self.assertRaisesRegex(ValueError, 'finite'):
+                    load(item)
+
     def test_mixed_small_moves_render_each_market_currency_and_price_kind(self):
         item = report([
             stock(code='123A', name='Test JP company', exchange='東証', currency='JPY',
