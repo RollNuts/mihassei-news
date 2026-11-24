@@ -2,15 +2,15 @@
   "schema_version": 1,
   "model_id": "hanase-mio",
   "name": "花瀬みお",
-  "created_date": "2026-11-23",
+  "created_date": "2026-11-24",
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "photo_reference": {
-    "issue_slug": "november-city-evening-mio-012",
-    "cut_id": "07",
-    "image_sha256": "272956cb85b3e3204fa73a6aca0cc51471307cb3539f54e3263d8f4ff3527bb2",
-    "description": "2031年11月、既刊012 cut07。夕方の窓辺で座る検品済み本人写真。原本byteは本工程では未検証（catalog review accepted）。"
+    "issue_slug": "november-mio-on-the-move-016",
+    "cut_id": "05",
+    "image_sha256": "e6897d83518c4dc0fe2d5aaec6d9ac4cecfcb4a2a6ea83181a065e2a2248fe29",
+    "description": "2031年11月、既刊016 cut05。テラスの朝食で果物に手を伸ばす検品済み本人写真。catalog review accepted。"
   },
-  "post_text": "朝、木工体験で小さな棚を組み立てた。板を支えたままネジを回そうとして、手が一本足りない。膝でそっと押さえたら、ようやく一段目ができた。",
-  "spoken_line": "一段目、できた！",
-  "future_idea": "2031年、道具が足りない木工体験では、手元を支える補助具をみんなで試す時間が人気に。"
+  "post_text": "昼、焼き芋を新聞紙で包んでもらった。熱くて右手から左手へ何度も持ち替えたのに、最初のひと口は待ちきれなくて舌をやけどしそうになった。",
+  "spoken_line": "熱っ、まだ早かった。",
+  "future_idea": null
 }
