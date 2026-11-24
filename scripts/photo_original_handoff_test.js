@@ -1,4 +1,5 @@
 const {test} = require("node:test");
+const {join} = require("node:path");
 const assert = require("node:assert/strict");
 const {createHash} = require("node:crypto");
 const {crc32, deflateSync} = require("node:zlib");
@@ -34,18 +35,23 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
   const github = {
     async fetch({url}) {
       const path = url.slice(("https://api.github.com/repos/" + repo).length);
-      assert.ok(!path.startsWith("/git/blobs/"), "binary blobs require immutable fetch_file");
+      if (path.startsWith("/git/blobs/")) {
+        const content = blobs.get(path.slice("/git/blobs/".length))?.toString("utf8");
+        assert.ok(content?.startsWith('{"version":1,"status":"originals_'), "binary blobs require immutable fetch_file");
+        return {url,content};
+      }
       if (path === "") return {full_name:repo,private:false,visibility:"public"};
-      if (path === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:main}};
+      if (path === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:state.liveMain ?? main}};
       if (path.startsWith("/branches/")) {
         const name = decodeURIComponent(path.slice("/branches/".length));
-        const sha = name === "main" ? main : branches.get(name);
+        const sha = name === "main" ? (state.liveMain ?? main) : branches.get(name);
         return {name, commit:{sha, commit:{tree:commits.get(sha)?.tree}}};
       }
       if (path === "/actions/workflows/free-cpu-scenes.yml")
         return {path:".github/workflows/free-cpu-scenes.yml",state:state.active ? "active" : "disabled_manually"};
       if (path === "/compare/main..." + main + "?per_page=1")
-        return state.comparison ?? {base_commit:{sha:main},merge_base_commit:{sha:main},status:"identical"};
+        return state.comparison ?? {base_commit:{sha:state.liveMain ?? main},merge_base_commit:{sha:main},
+          status:state.liveMain && state.liveMain!==main ? "behind" : "identical"};
       if (path.startsWith("/compare/")) {
         const [base, head] = path.slice(9).split("?")[0].split("...");
         const branch = decodeURIComponent(base);
@@ -139,7 +145,7 @@ function setup(input = png, {fileAdapter = true, convertPhoto} = {}) {
       return {structuredContent:{status:"read",mime_type:"image/png",sha256:hash(input),bytes:input.length,...info,
         image_url:dataUrl(input),...state.fileMetadata}};
     } : undefined});
-  return {api:createApi(),state,reopen:createApi,resetGuard};
+  return {api:createApi(),state,reopen:createApi,resetGuard,github,runtime};
 }
 
 test("stages the exact original, recovers a lost ref response and verifies immutable bytes",async () => {
@@ -347,6 +353,108 @@ for (const lost of [false, true]) test("original handoff fits 15 callbacks per c
   const final = await cell("publish", input, finalPlan);
   assert.equal((await cell("publish", input, finalPlan)).commit, final.commit);
   assert.deepEqual(Buffer.from(await api.readOriginal({...ref, ...final})), png);
+});
+
+test("producer checkpoint, append, finalization and lost replies fit fresh 16-callback cells",async t => {
+  const {api,state,github,runtime}=setup();
+  const input=packet(), branch="photo-issue-plan/"+input.issue, base="maintenance/photo-issue-plans/"+input.issue+"/";
+  const first={...await api.uploadDataUrl(dataUrl(png),hash(png)),source_ordinal:1};
+  const secondPng=largePng(20,20);
+  const second={...await api.uploadDataUrl(dataUrl(secondPng),hash(secondPng)),source_ordinal:2};
+  input.assets=[first];
+  const maxima={};
+  async function cell(options,continuation=null,packet=input) {
+    const start=state.reads.length+state.writes.length;
+    const fetchHelper=(name,symbol)=>{
+      state.reads.push(name);
+      const source=readFileSync(join(__dirname,name),"utf8");
+      return new Function(source+"\nreturn "+symbol)();
+    };
+    const B=fetchHelper("native_image_bytes.js","NativeImageBytes");
+    const S=fetchHelper("native_image_stage.js","NativeImageStage");
+    const H=fetchHelper("photo_original_handoff.js","PhotoOriginalHandoff");
+    // Same four cold source callbacks as weekly-original-transport. Offline suites use Node's SHA
+    // after the pinned source lookup; set the source path to also exercise the full production loader.
+    const loadDigest=async request=>{
+      assert.equal(request.ref,B.SOURCES.sha.ref);assert.equal(request.path,B.SOURCES.sha.path);
+      state.reads.push(request.path);
+      if(process.env.MIHASSEI_TEST_SHA_SOURCE) return {result:{encoding:"utf-8",
+        content:readFileSync(process.env.MIHASSEI_TEST_SHA_SOURCE,"utf8")}};
+    };
+    let verifier=runtime;
+    if(process.env.MIHASSEI_TEST_SHA_SOURCE) verifier=await B.verificationRuntime(loadDigest);
+    else await loadDigest(B.SOURCES.sha);
+    const readCloudWorkflow=async({nonce})=>{
+      state.reads.push("read_image_control");
+      return {version:1,repository:repo,nonce,checked_at:new Date().toISOString(),
+        path:".github/workflows/free-cpu-scenes.yml",state:state.active?"active":"disabled_manually"};
+    };
+    const {cloudStatus}=S.create({controlOnly:true,github,repository:repo,readCloudWorkflow});
+    const fresh=H.create({github,runtime:verifier,cloudStatus});
+    try {
+      return await fresh.saveTransferStep(packet,options,continuation && JSON.parse(JSON.stringify(continuation)));
+    } finally {
+      const count=state.reads.length+state.writes.length-start;
+      const phase=options.kind+"/"+(continuation?.phase??"tree");
+      maxima[phase]=Math.max(maxima[phase]??0,count);
+      assert.ok(count<=16,phase+" required "+count+" cold callbacks");
+    }
+  }
+  const options={kind:"checkpoint",expectedHead:null};
+  const tree=await cell(options);
+  // Main moves on naturally between cold cells. The new branch may use its proven main ancestor.
+  const advanced=sha1("new main");
+  state.commits.set(advanced,{sha:advanced,parents:[{sha:main}],tree:{sha:baseTree}});
+  state.liveMain=advanced;
+  const writes=state.writes.length;
+  state.active=false;
+  await assert.rejects(cell(options,tree.checkpoint),/stopped/);
+  assert.equal(state.writes.length,writes);
+  state.active=true;
+  const commit=await cell(options,tree.checkpoint);
+  state.lost=true;
+  const one=await cell(options,commit.checkpoint);
+  assert.equal(one.status,"checkpoint_saved_pending_readback");
+  assert.equal(one.commit,state.branches.get(branch));
+  assert.equal((await cell(options,commit.checkpoint)).commit,one.commit);
+  const append={kind:"checkpoint",expectedHead:one.commit};
+  const noOpWrites=state.writes.length;
+  assert.equal((await cell(append)).commit,one.commit);
+  assert.equal(state.writes.length,noOpWrites);
+  input.assets.push(second);
+  const appendedTree=await cell(append);
+  const forged=structuredClone(appendedTree.checkpoint);
+  const files=state.trees.get(forged.plan.tree);
+  const extra={path:"unrelated.txt",type:"blob",mode:"100644",sha:sha1("unrelated")};
+  forged.plan.tree=sha1("forged transfer");
+  state.trees.set(forged.plan.tree,[...files,extra]);
+  const priorWrites=state.writes.length;
+  await assert.rejects(cell(append,forged),/differs/);
+  await assert.rejects(cell(append,appendedTree.checkpoint,{...input,source_chat_url:chat.replace("867","977")}),/Changed transfer/);
+  assert.equal(state.writes.length,priorWrites);
+  const appendedCommit=await cell(append,appendedTree.checkpoint);
+  const two=await cell(append,appendedCommit.checkpoint);
+  const receiptOptions={kind:"receipt",expectedHead:two.commit};
+  const finalTree=await cell(receiptOptions), finalCommit=await cell(receiptOptions,finalTree.checkpoint);
+  const final=await cell(receiptOptions,finalCommit.checkpoint);
+  assert.equal(final.status,"staged_pending_readback");
+  assert.deepEqual(Buffer.from(await api.readOriginal({issue:input.issue,...final,source_sha256:hash(secondPng)})),secondPng);
+  const receiptHead=sha1("later unrelated change"),receiptTree=sha1("later files");
+  state.trees.set(receiptTree,[...state.trees.get(state.commits.get(final.commit).tree.sha),extra]);
+  state.commits.set(receiptHead,{sha:receiptHead,parents:[{sha:final.commit}],tree:{sha:receiptTree}});
+  state.branches.set(branch,receiptHead);
+  const recovery=await cell(receiptOptions,finalCommit.checkpoint);
+  assert.equal(recovery.checkpoint.phase,"recover");
+  const beforeRecovery=state.writes.length;
+  assert.equal((await cell(receiptOptions,recovery.checkpoint)).commit,receiptHead);
+  assert.equal(state.writes.length,beforeRecovery);
+  const newer=await cell(options,commit.checkpoint,{...input,assets:[first]});
+  await assert.rejects(cell(options,newer.checkpoint,{...input,assets:[first]}),/Concurrent transfer record differs/);
+  const part=state.trees.get(receiptTree).find(f=>f.path.startsWith(base+"originals/")&&f.path.includes(".png.part"));
+  part.sha=sha1("unrelated bytes");
+  await assert.rejects(cell(receiptOptions,recovery.checkpoint),/Concurrent transfer files differ/);
+  assert.equal(state.branches.get(branch),receiptHead);
+  t.diagnostic(JSON.stringify(maxima));
 });
 
 test("checkpoint metadata is not byte verification and changed parts, hashes and CRC fail readback", async () => {
