@@ -173,5 +173,8 @@
     ],
     "originals_recovered": 0,
     "next_operation": "Hold these eight identities until an actual original attachment, resolvable individual Library file, or current readable PNG becomes available. The next producer run can compare that original to this inventory and continue normal checkpoint/readback. Skip the already-completed checks while references are unchanged; keep this hold separate from any other independently sourced stock."
+  },
+  "producer_handoff": {
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/12fb2a7d4a505651fdf082dfc7e93483b09e52d6/maintenance/photo-issue-plans/stock-kiritani-sumire-2026-11-22/weekly-generation-coverage-20261122.json"
   }
 }
