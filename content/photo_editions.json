@@ -176,12 +176,14 @@
     {
       "number": 3,
       "slug": "issue-003",
-      "state": "draft",
+      "state": "published",
       "legacy": false,
       "release_mode": "daily",
       "title": "週刊グラビア 第3号",
       "summary": "7人の写真と本人コラム。",
-      "features": [],
+      "features": [
+        "november-mio-on-the-move-016"
+      ],
       "schedule": {
         "schema_version": 1,
         "week_start_date_jst": "2026-11-22",
@@ -196,7 +198,8 @@
           "nagino-saya"
         ],
         "frozen_at_utc": "2026-11-23T01:02:11.900818+00:00"
-      }
+      },
+      "published_at": "2026-11-24T09:16:14.301106+09:00"
     }
   ]
 }
