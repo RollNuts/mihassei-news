@@ -90,6 +90,21 @@
         "cut_id": "10",
         "image_sha256": "7a4edf6f36d3c283353a5cb1d108ead68e821667d4762385a2503ccdd62283b1"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261125071607407000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-25T07:16:07.407+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昨夜の食事で教わったナプキンの折り方、朝の食卓で試してみました。途中で分からなくなって、結局いつもの四角に。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "09",
+        "image_sha256": "eaec9ea808601033289773116b681cb7f3ed0a2e30cbb4da7b2fcc57fdbe9df1"
+      }
     }
   ]
 }
