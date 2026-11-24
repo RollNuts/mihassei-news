@@ -4,7 +4,7 @@
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "week_start": "2026-11-22",
   "from": "2026-11-22T00:00:00+09:00",
-  "through": "2026-11-24T16:41:23+09:00",
+  "through": "2026-11-24T22:54:11+09:00",
   "prior_attempts_through_cutoff": [],
   "producer_results": [
     {
@@ -57,5 +57,18 @@
     "candidate_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
     "original_count": 14
   },
-  "next_operation": "本人の通常枠でthrough以後の実行・失敗/中断・並行候補・週予約台帳を照合し、不明なら予約しない。新規予約前に現実行の保存と遠隔再読を実証する。予備4枚は固定016受領票を参照。"
+  "next_operation": "当週の正規台帳 photo-issue-plan/stock-hanase-mio-2026-11-22 を使う。現在の本人枠で原本を返す画像ツールを確認し、最新mainの docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport で実際の返却経路を検証後、通常の1枚予約へ進む。",
+  "since_previous_cutoff": {
+    "from": "2026-11-24T16:41:23+09:00",
+    "previous_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/3dec5796f9ad0f3aebc280779b7c228bbe735d83/maintenance/photo-issue-plans/november-mio-on-the-move-016/weekly-generation-coverage-20261122.json",
+    "regular_run_chat": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "latest_result_pr": 1004,
+    "observed": "登録制作チャットは11月24日12:09の#1004が終端。予備原本4枚の再読後に追加の生成依頼・進行中表示なし。",
+    "next_regular_slot": "2026-11-25T11:30:00+09:00",
+    "candidate_heads": {
+      "photo-issue-plan/november-mio-on-the-move-016": "47c2186be2dc3d32b35f3e092f7b0698b3f980eb",
+      "photo-issue-plan/november-city-evening-mio-012": "ddb1b08236bebac209c0afea3e3401b0e54b5685"
+    },
+    "weekly_ledger_path_history_on_main_and_candidates": []
+  }
 }
