@@ -913,8 +913,31 @@ var PhotoOriginalHandoff = (() => {
     async function startReviewedPacket(plan) {
       const loc = packetLocation(plan.issue.slug, plan.edition);
       requireThat(GIT.test(plan.selectionCommit) && GIT.test(plan.candidateCommit) && HASH.test(plan.selectionHash) &&
-        await reviewHead(loc.branch) === plan.releaseCommit && await guard() === plan.mainCommit,
-      "Release or main moved; reopen the selection");
+        GIT.test(plan.releaseCommit), "Invalid release plan");
+      const branch = await get("/branches/" + loc.branch);
+      const head = branch.commit?.sha, tree = branch.commit?.commit?.tree?.sha;
+      requireThat(branch.name === loc.branch && GIT.test(head) && GIT.test(tree), "Unverified release branch");
+      const entry = (await treeFiles(tree)).tree.find(file => file.path === loc.path);
+      if (entry) {
+        const ref = {slug:plan.issue.slug, edition:plan.edition, selectionCommit:plan.selectionCommit};
+        const {packet, sha} = await readPacket(ref, head);
+        const saved = packet.plan;
+        requireThat(entry.type === "blob" && entry.mode === "100644" && entry.sha === sha &&
+          GIT.test(saved.mainCommit) && GIT.test(saved.releaseCommit) &&
+          same({...saved, mainCommit:plan.mainCommit, releaseCommit:plan.releaseCommit}, plan) &&
+          (plan.releaseCommit === head || (plan.releaseCommit === saved.releaseCommit && plan.mainCommit === saved.mainCommit)),
+        "Existing release packet differs; reopen the selection");
+        const history = await get("/compare/" + saved.releaseCommit + "..." + head + "?per_page=1");
+        requireThat(history.status === "ahead" && history.merge_base_commit?.sha === saved.releaseCommit &&
+          history.files?.some(file => file.filename === loc.path && file.status === "added" && file.sha === sha) &&
+          (plan.releaseCommit === head || history.files.length === 1),
+        "Unverified release changes; reopen the selection at the current head");
+        const selected = await packetSelection(ref, saved);
+        for (const id of Object.keys(packet.prepared)) preparedReceipt(packet, selected, id);
+        requireThat(await guard() === plan.mainCommit, "Main moved; reopen the selection");
+        return {commit:head, next:saved.cutIds.find(id => !Object.hasOwn(packet.prepared, id)) ?? null};
+      }
+      requireThat(head === plan.releaseCommit && await guard() === plan.mainCommit, "Release or main moved; reopen the selection");
       const packet = {version:1, plan, prepared:{}};
       const saved = await git("create_file", {...loc, content:JSON.stringify(packet),
         message:"Start verified photo receipts for " + plan.issue.slug + " [skip ci]"});
@@ -928,7 +951,9 @@ var PhotoOriginalHandoff = (() => {
         plan.edition === edition && GIT.test(selectionCommit) && plan.selectionCommit === selectionCommit &&
         Array.isArray(plan.cutIds) && new Set(plan.cutIds).size === plan.cutIds.length &&
         plan.cutIds.length <= 10 && plan.cutIds.every(id => /^(?:0[1-9]|10)$/.test(id)) &&
-        Object.keys(packet.prepared).every(id => plan.cutIds.includes(id)), "Unrecognized release packet");
+        packet.prepared && typeof packet.prepared === "object" && !Array.isArray(packet.prepared) &&
+        Object.entries(packet.prepared).every(([id, hash]) => plan.cutIds.includes(id) && typeof hash === "string" && HASH.test(hash)),
+      "Unrecognized release packet");
       return {loc, packet, sha:file.sha};
     }
     async function continueReviewedPacket(ref) {
@@ -960,16 +985,20 @@ var PhotoOriginalHandoff = (() => {
         "Missing selected pair");
       return row;
     }
+    function preparedReceipt(packet, selected, id) {
+      const plan = packet.plan, row = selectedRow(selected, id);
+      const cut = suppliedEntries(plan.issue, id, {...row, commit:plan.candidateCommit}, releaseSource(row, row.source),
+        row.source.blob, row.jpeg.blob, plan.importedAt);
+      requireThat(cut.image.provenance.receipt_sha256 === packet.prepared[id], "Missing or changed verified receipt for cut " + id);
+      return cut;
+    }
     async function readReviewedRelease(ref) {
       requireThat(GIT.test(ref.commit), "Expected a fixed release head");
       const {loc, packet, sha} = await readPacket(ref, ref.commit);
       const plan = packet.plan, selected = await packetSelection(ref, plan);
       const files = [], images = {};
       for (const id of plan.cutIds) {
-        const row = selectedRow(selected, id);
-        const cut = suppliedEntries(plan.issue, id, {...row, commit:plan.candidateCommit}, releaseSource(row, row.source),
-          row.source.blob, row.jpeg.blob, plan.importedAt);
-        requireThat(cut.image.provenance.receipt_sha256 === packet.prepared[id], "Missing or changed verified receipt for cut " + id);
+        const cut = preparedReceipt(packet, selected, id);
         files.push(...cut.files);
         images[id] = cut.image;
       }

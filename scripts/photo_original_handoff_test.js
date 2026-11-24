@@ -1104,7 +1104,8 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
   const ref = {slug:issue.slug, edition:"issue-003", selectionCommit};
   const branch = "photo-issue/issue-003", path = "maintenance/photo-issue-plans/" + issue.slug + "/release-packet.json";
   const history = new Map(), treeSha = sha1("release tree");
-  let head = f.releaseCommit, lost = false, occupied = false, competing = false, stopped = false, proposed;
+  let head = f.releaseCommit, liveMain = main, lost = false, occupied = false, competing = false, stopped = false, proposed;
+  let unrelatedEdit = false, diverged = false;
   // Recreate both helpers on every operation; charge the six source/dependency reads before entry.
   async function cell(work, expectedCalls) {
     let calls = 6;
@@ -1114,16 +1115,24 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
         transportCall();
         const apiPath = url.split("/"+repo)[1];
         if (apiPath === "") return {full_name:repo, private:false,visibility:"public"};
-        if (apiPath === "/git/ref/heads/"+branch) return {ref:"refs/heads/"+branch,object:{sha:head}};
-        if (apiPath === "/git/commits/"+main || apiPath === "/git/commits/"+head) {
+        if (apiPath === "/branches/"+branch || apiPath === "/branches/photo-issue/issue-004") {
+          return {name:apiPath.slice("/branches/".length),commit:{sha:head,commit:{tree:{sha:treeSha}}}};
+        }
+        if (apiPath === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:liveMain}};
+        if (apiPath === "/git/commits/"+liveMain || apiPath === "/git/commits/"+head) {
           const sha = apiPath.slice(13);
-          return {sha,tree:{sha:sha===main ? baseTree : treeSha}};
+          return {sha,tree:{sha:sha===liveMain ? baseTree : treeSha}};
         }
         if (apiPath === "/git/trees/"+baseTree+"?recursive=1") return {sha:baseTree,truncated:false,tree:[]};
         if (apiPath === "/git/trees/"+treeSha+"?recursive=1") {
-          const tree = [{path, type:"blob",mode:"100644",sha:history.get(head).sha}];
+          const tree = history.has(head) ? [{path, type:"blob",mode:"100644",sha:history.get(head).sha}] : [];
           if (occupied) tree.push({path:"assets/generated/photo-issue-"+issue.slug+"-01.jpg",type:"blob",mode:"100644",sha:f.rows[0].jpeg.blob});
           return {sha:treeSha,truncated:false,tree};
+        }
+        if (apiPath === "/compare/"+f.releaseCommit+"..."+head+"?per_page=1") {
+          const files = [{filename:path,status:"added",sha:history.get(head).sha}];
+          if (unrelatedEdit) files.push({filename:"content/photo_issues.json", status:"modified"});
+          return {status:diverged ? "diverged" : "ahead",merge_base_commit:{sha:f.releaseCommit},files};
         }
         if (apiPath === "/actions/workflows/free-cpu-scenes.yml") return {path:".github/workflows/free-cpu-scenes.yml",state:stopped ? "disabled_manually" : "active"};
         return f.github.fetch({url});
@@ -1136,6 +1145,7 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
           return {...entry,encoding:"utf-8"};
         }
         if (history.has(args.ref) && args.path === "content/photo_issues.json") args = {...args,ref:f.releaseCommit};
+        if (args.ref === liveMain && args.path === "content/photo_issues.json") args = {...args,ref:main};
         return f.github.fetch_file(args);
       },
       async create_file(args) {
@@ -1143,6 +1153,7 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
         assert.equal(args.branch,branch); assert.equal(args.path,path); assert.equal(history.size,0);
         head = sha1("empty packet");
         history.set(head,{sha:sha1(args.content),content:args.content});
+        if (lost) throw Error("create response lost after commit");
         return {commit_sha:head};
       },
       async update_file(args) {
@@ -1173,7 +1184,11 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
   const preflight = () => cell(async api => (await api.openReviewedSelection({
     issue, selectionCommit, releaseCommit:head, importedAt:"2026-11-24T00:00:00Z"})).plan,13);
   const initial = await preflight();
-  await cell(api => api.startReviewedPacket(initial),13);
+  const start = plan => cell(api => api.startReviewedPacket(plan),16);
+  lost = true;
+  await assert.rejects(cell(api => api.startReviewedPacket(initial)),/create response lost/);
+  lost = false;
+  assert.deepEqual(await start(initial),{commit:head,next:"01"});
   const next = () => cell(api => api.continueReviewedPacket(ref),16);
   lost = true;
   await assert.rejects(next, /response lost/);
@@ -1182,16 +1197,40 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
   assert.equal(second.prepared,2);
   assert.equal(f.reads.filter(path => path===f.rows[0].source.path).length,1);
   const afterTwo = head;
+  const partialPlan = await preflight();
+  assert.deepEqual(await start(partialPlan),{commit:afterTwo,next:"03"});
+  assert.deepEqual(await start(initial),{commit:afterTwo,next:"03"});
+  for (const changed of [{selectionCommit:main}, {edition:"issue-004"}, {selectionHash:hash("different")},
+    {importedAt:"2026-11-24T03:00:00Z"}, {candidateCommit:main}]) {
+    await assert.rejects(start({...partialPlan,...changed}), /release packet/);
+  }
+  diverged = true;
+  await assert.rejects(start(partialPlan), /Unverified release changes/);
+  diverged = false; unrelatedEdit = true;
+  await assert.rejects(start(initial), /current head/);
+  assert.deepEqual(await start(partialPlan),{commit:afterTwo,next:"03"});
+  unrelatedEdit = false;
+  const record = history.get(head);
+  const damaged = JSON.parse(record.content);
+  damaged.prepared["02"] = hash("different receipt");
+  history.set(head,{sha:sha1(damaged),content:JSON.stringify(damaged)});
+  await assert.rejects(start(partialPlan), /changed verified receipt/);
+  history.set(head,record);
+  liveMain = sha1("new main");
+  await assert.rejects(start(partialPlan), /Main moved/);
+  assert.deepEqual(await start(await preflight()),{commit:afterTwo,next:"03"});
   competing = true;
   await assert.rejects(next,/409 stale/);
   competing = false; stopped = true;
   await assert.rejects(next,/stopped/);
+  await assert.rejects(start(await preflight()),/stopped/);
   assert.equal(head,afterTwo);
   stopped = false;
   for (let i=3; i<=10; i++) assert.equal((await next()).prepared,i);
   assert.equal((await cell(api=>api.continueReviewedPacket(ref),7)).next,null);
   await assert.rejects(cell(api=>api.continueReviewedPacket({...ref, selectionCommit:main})), /Unrecognized release packet/);
   const fresh = await preflight();
+  assert.deepEqual(await start(fresh),{commit:head,next:null});
   ref.commit = head;
   occupied = true;
   await assert.rejects(cell(api=>api.prepareReviewedTree(ref,fresh)), /Occupied release destination/);
