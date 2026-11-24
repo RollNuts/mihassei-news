@@ -75,6 +75,21 @@
         "cut_id": "06",
         "image_sha256": "ce3f082f9d399a5a2535412130d48a473c9485cb88136cb325b0e7e07bea561d"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261124135010170",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-24T13:50:10.170+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "海沿いの売店で温かい紅茶を買った。紙袋の紺と白の組み合わせが妙にきれいで、捨てる前に配色だけ手帳に写した。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "08",
+        "image_sha256": "ad2228fcc83b06bacefb4ed9f34307ccc26472fd97a9538f540cc9270a9e08f2"
+      }
     }
   ]
 }
