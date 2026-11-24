@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-23",
+  "created_date": "2026-11-24",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
     "issue_slug": "november-coast-city-rio-015",
-    "cut_id": "04",
-    "image_sha256": "c8c2874cc06fc7fdb7a627fd120f54e32aeaee4b111cee753f7ed24e2326bae7"
+    "cut_id": "06",
+    "image_sha256": "079d44996d071a88f8a833cd1d86ae5d99a1599e56fd9f35e4e200ec05cafd28"
   },
-  "post_text": "朝、温室の窓辺で青い花の名前を聞いて、忘れないように手帳へ書きました。帰り道に開いたら、字が急ぎすぎて読めません。もう一度聞きに行くのも悪くないですね。",
-  "spoken_line": "急いだ字、私にも読めませんね。",
-  "future_idea": "2031年、手書きメモのAI文字起こしに『本人すら読めない字』警告が追加。取材記録で最初に検知されたのは自分の手帳だった。"
+  "post_text": "雨上がりの路地を歩いていたら、軒先から雫がひとつ。傘をもう一度開くほどでもなくて、そのまま歩きました。こういう時だけ、少し判断が早い私です。",
+  "spoken_line": "今度は開かなくてよさそう。",
+  "future_idea": null
 }
