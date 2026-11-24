@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "model_id": "amane-hikari",
+  "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+  "week_start": "2026-11-22",
+  "baseline": {
+    "mode": "reconciled",
+    "model_id": "amane-hikari",
+    "week_start": "2026-11-22",
+    "coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/c6921e0800a828f16d643c552c54348208531ec2/maintenance/photo-issue-plans/november-hikari-city-and-pool-013/weekly-generation-coverage-20261122.json",
+    "prior_attempts": []
+  },
+  "attempts": []
+}
