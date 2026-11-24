@@ -216,6 +216,11 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
           return ok({content: JSON.stringify(cloud[name])});
         }
         if (args.url === root) return cloudResult("repository");
+        if (args.url === root + "/branches/main") {
+          if (cloud.error === "main") return apiError("SERVICE_UNAVAILABLE", "Injected main lookup failure");
+          return ok({content: JSON.stringify({name:cloud.branchName??"main",
+            commit:{sha:cloud.mainSha, commit:{tree:cloud.commit.tree}}})});
+        }
         if (args.url === root + "/actions/workflows/free-cpu-scenes.yml") return cloudResult("workflow");
         if (args.url === root + "/git/commits/" + cloud.mainSha) return cloudResult("commit");
         if (args.url === root + "/git/commits/" + baseCommitSha)
@@ -645,6 +650,13 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     assert(context.mock.writes().length === 0, label + " cannot bypass callback verification via stage");
   }
 
+  const inspection = await scenario("weekly-photo-guard");
+  const guard = stageAPI.create({controlOnly:true, repository,
+    runtime:{sha256:runtime.sha256, utf8:runtime.utf8}, github:{fetch:inspection.mock.github.fetch}});
+  const inspectionStatus = await guard.cloudStatus();
+  assert(Object.keys(guard).join(",") === "cloudStatus" && inspectionStatus.state === "active" &&
+    inspectionStatus.jpeg_bytes === 5120 && inspectionStatus.main_commit_sha === baseCommitSha,
+    "weekly photo inspection runs the existing guard with read-only dependencies");
   const cloudReady = await scenario("cloud-status");
   const readyStatus = await cloudReady.service.cloudStatus();
   assert(readyStatus.state === "active" && readyStatus.public === true &&
@@ -655,7 +667,7 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
   const cloudURLs = () => cloudReady.mock.calls.filter(call => call.name === "fetch").map(call => call.args.url);
   assert(cloudURLs().filter(url => url.includes("/git/trees/")).length === 1 &&
     cloudURLs().filter(url => url.endsWith("/actions/workflows/free-cpu-scenes.yml")).length === 2 &&
-    cloudURLs().filter(url => url.endsWith("/git/ref/heads/main")).length === 2 &&
+    cloudURLs().filter(url => url.endsWith("/branches/main")).length === 2 &&
     cloudURLs().filter(url => url === "https://api.github.com/repos/" + repository).length === 2,
     "only immutable main JPEG totals are cached; visibility, main ref and stop authority are live");
   cloudReady.mock.cloud.mainSha = "3".repeat(40);
@@ -675,12 +687,15 @@ var NativeImageStageTests = async function (stageAPI, runtime) {
     ["unknown publicity", cloud => { delete cloud.repository.private; }],
     ["unknown visibility", cloud => { delete cloud.repository.visibility; }],
     ["wrong repository", cloud => { cloud.repository.full_name = "other/repository"; }],
+    ["wrong main branch", cloud => { cloud.branchName = "unrelated"; }],
+    ["missing main commit", cloud => { delete cloud.mainSha; }],
+    ["invalid main tree", cloud => { cloud.commit.tree = {sha:"unknown"}; }],
     ["JPEG cap exceeded", cloud => { cloud.tree.tree[0].size = 1536 * 1024 * 1024; }],
     ["unknown JPEG size", cloud => { delete cloud.tree.tree[0].size; }],
     ["invalid JPEG size", cloud => { cloud.tree.tree[0].size = -1; }],
     ["truncated tree", cloud => { cloud.tree.truncated = true; }],
     ["unknown tree completeness", cloud => { delete cloud.tree.truncated; }],
-    ...["repository", "main", "commit", "tree", "workflow"].map(name =>
+    ...["repository", "main", "tree", "workflow"].map(name =>
       [name + " API failure", cloud => { cloud.error = name; }]),
     ["malformed workflow response", cloud => { cloud.malformed = "workflow"; }]
   ]) {

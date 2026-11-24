@@ -4615,5 +4615,575 @@
         "checked_on": "2026-11-23"
       }
     ]
+  },
+  {
+    "slug": "2026-11-24-am",
+    "day": "2026-11-24",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-24T09:07:47+09:00",
+    "title": "米ナスダック6.51%高、エヌビディア31.48%高　買収発表のクラウドストライクは下落",
+    "summary": "米国23日の通常取引でS&P500は4.73%高、ナスダック総合は6.51%高。エヌビディアはCEO復帰の公表後31.48%上昇した一方、クラウドストライクはZscaler買収発表後8.92%下落した。日本株については24日8時35分の寄り付き前時点の情報をまとめた。",
+    "lead": "米国11月23日の株式市場は先週末の急落から反発しました。通常取引終了（日本時間24日午前6時）時点でナスダック総合は24,089.56、S&P500は7,237.17ポイント。エヌビディアの経営トップ復帰が発表され、半導体関連に買いが広がりました。一方、セキュリティ大手2社の買収発表では買い手と売り手の株価が逆方向に動きました。",
+    "sections": [
+      {
+        "heading": "米株反発は半導体以外にも広がる",
+        "paragraphs": [
+          "23日のS&P500は前営業日20日比4.73%高、ダウ平均は3.01%高の49,595.31ポイント、ナスダック総合は6.51%高。小型株中心のラッセル2000も3.4%上昇し、2,669.66ポイントで終了しました。AP通信の終値報道とウォール・ストリート・ジャーナルの騰落率が示す米国現物市場の結果です。"
+        ]
+      },
+      {
+        "heading": "エヌビディア、CEO復帰後に31.48%上昇",
+        "paragraphs": [
+          "エヌビディアは23日の通常取引を165.05ドルで終了し、20日の125.53ドルから31.48%上昇しました。同社は23日、取締役会がジェンスン・フアン氏をCEO、社長、取締役に復帰させることを全会一致で決めたと発表しました。",
+          "会社発表によると独立取締役による調査は継続し、国家安全保障と輸出管理を監督する委員会も新設しています。経営トップ復帰と調査終了は別の事柄です。23日の株価反発は、AI半導体需要や将来の利益が同じ割合で増えたことを意味しません。"
+        ]
+      },
+      {
+        "heading": "クラウドストライク8.92%安、Zscaler17.67%高",
+        "paragraphs": [
+          "クラウドストライクとZscalerは23日、約439億ドルの企業価値で株式交換による買収契約を発表しました。Zscalerの1株につきクラウドストライク株1.135株を交付する条件です。終値は買収側のクラウドストライクが208.97ドル（20日比8.92%安）、Zscalerは229.24ドル（同17.67%高）でした。",
+          "両社は端末保護とネットワーク接続のセキュリティを統合する狙いを説明しています。完了にはZscaler株主の承認や規制当局の認可などが必要で、買収はまだ完了していません。株式対価のため、提示された交換比率が同じでも買い手の株価によって対価の時価が変わります。"
+        ]
+      },
+      {
+        "heading": "東京市場は24日に連休明けの取引",
+        "paragraphs": [
+          "日本は23日の勤労感謝の日に休場し、24日は取引日です。原稿準備時（24日8時35分）に確認していたJPXのTOPIX終値は20日15時30分の3,674.22ポイント（前営業日比3.88%安、20日16時59分更新）。本稿の日本株情報は24日の寄り付き前時点であり、寄り付き後の値動きは含みません。米半導体株の反発は国内の半導体製造装置・電子部品株に関わる材料ですが、日本株の実際の値動きとは区別されます。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "sp500-us-nov23",
+        "kind": "bars",
+        "title": "S&P500：20日と23日の通常終値",
+        "note": "AP通信の23日終値7,237.17と上げ幅326.78から20日終値6,910.39を照合。20日値は既刊と一致。",
+        "unit": "ポイント",
+        "source_url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-fcdf1bad36b4f81c90cbb0f33a2c5704",
+        "observed_at": "2026-11-24T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/20",
+            "value": 6910.39,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/23",
+            "value": 7237.17,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "nvda-us-nov23",
+        "kind": "bars",
+        "title": "エヌビディア：20日と23日の通常終値",
+        "note": "Stock Analysis日別Close。米国通常取引の終値で、時間外価格を含まない。",
+        "unit": "米ドル",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/",
+        "observed_at": "2026-11-24T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/20",
+            "value": 125.53,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/23",
+            "value": 165.05,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "crwd-us-nov23",
+        "kind": "bars",
+        "title": "クラウドストライク：買収発表前後の終値",
+        "note": "Stock Analysis日別Close。23日の買収発表後、買い手の株価は前営業日比8.92%下落。",
+        "unit": "米ドル",
+        "source_url": "https://stockanalysis.com/stocks/crwd/history/",
+        "observed_at": "2026-11-24T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/20",
+            "value": 229.44,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/23",
+            "value": 208.97,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "NVDA",
+        "name": "エヌビディア",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "上昇",
+        "previous_close": 125.53,
+        "close": 165.05,
+        "price_kind": "close",
+        "market_date": "2026-11-23",
+        "previous_market_date": "2026-11-20",
+        "observed_at": "2026-11-24T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/nvda/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Stock Analysisの日別履歴（S&P Global Market Intelligence提供、毎営業日の引け後更新）で11/20と11/23のClose・Adj. Closeが各日一致。分割調整済みの同一系列を使用。",
+        "context": "23日のCEO復帰発表後に大幅上昇。会社は独立取締役の調査継続と輸出管理の監督体制を明らかにした。"
+      },
+      {
+        "code": "CRWD",
+        "name": "クラウドストライク",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "下落",
+        "previous_close": 229.44,
+        "close": 208.97,
+        "price_kind": "close",
+        "market_date": "2026-11-23",
+        "previous_market_date": "2026-11-20",
+        "observed_at": "2026-11-24T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/crwd/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Stock Analysisの日別履歴（S&P Global Market Intelligence提供、毎営業日の引け後更新）で11/20と11/23のClose・Adj. Closeが各日一致。分割調整済みの同一系列を使用。",
+        "context": "Zscaler買収を株式交換で行うと発表。端末保護とネットワークセキュリティの統合が狙い。"
+      },
+      {
+        "code": "ZS",
+        "name": "Zscaler",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "上昇",
+        "previous_close": 194.82,
+        "close": 229.24,
+        "price_kind": "close",
+        "market_date": "2026-11-23",
+        "previous_market_date": "2026-11-20",
+        "observed_at": "2026-11-24T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/zs/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Stock Analysisの日別履歴（S&P Global Market Intelligence提供、毎営業日の引け後更新）で11/20と11/23のClose・Adj. Closeが各日一致。分割調整済みの同一系列を使用。",
+        "context": "23日にクラウドストライクとの買収契約を発表。完了には株主承認・規制当局の認可などが必要。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "AP通信：米国11月23日の主要株価指数の通常終値",
+        "url": "https://apnews.com/article/wall-street-stocks-dow-nasdaq-fcdf1bad36b4f81c90cbb0f33a2c5704",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "WSJ：米国11月23日の主要株価指数騰落率と半導体株反発",
+        "url": "https://www.wsj.com/finance/stocks/u-s-stocks-jump-as-huang-return-triggers-ai-rally-7c008308",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "NVIDIA公式IR：11月23日CEO・社長・取締役への復帰と監督体制",
+        "url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Board-Reinstates-Jensen-Huang-as-President-CEO-and-Board-Director/default.aspx",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "CrowdStrike公式IR：11月23日Zscaler買収契約と取引条件",
+        "url": "https://ir.crowdstrike.com/news-releases/news-release-details/crowdstrike-acquire-zscaler-bringing-network-security-and-zero/",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Stock Analysis：NVDAの11/20・11/23の通常終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/nvda/history/",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Stock Analysis：CRWDの11/20・11/23の通常終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/crwd/history/",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Stock Analysis：ZSの11/20・11/23の通常終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/zs/history/",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：11月20日16:59更新TOPIX現物終値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-20",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：2026年の休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "NYSE：通常取引時間と2026年休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-24-open",
+    "day": "2026-11-24",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-24T10:07:13+09:00",
+    "title": "東京株、TOPIXは2.34%高　非鉄金属8.08%高、フジクラも反発",
+    "summary": "連休明けの24日、TOPIXは9時39分に2.34%高、非鉄金属は8.08%高、電気機器は6.07%高。銀行株にも上昇が広がる一方、小売業は下落。フジクラは9時54分に9.95%高となった。いずれも取引途中の値。",
+    "lead": "東京株式市場は11月24日、連休明けの取引で反発しています。JPXが9時39分（日本時間）に更新したTOPIXは3,760.19ポイント、前営業日20日比2.34%高。23日の米国株の反発後、非鉄金属と電気機器の上げが大きくなっています。ただし業種間には差があり、すべての株が上昇しているわけではありません。",
+    "sections": [
+      {
+        "heading": "TOPIXは寄り付きから上昇、グロース250も反発",
+        "paragraphs": [
+          "TOPIXは20日の終値3,674.22ポイントに対して3,701.61で寄り付き、9時39分には3,760.19に上昇しました。東証グロース市場250指数も同時刻に661.58ポイント、前営業日比3.66%高。日経平均は指数算出元の日経公表の9時42分時点で58,535.58円、20日比3.72%高でした。日経平均はJPXの値とは観測時刻が異なり、いずれも24日の終値ではありません。"
+        ]
+      },
+      {
+        "heading": "非鉄金属と電気機器の上げが目立つ",
+        "paragraphs": [
+          "JPXの24日9時39分更新では非鉄金属8.08%高、電気機器6.07%高、機械4.69%高。銀行業も3.57%高となりました。一方、小売業は0.35%安、陸運業は0.77%安でした。大型株中心のTOPIX Core30は3.15%高、小型株のTOPIX Smallは1.75%高で、上昇は大型株だけではないものの、上げ幅には開きがあります。",
+          "米国23日の株式市場ではエヌビディアが31.48%高と急反発しました。日本でも半導体やデータセンターに関わる企業を含む業種が上昇していますが、米国の値動きだけで国内の業種別騰落の全てを説明することはできません。"
+        ]
+      },
+      {
+        "heading": "フジクラは9.95%高、情報通信事業の増収と為替前提の違い",
+        "paragraphs": [
+          "フジクラ（5803）は24日9時54分に2,476円、前営業日20日の終値2,252円に対して9.95%高でした。ただし19日の終値2,564.50円には届いていません。24日の値は円建ての東証現物株の途中値です。",
+          "フジクラが11月10日に発表した2027年3月期中間期（2026年4〜9月）の連結売上高は8,674億円、前年同期比55.2%増、営業利益は2,350億円、同160.6%増でした。同社は情報通信事業の好調を理由に通期の売上高見通しを引き上げる一方、下期想定為替を1ドル160円から156円へ変更した影響などを織り込み、営業利益・経常利益見通しを引き下げました。これは11月10日の会社公表であり、24日の新たな業績修正ではありません。株価の反発と、通信需要・為替が企業収益に与える影響は分けて見る必要があります。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov24-open",
+        "kind": "bars",
+        "title": "TOPIX：20日終値と24日9時39分",
+        "note": "20日終値3,674.22とJPXの24日9時39分更新の途中値。24日の終値ではない。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-24T09:39:00+09:00",
+        "values": [
+          {
+            "label": "11/20終値",
+            "value": 3674.22,
+            "state": "実績"
+          },
+          {
+            "label": "11/24 9:39",
+            "value": 3760.19,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-size-nov24-open",
+        "kind": "bars",
+        "title": "大型・小型株の前営業日比上昇率",
+        "note": "JPX24日9時39分更新のTOPIX Core30とTOPIX Small。いずれも20日終値比の途中値。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-24T09:39:00+09:00",
+        "values": [
+          {
+            "label": "Core30",
+            "value": 3.15,
+            "state": "実績"
+          },
+          {
+            "label": "Small",
+            "value": 1.75,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "fujikura-nov24-open",
+        "kind": "bars",
+        "title": "フジクラ：20日終値と24日9時54分",
+        "note": "Yahoo!ファイナンスの東証現物、円建て。20日の通常終値と調整後終値は一致。24日9時54分は途中値。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/5803.T",
+        "observed_at": "2026-11-24T09:54:00+09:00",
+        "values": [
+          {
+            "label": "11/20終値",
+            "value": 2252,
+            "state": "実績"
+          },
+          {
+            "label": "11/24 9:54",
+            "value": 2476,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "5803",
+        "name": "フジクラ",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "急騰",
+        "previous_close": 2252,
+        "close": 2476,
+        "price_kind": "intraday",
+        "market_date": "2026-11-24",
+        "previous_market_date": "2026-11-20",
+        "observed_at": "2026-11-24T09:54:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/5803.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!株価時系列で20日の通常終値・調整後終値とも2,252円。24日9時54分の同じ東証現物円建て価格と比較し、独自の分割補正なし。",
+        "context": "情報通信事業の需要増を背景に中間期増収増益。11月10日の会社公表では、通期売上高見通しを上方修正しつつ為替前提の変更などで営業・経常利益見通しを下方修正。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：11月24日9時39分更新の主要指数・業種別・規模別指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：指数ファイル更新日時",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：リアルタイム株価指数一覧、1分間隔の更新説明",
+        "url": "https://www.jpx.co.jp/markets/indices/realvalues/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "日経平均プロフィル：11月24日9時42分の指数値",
+        "url": "https://indexes.nikkei.co.jp/nkave/index/profile?idx=nk225",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Yahoo!ファイナンス：フジクラ11月24日9時54分の東証株価",
+        "url": "https://finance.yahoo.co.jp/quote/5803.T",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Yahoo!ファイナンス：フジクラ19日・20日の終値・調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/5803.T/history",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "フジクラ：2027年3月期中間期決算と通期予想修正（会社配信）",
+        "url": "https://prtimes.jp/main/html/rd/p/000000218.000056990.html",
+        "published_on": "2026-11-10",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Stock Analysis：NVDAの11月20日と23日の米国通常終値",
+        "url": "https://stockanalysis.com/stocks/nvda/history/",
+        "published_on": "2026-11-23",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：2026年休業日",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "NYSE：2026年休場日・通常取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-24-close",
+    "day": "2026-11-24",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-24T16:17:21+09:00",
+    "title": "東京株、TOPIXは大引け2.47%高　銀行業4.07%高、NTTは0.89%安",
+    "summary": "24日のTOPIXは15時30分更新の速報値で2.47%高。銀行業4.07%高、非鉄金属6.19%高に対し、情報・通信業は0.03%安。NTTは166.2円で取引を終えた。11月4日の決算では増収減益ながら通期営業利益見通しを上方修正している。",
+    "lead": "連休明けの東京株式市場は24日、TOPIXが3,764.88ポイント（前営業日20日比2.47%高）と反発しました。JPXの15時30分更新の大引け速報値です。朝から強かった非鉄金属や電気機器に加え、銀行業も上昇を維持する一方、情報・通信業は小幅安でした。",
+    "sections": [
+      {
+        "heading": "TOPIXは朝の上昇を維持、非鉄金属は上げ幅縮小",
+        "paragraphs": [
+          "24日のTOPIXは3,701.61ポイントで寄り付き、一時3,785.16まで上昇しました。15時30分の速報値は3,764.88ポイントで、朝9時39分の3,760.19をわずかに上回りました。東証グロース市場250指数も同じ15時30分更新で654.84ポイント、2.60%高となっています。日経平均は算出元が公表した大引け値で58,644.63円、3.91%高でした。"
+        ]
+      },
+      {
+        "heading": "銀行株も上昇、情報・通信業は小幅安",
+        "paragraphs": [
+          "JPXの15時30分更新値では非鉄金属6.19%高、電気機器5.88%高、銀行業4.07%高でした。非鉄金属は朝9時39分の8.08%高から上げ幅を縮めました。小売業は朝の0.35%安から0.17%高に転じましたが、情報・通信業は0.03%安、陸運業は0.54%安でした。大型株中心のTOPIX Core30は3.23%高、小型株のTOPIX Smallは1.54%高で、反発の強さは規模や業種によって異なります。"
+        ]
+      },
+      {
+        "heading": "NTTは166.2円、中間期は増収減益",
+        "paragraphs": [
+          "情報・通信業のNTT（9432）は24日の東証15時30分終値が166.2円で、20日終値167.7円から0.89%下落しました。指数が反発しても、通信株まで同じ勢いで買われたわけではありません。",
+          "NTTが11月4日に公表した2026年度中間期（2026年4〜9月）の営業収益は前年同期比8.7%増、営業利益は12.2%減でした。一方、同社は総合ICT事業の販売好調を織り込み、2027年3月までの通期営業利益見通しを1兆7,300億円へ、5月8日公表の従来見通し比1.2%引き上げました。中間期実績の減益と通期会社見通しの上方修正は別の数字です。この決算は24日の新規発表ではなく、当日の下落原因と断定できません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "topix-nov24-close",
+        "kind": "bars",
+        "title": "TOPIX：20日終値と24日大引け速報",
+        "note": "JPXの現物TOPIX。24日は15時30分更新の速報値、20日は公式終値。",
+        "unit": "ポイント",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/20終値",
+            "value": 3674.22,
+            "state": "実績"
+          },
+          {
+            "label": "11/24 速報",
+            "value": 3764.88,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "bank-ict-nov24-close",
+        "kind": "bars",
+        "title": "銀行業と情報・通信業の騰落率",
+        "note": "JPX24日15時30分更新。20日終値比の大引け速報値。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "values": [
+          {
+            "label": "銀行業",
+            "value": 4.07,
+            "state": "実績"
+          },
+          {
+            "label": "情報・通信業",
+            "value": -0.03,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "ntt-nov24-close",
+        "kind": "bars",
+        "title": "NTT：20日と24日の終値",
+        "note": "Yahoo!ファイナンスの東証現物・円建て価格。20日の通常終値と調整後終値は一致。",
+        "unit": "円",
+        "source_url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "values": [
+          {
+            "label": "11/20終値",
+            "value": 167.7,
+            "state": "実績"
+          },
+          {
+            "label": "11/24終値",
+            "value": 166.2,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "9432",
+        "name": "NTT",
+        "exchange": "東証",
+        "currency": "JPY",
+        "direction": "下落",
+        "previous_close": 167.7,
+        "close": 166.2,
+        "price_kind": "close",
+        "market_date": "2026-11-24",
+        "previous_market_date": "2026-11-20",
+        "observed_at": "2026-11-24T15:30:00+09:00",
+        "source_url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "corporate_action_checked": true,
+        "adjustment_note": "Yahoo!株価時系列の20日通常終値・調整後終値とも167.7円。24日15時30分の東証現物円建て終値166.2円と比較。独自の分割補正なし。",
+        "context": "11月4日公表の中間期は営業収益8.7%増、営業利益12.2%減。総合ICT事業の販売好調を織り込んで通期営業利益見通しは前回比1.2%上方修正。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "JPX：24日15時30分更新の主要指数・業種別指数・規模別指数",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：指数ファイル更新日時",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "日経平均プロフィル：24日大引けの指数値",
+        "url": "https://indexes.nikkei.co.jp/nkave/index/profile?idx=nk225",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Yahoo!ファイナンス：NTTの24日15時30分東証終値",
+        "url": "https://finance.yahoo.co.jp/quote/9432.T",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "Yahoo!ファイナンス：NTTの20日通常終値・調整後終値",
+        "url": "https://finance.yahoo.co.jp/quote/9432.T/history",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "NTT：2026年度第2四半期決算短信（1頁、添付2頁）",
+        "url": "https://group.ntt/jp/newsrelease/2026/11/04/pdf/261104ab.pdf",
+        "published_on": "2026-11-04",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "JPX：2026年休業日",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      },
+      {
+        "title": "NYSE：2026年休場日と通常取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-24"
+      }
+    ]
   }
 ]

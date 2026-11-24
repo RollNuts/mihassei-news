@@ -70,9 +70,12 @@ class CISelectionTests(unittest.TestCase):
         brief = "docs/DAILY_EDITORIAL_BRIEF.md"
         ideas = "docs/EDITORIAL_IDEAS.md"
         guide = "docs/SERIAL_EDITING_GUIDE.md"
+        operations = "docs/OPERATIONS.md"
         expected = {"tests.test_site", "tests.test_site_build_fixture",
+                    "tests.test_live_revision_equivalence",
                     "tests.test_publication_finalize", "tests.test_review_release_guard"}
         for changes in ([("M", brief)], [("M", ideas)], [("M", guide)],
+                        [("M", operations)], [("M", operations), ("M", brief)],
                         [("M", brief), ("M", ideas)], [("M", brief), ("M", guide)]):
             for event in ("pull_request", "push"):
                 with self.subTest(changes=changes, event=event):
@@ -84,11 +87,12 @@ class CISelectionTests(unittest.TestCase):
                 self.assertIn("discover", fixture.python_test_command(changes, event))
                 self.assertTrue(fixture.native_image_engine_tests_required(changes, event))
         other_files = ("content/articles.json", "content/market_bulletins.json", fixture.PHOTO_STORY_PATH,
-                       "docs/OPERATIONS.md", "docs/EDITORIAL_LOOP.md", "docs/SERIAL_EDITING_GUIDE.md.bak",
+                       "docs/OPERATIONS.md.bak", "docs/EDITORIAL_LOOP.md", "docs/SERIAL_EDITING_GUIDE.md.bak",
                        "docs/DAILY_EDITORIAL_BRIEF.md.bak",
                        "scripts/build.py", "tests/site_build_fixture.py", ".github/workflows/check.yml")
         unsafe = [None, []]
-        unsafe.extend([("M", doc), ("M", path)] for doc in (brief, guide) for path in other_files)
+        unsafe.extend([("M", doc), ("M", path)] for doc in (brief, guide, operations) for path in other_files)
+        unsafe.extend([(status, operations)] for status in ("A", "D", "T", "R100", "?"))
         unsafe.extend([(status, guide)] for status in ("A", "D", "T", "R100"))
         unsafe.extend([(status, ideas)] for status in ("A", "D", "T", "R100", "?"))
         for changes in unsafe:

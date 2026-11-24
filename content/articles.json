@@ -1,5 +1,72 @@
 [
   {
+    "slug": "used-battery-recall-follows-new-owner",
+    "category": "事件",
+    "flash": "回収通知は中古の持ち主にも",
+    "art": "cards",
+    "fiction_company": "灯和電機（架空）",
+    "fiction_at": "2031-11-24T19:30:04+09:00",
+    "published_at": "2026-11-24T19:30:04+09:00",
+    "publication_slot": "2026-11-24T19:30:00+09:00",
+    "title": "モバイルバッテリーの出火、中古の持ち主にも回収通知",
+    "summary": "2031年、灯和電機のモバイルバッテリーから出火し、メーカーが同じ製造分を回収した。購入者ではなく製品番号に通知をひも付ける仕組みで、中古品を買った人にも回収情報が届いた。売った人の個人情報を渡さず、使い続ける人に知らせる。",
+    "paragraphs": [
+      "24日午後、灯和電機のモバイルバッテリーを中古で買った会社員の携帯電話に、使用を中止するよう通知が届いた。別の家庭で同じ製造分の製品から出火し、メーカーが回収を決めたためだ。会社員は充電を始める前に通知を読み、回収を申し込んだ。",
+      "今回の回収には、製品そのものに付けた固有の番号を使った。中古品を買った人は、製品の番号を読み取って安全情報の通知先を登録できる。売った人の住所や名前は引き継がず、メーカーが回収対象の番号を公表すると、登録した現在の利用者に通知が届く。",
+      "2026年にも、製品評価技術基盤機構は充電式の電池を使う製品の事故が増えているとして、リコール情報の確認を呼びかけていた。その後、中古販売店とメーカーの間で製品番号の書式が共通化され、複数の店を経由した品物も一つの窓口で安全情報を受け取れるようになった。",
+      "灯和電機は従来、購入時の連絡先とウェブサイトの告知を頼りに回収していた。通知の仕組みを維持する費用はメーカーと参加する中古販売店が負担する。店にとっても回収対象と知らずに商品を売る危険を減らせるが、利用者が番号を登録していない製品には直接知らせられない。そのため店頭での掲示と従来の回収窓口も残す。",
+      "夕方、会社員が回収手続きに使った購入履歴は半年前の中古店のものだった。灯和電機は新品の購入証明を求めず、対象品の番号を確認して回収を受け付けた。同社は今後、回収の費用を見積もる際に、新品の購入者だけでなく中古市場に流通した製品も含める方針だ。"
+    ],
+    "source": {
+      "kind": "公的機関の製品事故注意喚起",
+      "publisher": "独立行政法人製品評価技術基盤機構（NITE）",
+      "published_at": "2026-07-15T00:00:00+09:00",
+      "url": "https://www.nite.go.jp/jiko/chuikanki/press/2026fy/prs260715.html",
+      "topic": "2026年7月15日、NITEはリチウムイオン電池搭載製品の事故が増加していると発表し、購入前のリコール情報確認などを呼びかけた。2021〜2025年に通知された事故情報は2140件で、調査中や電池に起因した可能性があると推定される事故を含む。2031年の出火・灯和電機・回収・製品番号を使う共通通知制度と利用者は創作。"
+    },
+    "scene_prompt": "Photorealistic horizontal 16:9 Japanese local newspaper documentary photograph. At a modest apartment dining table in ordinary evening light, an adult Japanese office worker looks at a smartphone while a small disconnected portable power bank rests on the tabletop beside its plain charging cable. Natural candid expression, realistic ordinary home, no smoke or flames, no readable screen text, no brand logos, no real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "モバイルバッテリー",
+      "製品回収",
+      "中古品"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "製品回収",
+      "中古品"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "中古で買ったバッテリーにも回収の知らせが届く。持ち主が変わった製品をどう守るか。",
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "2026年にNITEが充電式電池搭載製品の事故増加とリコール情報確認を呼びかけた",
+      "target": "2031年に中古店とメーカーの製品番号の書式が共通化され回収通知を現在の利用者が受けられる",
+      "action": "出火を受けメーカーが同じ製造分の回収を決め、中古品の利用者が通知を受け取り回収を申し込む",
+      "outcome": "元の購入者の情報を渡さず中古品も回収し、メーカーが中古流通分を回収費用の見積もりに含める"
+    },
+    "reader_clarity": {
+      "who": "中古の持ち主",
+      "action": "モバイルバッテリーの出火を受けた回収通知を受け取り申し込む",
+      "oddity": "最初の購入者ではない中古の利用者にも製品番号から安全情報が届く"
+    },
+    "behavior_basis": {
+      "motive": "メーカーと中古店が回収対象品の利用を止め事故を防ぎたい",
+      "ordinary_alternative": "購入時の連絡先への連絡とサイトでの告知",
+      "why_not": "中古売買で所有者が変わると元の購入者への通知だけでは届かない",
+      "evidence_quote": "灯和電機は従来、購入時の連絡先とウェブサイトの告知を頼りに回収していた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "NITEがリチウムイオン電池搭載製品の事故増加とリコール情報確認を注意喚起",
+      "continuation_force": "中古流通の拡大と安全情報の伝達のため製品番号の書式を共通化し通知先を現在の利用者が登録する",
+      "future_result": "2031年の出火で購入者以外の中古品利用者にも回収通知が届く"
+    }
+  },
+  {
     "slug": "island-club-sound-ball-remote-league",
     "category": "スポーツ",
     "flash": "海を越えて、初めての対戦",

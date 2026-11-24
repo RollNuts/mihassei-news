@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 from datetime import datetime
 from xml.etree import ElementTree as ET
+from scripts.publication_inputs import publication_json_snapshot
 from tests.site_build_fixture import ensure_site_build
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -147,6 +148,7 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(home.count('data-issue-picker data-issue-options='),1)
         self.assertNotIn('<div class="news-wire"',home)
 
+    @publication_json_snapshot()
     def test_activity_rail_is_independent_of_the_replaced_broadcast_choices(self):
         """The home cast timeline does not consume any news-article slots."""
         import re
@@ -155,12 +157,15 @@ class SiteTests(unittest.TestCase):
         articles=build.load()
         playlist=build.broadcast_playlist(articles)
         self.assertGreater(len(playlist),1)
+        serials = build.load_serials(ROOT)
+        photo_stories = build.load_photo_stories(ROOT)
+        bulletins = build.load_market_bulletins(ROOT)
         expected=None
         for offset in range(len(playlist)):
             reordered=playlist[offset:]+playlist[:offset]
             with self.subTest(first=reordered[0]["slug"]), \
                  patch.object(build,"broadcast_playlist",return_value=reordered):
-                home=build.home(articles)
+                home = build.home(articles, serials=serials, photo_stories=photo_stories, bulletins=bulletins)
                 rail=home.split('<section class="press-timeline"',1)[1].split('</section>',1)[0]
                 links=re.findall(r'<li><a href="/articles/([^/]+)/">',rail)
                 self.assertEqual(len(links),3,"fill the rail with different published stories")

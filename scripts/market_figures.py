@@ -232,19 +232,28 @@ def render_market_svg(figure: dict, *, mobile=False) -> str:
         f'<text x="{left}" y="{104 if mobile or len(chunks) > 1 else 87}" fill="#495660" font-size="{14 if mobile else 16}">単位：{unit} ／ 0を基準に比較</text>',
     ]
     if figure["kind"] == "bars":
-        maximum = max(v["value"] for v in figure["values"])
+        quantities = [v["value"] for v in figure["values"]]
+        signed = min(quantities) < 0
+        span = bar_width // 2 if signed else bar_width
+        zero = left + span if signed else left
+        maximum = max(abs(n) for n in quantities)
         for i, value in enumerate(figure["values"]):
             line = (132 + i * 126) if mobile else (128 + i * 105)
             bar_y = line + 24
             color = STATES[value["state"]]
-            length = round(bar_width * value["value"] / maximum) if maximum else 0
+            amount = value["value"]
+            length = round(abs(amount) / maximum * span) if maximum else 0
+            x = zero - length if amount < 0 else zero
             label = escape(value["label"] + "｜" + value["state"])
             parts.extend([
                 f'<text x="{left}" y="{line}" font-size="{17 if mobile else 20}" fill="#263936">{label}</text>',
                 f'<text x="{right}" y="{line+26}" text-anchor="end" font-size="{18 if mobile else 20}" font-weight="700" fill="#163934">{escape(_amount(value["value"]))}</text>',
                 f'<rect x="{left}" y="{bar_y+22}" width="{bar_width}" height="{28 if mobile else 30}" rx="5" fill="#dce5df"/>',
-                f'<rect x="{left}" y="{bar_y+22}" width="{length}" height="{28 if mobile else 30}" rx="5" fill="{color}"/>',
+                f'<rect x="{x}" y="{bar_y+22}" width="{length}" height="{28 if mobile else 30}" rx="5" fill="{color}"/>',
             ])
+            if signed:
+                parts.append(f'<line x1="{zero}" x2="{zero}" y1="{bar_y+20}" y2="{bar_y+54}" stroke="#495660"/>')
+                parts.append(f'<text x="{zero}" y="{bar_y+16}" text-anchor="middle" font-size="13" fill="#495660">0</text>')
     else:
         total = figure["total"]
         y = 148 if mobile else 143

@@ -409,11 +409,14 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 <a id="weekly-photo-quota"></a>
 ### Reserve one original in the producer’s weekly allowance
 
-Use this only when the [stock rule](EDITORIAL_LOOP.md#写真ストックと制作量) calls for a new original, after recovering outstanding files and verifying that the current execution can save and read back an actual original through its available transport. Previously received originals can go straight to the existing handoff. Load `scripts/photo_generation_quota.js` from reviewed main inside code mode. Bind `fetch`, `fetch_file`, `create_branch`, `create_file` and `update_file` from the existing GitHub connection, plus the live `stager.cloudStatus` used for original handoffs.
+Use this only when the [stock rule](EDITORIAL_LOOP.md#写真ストックと制作量) calls for a new original, after recovering outstanding files and verifying that the current execution can save and read back an actual original through its available transport. Previously received originals can go straight to the existing handoff. Retain the reviewed main commit for the run alongside the checkpoint. In each fresh cell, use GitHub `fetch_file` at that commit to load just `scripts/photo_generation_quota.js` and `scripts/native_image_stage.js`. Bind `fetch`, `fetch_file`, `create_branch`, `create_file` and `update_file` from the existing GitHub connection and the live `read_image_control` callback. The two imports and one quota step fit within 16 calls, including when main advances.
 
 ```js
 const Q = new Function(quotaSource + "\nreturn PhotoGenerationQuota;")();
-const quota = Q.create({github, cloudStatus: stager.cloudStatus});
+const stage = new Function(stageSource + "\nreturn NativeImageStage;")();
+const {cloudStatus} = stage.create({controlOnly:true, github, repository:"RollNuts/mihassei-news",
+  readCloudWorkflow: ({nonce}) => readImageControl({nonce})});
+const quota = Q.create({github, cloudStatus});
 // Reuse the same input and checkpoint across cells. Keep helper source and GitHub responses private.
 const next = await quota.reserveStep(input, checkpoint);
 ```
@@ -596,6 +599,18 @@ image("data:image/jpeg;base64," + runtime.toBase64(verified.bytes));
 
 On an interrupted ref update, recover with the same plan. The immutable JPEG path, SHA and source receipt are the editor's handoff. Only count the cut after its committed bytes have been read and inspected alongside the source. A blob or staging receipt alone is not acceptance. Use [the weekly editorial process](EDITORIAL_LOOP.md#成人の軽い未来企画既存枠) for the column, formal selection and publication.
 
+#### Prepare a saved ten-cut selection
+
+For a numbered PNG/JPEG handoff with `editorial_review.status: "selected_pending_release_receipts"`, continue the existing editor's selection. Use the issue's normal `photo-issue/issue-NNN` release branch (create it from the latest main if absent), its current head and the frozen draft. Bind `readWeeklyPng` to the weekly PNG reader. For an already prepared PNG/JPEG pair, load the same three helpers and use `const runtime = await bytesAPI.verificationRuntime(fetchFile)` with GitHub’s `fetch_file` callback. This loads only the pinned SHA-256 dependency. Pass `controlOnly: true` to `stageAPI.create({runtime, github, repository, readCloudWorkflow, controlOnly:true})` and bind its `cloudStatus` to the original handoff helper. The producer uses the full conversion runtime when encoding a JPEG. Keep one measured import time. **Run each numbered operation in its own cell.**
+
+1. `text((await original.openReviewedSelection({issue, selectionCommit, releaseCommit, importedAt})).plan)` returns a small plan. It checks the saved notes, ten selections, original Git IDs, registered producer and both catalogs. Preserve that plan and the two branch identities. Set `ref = {slug: issue.slug, edition: plan.edition, selectionCommit}`.
+2. `text(await original.startReviewedPacket(plan))` creates `maintenance/photo-issue-plans/<slug>/release-packet.json` on the release branch. After a lost create response, repeat this call to recover the commit and first missing cut. For an existing packet it verifies the stored receipt hashes against the saved selection and returns `next: null` when all cuts are prepared. If the helper requests a fresh preflight, repeat step 1 at the current heads using the original import time. A conflicting packet needs reconciliation.
+3. `text(await original.continueReviewedPacket(ref))` checks one selected PNG/JPEG pair against the immutable handoff, prepares its formal receipt and saves its SHA-256 to that packet with the prior file SHA. Repeat in fresh cells until `next` is null. After a timeout, use this same call: it reads the committed packet and finds the first missing cut. With the verification runtime the cold cell uses four setup reads, four material reads, five live guard callbacks and one GitHub update. An overlapping editor cannot overwrite another packet revision.
+4. At the current release head, repeat step 1 for a fresh plan. Set `ref.commit` to this release head. In the next cell, `text(await original.prepareReviewedTree(ref, freshPlan))` builds the release tree with the original and JPEG blob IDs and formal receipts. It removes only this feature's temporary packet from the proposed tree. Retain the returned base commit and tree SHA. The branch still contains its recoverable packet.
+5. For the catalog and actual visual QA, `const {images} = await original.readReviewedRelease(ref)` reconstructs the prepared image records from the pinned selection and saved receipt hashes in two callbacks. Use the saved selection's actual notes and column, add the reviewed editorial files to the returned tree, then commit on the returned base. Check the release head before the usual non-force update, PR and finalizer below. If the release head moved, repeat step 4. Only a final, checked release commit advances the editorial PR for publication.
+
+Intermediate packet commits use `[skip ci]`. The final release commit requests the ordinary checks. A different handoff format can use the per-cut or unassigned-stock helper below.
+
 For a selected Library original, a member of an existing Library ZIP, or a producer-chat photo, use `original.prepareSuppliedCut` once per cut. Load `producer` from that model's existing `cast-source-drafts:drafts/cast-voices/<model_id>.json`. Use the frozen `issue`, the original candidate commit and the measured import time. Keep the source ordinal separate from the position on the page. In [issue 002, cut 09](https://github.com/RollNuts/mihassei-news/blob/778e50922ae5740e4f6d328ad4e3128b2aa434a5/maintenance/photo-issues/november-coast-city-rio-015/09/receipt-supplied-914dc376be35-ce649a006a9b.json), original 03 became published cut 09.
 
 ```js
@@ -618,10 +633,19 @@ Read both files inside code mode. Each measured record carries its pinned path, 
 
 #### Stock received before a feature was assigned
 
+For a feature selected from different shoots, use the frozen target `issue`, its `issue-NNN` edition, and the current head of `photo-issue/issue-NNN` as `releaseCommit`. Take each source's `stockIssue` and `commit` from the [weekly stock handoff](DAILY_EDITORIAL_BRIEF.md#weekly-stock-handoff). Inspect the actual pictures before choosing each target `cutId`. Use the verification runtime above. Run each numbered step in a fresh cell and carry forward only the returned metadata.
+
+1. Build a plan for one cut. For an unassigned recovery receipt, use `const batch = await original.openUnassignedStock({stockIssue, commit, issue, releaseCommit}); text(batch.planCut({sourceOrdinal, cutId, importedAt}))`. For a numbered handoff use `text(await original.planNumberedStockCut({stockIssue, commit, issue, releaseCommit, candidateNumber, cutId, importedAt}))`. Keep the actual import time across retries. File number, original ordinal and page position can all differ.
+2. If the feature already contains staged cuts, first run `text(await original.checkStockSiblings(plan))` in a separate cell. Pass the returned fingerprint as `siblings` (omit it for the first cut). `text(await original.prepareStockCutTree(edition, plan, siblings))` reads the original PNG and JPEG at the pinned source commit and prepares their release files and receipt. If it returns `status: "staged"`, continue at step 5.
+3. `text(await original.commitStockCutTree(plan, tree))` creates the cut commit using the tree returned by step 2.
+4. `text(await original.publishStockCut(edition, plan, prepared))` verifies the commit from step 3 and advances the release branch. If the response is lost, retry with the same plan and commit.
+5. `text(await original.readStagedStockCut({issue, cutId, edition, commit:prepared.commit}))` confirms the submitted commit on the release branch and recovers the image catalog entry from the files stored on the release branch. For a previously staged cut, use its returned commit; if the editor lost that reference, omit `commit` to read the current release head and compare the returned image with the selected source. Repeat for the next selected cut at the current release head. The final editorial commit adds the catalog, column and visual review, then goes through the normal release PR and production check below.
+
 For a [producer handoff with `source_candidate_only: true` and a null publication number](https://github.com/RollNuts/mihassei-news/blob/fe276d1b4e698f91d6ecc5f870fab4e7a16e9b9c/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json), open the stock once for the editor's draft feature. `stockIssue` identifies the original storage location. `releaseCommit` is the fixed head used to prepare the release. The draft feature can be new to its catalog.
 
 ```js
 const batch = await original.openUnassignedStock({stockIssue, commit, releaseCommit, issue});
+text(batch.nearSimilarGroups); // Choose at most one source ordinal from each group for this feature.
 const cut = batch.prepareCut({sourceOrdinal, cutId, importedAt,
   readback: {source: pngResult.structuredContent, jpeg: jpegResult.structuredContent}});
 ```

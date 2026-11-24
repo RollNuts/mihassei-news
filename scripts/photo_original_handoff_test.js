@@ -621,10 +621,10 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
     assert.ok(count <= 15);
     return result;
   }
-  const prepared = await callbacks(7,()=>api.uploadReviewJpeg(ref,verified));
-  const recoveredBlob = await callbacks(8,()=>api.uploadReviewJpeg(ref));
+  const prepared = await callbacks(6,()=>api.uploadReviewJpeg(ref,verified));
+  const recoveredBlob = await callbacks(7,()=>api.uploadReviewJpeg(ref));
   assert.deepEqual(recoveredBlob,prepared);
-  const plan = await callbacks(14,()=>api.prepareReviewJpeg(ref,prepared,staged.commit));
+  const plan = await callbacks(13,()=>api.prepareReviewJpeg(ref,prepared,staged.commit));
   const provisional = state.trees.get(state.commits.get(plan.commit).tree.sha);
   const originalTree = state.trees.get(state.commits.get(staged.commit).tree.sha);
   assert.equal(provisional.length, originalTree.length + 2);
@@ -654,7 +654,7 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
   await assert.rejects(api.prepareReviewJpeg(ref,{...prepared,encoding_details:{...prepared.encoding_details,encoder_ref:main}},staged.commit),/Invalid prepared/);
 
   state.lost=true;
-  await callbacks(14,()=>assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/lost response/));
+  await callbacks(13,()=>assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/lost response/));
   assert.equal(state.branches.get(staged.branch),plan.commit);
   state.lost=false;
   writes = state.writes.length;
@@ -764,13 +764,14 @@ function unassignedStockFixture() {
     width:source.width,height:source.height,image_url:dataUrl(measured.source.data)},
     jpeg:{sha:measured.jpeg.blob,encoding:"base64",content:measured.jpeg.data.toString("base64")}};
   const api = helper.create({runtime:{...bytes,sha256:hash},github});
-  return {open:()=>api.openUnassignedStock(params),params,handoff,receipt,inventory,requests,item,
+  return {open:()=>api.openUnassignedStock(params),params,handoff,receipt,inventory,requests,item,github,
     cut:{sourceOrdinal:1,cutId:"09",importedAt:input.importedAt,readback}};
 }
 
 test("an editor can prepare an unassigned split-receipt original for a first draft at a different slug", async () => {
   const fixture = unassignedStockFixture(), {cut,item,params,handoff,requests} = fixture;
   const batch = await fixture.open(), reads = requests.length;
+  assert.deepEqual(batch.nearSimilarGroups, []);
   const result = batch.prepareCut(cut), record = JSON.parse(result.files[2].content);
   assert.equal(result.status, "prepared_not_published");
   assert.equal(record.issue_slug, params.issue.slug);
@@ -788,6 +789,30 @@ test("an editor can prepare an unassigned split-receipt original for a first dra
   assert.equal(requests.length,reads);
   assert.equal(requests.filter(req=>req[1]==="content/photo_issues.json").length,2);
   assert.ok(requests.length <= 15);
+});
+
+test("stock respects the editor's similar pairs in one feature, including a reopened draft", async () => {
+  const {open, cut, item, inventory, handoff, params} = unassignedStockFixture();
+  const groups = [[1,8], [2,6], [3,4]];
+  handoff.editorial = {near_similar_source_ordinal_groups:groups};
+  for (let ordinal=2; ordinal<=8; ordinal++) {
+    handoff.items.push({...item, source_ordinal:ordinal, source_sha256:hash("original " + ordinal),
+      prepared_jpeg:{...item.prepared_jpeg, sha256:hash("jpeg " + ordinal)}});
+  }
+  const batch = await open();
+  assert.deepEqual(batch.nearSimilarGroups, groups);
+  const first = batch.prepareCut(cut);
+  assert.deepEqual(batch.prepareCut(cut), first);
+  assert.throws(() => batch.prepareCut({...cut, cutId:"08", sourceOrdinal:8}), /Near-similar photos/);
+  inventory.editing = [{...params.issue, images:{"09":first.image}}];
+  const reopened = await open();
+  assert.throws(() => reopened.prepareCut({...cut, cutId:"08", sourceOrdinal:8}), /Near-similar photos/);
+  inventory.editing = [{...params.issue, slug:"previous-feature", images:{"08":{source_sha256:hash("original 8")}}}];
+  assert.deepEqual((await open()).prepareCut(cut), first);
+  for (const invalid of [null, 1, [[1]], [[1,1]], [[1,9]], [[1,"8"]]]) {
+    handoff.editorial.near_similar_source_ordinal_groups = invalid;
+    await assert.rejects(open, /near-similar/);
+  }
 });
 
 test("unassigned stock rejects reassignment, swapped evidence, published originals and repeated sources", async () => {
@@ -959,4 +984,419 @@ test("the observed archive and member cannot be substituted, dropped or passed a
   const changedMember = Buffer.from(measured.data);
   changedMember[changedMember.length >> 1] ^= 1;
   assert.throws(() => prepare(original, {...measured, data:changedMember}), /original PNG changed/);
+});
+
+// The 016 handoff kept numbered blobs and a later selected[] with a different page order.
+// Exercise that format offline using the original bytes of another ten-cut release.
+function reviewedSelectionFixture() {
+  const issue = {...rio, slug:"editor-feature", state:"draft", images:{}};
+  const prefix = "maintenance/photo-issue-plans/" + issue.slug + "/";
+  const commit = sha1("pinned image pairs"), selectionCommit = sha1("selected ten"), releaseCommit = sha1("editor branch");
+  const rows = [], selected = [], originals = [], files = new Map(), reads = [];
+  for (const {id} of issue.shots) {
+    const {input} = suppliedCutFixture(id);
+    const number = String(11 - Number(id)).padStart(2, "0");
+    const source = {...input.candidate.source, format:"png", path:prefix+"originals/"+number+".png", blob:input.readback.source.blob};
+    const jpeg = {...input.candidate.jpeg, path:prefix+"jpeg/"+number+".jpg", blob:input.readback.jpeg.blob};
+    rows.push({...input.candidate, candidate_number:number, issue:issue.slug, handoff_path:prefix+"handoff.json", source, jpeg});
+    selected.push({cut_id:id, candidate_number:number, source_sha256:source.sha256, jpeg_sha256:jpeg.sha256,
+      source_bytes:source.bytes, jpeg_bytes:jpeg.bytes, review:"offline selection fixture " + id});
+    originals.push({type:"file", path:source.path, size:source.bytes, sha:source.blob});
+    files.set(source.path, input.readback.source.data);
+    files.set(jpeg.path, input.readback.jpeg.data);
+  }
+  const review = {status:"selected_pending_release_receipts", model_id:issue.model_id, candidate_commit:commit, issue_edition:"issue-003",
+    face_and_body_reference_checked:true, byte_readback_count:10, reviewed_jpeg_count:14, previous_catalog_sha_overlap:0, selected};
+  const handoff = {version:1, kind:"weekly_photo_candidate_handoff", issue:issue.slug, ...rioProducer,
+    branch:"photo-issue-plan/"+issue.slug, handoff_path:prefix+"handoff.json", candidates:rows};
+  const inventory = {live:[], editing:[], interrupt:null};
+  const github = {
+    async fetch({url}) {
+      const path = url.split("/"+repo)[1];
+      if (path === "/git/ref/heads/main") return {ref:"refs/heads/main", object:{sha:main}};
+      if (path === "/contents/"+prefix+"originals?ref="+commit) return {content:JSON.stringify(originals)};
+      throw Error("Unexpected request " + path);
+    },
+    async fetch_file({ref, path, encoding}) {
+      let data;
+      if (ref === selectionCommit && path === handoff.handoff_path) data = {...handoff, editorial_review:review};
+      else if (ref === commit && path === handoff.handoff_path) data = handoff;
+      else if (ref === "cast-source-drafts" && path === "drafts/cast-voices/"+issue.model_id+".json") data = rioProducer;
+      else if ([releaseCommit,main].includes(ref) && path === "content/photo_issues.json")
+        data = {schema_version:1, issues:ref === main ? inventory.live : inventory.editing};
+      else if (ref === commit && encoding === "base64" && files.has(path)) {
+        if (inventory.interrupt === path) throw Error("Interrupted JPEG read");
+        return {encoding, sha:rows.find(row => row.jpeg.path === path).jpeg.blob, content:files.get(path).toString("base64")};
+      } else throw Error("Unexpected file " + path);
+      return {encoding,content:JSON.stringify(data)};
+    }
+  };
+  async function readWeeklyPng({issue:slug, commit:ref, path, expected_sha256}) {
+    assert.equal(slug, issue.slug);
+    assert.equal(ref, commit);
+    const source = rows.find(row => row.source.path === path).source;
+    assert.equal(expected_sha256, source.sha256);
+    reads.push(path);
+    return {structuredContent:{...source, status:"read", mime_type:"image/png", commit, image_url:dataUrl(files.get(path))}};
+  }
+  const api = helper.create({runtime:{...bytes,sha256:hash}, github, readWeeklyPng});
+  const open = () => api.openReviewedSelection({issue, selectionCommit, releaseCommit, importedAt:"2026-11-24T00:00:00Z"});
+  return {open, rows, review, handoff, issue, inventory, files, reads, originals, github, readWeeklyPng, releaseCommit, selectionCommit};
+}
+
+test("saved editorial selection prepares ten existing pairs, resumes at a matching draft, and preserves real source ordinals", async () => {
+  const {open, rows, issue, inventory, reads} = reviewedSelectionFixture();
+  const initial = await open(), first = await initial.prepareCut("01");
+  assert.deepEqual(initial.cutIds, issue.shots.map(s => s.id));
+  inventory.interrupt = rows[1].jpeg.path;
+  await assert.rejects(initial.prepareCut("02"), /Interrupted/);
+  inventory.editing = [{...issue, images:{"01":first.image}}];
+  inventory.interrupt = null;
+  const resumed = await open();
+  assert.deepEqual(resumed.existing, ["01"]);
+  const results = [first];
+  for (const cutId of resumed.cutIds) results.push(await resumed.prepareCut(cutId));
+  assert.equal(reads.filter(path => path === rows[0].source.path).length, 1);
+  assert.equal(results.length, 10);
+  for (const [index,result] of results.entries()) {
+    const row = rows[index], receipt = JSON.parse(result.files[2].content);
+    assert.equal(receipt.cut_id, issue.shots[index].id);
+    assert.equal(receipt.recovery_reference.source_ordinal, row.source_ordinal);
+    assert.equal(result.files[0].sha, row.source.blob);
+    assert.equal(result.files[1].sha, row.jpeg.blob);
+    assert.equal(result.image.sha256, row.jpeg.sha256);
+    assert.ok(!Object.hasOwn(result.image, "review"));
+  }
+});
+
+test("numbered selection resolves similarity by source ordinal and refuses ambiguous archive ordinals", async () => {
+  const {open, rows, handoff} = reviewedSelectionFixture();
+  rows.forEach((row, index) => { row.source_ordinal = index + 1; });
+  handoff.editorial = {near_similar_source_ordinal_groups:[[1,8]]};
+  await assert.rejects(open, /Near-similar photos/);
+  rows[1].source_ordinal = 1;
+  await assert.rejects(open, /ambiguous near-similar/);
+});
+
+test("saved selection refuses substitutions, duplicate cuts, occupied releases and corrupted pairs", async () => {
+  const {open, rows, review, inventory, issue, files, originals} = reviewedSelectionFixture();
+  for (const [obj, field, wrong] of [
+    [review, "face_and_body_reference_checked", false], [review.selected[0], "cut_id", "02"],
+    [review.selected[0], "source_sha256", rows[2].source.sha256], [rows[1], "candidate_number", rows[0].candidate_number],
+    [inventory, "live", [{...issue, state:"published"}]],
+    [inventory, "live", [{...issue, slug:"older", state:"published", images:{"01":{source_sha256:rows[1].source.sha256}}}]],
+    [inventory, "editing", [{...issue, images:{"05":{source_sha256:rows[0].source.sha256,sha256:rows[0].jpeg.sha256}}}]],
+  ]) {
+    const old = obj[field]; obj[field] = wrong;
+    await assert.rejects(open);
+    obj[field] = old;
+  }
+  originals[0].sha = sha1("substitute");
+  await assert.rejects(open, /Git blob changed/);
+  originals[0].sha = rows[0].source.blob;
+  const bad = Buffer.from(files.get(rows[0].jpeg.path));
+  bad[40] ^= 1; files.set(rows[0].jpeg.path, bad);
+  await assert.rejects((await open()).prepareCut("01"), /JPEG bytes changed/);
+});
+
+test("fresh bounded cells resume the Git packet after lost responses and build only the selected release files", async () => {
+  const f = reviewedSelectionFixture(), {issue, selectionCommit} = f;
+  const ref = {slug:issue.slug, edition:"issue-003", selectionCommit};
+  const branch = "photo-issue/issue-003", path = "maintenance/photo-issue-plans/" + issue.slug + "/release-packet.json";
+  const history = new Map(), treeSha = sha1("release tree");
+  let head = f.releaseCommit, liveMain = main, lost = false, occupied = false, competing = false, stopped = false, proposed;
+  let unrelatedEdit = false, diverged = false;
+  // Recreate both helpers on every operation; charge the six source/dependency reads before entry.
+  async function cell(work, expectedCalls) {
+    let calls = 6;
+    function transportCall() { assert.ok(++calls <= 16, "Exceeded cold cell limit"); }
+    const github = {
+      async fetch({url}) {
+        transportCall();
+        const apiPath = url.split("/"+repo)[1];
+        if (apiPath === "") return {full_name:repo, private:false,visibility:"public"};
+        if (apiPath === "/branches/"+branch || apiPath === "/branches/photo-issue/issue-004") {
+          return {name:apiPath.slice("/branches/".length),commit:{sha:head,commit:{tree:{sha:treeSha}}}};
+        }
+        if (apiPath === "/branches/main") return {name:"main",commit:{sha:liveMain,commit:{tree:{sha:baseTree}}}};
+        if (apiPath === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:liveMain}};
+        if (apiPath === "/git/commits/"+liveMain || apiPath === "/git/commits/"+head) {
+          const sha = apiPath.slice(13);
+          return {sha,tree:{sha:sha===liveMain ? baseTree : treeSha}};
+        }
+        if (apiPath === "/git/trees/"+baseTree+"?recursive=1") return {sha:baseTree,truncated:false,tree:[]};
+        if (apiPath === "/git/trees/"+treeSha+"?recursive=1") {
+          const tree = history.has(head) ? [{path, type:"blob",mode:"100644",sha:history.get(head).sha}] : [];
+          if (occupied) tree.push({path:"assets/generated/photo-issue-"+issue.slug+"-01.jpg",type:"blob",mode:"100644",sha:f.rows[0].jpeg.blob});
+          return {sha:treeSha,truncated:false,tree};
+        }
+        if (apiPath === "/compare/"+f.releaseCommit+"..."+head+"?per_page=1") {
+          const files = [{filename:path,status:"added",sha:history.get(head).sha}];
+          if (unrelatedEdit) files.push({filename:"content/photo_issues.json", status:"modified"});
+          return {status:diverged ? "diverged" : "ahead",merge_base_commit:{sha:f.releaseCommit},files};
+        }
+        if (apiPath === "/actions/workflows/free-cpu-scenes.yml") return {path:".github/workflows/free-cpu-scenes.yml",state:stopped ? "disabled_manually" : "active"};
+        return f.github.fetch({url});
+      },
+      async fetch_file(args) {
+        transportCall();
+        if (args.path === path) {
+          const entry = history.get(args.ref === branch ? head : args.ref);
+          assert.ok(entry);
+          return {...entry,encoding:"utf-8"};
+        }
+        if (history.has(args.ref) && args.path === "content/photo_issues.json") args = {...args,ref:f.releaseCommit};
+        if (args.ref === liveMain && args.path === "content/photo_issues.json") args = {...args,ref:main};
+        return f.github.fetch_file(args);
+      },
+      async create_file(args) {
+        transportCall();
+        assert.equal(args.branch,branch); assert.equal(args.path,path); assert.equal(history.size,0);
+        head = sha1("empty packet");
+        history.set(head,{sha:sha1(args.content),content:args.content});
+        if (lost) throw Error("create response lost after commit");
+        return {commit_sha:head};
+      },
+      async update_file(args) {
+        transportCall();
+        assert.equal(args.branch,branch); assert.equal(args.path,path); assert.equal(args.sha,history.get(head).sha);
+        if (competing) throw Error("409 stale blob");
+        head = sha1([head,args.content]);
+        history.set(head,{sha:sha1(args.content),content:args.content});
+        if (lost) throw Error("response lost after commit");
+        return {commit_sha:head};
+      },
+      async create_tree(args) {
+        transportCall();
+        proposed = args;
+        return {sha:sha1(args)};
+      },
+      create_blob(){throw Error("unexpected upload");}, create_branch(){throw Error("unexpected branch");},
+      create_commit(){throw Error("unexpected commit");}
+    };
+    const runtime = {...bytes, sha256:hash, convert(){throw Error("unexpected conversion");}};
+    const stager = stage.create({runtime, github, repository:repo});
+    const api = helper.create({runtime, github, cloudStatus:stager.cloudStatus,
+      async readWeeklyPng(args) { transportCall(); return f.readWeeklyPng(args); }});
+    const result = await work(api);
+    if (expectedCalls) assert.equal(calls,expectedCalls);
+    return result;
+  }
+  const preflight = () => cell(async api => (await api.openReviewedSelection({
+    issue, selectionCommit, releaseCommit:head, importedAt:"2026-11-24T00:00:00Z"})).plan,13);
+  const initial = await preflight();
+  const start = plan => cell(api => api.startReviewedPacket(plan),15);
+  lost = true;
+  await assert.rejects(cell(api => api.startReviewedPacket(initial)),/create response lost/);
+  lost = false;
+  assert.deepEqual(await start(initial),{commit:head,next:"01"});
+  const next = () => cell(api => api.continueReviewedPacket(ref),15);
+  lost = true;
+  await assert.rejects(next, /response lost/);
+  lost = false;
+  const second = await next();
+  assert.equal(second.prepared,2);
+  assert.equal(f.reads.filter(path => path===f.rows[0].source.path).length,1);
+  const afterTwo = head;
+  const partialPlan = await preflight();
+  assert.deepEqual(await start(partialPlan),{commit:afterTwo,next:"03"});
+  assert.deepEqual(await start(initial),{commit:afterTwo,next:"03"});
+  for (const changed of [{selectionCommit:main}, {edition:"issue-004"}, {selectionHash:hash("different")},
+    {importedAt:"2026-11-24T03:00:00Z"}, {candidateCommit:main}]) {
+    await assert.rejects(start({...partialPlan,...changed}), /release packet/);
+  }
+  diverged = true;
+  await assert.rejects(start(partialPlan), /Unverified release changes/);
+  diverged = false; unrelatedEdit = true;
+  await assert.rejects(start(initial), /current head/);
+  assert.deepEqual(await start(partialPlan),{commit:afterTwo,next:"03"});
+  unrelatedEdit = false;
+  const record = history.get(head);
+  const damaged = JSON.parse(record.content);
+  damaged.prepared["02"] = hash("different receipt");
+  history.set(head,{sha:sha1(damaged),content:JSON.stringify(damaged)});
+  await assert.rejects(start(partialPlan), /changed verified receipt/);
+  history.set(head,record);
+  liveMain = sha1("new main");
+  await assert.rejects(start(partialPlan), /Main moved/);
+  assert.deepEqual(await start(await preflight()),{commit:afterTwo,next:"03"});
+  competing = true;
+  await assert.rejects(next,/409 stale/);
+  competing = false; stopped = true;
+  await assert.rejects(next,/stopped/);
+  await assert.rejects(start(await preflight()),/stopped/);
+  assert.equal(head,afterTwo);
+  stopped = false;
+  for (let i=3; i<=10; i++) assert.equal((await next()).prepared,i);
+  assert.equal((await cell(api=>api.continueReviewedPacket(ref),7)).next,null);
+  await assert.rejects(cell(api=>api.continueReviewedPacket({...ref, selectionCommit:main})), /Unrecognized release packet/);
+  const fresh = await preflight();
+  assert.deepEqual(await start(fresh),{commit:head,next:null});
+  ref.commit = head;
+  occupied = true;
+  await assert.rejects(cell(api=>api.prepareReviewedTree(ref,fresh)), /Occupied release destination/);
+  occupied = false;
+  const tree = await cell(api=>api.prepareReviewedTree(ref,fresh),15);
+  assert.equal(tree.cuts,10);
+  assert.equal(proposed.base_tree_sha,treeSha);
+  assert.equal(proposed.tree_elements.length,31);
+  assert.deepEqual(proposed.tree_elements.at(-1),{path,mode:"100644",type:"blob",sha:null});
+  assert.equal(new Set(proposed.tree_elements.map(entry=>entry.path)).size,31);
+  const readback = await cell(api=>api.readReviewedRelease(ref),8);
+  assert.equal(Object.keys(readback.images).length,10);
+  assert.equal(history.size,11);
+});
+
+test("fresh bounded cells stage mixed shoots on one release and recover the exact cut after a lost update", async () => {
+  const indoor = unassignedStockFixture(), beach = suppliedCutFixture("03").input;
+  const {issue, releaseCommit} = indoor.params, edition = "issue-003", branch = "photo-issue/"+edition;
+  const stockIssue = "separate-beach-shoot", prefix = "maintenance/photo-issue-plans/"+stockIssue+"/";
+  const commit = sha1("beach source"), candidateNumber = "02", importedAt = "2026-11-24T00:00:00Z";
+  const source = {...beach.candidate.source, format:"png",path:prefix+"originals/02.png",blob:beach.readback.source.blob};
+  if (source.image_number) source.image_number = 1;
+  const jpeg = {...beach.candidate.jpeg,path:prefix+"jpeg/02.jpg",blob:beach.readback.jpeg.blob};
+  const row = {...beach.candidate,issue:stockIssue,handoff_path:prefix+"handoff.json",source_ordinal:1,candidate_number:candidateNumber,source,jpeg};
+  const stock = {version:1,kind:"weekly_photo_candidate_handoff",issue:stockIssue,branch:"photo-issue-plan/"+stockIssue,
+    handoff_path:row.handoff_path,...rioProducer,candidates:[row]};
+  let head = releaseCommit, nowMain = main, active = true, loseReply = false, extraChange = false;
+  const trees = new Map([[releaseCommit,[]]]), commits = new Map(), contents = new Map();
+  const originals = [{path:source.path,type:"file",sha:source.blob,size:source.bytes}];
+  const read = (text) => JSON.parse(JSON.stringify(text));
+  async function cell(operation) {
+    let calls = 6;
+    function call() { assert.ok(++calls <= 16, "Exceeded 16 cold callbacks"); }
+    const github = {
+      async fetch({url}) {
+        call();
+        const path = url.split("/"+repo)[1];
+        if (path === "/branches/"+branch) return {name:branch,commit:{sha:head,commit:{tree:{sha:head}}}};
+        if (path === "/git/ref/heads/"+branch) return {ref:"refs/heads/"+branch,object:{sha:head}};
+        if (path === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:nowMain}};
+        for (const [candidateBranch, pinned] of [[indoor.handoff.candidate_branch,indoor.params.commit],[stock.branch,commit]]) {
+          const later = sha1("later "+pinned);
+          if (path === "/git/ref/heads/"+candidateBranch) return {ref:"refs/heads/"+candidateBranch,object:{sha:later}};
+          if (path === "/compare/"+pinned+"..."+later+"?per_page=1") return {status:"ahead",merge_base_commit:{sha:pinned}};
+        }
+        if (path === "/contents/"+prefix+"originals?ref="+commit) return originals;
+        if (path.startsWith("/git/commits/")) {
+          const rev = path.split("/").pop(); assert.ok(trees.has(rev));
+          return {sha:rev,tree:{sha:rev}};
+        }
+        if (path.startsWith("/git/trees/")) {
+          const rev=path.split("/").pop().split("?")[0]; assert.ok(trees.has(rev));
+          return {sha:rev,truncated:false,tree:trees.get(rev)};
+        }
+        if (path.startsWith("/compare/")) {
+          const [base, rev] = path.slice(9).split("?")[0].split("...");
+          assert.equal(commits.get(rev).base,base);
+          const files = trees.get(rev).filter(f=>!trees.get(base).some(old=>old.path===f.path))
+            .map(f=>({filename:f.path,sha:f.sha,status:"added"}));
+          if (extraChange) files.push({filename:"README.md",status:"modified"});
+          return {status:"ahead",total_commits:1,merge_base_commit:{sha:base},commits:[{sha:rev,parents:[{sha:base}]}],files};
+        }
+        return indoor.github.fetch({url});
+      },
+      async fetch_file(args) {
+        call();
+        if (args.ref === commit && args.path === row.handoff_path) return {encoding:"utf-8",content:JSON.stringify(stock)};
+        if (args.ref === commit && args.path === jpeg.path) return {encoding:"base64",sha:jpeg.blob,content:beach.readback.jpeg.data.toString("base64")};
+        if (args.ref === indoor.params.commit && args.path === indoor.item.prepared_jpeg.path) return indoor.cut.readback.jpeg;
+        if (trees.has(args.ref) && args.path === "content/photo_issues.json") return {encoding:"utf-8",content:'{"schema_version":1,"issues":[]}'};
+        const file = trees.get(args.ref)?.find(f=>f.path===args.path);
+        if (file) return {encoding:"utf-8",sha:file.sha,content:contents.get(file.sha)};
+        return indoor.github.fetch_file(args);
+      },
+      async create_tree({base_tree_sha:base,tree_elements:entries}) {
+        call(); const tree = sha1([base,entries]), list = [...trees.get(base)];
+        for (const f of entries) {
+          assert.ok(!list.some(e=>e.path===f.path));
+          const sha = f.sha ?? sha1(f.content); if (f.content) contents.set(sha,f.content);
+          list.push({path:f.path, type:f.type, mode:f.mode, sha});
+        }
+        trees.set(tree,list); return {sha:tree};
+      },
+      async create_commit({tree_sha:tree,parent_sha:base}) {
+        call(); const rev = sha1([tree,base]); commits.set(rev,{base}); trees.set(rev,trees.get(tree)); return {sha:rev};
+      },
+      async update_ref({branch_name,sha,force,expected_sha}) {
+        call(); assert.equal(branch_name,branch);assert.equal(force,false);assert.equal(expected_sha,head);
+        head=sha; if(loseReply) throw Error("response lost"); return {object:{sha}};
+      }
+    };
+    const api = helper.create({github,runtime:{...bytes,sha256:hash},cloudStatus:async()=>{
+      for(let i=0;i<5;i++) call();
+      return {state:active?"active":"stopped",public:true,main_commit_sha:nowMain,jpeg_bytes:0};
+    },readWeeklyPng:async args=>{
+      call(); if (args.issue===indoor.params.stockIssue) return indoor.cut.readback.source;
+      assert.deepEqual(args,{issue:stockIssue,commit,path:source.path,expected_sha256:source.sha256});
+      return {status:"read",mime_type:"image/png",commit,path:source.path,sha256:source.sha256,width:source.width,
+        height:source.height,bytes:source.bytes,image_url:dataUrl(beach.readback.source.data)};
+    }});
+    return read(await operation(api));
+  }
+  const blockedHash = hash("another photo in the indoor near-twin group");
+  indoor.handoff.items.push({...indoor.item,source_ordinal:2,source_sha256:blockedHash,
+    prepared_jpeg:{...indoor.item.prepared_jpeg,sha256:hash("another jpeg")}});
+  indoor.handoff.editorial={near_similar_source_ordinal_groups:[[1,2]]};
+  const first = await cell(async api=>(await api.openUnassignedStock(indoor.params)).planCut({sourceOrdinal:1,cutId:"01",importedAt}));
+  const firstCut = await cell(api=>api.readStockCut(first));
+  const tree = await cell(api=>api.prepareStockCutTree(edition,first));
+  const firstCommit = await cell(api=>api.commitStockCutTree(first,tree));
+  const saveFirst = ()=>cell(api=>api.publishStockCut(edition,first,firstCommit));
+  extraChange=true;
+  await assert.rejects(saveFirst,/unverified release/);
+  extraChange=false;active=false;
+  await assert.rejects(saveFirst,/stopped/);
+  active=true;nowMain=sha1("unrelated new main");
+  await assert.rejects(saveFirst,/Main moved/);
+  nowMain=main;loseReply=true;
+  await assert.rejects(saveFirst,/response lost/);
+  loseReply=false;
+  assert.deepEqual((await saveFirst()).image,firstCut.image);
+  const makeSecond = (cutId="02")=>cell(api=>api.planNumberedStockCut({issue,stockIssue,commit,releaseCommit:head,
+    cutId,candidateNumber,importedAt}));
+  stock.candidates.push({...row,candidate_number:"08",source_ordinal:2,source:{...source,sha256:first.candidate.source.sha256},
+    jpeg:{...jpeg,sha256:first.candidate.jpeg.sha256}});
+  stock.editorial={near_similar_source_ordinal_groups:[[1,2]]};
+  const similar = await makeSecond();
+  await assert.rejects(cell(api=>api.prepareStockCutTree(edition,similar)),/near-similar/);
+  delete stock.editorial;stock.candidates.pop();
+  const sourceHash = source.sha256;
+  source.sha256 = blockedHash;
+  const copiedTwin = await makeSecond();
+  await assert.rejects(cell(api=>api.checkStockSiblings(copiedTwin)),/earlier selection excludes/);
+  source.sha256 = sourceHash;
+  const second = await makeSecond(), secondCut = await cell(api=>api.readStockCut(second));
+  await assert.rejects(cell(api=>api.prepareStockCutTree(edition,second)),/Check earlier stock/);
+  const siblings = await cell(api=>api.checkStockSiblings(second));
+  const secondTree = await cell(api=>api.prepareStockCutTree(edition,second,siblings));
+  const secondCommit = await cell(api=>api.commitStockCutTree(second,secondTree));
+  await cell(api=>api.publishStockCut(edition,second,secondCommit));
+  const firstReceived = JSON.parse(firstCut.files[2].content), secondReceived = JSON.parse(secondCut.files[2].content);
+  assert.deepEqual([firstReceived.recovery_reference.source_ordinal,secondReceived.recovery_reference.source_ordinal],[1,1]);
+  assert.equal(secondReceived.recovery_reference.source_path,prefix+"originals/02.png");
+  assert.equal(secondReceived.recovery_reference.source_issue,stockIssue);
+  assert.equal(firstReceived.recovery_reference.originals_receipt_sha256,indoor.handoff.originals_receipt.sha256);
+  assert.equal(trees.get(head).length,6);
+  assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"01",commit:firstCommit.commit})),firstCut.image);
+  assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"01",commit:head})),firstCut.image);
+  assert.deepEqual(await cell(api=>api.readStagedStockCut({issue,edition,cutId:"02",commit:head})),secondCut.image);
+  assert.equal((await cell(api=>api.prepareStockCutTree(edition,first))).commit,head);
+  const again=await makeSecond("03");
+  await assert.rejects(cell(api=>api.prepareStockCutTree(edition,again)),/Repeated/);
+  await assert.rejects(cell(api=>api.readStockCut({...second,candidate:{...row,commit,source:{...source,path:"README.md"}}})),/Invalid or changed/);
+  // Nine checked sibling receipts still fit a cold cell. Their individual bytes never enter the conversation.
+  const ninthPlan = await makeSecond("10"), originalTree = trees.get(head);
+  const extras = [];
+  for (let n=3;n<=9;n++) {
+    const id = String(n).padStart(2,"0"), path=secondCut.image.provenance.receipt_path.replace("/02/","/"+id+"/");
+    const contentsText = JSON.stringify({...secondReceived,cut_id:id});
+    const blob = sha1(contentsText);
+    contents.set(blob,contentsText);
+    extras.push({path,sha:blob,type:"blob",mode:"100644"});
+  }
+  trees.set(head,[...originalTree,...extras]);
+  assert.match(await cell(api=>api.checkStockSiblings(ninthPlan)),/^[0-9a-f]{64}$/);
+  trees.set(head,originalTree);
+  await assert.rejects(cell(api=>api.publishStockCut("issue-004",second,secondCommit)),/Wrong stock commit/);
 });

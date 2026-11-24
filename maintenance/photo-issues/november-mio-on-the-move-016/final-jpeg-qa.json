@@ -1,0 +1,324 @@
+{
+  "model_id": "hanase-mio",
+  "candidate_slug": "november-mio-on-the-move-016",
+  "candidate_commit": "f39c946354d4b866e0415393a6d9749e4926f6a6",
+  "editorial_source": {
+    "commit": "108dd3cfd7df0e446615cec8ef413d3ca4d10c05",
+    "path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/handoff.json",
+    "column_authored_by": "weekly_editor",
+    "column_authored_at": "2026-11-23T20:59:45.929Z"
+  },
+  "candidate_reviewed_at": "2026-11-23T20:59:45.925Z",
+  "reviewed_at": "2026-11-24T09:15:08+09:00",
+  "review_scope": "固定候補の原PNG・掲載JPEGを10組目視。正式入稿後、同じ20ファイルを全てデコードし、選定済みのSHA・寸法・サイズ、掲載順と水着の区分を再照合。",
+  "registered_face_sha256": "3f2d8cb3b6f5439d12fab481952668c6894dbedfc348dcf3f49bd317175dd9ad",
+  "registered_body_reference_sha256": "17a677d5988e882e89c6fdc4d56d0c39161faeaf445cf307c165d5636874b89f",
+  "photo_count": 10,
+  "swimwear_visible_count": 3,
+  "clothed_count": 7,
+  "swimwear_top_and_bottom_count": 2,
+  "swimwear_top_only_count": 1,
+  "overall_visual_qa": "passed",
+  "cuts": [
+    {
+      "cut_id": "01",
+      "candidate_number": "01",
+      "source_ordinal": 4,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/01.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/01.jpg",
+      "source_sha256": "c1ad0532908d5b527f613a63cf660c7ea868e9690749324e943d24fe66088a9f",
+      "jpeg_sha256": "64f27c8088537e890d0f069b3e0b8b8d310b00fa16f676dc8a374a6a08ebda98",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "jpeg_dimensions": [
+        1200,
+        800
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.49,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "upper_body",
+      "swimwear_visible": false,
+      "swimwear_visibility": null,
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "列車窓辺・横長近景、導入。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/01/receipt-supplied-c1ad0532908d-64f27c808853.json",
+      "receipt_sha256": "56fb518e898199fedacd373cff0eb2b177db562df4516d88f837d0b7e698e25d",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/01/source-c1ad0532908d5b527f613a63cf660c7ea868e9690749324e943d24fe66088a9f.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-01.jpg",
+      "imported_at": "2026-11-24T00:14:50.865Z"
+    },
+    {
+      "cut_id": "02",
+      "candidate_number": "02",
+      "source_ordinal": 3,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/02.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/02.jpg",
+      "source_sha256": "2a1fd0abb3e0357eb8dc223086f5e249c815b4fa43a3782e78946103f835db52",
+      "jpeg_sha256": "1eeba10e1bfd6bfbfed1e6312d15ffb5be34de1d308b019efef930fa63ee7d4d",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.84,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "full_body",
+      "swimwear_visible": false,
+      "swimwear_visibility": null,
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "駅の地図・全身。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/02/receipt-supplied-2a1fd0abb3e0-1eeba10e1bfd.json",
+      "receipt_sha256": "7e654d21ecb72e83444c055102022a2007046220b099335b198166978125bb7b",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/02/source-2a1fd0abb3e0357eb8dc223086f5e249c815b4fa43a3782e78946103f835db52.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-02.jpg",
+      "imported_at": "2026-11-24T00:14:50.969Z"
+    },
+    {
+      "cut_id": "03",
+      "candidate_number": "03",
+      "source_ordinal": 18,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/03.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/03.jpg",
+      "source_sha256": "a36defaa15c048e590856783ac621d7ca6f789ba6987b09b3f83d48e5f6196db",
+      "jpeg_sha256": "4336b4d6c6e5ad5e4323358657f82f4b6f0e41a8655c09c1db2719396059eb00",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.81,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "full_body",
+      "swimwear_visible": false,
+      "swimwear_visibility": null,
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "海辺の自転車・全身。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/03/receipt-supplied-a36defaa15c0-4336b4d6c6e5.json",
+      "receipt_sha256": "5090d4cc95aa94c059c48c5a216ac41a80bb9835db9f31215fd54f49a6569917",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/03/source-a36defaa15c048e590856783ac621d7ca6f789ba6987b09b3f83d48e5f6196db.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-03.jpg",
+      "imported_at": "2026-11-24T00:14:51.095Z"
+    },
+    {
+      "cut_id": "04",
+      "candidate_number": "04",
+      "source_ordinal": 19,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/04.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/04.jpg",
+      "source_sha256": "2dc13f3fd300719ef687f72ac1ce16520569aba6b01ec0c614976107a9e3ec58",
+      "jpeg_sha256": "58a1712b67f184b41121fc494d626e0ad08d2b0b24114c8eb254d6f1fbe7612e",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.93,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "full_body",
+      "swimwear_visible": false,
+      "swimwear_visibility": null,
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "桟橋と船・全身、乗船前。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/04/receipt-supplied-2dc13f3fd300-58a1712b67f1.json",
+      "receipt_sha256": "8e3bfe2315c60afe4e168d561b0093f8f551ae376ec1a9736b1c34f1fb877eb8",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/04/source-2dc13f3fd300719ef687f72ac1ce16520569aba6b01ec0c614976107a9e3ec58.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-04.jpg",
+      "imported_at": "2026-11-24T00:14:51.174Z"
+    },
+    {
+      "cut_id": "05",
+      "candidate_number": "11",
+      "source_ordinal": 1,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/11.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/11.jpg",
+      "source_sha256": "99c2e49f67df636f21720ea25afff1ddc1801de2b8b7a7199133c0e148fbf4dc",
+      "jpeg_sha256": "e6897d83518c4dc0fe2d5aaec6d9ac4cecfcb4a2a6ea83181a065e2a2248fe29",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "jpeg_dimensions": [
+        1200,
+        800
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.68,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "upper_body",
+      "swimwear_visible": false,
+      "swimwear_visibility": null,
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "テラスの果物・横長近景。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/05/receipt-supplied-99c2e49f67df-e6897d83518c.json",
+      "receipt_sha256": "a48a5a2fb96877a569d91ab68e9442c4e01db386ba2c3ffe6cc0998d0886d13c",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/05/source-99c2e49f67df636f21720ea25afff1ddc1801de2b8b7a7199133c0e148fbf4dc.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-05.jpg",
+      "imported_at": "2026-11-24T00:14:51.256Z"
+    },
+    {
+      "cut_id": "06",
+      "candidate_number": "07",
+      "source_ordinal": 14,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/07.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/07.jpg",
+      "source_sha256": "984c4b43c33e58bb2bcfe29798d0a9ebbdaf179c2c131ad44483caa5168da229",
+      "jpeg_sha256": "eccf050205b78fac6d227d4870f1829c6446ba918a94d9839b5ecb262fbf157b",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.12,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "three_quarter",
+      "swimwear_visible": true,
+      "swimwear_visibility": "top_and_bottom",
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "青ビキニ上下・木道の中景。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/06/receipt-supplied-984c4b43c33e-eccf050205b7.json",
+      "receipt_sha256": "3dbe6a2904db011c0c69055e238e3d2035950d5a58eba42bf276e32f3a45a9ae",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/06/source-984c4b43c33e58bb2bcfe29798d0a9ebbdaf179c2c131ad44483caa5168da229.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-06.jpg",
+      "imported_at": "2026-11-24T00:14:51.338Z"
+    },
+    {
+      "cut_id": "07",
+      "candidate_number": "08",
+      "source_ordinal": 2,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/08.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/08.jpg",
+      "source_sha256": "f51f76794b43358a7b422e808a2b9c509e59ca6fe781e8350c420e8838015534",
+      "jpeg_sha256": "b633ac841141ab6ad37e8b2596f01c4151a7e2198461938a926691324a193035",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "jpeg_dimensions": [
+        1200,
+        800
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.73,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "full_body",
+      "swimwear_visible": true,
+      "swimwear_visibility": "top_and_bottom",
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "柄ビキニ上下・波打ち際の横長全身。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/07/receipt-supplied-f51f76794b43-b633ac841141.json",
+      "receipt_sha256": "f0b0de4d29d0bc2aa4737b09a7b0569b065a0af673cfe33742b43bfaa5414380",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/07/source-f51f76794b43358a7b422e808a2b9c509e59ca6fe781e8350c420e8838015534.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-07.jpg",
+      "imported_at": "2026-11-24T00:14:51.409Z"
+    },
+    {
+      "cut_id": "08",
+      "candidate_number": "06",
+      "source_ordinal": 6,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/06.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/06.jpg",
+      "source_sha256": "c7cda4eb2dbfb5f1333c03ea1d0514817e69507938956838faa5869c28a5434f",
+      "jpeg_sha256": "b6e0992eecb6877663c93a767c48447d793856c9a281c77458de03741dba8773",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "jpeg_dimensions": [
+        1200,
+        800
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.8,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "upper_body",
+      "swimwear_visible": true,
+      "swimwear_visibility": "top_only",
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "花柄水着トップのみ視認・白い羽織、海辺の店の横長近景。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/08/receipt-supplied-c7cda4eb2dbf-b6e0992eecb6.json",
+      "receipt_sha256": "b332ebea6af5465cf6051be6a34ba8ca2cc04ffe9d8358e880c18e987e9cbbed",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/08/source-c7cda4eb2dbfb5f1333c03ea1d0514817e69507938956838faa5869c28a5434f.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-08.jpg",
+      "imported_at": "2026-11-24T00:14:51.489Z"
+    },
+    {
+      "cut_id": "09",
+      "candidate_number": "13",
+      "source_ordinal": 10,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/13.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/13.jpg",
+      "source_sha256": "06d738935962bb1ea114ee19004f1a8bd05a9d9eccfc98783a651a634e787d2e",
+      "jpeg_sha256": "ad9637c80795a3a0d76306ba589bf36d41b60bef57b8bed7e2dbe9997ded3322",
+      "source_dimensions": [
+        1086,
+        1448
+      ],
+      "jpeg_dimensions": [
+        900,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.29,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "profile",
+      "swimwear_visible": false,
+      "swimwear_visibility": null,
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "白シャツと短パン・手すり越しの横顔。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/09/receipt-supplied-06d738935962-ad9637c80795.json",
+      "receipt_sha256": "8fd62498184fe9352c10f4c061f88a5cdc6bae7a2b28c501469e1076d1549fa1",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/09/source-06d738935962bb1ea114ee19004f1a8bd05a9d9eccfc98783a651a634e787d2e.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-09.jpg",
+      "imported_at": "2026-11-24T00:14:51.568Z"
+    },
+    {
+      "cut_id": "10",
+      "candidate_number": "14",
+      "source_ordinal": 15,
+      "source_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/originals/14.png",
+      "jpeg_path": "maintenance/photo-issue-plans/november-mio-on-the-move-016/jpeg/14.jpg",
+      "source_sha256": "ab6a59f71606714a5745243d9e6121c333893988adbf08739286195d35a974ec",
+      "jpeg_sha256": "b99df3a30074c1f12bebcc95eecd4d41c8bbba399677af72dfcaf819823f3400",
+      "source_dimensions": [
+        1024,
+        1536
+      ],
+      "jpeg_dimensions": [
+        800,
+        1200
+      ],
+      "resized_source_vs_jpeg_rgb_mean_absolute_difference_0_to_255": 1.51,
+      "visual_qa": "passed",
+      "decision": "passed_visual_qa",
+      "framing": "full_body",
+      "swimwear_visible": false,
+      "swimwear_visibility": null,
+      "reviewed_at": "2026-11-24T09:15:08+09:00",
+      "note": "夕焼けの柄ワンピース・全身、締め。",
+      "receipt_path": "maintenance/photo-issues/november-mio-on-the-move-016/10/receipt-supplied-ab6a59f71606-b99df3a30074.json",
+      "receipt_sha256": "7835286135e4193a1ff309045ba019b5c9504631eddf8df2e4ca4c407bb6fb29",
+      "release_source_path": "maintenance/photo-issues/november-mio-on-the-move-016/10/source-ab6a59f71606714a5745243d9e6121c333893988adbf08739286195d35a974ec.png",
+      "release_jpeg_path": "assets/generated/photo-issue-november-mio-on-the-move-016-10.jpg",
+      "imported_at": "2026-11-24T00:14:51.639Z"
+    }
+  ]
+}

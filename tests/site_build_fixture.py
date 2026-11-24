@@ -23,6 +23,7 @@ MARKET_DATA_PATHS = frozenset({
 # CI scope only. Publication PRs have a separate path/ownership policy.
 EDITORIAL_DOC_PATHS = frozenset({
     "docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDEAS.md", "docs/SERIAL_EDITING_GUIDE.md",
+    "docs/OPERATIONS.md",
 })
 PHOTO_STORY_PATH = "content/photo_stories.json"
 # Story data reaches home, weekly indexes and profiles. Retain their reader
@@ -100,7 +101,7 @@ def native_image_engine_tests_required(changes, event):
 def python_test_command(changes, event=None):
     """Select checks for a complete, recognized diff, always with a fresh site build."""
     if editorial_docs_only(changes, event):
-        modules = {"tests.test_site", "tests.test_site_build_fixture",
+        modules = {"tests.test_site", "tests.test_site_build_fixture", "tests.test_live_revision_equivalence",
                    "tests.test_publication_finalize", "tests.test_review_release_guard"}
     elif photo_story_data_only(changes):
         modules = set(PHOTO_STORY_MODULES)
