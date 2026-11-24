@@ -25,6 +25,10 @@ EDITORIAL_DOC_PATHS = frozenset({
     "docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDEAS.md", "docs/SERIAL_EDITING_GUIDE.md",
     "docs/OPERATIONS.md",
 })
+WEEKLY_HANDOFF_PATHS = frozenset({
+    "scripts/photo_original_handoff.js", "scripts/photo_original_handoff_test.js",
+    "docs/NATIVE_IMAGE_BYTES.md",
+})
 PHOTO_STORY_PATH = "content/photo_stories.json"
 # Story data reaches home, weekly indexes and profiles. Retain their reader
 # contracts, accepted photo-source schemas and global output/SEO checks.
@@ -85,24 +89,28 @@ def photo_story_data_only(changes):
     return status == "M" and (path == PHOTO_STORY_PATH or path in STORY_RECORD_PATHS)
 
 
-def editorial_docs_only(changes, event):
+def modified_paths_only(changes, event, allowed_paths):
     return (event in ("pull_request", "push") and bool(changes)
-            and all(status == "M" and path in EDITORIAL_DOC_PATHS
+            and all(status == "M" and path in allowed_paths
                     for status, path in changes))
 
 
 def native_image_engine_tests_required(changes, event):
     """Only recognized editorial document edits can also skip native/browser checks on main."""
-    if editorial_docs_only(changes, event):
+    if modified_paths_only(changes, event, EDITORIAL_DOC_PATHS):
         return False
     return event != "pull_request" or not (market_data_only(changes) or photo_story_data_only(changes))
 
 
 def python_test_command(changes, event=None):
     """Select checks for a complete, recognized diff, always with a fresh site build."""
-    if editorial_docs_only(changes, event):
+    if modified_paths_only(changes, event, EDITORIAL_DOC_PATHS):
         modules = {"tests.test_site", "tests.test_site_build_fixture", "tests.test_live_revision_equivalence",
                    "tests.test_publication_finalize", "tests.test_review_release_guard"}
+    elif modified_paths_only(changes, event, WEEKLY_HANDOFF_PATHS):
+        # The JS producer writes supplied-photo receipts consumed by the weekly issue validator.
+        modules = {"tests.test_site", "tests.test_site_build_fixture", "tests.test_photo_issues",
+                   "tests.test_photo_supplied", "tests.test_photo_original_reuse", "tests.test_photo_issue_plan"}
     elif photo_story_data_only(changes):
         modules = set(PHOTO_STORY_MODULES)
     elif market_data_only(changes):
@@ -128,8 +136,10 @@ def main(argv=None):
     args = parser.parse_args(argv)
     changes = changed_files(args.base, args.event)
     command = python_test_command(changes, args.event)
-    if editorial_docs_only(changes, args.event):
+    if modified_paths_only(changes, args.event, EDITORIAL_DOC_PATHS):
         scope = "editorial documents with fresh full build"
+    elif modified_paths_only(changes, args.event, WEEKLY_HANDOFF_PATHS):
+        scope = "weekly photo handoff with fresh full build"
     elif market_data_only(changes):
         scope = "market-data-only with fresh full build"
     elif photo_story_data_only(changes):
