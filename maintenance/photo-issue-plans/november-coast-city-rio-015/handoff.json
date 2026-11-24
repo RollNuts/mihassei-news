@@ -587,7 +587,44 @@
       "known_consumed": null,
       "remaining": null,
       "new_attempts_in_this_run": 0,
-      "evidence": "2026-11-24 stock-shioba-rio reservation branch search returned no match; task peek exposes current/latest run only, not complete historical image calls and interrupted attempts. Full week 2026-11-22–28 consumption still unconfirmed; no reservation."
+      "evidence": "2026-11-24 stock-shioba-rio reservation branch search returned no match; task peek exposes current/latest run only, not complete historical image calls and interrupted attempts. Full week 2026-11-22–28 consumption still unconfirmed; no reservation.",
+      "regular_run_reconciliation": {
+        "status": "incomplete_do_not_use_as_quota_baseline",
+        "through": "2026-11-24T16:39:00+09:00",
+        "regular_task_reference": "https://chatgpt.com/c/6afe4137-3ddc-83e8-9e7c-50ab49a09df4?automationId=6af875ae67608191b13ba2955e0218fc",
+        "regular_results": [
+          {
+            "displayed_at": "2026-11-22T09:21:04.306+09:00",
+            "pr": 941,
+            "pr_head_at_audit": "eeaf72f2f87e32e1b553205c0ad9c66451446a3f",
+            "voice_source_commit": "594e8e842d84fe324ff0f04a2ecc3cd1484ea54a",
+            "returned_new_generation_calls": 0
+          },
+          {
+            "displayed_at": "2026-11-23T09:22:42.996+09:00",
+            "pr": 972,
+            "pr_head_at_audit": "656085f6cca78c869f3c4443d1d5df39a32e57d9",
+            "voice_source_commit": "ff8cfa4a4b4c0132367ac8008b409acd98ab7d2f",
+            "returned_new_generation_calls": 0
+          },
+          {
+            "displayed_at": "2026-11-24T09:19:11.543+09:00",
+            "pr": 998,
+            "pr_head_at_audit": "4b36ae4d85f6617f9fa3c4f4b9d1e25239c7844b",
+            "voice_source_commit": "7d1c825a0b866addce2ccdbdd22033d47caa467c",
+            "returned_new_generation_calls": 0
+          }
+        ],
+        "unresolved_work": {
+          "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
+          "requested_at": "2026-11-23T00:49:33.812+09:00",
+          "request": "既存の独立原本のみを回収。新規生成なしの指示。",
+          "observed": "登録チャットでは調査開始・Library検索までが見え、失敗・中断を含めた当該実行の生成実数を確認できていない。受領済み原本14組の保存作業は候補コミットで確認。保存枚数は生成回数を示さない。",
+          "initial_handoff": "554a6b16c31db5f0b6bc523b3050d20373bd250a",
+          "supplemental_handoff": "598775b8a4635473395ac42a7d5c4f355add72c8"
+        },
+        "next_operation": "この3つの定期報告の再調査は不要。別途の00:49回収と期間中の他の呼出しの確証が新しく得られるまで当週総数はnullを維持し、移行週の予約に使わない。確認済み未掲載2枚は通常どおり選定可能。新しい週は中央手順の週初からの排他予約に従う。"
+      }
     },
     "preflight": {
       "cloud_guard": "active",
