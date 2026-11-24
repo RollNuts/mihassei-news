@@ -634,6 +634,7 @@ For a [producer handoff with `source_candidate_only: true` and a null publicatio
 
 ```js
 const batch = await original.openUnassignedStock({stockIssue, commit, releaseCommit, issue});
+text(batch.nearSimilarGroups); // Choose at most one source ordinal from each group for this feature.
 const cut = batch.prepareCut({sourceOrdinal, cutId, importedAt,
   readback: {source: pngResult.structuredContent, jpeg: jpegResult.structuredContent}});
 ```
