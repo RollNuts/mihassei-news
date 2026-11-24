@@ -483,8 +483,8 @@
           "comparison": "元の8候補・月城れなの既刊と完全一致または同構図の再圧縮なし。元turnと原画像番号は補足のhandoffに保持。"
         }
       ],
-      "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/6419973614824a23da2bff773073ec329e82959c/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
-      "weekly_quota_next_step": "固定coverage_refのeditorial.weekly_generation_coverageは11月24日15:13 JSTまでの実行を照合済み。予約の直前に本人が残りの区間を照合し、同記録のnext_operationを続ける。"
+      "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/1ac6e092f6e338eb7dbe958722ccd1933603b900/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
+      "weekly_quota_next_step": "当週の台帳 photo-issue-plan/stock-tsukishiro-rena-2026-11-22 のgeneration-attempts.jsonから通常の予約を再開する。現実行の原本保存・遠隔再読を実証してから、新たな1枚の予約を行う。"
     },
     "weekly_generation_coverage": {
       "model_id": "tsukishiro-rena",
