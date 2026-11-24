@@ -484,7 +484,7 @@
         }
       ],
       "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/1ac6e092f6e338eb7dbe958722ccd1933603b900/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
-      "weekly_quota_next_step": "当週の台帳 photo-issue-plan/stock-tsukishiro-rena-2026-11-22 のgeneration-attempts.jsonから通常の予約を再開する。現実行の原本保存・遠隔再読を実証してから、新たな1枚の予約を行う。"
+      "weekly_quota_next_step": "当週の台帳 photo-issue-plan/stock-tsukishiro-rena-2026-11-22 のgeneration-attempts.jsonから通常の予約を再開する。予約前に最新の確認済みmain（https://github.com/RollNuts/mihassei-news/blob/main/docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport）に従い、本人枠で実際に使える原本経路を checkOriginalTransport で検証する。生成ツールと返却形式も別途確認して1枚を予約する。"
     },
     "weekly_generation_coverage": {
       "model_id": "tsukishiro-rena",
