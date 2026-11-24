@@ -4,7 +4,7 @@
   "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
   "week_start": "2026-11-22",
   "from": "2026-11-22T00:00:00+09:00",
-  "through": "2026-11-24T15:49:00+09:00",
+  "through": "2026-11-24T22:53:55+09:00",
   "prior_attempts_through_cutoff": [],
   "producer_results": [
     {
@@ -51,5 +51,17 @@
     "checked_at": "2026-11-24T15:53:00+09:00",
     "transport": "既存GitHub接続から固定receiptと4分割PNGをCodeModeへ読み、総バイト・寸法・SHA256が一致。"
   },
-  "next_operation": "本人の定期枠でthrough以降の実行、失敗・中断、並行候補、週の既存予約台帳を確認する。既知の呼出しを合算して固定根拠を残し、不明なら予約しない。移行週の初回は照合と現実行の保存実証後に、この記録の固定GitHub blob URLをcoverage_refとする。既刊10枚は再転送せず、未受領6枚は新しい読取参照が得られたときだけ再開。内蔵生成が実PNG data URLを返す経路とfile-only経路は正本に従う。"
+  "next_operation": "当週の正規台帳 photo-issue-plan/stock-amane-hikari-2026-11-22 を使う。現在の本人枠で原本を返す画像ツールを確認し、最新mainの docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport で実際の返却経路を検証後、通常の1枚予約へ進む。",
+  "since_previous_cutoff": {
+    "from": "2026-11-24T15:49:00+09:00",
+    "previous_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/9ae4942230b254c13c07d01691ef95fcbedfbca7/maintenance/photo-issue-plans/november-hikari-city-and-pool-013/weekly-generation-coverage-20261122.json",
+    "regular_run_chat": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
+    "latest_result_pr": 1009,
+    "observed": "登録制作チャットは11月24日15:46の#1009が終端。未受領6枚について新しいファイル取得・追加の生成依頼・進行中表示なし。",
+    "next_regular_slot": "2026-11-25T15:45:00+09:00",
+    "candidate_heads": {
+      "photo-issue-plan/november-hikari-city-and-pool-013": "fa7e970f2a60b8da43d2b03e37fcb73824d2a386"
+    },
+    "weekly_ledger_path_history_on_main_and_candidates": []
+  }
 }
