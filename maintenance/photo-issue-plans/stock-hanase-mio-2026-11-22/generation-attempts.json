@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "model_id": "hanase-mio",
+  "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
+  "week_start": "2026-11-22",
+  "baseline": {
+    "mode": "reconciled",
+    "model_id": "hanase-mio",
+    "week_start": "2026-11-22",
+    "coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/0ceca247dc55f020f0b8202f4bac0b6afd081660/maintenance/photo-issue-plans/november-mio-on-the-move-016/weekly-generation-coverage-20261122.json",
+    "prior_attempts": []
+  },
+  "attempts": []
+}
