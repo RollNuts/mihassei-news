@@ -721,6 +721,8 @@
           "note": "縦位置で腰まで写した白いブラウスとグラスの夕食。005の01や009の09に近い。"
         }
       ]
-    }
+    },
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/fc3d525c21c25a38bfbf5ff8bf080de399ac2205/maintenance/photo-issue-plans/november-warm-water-and-riverside-yuki-009/weekly-generation-coverage-20261122.json",
+    "weekly_quota_next_step": "11/24 16:30 JSTまで本人の新規生成0回を照合済み。以後の区間と台帳の確認、現在の保存実証は固定記録のnext_operationへ。第3号の旧6枚の選外を維持する。"
   }
 }
