@@ -960,3 +960,215 @@ test("the observed archive and member cannot be substituted, dropped or passed a
   changedMember[changedMember.length >> 1] ^= 1;
   assert.throws(() => prepare(original, {...measured, data:changedMember}), /original PNG changed/);
 });
+
+// The 016 handoff kept numbered blobs and a later selected[] with a different page order.
+// Exercise that format offline using the original bytes of another ten-cut release.
+function reviewedSelectionFixture() {
+  const issue = {...rio, slug:"editor-feature", state:"draft", images:{}};
+  const prefix = "maintenance/photo-issue-plans/" + issue.slug + "/";
+  const commit = sha1("pinned image pairs"), selectionCommit = sha1("selected ten"), releaseCommit = sha1("editor branch");
+  const rows = [], selected = [], originals = [], files = new Map(), reads = [];
+  for (const {id} of issue.shots) {
+    const {input} = suppliedCutFixture(id);
+    const number = String(11 - Number(id)).padStart(2, "0");
+    const source = {...input.candidate.source, format:"png", path:prefix+"originals/"+number+".png", blob:input.readback.source.blob};
+    const jpeg = {...input.candidate.jpeg, path:prefix+"jpeg/"+number+".jpg", blob:input.readback.jpeg.blob};
+    rows.push({...input.candidate, candidate_number:number, issue:issue.slug, handoff_path:prefix+"handoff.json", source, jpeg});
+    selected.push({cut_id:id, candidate_number:number, source_sha256:source.sha256, jpeg_sha256:jpeg.sha256,
+      source_bytes:source.bytes, jpeg_bytes:jpeg.bytes, review:"offline selection fixture " + id});
+    originals.push({type:"file", path:source.path, size:source.bytes, sha:source.blob});
+    files.set(source.path, input.readback.source.data);
+    files.set(jpeg.path, input.readback.jpeg.data);
+  }
+  const review = {status:"selected_pending_release_receipts", model_id:issue.model_id, candidate_commit:commit, issue_edition:"issue-003",
+    face_and_body_reference_checked:true, byte_readback_count:10, reviewed_jpeg_count:14, previous_catalog_sha_overlap:0, selected};
+  const handoff = {version:1, kind:"weekly_photo_candidate_handoff", issue:issue.slug, ...rioProducer,
+    branch:"photo-issue-plan/"+issue.slug, handoff_path:prefix+"handoff.json", candidates:rows};
+  const inventory = {live:[], editing:[], interrupt:null};
+  const github = {
+    async fetch({url}) {
+      const path = url.split("/"+repo)[1];
+      if (path === "/git/ref/heads/main") return {ref:"refs/heads/main", object:{sha:main}};
+      if (path === "/contents/"+prefix+"originals?ref="+commit) return {content:JSON.stringify(originals)};
+      throw Error("Unexpected request " + path);
+    },
+    async fetch_file({ref, path, encoding}) {
+      let data;
+      if (ref === selectionCommit && path === handoff.handoff_path) data = {...handoff, editorial_review:review};
+      else if (ref === commit && path === handoff.handoff_path) data = handoff;
+      else if (ref === "cast-source-drafts" && path === "drafts/cast-voices/"+issue.model_id+".json") data = rioProducer;
+      else if ([releaseCommit,main].includes(ref) && path === "content/photo_issues.json")
+        data = {schema_version:1, issues:ref === main ? inventory.live : inventory.editing};
+      else if (ref === commit && encoding === "base64" && files.has(path)) {
+        if (inventory.interrupt === path) throw Error("Interrupted JPEG read");
+        return {encoding, sha:rows.find(row => row.jpeg.path === path).jpeg.blob, content:files.get(path).toString("base64")};
+      } else throw Error("Unexpected file " + path);
+      return {encoding,content:JSON.stringify(data)};
+    }
+  };
+  async function readWeeklyPng({issue:slug, commit:ref, path, expected_sha256}) {
+    assert.equal(slug, issue.slug);
+    assert.equal(ref, commit);
+    const source = rows.find(row => row.source.path === path).source;
+    assert.equal(expected_sha256, source.sha256);
+    reads.push(path);
+    return {structuredContent:{...source, status:"read", mime_type:"image/png", commit, image_url:dataUrl(files.get(path))}};
+  }
+  const api = helper.create({runtime:{...bytes,sha256:hash}, github, readWeeklyPng});
+  const open = () => api.openReviewedSelection({issue, selectionCommit, releaseCommit, importedAt:"2026-11-24T00:00:00Z"});
+  return {open, rows, review, issue, inventory, files, reads, originals, github, readWeeklyPng, releaseCommit, selectionCommit};
+}
+
+test("saved editorial selection prepares ten existing pairs, resumes at a matching draft, and preserves real source ordinals", async () => {
+  const {open, rows, issue, inventory, reads} = reviewedSelectionFixture();
+  const initial = await open(), first = await initial.prepareCut("01");
+  assert.deepEqual(initial.cutIds, issue.shots.map(s => s.id));
+  inventory.interrupt = rows[1].jpeg.path;
+  await assert.rejects(initial.prepareCut("02"), /Interrupted/);
+  inventory.editing = [{...issue, images:{"01":first.image}}];
+  inventory.interrupt = null;
+  const resumed = await open();
+  assert.deepEqual(resumed.existing, ["01"]);
+  const results = [first];
+  for (const cutId of resumed.cutIds) results.push(await resumed.prepareCut(cutId));
+  assert.equal(reads.filter(path => path === rows[0].source.path).length, 1);
+  assert.equal(results.length, 10);
+  for (const [index,result] of results.entries()) {
+    const row = rows[index], receipt = JSON.parse(result.files[2].content);
+    assert.equal(receipt.cut_id, issue.shots[index].id);
+    assert.equal(receipt.recovery_reference.source_ordinal, row.source_ordinal);
+    assert.equal(result.files[0].sha, row.source.blob);
+    assert.equal(result.files[1].sha, row.jpeg.blob);
+    assert.equal(result.image.sha256, row.jpeg.sha256);
+    assert.ok(!Object.hasOwn(result.image, "review"));
+  }
+});
+
+test("saved selection refuses substitutions, duplicate cuts, occupied releases and corrupted pairs", async () => {
+  const {open, rows, review, inventory, issue, files, originals} = reviewedSelectionFixture();
+  for (const [obj, field, wrong] of [
+    [review, "face_and_body_reference_checked", false], [review.selected[0], "cut_id", "02"],
+    [review.selected[0], "source_sha256", rows[2].source.sha256], [rows[1], "candidate_number", rows[0].candidate_number],
+    [inventory, "live", [{...issue, state:"published"}]],
+    [inventory, "live", [{...issue, slug:"older", state:"published", images:{"01":{source_sha256:rows[1].source.sha256}}}]],
+    [inventory, "editing", [{...issue, images:{"05":{source_sha256:rows[0].source.sha256,sha256:rows[0].jpeg.sha256}}}]],
+  ]) {
+    const old = obj[field]; obj[field] = wrong;
+    await assert.rejects(open);
+    obj[field] = old;
+  }
+  originals[0].sha = sha1("substitute");
+  await assert.rejects(open, /Git blob changed/);
+  originals[0].sha = rows[0].source.blob;
+  const bad = Buffer.from(files.get(rows[0].jpeg.path));
+  bad[40] ^= 1; files.set(rows[0].jpeg.path, bad);
+  await assert.rejects((await open()).prepareCut("01"), /JPEG bytes changed/);
+});
+
+test("fresh bounded cells resume the Git packet after lost responses and build only the selected release files", async () => {
+  const f = reviewedSelectionFixture(), {issue, selectionCommit} = f;
+  const ref = {slug:issue.slug, edition:"issue-003", selectionCommit};
+  const branch = "photo-issue/issue-003", path = "maintenance/photo-issue-plans/" + issue.slug + "/release-packet.json";
+  const history = new Map(), treeSha = sha1("release tree");
+  let head = f.releaseCommit, lost = false, occupied = false, competing = false, stopped = false, proposed;
+  // Recreate both helpers on every operation; charge the six source/dependency reads before entry.
+  async function cell(work, expectedCalls) {
+    let calls = 6;
+    function transportCall() { assert.ok(++calls <= 16, "Exceeded cold cell limit"); }
+    const github = {
+      async fetch({url}) {
+        transportCall();
+        const apiPath = url.split("/"+repo)[1];
+        if (apiPath === "") return {full_name:repo, private:false,visibility:"public"};
+        if (apiPath === "/git/ref/heads/"+branch) return {ref:"refs/heads/"+branch,object:{sha:head}};
+        if (apiPath === "/git/commits/"+main || apiPath === "/git/commits/"+head) {
+          const sha = apiPath.slice(13);
+          return {sha,tree:{sha:sha===main ? baseTree : treeSha}};
+        }
+        if (apiPath === "/git/trees/"+baseTree+"?recursive=1") return {sha:baseTree,truncated:false,tree:[]};
+        if (apiPath === "/git/trees/"+treeSha+"?recursive=1") {
+          const tree = [{path, type:"blob",mode:"100644",sha:history.get(head).sha}];
+          if (occupied) tree.push({path:"assets/generated/photo-issue-"+issue.slug+"-01.jpg",type:"blob",mode:"100644",sha:f.rows[0].jpeg.blob});
+          return {sha:treeSha,truncated:false,tree};
+        }
+        if (apiPath === "/actions/workflows/free-cpu-scenes.yml") return {path:".github/workflows/free-cpu-scenes.yml",state:stopped ? "disabled_manually" : "active"};
+        return f.github.fetch({url});
+      },
+      async fetch_file(args) {
+        transportCall();
+        if (args.path === path) {
+          const entry = history.get(args.ref === branch ? head : args.ref);
+          assert.ok(entry);
+          return {...entry,encoding:"utf-8"};
+        }
+        if (history.has(args.ref) && args.path === "content/photo_issues.json") args = {...args,ref:f.releaseCommit};
+        return f.github.fetch_file(args);
+      },
+      async create_file(args) {
+        transportCall();
+        assert.equal(args.branch,branch); assert.equal(args.path,path); assert.equal(history.size,0);
+        head = sha1("empty packet");
+        history.set(head,{sha:sha1(args.content),content:args.content});
+        return {commit_sha:head};
+      },
+      async update_file(args) {
+        transportCall();
+        assert.equal(args.branch,branch); assert.equal(args.path,path); assert.equal(args.sha,history.get(head).sha);
+        if (competing) throw Error("409 stale blob");
+        head = sha1([head,args.content]);
+        history.set(head,{sha:sha1(args.content),content:args.content});
+        if (lost) throw Error("response lost after commit");
+        return {commit_sha:head};
+      },
+      async create_tree(args) {
+        transportCall();
+        proposed = args;
+        return {sha:sha1(args)};
+      },
+      create_blob(){throw Error("unexpected upload");}, create_branch(){throw Error("unexpected branch");},
+      create_commit(){throw Error("unexpected commit");}
+    };
+    const runtime = {...bytes, sha256:hash, convert(){throw Error("unexpected conversion");}};
+    const stager = stage.create({runtime, github, repository:repo});
+    const api = helper.create({runtime, github, cloudStatus:stager.cloudStatus,
+      async readWeeklyPng(args) { transportCall(); return f.readWeeklyPng(args); }});
+    const result = await work(api);
+    if (expectedCalls) assert.equal(calls,expectedCalls);
+    return result;
+  }
+  const preflight = () => cell(async api => (await api.openReviewedSelection({
+    issue, selectionCommit, releaseCommit:head, importedAt:"2026-11-24T00:00:00Z"})).plan,13);
+  const initial = await preflight();
+  await cell(api => api.startReviewedPacket(initial),13);
+  const next = () => cell(api => api.continueReviewedPacket(ref),16);
+  lost = true;
+  await assert.rejects(next, /response lost/);
+  lost = false;
+  const second = await next();
+  assert.equal(second.prepared,2);
+  assert.equal(f.reads.filter(path => path===f.rows[0].source.path).length,1);
+  const afterTwo = head;
+  competing = true;
+  await assert.rejects(next,/409 stale/);
+  competing = false; stopped = true;
+  await assert.rejects(next,/stopped/);
+  assert.equal(head,afterTwo);
+  stopped = false;
+  for (let i=3; i<=10; i++) assert.equal((await next()).prepared,i);
+  assert.equal((await cell(api=>api.continueReviewedPacket(ref),7)).next,null);
+  await assert.rejects(cell(api=>api.continueReviewedPacket({...ref, selectionCommit:main})), /Unrecognized release packet/);
+  const fresh = await preflight();
+  ref.commit = head;
+  occupied = true;
+  await assert.rejects(cell(api=>api.prepareReviewedTree(ref,fresh)), /Occupied release destination/);
+  occupied = false;
+  const tree = await cell(api=>api.prepareReviewedTree(ref,fresh),16);
+  assert.equal(tree.cuts,10);
+  assert.equal(proposed.base_tree_sha,treeSha);
+  assert.equal(proposed.tree_elements.length,31);
+  assert.deepEqual(proposed.tree_elements.at(-1),{path,mode:"100644",type:"blob",sha:null});
+  assert.equal(new Set(proposed.tree_elements.map(entry=>entry.path)).size,31);
+  const readback = await cell(api=>api.readReviewedRelease(ref),8);
+  assert.equal(Object.keys(readback.images).length,10);
+  assert.equal(history.size,11);
+});
