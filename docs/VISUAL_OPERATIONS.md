@@ -81,7 +81,7 @@ ChatGPT内蔵画像は、本人が依頼した実写風写真の生成・取り�
 
 写真が使えない場合、本文に合う専用SVGを `assets/editorial-scenes/` に用意する。`reviewed_story_scene` は記事指紋、主題、寸法、アクセシブルな説明、外部依存のないSVGを照合する。本文や場面が変わったら改めて検品し、未検品・不合格のJPEGとその派生動画はHTML・OGP・RSS・配布対象から外す。
 
-共有PNGは、対象PRに保存したSVGの実ファイルから `python3 scripts/social_cards.py --prepare-scenes 記事slug` で描画し、実表示する。GitHub接続で取得するときは固定commitのContents APIの `content` をbase64復号する。表示テキストからの転記は末尾改行を変えることがある。既定は `rsvg-convert 2.62.1`、GPT環境では導入済みのCairoSVG（2.7.1または2.8.2）を `--renderer cairosvg` で使える。通常ビルドは記事・SVG・描画ソフトの記録が一致する既存PNGを使う。PNG追加・更新時のCIは同じ版のSVGと突き合わせる。
+共有PNGは、対象PRに保存したSVGの実ファイルから `python3 scripts/social_cards.py --prepare-scenes 記事slug` で描画し、実表示する。GitHub接続では固定commitのtreeからSVGのblob SHAを取り、`fetch_blob` が返す `content` をUTF-8でそのまま保存する。RESTで `encoding: base64` が明示された場合だけ復号する。`git hash-object` で保存したSVGが同じblob SHAになることを確認する。表示からの転記や改行の追加はしない。既定は `rsvg-convert 2.62.1`、GPT環境では導入済みのCairoSVG（2.7.1または2.8.2）を `--renderer cairosvg` で使える。通常ビルドは記事・SVG・描画ソフトの記録が一致する既存PNGを使う。PNG追加・更新時のCIは同じ版のSVGと突き合わせる。
 
 `visual_strategy: "illustration"` は「画像処理失敗」ではなく意図的な編集判断として扱う。2026-11-06 22:00 JST以降の新作では `illustration_reason` も必要で、`readable_text_or_ui / precise_count_or_absence / complex_relationship / comparison_layout / brand_character_safety` のどれかに限る。単一人物・単一物体・単純な行為で成立する場面は写真を既定とし、**写真向けの scene_prompt を書いたまま illustration に振り分けない**。`editorial_mix.py --day` は一日の `cpu-photo / illustration` 件数と `visual_next` を出し、イラストが過半になった日は次の候補で写真向きの場面も比較する。ただし題材の質を落として写真比率を合わせない。
 
