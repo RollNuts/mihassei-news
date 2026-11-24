@@ -470,5 +470,9 @@
       "夕食では、おいしかった料理を隣の人にも少しおすそ分け。部屋に戻って着替えたら、今度こそ静かに読書するつもりです。でも、さっきのお菓子も気になるな。"
     ],
     "status": "received_from_existing_model_producer_not_editorially_accepted"
+  },
+  "producer_handoff": {
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/a8e640125cd0188e7537ca8d3d6d9c2ae645cc13/maintenance/photo-issue-plans/november-water-and-quiet-hours-saya-010/weekly-generation-coverage-20261122.json",
+    "next_operation": "11/24 16:39 JSTまでの本人3枠を照合済み。以後の本人実行、並行候補、週の予約、現実行の保存経路を確認する。"
   }
 }
