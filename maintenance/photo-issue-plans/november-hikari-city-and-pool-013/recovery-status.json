@@ -94,7 +94,9 @@
     "next_run_time": "2026-11-22T15:45:00+09:00",
     "prompt_updated_and_read_back": true,
     "final_prompt_sha256": "67668502b0323d198a792dc558ed71e2e190aaa0344afad98a4fa6a659266182",
-    "completed_originals_will_not_be_regenerated_or_retransferred": true
+    "completed_originals_will_not_be_regenerated_or_retransferred": true,
+    "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/9ae4942230b254c13c07d01691ef95fcbedfbca7/maintenance/photo-issue-plans/november-hikari-city-and-pool-013/weekly-generation-coverage-20261122.json",
+    "weekly_quota_next_step": "移行週の11月22日から24日15:49 JSTまでは本人の3枠を照合済み。以後の区間と当週予約先を確認し、固定参照にあるnext_operationを続ける。公開済み原本02でGitHub読戻しを確認した記録はremote_read_checkを参照。"
   },
   "usage": {
     "additional_automation_tasks": 0,
