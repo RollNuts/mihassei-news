@@ -621,10 +621,10 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
     assert.ok(count <= 15);
     return result;
   }
-  const prepared = await callbacks(7,()=>api.uploadReviewJpeg(ref,verified));
-  const recoveredBlob = await callbacks(8,()=>api.uploadReviewJpeg(ref));
+  const prepared = await callbacks(6,()=>api.uploadReviewJpeg(ref,verified));
+  const recoveredBlob = await callbacks(7,()=>api.uploadReviewJpeg(ref));
   assert.deepEqual(recoveredBlob,prepared);
-  const plan = await callbacks(14,()=>api.prepareReviewJpeg(ref,prepared,staged.commit));
+  const plan = await callbacks(13,()=>api.prepareReviewJpeg(ref,prepared,staged.commit));
   const provisional = state.trees.get(state.commits.get(plan.commit).tree.sha);
   const originalTree = state.trees.get(state.commits.get(staged.commit).tree.sha);
   assert.equal(provisional.length, originalTree.length + 2);
@@ -654,7 +654,7 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
   await assert.rejects(api.prepareReviewJpeg(ref,{...prepared,encoding_details:{...prepared.encoding_details,encoder_ref:main}},staged.commit),/Invalid prepared/);
 
   state.lost=true;
-  await callbacks(14,()=>assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/lost response/));
+  await callbacks(13,()=>assert.rejects(api.publishReviewJpeg(ref,prepared,plan),/lost response/));
   assert.equal(state.branches.get(staged.branch),plan.commit);
   state.lost=false;
   writes = state.writes.length;
@@ -1118,6 +1118,7 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
         if (apiPath === "/branches/"+branch || apiPath === "/branches/photo-issue/issue-004") {
           return {name:apiPath.slice("/branches/".length),commit:{sha:head,commit:{tree:{sha:treeSha}}}};
         }
+        if (apiPath === "/branches/main") return {name:"main",commit:{sha:liveMain,commit:{tree:{sha:baseTree}}}};
         if (apiPath === "/git/ref/heads/main") return {ref:"refs/heads/main",object:{sha:liveMain}};
         if (apiPath === "/git/commits/"+liveMain || apiPath === "/git/commits/"+head) {
           const sha = apiPath.slice(13);
@@ -1184,12 +1185,12 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
   const preflight = () => cell(async api => (await api.openReviewedSelection({
     issue, selectionCommit, releaseCommit:head, importedAt:"2026-11-24T00:00:00Z"})).plan,13);
   const initial = await preflight();
-  const start = plan => cell(api => api.startReviewedPacket(plan),16);
+  const start = plan => cell(api => api.startReviewedPacket(plan),15);
   lost = true;
   await assert.rejects(cell(api => api.startReviewedPacket(initial)),/create response lost/);
   lost = false;
   assert.deepEqual(await start(initial),{commit:head,next:"01"});
-  const next = () => cell(api => api.continueReviewedPacket(ref),16);
+  const next = () => cell(api => api.continueReviewedPacket(ref),15);
   lost = true;
   await assert.rejects(next, /response lost/);
   lost = false;
@@ -1235,7 +1236,7 @@ test("fresh bounded cells resume the Git packet after lost responses and build o
   occupied = true;
   await assert.rejects(cell(api=>api.prepareReviewedTree(ref,fresh)), /Occupied release destination/);
   occupied = false;
-  const tree = await cell(api=>api.prepareReviewedTree(ref,fresh),16);
+  const tree = await cell(api=>api.prepareReviewedTree(ref,fresh),15);
   assert.equal(tree.cuts,10);
   assert.equal(proposed.base_tree_sha,treeSha);
   assert.equal(proposed.tree_elements.length,31);
