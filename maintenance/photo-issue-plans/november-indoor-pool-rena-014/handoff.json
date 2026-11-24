@@ -468,7 +468,7 @@
         "帰りのバス停で片方のイヤホンを外す、夜の横顔。",
         "水着着用の屋内施設で、異なる色の水着にタオルを肩掛けして回廊を歩く引き。"
       ],
-      "next_operation": "室内から選べるのは01/08、02/06、03/04から各1枚と05、07で最大5枚。別場面の浜辺1枚はsupplementsに原本・掲載用JPEG受領済み。親候補8枚の記録・選定上限は維持。6枚すべてが正式採用されてもあと4枚が必要。夜景の赤いドレスは既刊003の01・08に近く候補に数えない。本人は別場面の既存原本を追加し、週刊編集で本人確認・季節設定・正式採否・本人コラムをまとめる。浜辺のprepareSuppliedCutには明記したslugを使い、親の室内候補はopenUnassignedStockで同じ下書きへ準備する。",
+      "next_operation": "室内から選べるのは01/08、02/06、03/04から各1枚と05、07で最大5枚。別場面の浜辺1枚はsupplementsに原本・掲載用JPEG受領済み。親候補8枚の記録・選定上限は維持。6枚すべてが正式採用されてもあと4枚が必要。夜景の赤いドレスは既刊003の01・08に近く候補に数えない。本人は別場面の未受領原本を先に回収し、補充時はweekly_quota_next_stepに従う。週刊編集は本人確認・季節設定・正式採否・本人コラムを担当。異なる撮影を同じ特集へ入れる手順は docs/NATIVE_IMAGE_BYTES.md#stock-received-before-a-feature-was-assigned。室内は固定原本のsourceOrdinalをbatch.planCutに、浜辺はsupplementsの固定commitと元の候補番号02をplanNumberedStockCutに渡す。掲載位置cutIdは選定後に決める。",
       "supplements": [
         {
           "candidate_commit": "c4f3835f929a30a99bccf38b1231ddc54de3a06d",
