@@ -729,5 +729,30 @@
       "branch": "photo-issue-plan/stock-shiramine-yuki-2026-11-22",
       "path": "maintenance/photo-issue-plans/stock-shiramine-yuki-2026-11-22/generation-attempts.json"
     }
+  },
+  "stock_latest_check": {
+    "checked_at": "2026-11-25T09:17:09.744Z",
+    "main_sha": "0c70d83e0a572e198e58d960c949f0235c8f7ab7",
+    "scope": "本人既存候補branch・固定6原本の既存目視採否・週台帳",
+    "usable_count_in_checked_inventory": 0,
+    "unreceived_known_count": 6,
+    "held_count": 1,
+    "skip_this_edition_count": 5,
+    "other_inventory": "unknown",
+    "shortage_for_next_feature_in_checked_inventory": 10,
+    "quota_ledger_blob": "bd2c7e40837414ce1081cc6bfb63358676f1c227",
+    "weekly_attempts_recorded": 0,
+    "weekly_remaining_recorded": 20,
+    "new_calls": 0,
+    "new_originals_saved": 0,
+    "probe": {
+      "route": "file",
+      "operation": "public probe PNG acquisition before checkOriginalTransport",
+      "url": "https://raw.githubusercontent.com/RollNuts/mihassei-news/1d9b571b914d6c323a3821e46d23ae0d8e354f95/assets/favicon-192.png",
+      "error": "Web fetch DisabledError; container download rejected because URL not successfully viewed; no actual probe file handle returned.",
+      "inline_generator": "No callable native ImageGen result returning PNG data URL in CodeMode exposed in this run.",
+      "verified": false
+    },
+    "next_operation": "現実行の画像返却形式に合う公開probeの実ファイルbridgeまたは内蔵生成の直接PNG data URL経路を確立し、checkOriginalTransportの保存・読戻しを確認してから既存週台帳で1枚予約する。既存6枚は採否変更や新しい具体参照がない限り再送しない。"
   }
 }
