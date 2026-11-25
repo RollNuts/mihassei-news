@@ -1,5 +1,71 @@
 [
   {
+    "slug": "unknown-alloy-pump-wear-ring-field-test",
+    "category": "技術",
+    "flash": "新合金の交換部品、海水ポンプで試験へ",
+    "art": "generic",
+    "fiction_company": "浜継材料研究所（架空）、汀浜水産加工（架空）",
+    "fiction_at": "2031-11-25T20:03:29+09:00",
+    "published_at": "2026-11-25T20:03:29+09:00",
+    "publication_slot": "2026-11-25T19:30:00+09:00",
+    "title": "AIが知らない合金も試作、研究所が海水ポンプの交換部品を開発",
+    "summary": "2031年、浜継材料研究所は、過去のデータが少ない組み合わせも含めてAIで合金の候補を探し、海水ポンプの交換部品を開発した。高価なニッケルの使用量を抑えた部品が90日間の試験を終え、水産加工場で実際の運転に加わった。",
+    "paragraphs": [
+      "25日午後、浜継材料研究所の技術者が水産加工場の予備ポンプに、手のひらほどの金属の輪を取り付けた。海水を吸い上げるポンプの内部で摩耗する交換部品で、同研究所が高価なニッケルの使用量を抑えた新しい合金で作ったものだ。試験設備での90日間の運転を終え、この日から実際の加工場でも使い始めた。",
+      "研究の出発点は、海水にさらされても腐食しにくく、交換時に従来と同じ形に加工できる金属を探すことだった。2026年には、AIが過去の学習データの範囲を超えた合金の性質を予測する精度を改善した研究が発表されている。2031年の研究所では、合金の組成や製造時の条件に加え、腐食と摩耗の実験データを蓄積し、候補を探すためにAIを使っている。",
+      "今回、技術者は予測値が良い候補だけでなく、過去に似た材料が少なく予測に幅がある候補も試作に回した。少量ずつ溶かして作った試験片を海水に浸し、こすって摩耗の程度も測った。新しい合金の一つは予測の幅の中でも良い側の結果を示し、従来品と同じ形の輪に加工できた。",
+      "研究所はその輪を試験用ポンプに組み込み、従来品を入れた別のポンプと同じ条件で90日間動かした。取り外して調べたところ、腐食や摩耗は研究所が設定した試験基準の範囲内だった。ただし、長期の耐久性はまだ確認できていないため、加工場では故障しても主ポンプで操業を続けられる予備機から試す。",
+      "加工場は従来の合金を使い続けることもできるが、交換部品の材料費を抑える選択肢を増やしたいという。研究所が試作・検査費用を負担し、加工場は運転記録と定期点検の結果を提供する。取付を終えた技術者は従来品の輪も予備部品として棚に残した。研究所は次の点検までのデータを使い、同じ合金を別の大きさのポンプでも使えるか調べる。"
+    ],
+    "source": {
+      "kind": "研究機関公式発表",
+      "publisher": "東京大学・科学技術振興機構（JST）",
+      "published_at": "2026-11-25T00:00:00+09:00",
+      "url": "https://www.jst.go.jp/pr/announce/20261125/index.html",
+      "topic": "2026年11月25日、東京大学とJSTは分離型転移学習による未知材料の物性予測の研究を発表。過去のデータで新たな合金の生成エネルギーを予測する検証で、学習範囲外の誤差を従来手法の3分の1以下に低減した。2031年の腐食・摩耗予測、合金、ポンプ部品、90日試験と加工場での運転は創作。"
+    },
+    "scene_prompt": "Photorealistic horizontal 16:9 Japanese local newspaper documentary photograph inside a clean coastal seafood processing plant maintenance room. An adult materials engineer in plain work clothes and protective gloves carefully holds a palm-sized machined metallic wear ring beside an open, stationary spare seawater pump housing on a maintenance bench, with a second conventional ring resting nearby. Natural industrial light, realistic metal and machinery, no readable text, no logos, no real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "合金",
+      "材料開発",
+      "ポンプ"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "合金",
+      "材料開発"
+    ],
+    "x_tickers": [],
+    "reader_interest": "work_money_tech",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月25日に未知の合金の性質の予測誤差を改善する研究が発表された",
+      "target": "予測に幅がある合金も試作し海水ポンプの交換部品を開発する研究所",
+      "action": "技術者が試験片を作り腐食と摩耗を調べ、90日間の運転試験後に予備ポンプへ新合金の輪を装着する",
+      "outcome": "加工場で現場運転が始まり、点検データを研究所へ返す共同試験に進む"
+    },
+    "reader_clarity": {
+      "who": "研究所",
+      "action": "未知の合金も試作し海水ポンプの交換部品を開発して加工場で試験運転する",
+      "oddity": "予測に幅がある材料も実験対象にしてニッケル使用量を減らした交換部品の選択肢を増やす"
+    },
+    "behavior_basis": {
+      "motive": "ニッケルの使用量を抑えた交換部品を開発し、加工場の部品調達の選択肢を増やす",
+      "ordinary_alternative": "従来の合金を使い続ける",
+      "why_not": "材料費を抑える選択肢を増やすため、研究所が試験費用を負担し予備ポンプで安全側の試用を行う",
+      "evidence_quote": "加工場は従来の合金を使い続けることもできるが、交換部品の材料費を抑える選択肢を増やしたいという。"
+    },
+    "plausibility_basis": {
+      "present_signal": "未知の材料の性質を予測するAIの学習範囲外での誤差改善",
+      "continuation_force": "材料の組成・製造条件と実験結果の蓄積が進み、未知の組み合わせを絞り込むモデルと実物試験を組み合わせた開発が広がる",
+      "future_result": "ニッケル使用量を抑えた輪が90日間の試験を終え、加工場の予備海水ポンプで現場試験に使われる"
+    }
+  },
+  {
     "slug": "night-shift-dessert-shop-morning-production",
     "category": "経済",
     "flash": "夜勤明けの菓子店、朝に完売",
