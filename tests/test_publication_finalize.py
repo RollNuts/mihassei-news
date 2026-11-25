@@ -661,17 +661,25 @@ class AdapterTests(unittest.TestCase):
         expression = re.search(r"(?m)^    if: \$\{\{ (.+) \}\}$", workflow).group(1)
         expression = re.sub(r"\bfalse\b", "False", re.sub(r"\btrue\b", "True", expression))
         expression = expression.replace("&&", " and ").replace("||", " or ")
-        def allowed(action="edited", **changes):
+        class Context(dict):
+            # GitHub expression property access returns null for absent event fields.
+            __getattr__ = dict.get
+
+        def allowed(action="edited", old_body="Pending review", **changes):
             pr = copy.deepcopy(API().pr)
             pr["author_association"] = "OWNER"
             pr.update(changes)
             event = {"repository": {"private": False}, "action": action, "pull_request": pr}
+            event["changes"] = {"body": {"from": old_body}} if old_body is not None else {}
             github = {"repository": f.REPO, "ref": "refs/heads/main", "event_name": "pull_request_target", "event": event}
-            namespace = json.loads(json.dumps(github), object_hook=lambda o: SimpleNamespace(**o))
+            namespace = json.loads(json.dumps(github), object_hook=Context)
             return eval(expression, {"__builtins__": {}, "contains": lambda a, b: b in a, "fromJSON": json.loads},
                         {"github": namespace, "inputs": SimpleNamespace(finalize_pr="")})
         self.assertTrue(allowed())
         self.assertTrue(allowed(state="closed", merged=True))
+        self.assertTrue(allowed(state="closed", merged=True, old_body=""))
+        self.assertFalse(allowed(state="closed", merged=True, old_body=None))
+        self.assertFalse(allowed(state="closed", merged=True, old_body=API().pr["body"]))
         self.assertFalse(allowed(action="ready_for_review", state="closed", merged=True))
         self.assertFalse(allowed(state="closed", merged=False))
         self.assertFalse(allowed(draft=True))

@@ -136,7 +136,7 @@ helperはGitHubの生応答と完了ログをCodeMode内で処理し、対象PR/
 
 ### CI・公開待機の引継ぎ
 
-長いCIをGPTが繰り返し照会しない。現在の変更担当が必要な本文・実画像の確認を終えた後、同じPR本文の既存引継ぎへ、`scripts/publication_finalize.py --print-handoff`が出す`publication-finalize`ブロックを1つだけ保存する。CLIがない場合も同じJSON形式をGitHub接続で保存できる。
+長いCIをGPTが繰り返し照会しない。現在の変更担当が必要な本文・実画像の確認を終えた後、同じPR本文の既存引継ぎへ、`scripts/publication_finalize.py --print-handoff`が出す`publication-finalize`ブロックを1つだけ保存する。CLIがない場合も同じJSON形式をGitHub接続で保存できる。統合済みPRの引き継ぎ追記では配信検証を再起動しない。現行の本番でその統合版の検証が欠けている場合は、既存の承認ブロックをいったん外して保存し、同じ承認を戻すと再照合できる。
 
 `kind`は`news`・`market`・`cast_story`・`photo_issue`、`approved_head`は確認した完全40桁、`authorized_by`は実際の書込担当GitHub login。`author_run`と`reviewer_run`は実在する実行参照（例：`chatgpt:`に当該チャットUUIDを続ける）で、URLや架空のIDを作らない。`first_read: passed`と`merge_after_ci: true`を明示する。ニュース・市場記事は作者と独立reviewerの参照を分け、変更記事の現在の指紋を`article_sha256`へ全件残す。近況・写真特集は従来の同じ編集担当の確認でよく、余分なreviewerを増やさない。初読・現headの承認を保存・読み戻せたPRだけ、`draft: true`ならGitHub接続の`mark_pull_request_ready_for_review`（CLIは`gh pr ready`）で下書きを解除し、`draft: false`を読み戻してから機械処理へ渡す。
 
