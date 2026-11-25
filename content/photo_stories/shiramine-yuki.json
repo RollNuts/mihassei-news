@@ -90,6 +90,21 @@
         "cut_id": "03",
         "image_sha256": "27f49d3f0f1674e7568699fabf914ffa08476bb4d97d19b94d8fa7d2ddf38f8b"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261125181606844",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-25T18:16:06.844+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夕方、外したマフラーを畳んでいたら、まだ首のあたりの温かさが残っていました。椅子の背に掛けて、今夜は窓を少しだけ開けています。",
+      "source": {
+        "issue_slug": "november-a-longer-breath-yuki-005",
+        "cut_id": "04",
+        "image_sha256": "115c694a398df1d070feb34a4bd8b0019ace9d78ce51d08cffdfc69b79b6fce2"
+      }
     }
   ]
 }
