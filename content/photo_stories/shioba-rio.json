@@ -90,6 +90,21 @@
         "cut_id": "06",
         "image_sha256": "079d44996d071a88f8a833cd1d86ae5d99a1599e56fd9f35e4e200ec05cafd28"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261125091557910000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-25T09:15:57.910+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "取材先の湖で手袋を外してメモを取っていたら、指がすっかり冷えてしまいました。帰りの温かいお茶まで、今日の予定に入れておきます。",
+      "source": {
+        "issue_slug": "november-coast-city-rio-015",
+        "cut_id": "02",
+        "image_sha256": "8e3519bd6f4d4fd27564fa4a43f67521f346cdfde398a0ddd064474449ced7a5"
+      }
     }
   ]
 }
