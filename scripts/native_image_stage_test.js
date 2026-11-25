@@ -134,6 +134,9 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         const blob = tree.get(args.path);
         if (!blob) return apiError("NOT_FOUND", "Repository path does not exist");
         const encoding = args.encoding || "utf-8";
+        if(faults.corruptCreatedClaim && args.path.startsWith(claimPrefix) &&
+          [...branches].some(([ref,sha])=>ref.startsWith(claimBranchPrefix)&&sha===args.ref))
+          return ok({content:"unrelated receipt",encoding,sha:blob.sha});
         if (faults.preflightCorrupt && args.ref === preflightBranch && args.path === preflightPrefix + "probe.png")
           return ok({content: "AAAA", encoding, sha: blob.sha});
         // Reproduce the Contents API/connector's observed large-file empty result.
@@ -750,7 +753,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const fetchBeforeStop = stoppedBeforeGenerate.mock.github.fetch;
   stoppedBeforeGenerate.mock.github.fetch = async args => {
     const result = await fetchBeforeStop(args);
-    if (args.url.endsWith("/git/ref/heads/" + claimBranchPrefix + stoppedBeforeGenerate.plan.identity))
+    if (args.url.split("?")[0].endsWith("/git/ref/heads/" + claimBranchPrefix + stoppedBeforeGenerate.plan.identity))
       stoppedBeforeGenerate.mock.cloud.workflow.state = "disabled_manually";
     return result;
   };
@@ -905,6 +908,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   for (const [label, faults] of [
     ["lost claim response", {claimLostResponse: true}],
     ["invalid claim response", {claimBadResponse: true}],
+    ["mismatched immutable receipt after creation", {corruptCreatedClaim: true}],
     ["mismatched claim ref SHA", {claimWrongHead: true}]
   ]) {
     const context = await scenario(label, faults), counts = {reads: 0, generated: 0};
@@ -1092,7 +1096,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const lateExternalFetch = lateExternalStop.mock.github.fetch;
   lateExternalStop.mock.github.fetch = async args => {
     const result = await lateExternalFetch(args);
-    if (args.url.endsWith("/git/ref/heads/" + claimBranchPrefix + lateExternalStop.plan.identity))
+    if (args.url.split("?")[0].endsWith("/git/ref/heads/" + claimBranchPrefix + lateExternalStop.plan.identity))
       lateExternalStop.mock.cloud.workflow.state = "disabled_manually";
     return result;
   };
@@ -1487,6 +1491,13 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     assert(false, "compact operation finishes within 256 explicit invocations");
   }
   const compact = await compactContext("compact-four-MiB");
+  const namedClaim=claimBranchPrefix+compact.plan.identity;
+  const normalContents=compact.mock.github.fetch_file;
+  compact.mock.github.fetch_file=async args=>{
+    if(args.ref===namedClaim && compact.mock.branches.has(namedClaim))
+      return {isError:true,structuredContent:{error_code:"NOT_FOUND",error_data:{message:"No commit found for the ref "+namedClaim}}};
+    return normalContents(args);
+  };
   const createCompactBranch = compact.mock.github.create_branch;
   const nextMain = "a".repeat(40), nextMainTree = "b".repeat(40);
   compact.mock.github.create_branch = async args => {
@@ -1509,6 +1520,15 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     return response;
   };
   const compactReserved = await compactDrive(compact, "reserveExternalGenerationStep", compactReservationOptions(compact));
+  compact.mock.github.fetch_file=normalContents;
+  const claimCommit=compactReserved.result.generationClaim.commit_sha;
+  const afterCreate=compact.mock.calls.slice(compact.mock.calls.findLastIndex(call=>
+    call.name==="create_branch" && call.args.branch_name===namedClaim)+1);
+  assert(afterCreate.some(call=>call.name==="fetch_file" && call.args.ref===claimCommit &&
+    call.args.path===compactReserved.result.generationClaim.receipt_path) &&
+    afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/ref/heads/"+namedClaim+"?read_nonce=")) &&
+    afterCreate.every(call=>call.name!=="fetch_file"||call.args.ref!==namedClaim),
+    "newly created claim survives cached branch-name 404 only with immutable receipt and positive fresh ref readback");
   assert(compactReserved.steps === 11, "an uninterrupted compact reservation takes eleven cold cells");
   assert(compactReserved.result.status === "reserved" && compact.mock.calls.some(call =>
     call.name === "fetch" && call.args.url.endsWith("/git/trees/" + nextMainTree + "?recursive=1")) &&
