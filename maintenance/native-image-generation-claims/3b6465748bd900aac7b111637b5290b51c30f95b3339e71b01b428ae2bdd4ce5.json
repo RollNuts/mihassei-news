@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/3b6465748bd900aac7b111637b5290b51c30f95b3339e71b01b428ae2bdd4ce5",
+  "receipt_path": "maintenance/native-image-generation-claims/3b6465748bd900aac7b111637b5290b51c30f95b3339e71b01b428ae2bdd4ce5.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "3b6465748bd900aac7b111637b5290b51c30f95b3339e71b01b428ae2bdd4ce5",
+  "slug": "night-shift-dessert-shop-morning-production",
+  "article_sha256": "a340864892e24850294e6d9c3c0d40c0b482e238e4d62d744d7c9b5a60b003c9",
+  "logical_run_id": "news-photo-v1:a340864892e24850294e6d9c3c0d40c0b482e238e4d62d744d7c9b5a60b003c9",
+  "prompt_sha256": "58a4c3f5e02a1c544ac1622f92f42e40a19318e1286e0497500acc075577f2e6",
+  "reserved_at": "2026-11-25T14:16:51.560Z",
+  "baseline": {
+    "commit_sha": "3aed3c5e173bcea14c4bc25cdc528f84efdc1fc3",
+    "tree_sha": "5e043f9bb037e198cac643da761b81dcfffdd8eb",
+    "protected_hashes": {
+      "content/articles.json": "796feb4f3d1ccbfec029a4c20f49dc3230e56642c8158ea0d9e5d71431ded3f9",
+      "assets/generated/manifest.json": "cedbaa0eec0ee4f30bd605bb45573c395cd3d04523acb3a3477e3ac8fe1399c9",
+      "content/visual_reviews.json": "6588ec0f25193526bde25f9879e557aa20b15c57a60d33f325e65482bb9c26b5"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-generation-claim/3b6465748bd900aac7b111637b5290b51c30f95b3339e71b01b428ae2bdd4ce5",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "7730f2248691c02eaac207783ca61fb4983e5c544b95eaffbbf13923ad31d47a",
+    "observed_at": "2026-11-24T23:08:07.385Z",
+    "route": "read_candidate_png through the original file adapter",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "0ab5559560f9b996e2c640abd3828cad4348f2e6"
+  }
+}
