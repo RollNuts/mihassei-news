@@ -155,7 +155,9 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       },
       async create_tree(args) {
         log("create_tree", args);
-        demand(args.base_tree_sha === baseTreeSha, "tree must inherit the supplied base tree");
+        const probeBase=trees.get(args.base_tree_sha)?.has(preflightPrefix+"receipt.json");
+        demand(args.base_tree_sha === baseTreeSha || (probeBase && args.tree_elements.length===1 &&
+          args.tree_elements[0].path.startsWith(claimPrefix)), "only a recovered claim may inherit the probe tree");
         demand(Array.isArray(args.tree_elements), "tree_elements must be an array");
         if (faults.treeOnce) {
           faults.treeOnce = false;
@@ -175,7 +177,9 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       },
       async create_commit(args) {
         log("create_commit", args);
-        demand(args.parent_sha === baseCommitSha || args.parent_sha === branches.get(preflightBranch),
+        const probeParent=trees.get(commits.get(args.parent_sha)?.tree)?.has(preflightPrefix+"receipt.json");
+        demand(args.parent_sha === baseCommitSha || args.parent_sha === branches.get(preflightBranch) ||
+          (probeParent && /^(Reserve native image generation|Check native image transport): /.test(args.message)),
           "commit must parent the immutable base or advance the isolated preflight branch");
         demand(trees.has(args.tree_sha), "commit must reference a created tree");
         demand(!args.additional_parent_shas || args.additional_parent_shas.length === 0,
@@ -226,7 +230,9 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         if (args.url === root + "/git/commits/" + baseCommitSha)
           return ok({content: JSON.stringify({sha: baseCommitSha, tree: {sha: baseTreeSha}})});
         if (args.url === root + "/git/trees/" + cloud.commit.tree.sha + "?recursive=1") return cloudResult("tree");
-        const branch = args.url.split("/git/ref/heads/")[1];
+        const commitSha=args.url.split("/git/commits/")[1], commit=commits.get(commitSha);
+        if(commit)return ok({content:JSON.stringify({sha:commitSha,tree:{sha:commit.tree},parents:[{sha:commit.parent}]})});
+        const branch = args.url.split("?")[0].split("/git/ref/heads/")[1];
         let sha = branch === "main" ? cloud.mainSha : branches.get(branch);
         if (branch === "main" && cloud.error === "main") return apiError("SERVICE_UNAVAILABLE", "Injected main lookup failure");
         if (!sha) return apiError("NOT_FOUND", "Not Found");
@@ -642,7 +648,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     const context = await callbackScenario("callback-block-" + label, change), counts = {reads: 0, generated: 0};
     const error = await failure(() => context.service.generateAndStage(context.plan, gateOptions(context, counts)),
       label + " blocks the callback generation route");
-    assert(error.message.includes("Cloud image operations stopped:") && counts.generated === 0 &&
+    assert(error.message.includes("Cloud image operations stopped: image control connector:") && counts.generated === 0 &&
       counts.reads === 0 && context.mock.writes().length === 0 && context.requests.length === 1 &&
       !context.mock.calls.some(call => call.name === "fetch" && call.args.url.includes("/actions/workflows/")),
       label + " permits neither generator/writes nor a fallback after callback failure");
@@ -823,6 +829,35 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     "next invocation repeats real transport rather than caching the earlier pass");
   assert([...gated.mock.branches.keys()].filter(name => name.startsWith("native-image-preflight/")).length === 1,
     "repeated transport checks advance one preflight branch without branch proliferation");
+
+  // Some connector sessions reuse a prior response for the same URL. A mutable
+  // shared ref needs fresh reads before and after a non-forced advance.
+  const cachedRef = await scenario("cached-transport-head");
+  const rawFetch = cachedRef.mock.github.fetch;
+  const refCache = new Map();
+  cachedRef.mock.github.fetch = async args => {
+    if (!args.url.includes("/git/ref/heads/" + preflightBranch)) return rawFetch(args);
+    if (!refCache.has(args.url)) refCache.set(args.url, await rawFetch(args));
+    return refCache.get(args.url);
+  };
+  const checkOptions = gateOptions(cachedRef, {reads: 0, generated: 0});
+  delete checkOptions.generate;
+  const firstProbe = await cachedRef.service.checkTransport(cachedRef.plan, checkOptions);
+  const nextProbe = await cachedRef.service.checkTransport(cachedRef.plan, checkOptions);
+  assert(nextProbe.commit_sha !== firstProbe.commit_sha &&
+    nextProbe.commit_sha === cachedRef.mock.branches.get(preflightBranch),
+    "verify a second transport on the shared ref even when the connector caches URLs");
+  const actualUpdate = cachedRef.mock.github.update_ref;
+  cachedRef.mock.github.update_ref = async args => {
+    const result = await actualUpdate(args);
+    cachedRef.mock.branches.set(preflightBranch, firstProbe.commit_sha);
+    return result;
+  };
+  const moved = await failure(() => cachedRef.service.checkTransport(cachedRef.plan, checkOptions),
+    "reject a genuine shared head change after the write");
+  assert(moved.stage === "preflight_branch_readback" && moved.message.includes("observed " + firstProbe.commit_sha) &&
+    cachedRef.mock.branches.size === 1,
+    "a fresh lookup cannot bless bytes from a different head or create a generation claim");
 
   const transportOnly = await scenario("transport-only"), transportCounters = {reads: 0, generated: 0};
   const transportOptions = gateOptions(transportOnly, transportCounters);
@@ -1418,7 +1453,8 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       const mutations = calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref").length;
       assert(toolCalls+imports <= 16 && mutations <= 2,
         "compact "+method+"/"+(retained?.phase||"lookup")+" cold cell used "+imports+" imports + "+toolCalls+" calls, "+mutations+" mutations");
-      if (result && ["preflight_verify_commit", "preflight_verify_branch"].includes(checkpoint?.phase)) {
+      if (result && result.phase!=="preflight_verify_commit" &&
+        ["preflight_verify_commit", "preflight_verify_branch"].includes(checkpoint?.phase)) {
         const onBranch = checkpoint.phase === "preflight_verify_branch";
         const ref = onBranch ? preflightBranch : checkpoint.commitSha;
         const paths = ["probe.png", "probe.jpg", "receipt.json"].map(file => preflightPrefix + file)
@@ -1426,7 +1462,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         const reads = calls.filter(call => call.name === "fetch_file").map(call => call.args);
         assert(reads.length === paths.length && reads.every((args, i) => args.ref === ref && args.path === paths[i]) &&
           mutations === 0 && toolCalls === paths.length + Number(onBranch) &&
-          result.phase === (onBranch ? "claim_prepare" : "preflight_publish"),
+          result.phase === (onBranch || checkpoint.proof.branch.startsWith(claimBranchPrefix) ? "claim_prepare" : "preflight_publish"),
           "one read-only cell verifies all remaining probe and protected paths on the expected ref");
       }
       if (result) assert(result.tool_calls === toolCalls && result.mutations === mutations,
@@ -1492,6 +1528,86 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     duplicateLookups.every(call => call.name === "fetch_file") &&
     duplicateLookups[1].args.ref === claimBranchPrefix + compact.plan.identity,
     "an uncertain generation is recovery-only with no second byte probe, shared branch change, or generation");
+  const stale=await compactContext("resume-retained-probe");
+  const probeOptions=gateOptions(stale,stale.stepCounters), reserveMethod="reserveExternalGenerationStep";
+  const prior=await stale.service.prepare({...stale.args,logicalRunId:"prior-shared-probe"});
+  const originalProof=await stale.service.checkTransport(prior,probeOptions);
+  const createCommit=stale.mock.github.create_commit;
+  stale.mock.github.create_commit=async ()=>{throw Error("Interrupted before probe commit");};
+  const interrupted=await failure(()=>compactDrive(stale,reserveMethod,compactReservationOptions(stale)),
+    "interrupted compact preflight retains the exact tree before publishing");
+  stale.mock.github.create_commit=createCommit;
+  const previous=interrupted.checkpoint;
+  assert(previous.phase==="preflight_commit" && previous.treeSha && !previous.commitSha &&
+    previous.previousSha===originalProof.commit_sha, "retained tree precedes its commit");
+  const newer=await stale.service.prepare({...stale.args,logicalRunId:"newer-shared-probe"});
+  const newerProof=await stale.service.checkTransport(newer,probeOptions);
+  const readsBefore=stale.stepCounters.reads, writesBefore=stale.mock.writes().length;
+  const selected=await compactCall(stale,reserveMethod,{},previous);
+  assert(selected.phase==="preflight_recover_commit" && selected.mutations===0 &&
+    selected.checkpoint.previousSha===previous.previousSha && selected.checkpoint.treeSha===previous.treeSha,
+    "a stale shared head selects a read-only recovery without rebasing the probe");
+  const immutable=await compactCall(stale,reserveMethod,{},selected.checkpoint);
+  const fetchFile=stale.mock.github.fetch_file;
+  stale.mock.github.fetch_file=async args=>{
+    const result=await fetchFile(args);
+    if(args.path===preflightPrefix+"probe.jpg" && args.ref===immutable.checkpoint.commitSha)
+      result.structuredContent.sha="0".repeat(40);
+    return result;
+  };
+  const wrongBlob=await failure(()=>compactCall(stale,reserveMethod,{},immutable.checkpoint),
+    "different Git blob id blocks recovery even with identical returned JPEG bytes");
+  assert(!stale.mock.branches.has(claimBranchPrefix+stale.plan.identity),"no claim exists after a failed retained probe readback");
+  stale.mock.github.fetch_file=fetchFile;
+  const verified=await compactCall(stale,reserveMethod,{},wrongBlob.checkpoint);
+  const createTree=stale.mock.github.create_tree;
+  stale.mock.github.create_tree=async ()=>{throw Error("Claim tree unavailable");};
+  const partialClaim=await failure(()=>compactCall(stale,reserveMethod,{},verified.checkpoint),"claim tree failure preserves its confirmed receipt blob");
+  stale.mock.github.create_tree=createTree;
+  const recovery=await compactDrive(stale,reserveMethod,{},partialClaim.checkpoint), reservation=recovery.result;
+  const recoveryWrites=stale.mock.writes().slice(writesBefore);
+  const claimName=claimBranchPrefix+stale.plan.identity;
+  assert(reservation.status==="reserved" && reservation.transportPreflight.branch===claimName &&
+    stale.mock.branches.get(preflightBranch)===newerProof.commit_sha &&
+    recoveryWrites.filter(item=>item.name==="create_blob").length===1 &&
+    recoveryWrites.filter(item=>item.name==="create_branch").length===1 &&
+    recoveryWrites.every(item=>item.name!=="update_ref" && (!item.args.branch_name||item.args.branch_name===claimName)) &&
+    stale.stepCounters.reads===readsBefore && stale.stepCounters.generated===0,
+    "recovery reuses all three saved blobs and publishes only the create-only claim, preserving the newer shared probe");
+  const proof=reservation.transportPreflight, claim=reservation.generationClaim;
+  assert(recoveryWrites.some(item=>item.name==="create_commit" && item.args.tree_sha===previous.treeSha &&
+    item.args.parent_sha===previous.previousSha) && recoveryWrites.some(item=>item.name==="create_commit" &&
+    item.args.parent_sha===proof.commit_sha) && stale.mock.readText(claim.branch,proof.receipt_path)===previous.files[2].content,
+    "claim anchors the unchanged original probe tree and its read-back receipt");
+  await failure(()=>compactCall(stale,reserveMethod,{},previous),"stale checkpoint cannot obtain another permission after its own claim exists");
+  const observed=new Date().toISOString();
+  const imageInput={compact:true,transportPreflight:proof,generationClaim:claim,observedAt:observed,
+    originalSourceRef:stale.originalRef};
+  const staging=await compactCall(stale,"stageReservedStep",imageInput);
+  const goodFetch=stale.mock.github.fetch;
+  stale.mock.github.fetch=async args=>{
+    const result=await goodFetch(args);
+    if(args.url.endsWith("/git/commits/"+claim.commit_sha))
+      result.structuredContent.content=JSON.stringify({sha:claim.commit_sha,parents:[{sha:newerProof.commit_sha}]});
+    return result;
+  };
+  await failure(()=>compactCall(stale,"stageReservedStep",{},staging.checkpoint),
+    "staging rejects a recovered receipt pinned to another probe parent");
+  stale.mock.github.fetch=goodFetch;
+  const staged=await compactCall(stale,"stageReservedStep",{},staging.checkpoint);
+  assert(staged.phase==="candidate_lookup","staging accepts the verified claim with its own immutable probe parent");
+  const interleaved=await compactContext("preflight-readback-after-advance");
+  let shared;
+  do{
+    shared=await compactCall(interleaved,reserveMethod,compactReservationOptions(interleaved),shared?.checkpoint);
+  }while(shared.phase!=="preflight_verify_branch");
+  const otherPlan=await interleaved.service.prepare({...interleaved.args,logicalRunId:"interleaved-probe"});
+  const otherProof=await interleaved.service.checkTransport(otherPlan,gateOptions(interleaved,interleaved.stepCounters));
+  const afterAdvance=await compactCall(interleaved,reserveMethod,{},shared.checkpoint);
+  assert(afterAdvance.phase==="preflight_verify_commit" && afterAdvance.checkpoint.verifyIndex===0 &&
+    afterAdvance.checkpoint.commitSha===shared.checkpoint.commitSha && afterAdvance.mutations===0 &&
+    interleaved.mock.branches.get(preflightBranch)===otherProof.commit_sha,
+    "a competing publication during named-ref readback restarts all checks on the original immutable probe without writes");
   const interruptedRead = await compactContext("resume-partial-preflight");
   const readOptions = compactReservationOptions(interruptedRead);
   const readFile = interruptedRead.mock.github.fetch_file;

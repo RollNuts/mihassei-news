@@ -24,7 +24,11 @@ var NativeImageStage = (function () {
     if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
     const hashText=s=>runtime.sha256(runtime.utf8(s)), transientInputs=new Map();
     const activeGenerations=new Set(), generationAttempts=new Map();
-    let generatedSnapshot, workflowNonce=0, stepUsage=null;
+    let generatedSnapshot, requestSequence=0, stepUsage=null;
+    function freshNonce(){
+      const randomHex=Array.from({length:4},()=>Math.floor(Math.random()*0x100000000).toString(16).padStart(8,"0")).join("");
+      return Date.now().toString(16).padStart(16,"0")+(++requestSequence).toString(16).padStart(16,"0")+randomHex;
+    }
     if (controlOnly) return {cloudStatus};
     function countStep(mutation=false){
       if(!stepUsage)return;
@@ -70,16 +74,19 @@ var NativeImageStage = (function () {
       return typeof raw.content==="string"?JSON.parse(raw.content):raw;
     }
     async function cloudStatus(){
+      let reading="repository";
       try {
         // Visibility and the stop authority are live on every check. Only the
         // byte total of an immutable main commit may be reused between writes.
         const repo=await fetchJSON("");
         if(typeof repo.full_name!=="string"||repo.full_name.toLowerCase()!==repository.toLowerCase()
           ||repo.private!==false||repo.visibility!=="public")throw Error("Repository is not confirmed public");
+        reading="main branch";
         const main=await fetchJSON("/branches/main");
         const commitSha=main.commit?.sha, treeSha=main.commit?.commit?.tree?.sha;
         if(main.name!=="main"||!GIT.test(commitSha||"")||!GIT.test(treeSha||""))throw Error("Invalid current main branch response");
         if(generatedSnapshot?.commitSha!==commitSha){
+          reading="generated JPEG tree";
           const tree=await fetchJSON("/git/trees/"+treeSha+"?recursive=1");
           if(tree.sha!==treeSha||tree.truncated!==false||!Array.isArray(tree.tree))throw Error("Incomplete generated-JPEG tree");
           let jpegBytes=0;
@@ -95,11 +102,11 @@ var NativeImageStage = (function () {
         if(generatedSnapshot.jpegBytes>JPEG_CAP)throw Error("Generated JPEG total exceeds 1.5 GiB");
         // Keep this last: a stop-all disables this existing workflow, including
         // while byte conversion, claim creation or candidate recovery is busy.
+        reading=readCloudWorkflow?"image control connector":"GitHub image workflow";
         let workflow;
         if(readCloudWorkflow){
           // The stop authority echoes a per-request freshness challenge, including across cold cells.
-          const randomHex=Array.from({length:4},()=>Math.floor(Math.random()*0x100000000).toString(16).padStart(8,"0")).join("");
-          const nonce=Date.now().toString(16).padStart(16,"0")+(++workflowNonce).toString(16).padStart(16,"0")+randomHex;
+          const nonce=freshNonce();
           countStep();const raw=payload(await readCloudWorkflow({nonce}));
           workflow=typeof raw.content==="string"?JSON.parse(raw.content):raw;
           const checked=Date.parse(workflow.checked_at),age=Date.now()-checked;
@@ -113,7 +120,7 @@ var NativeImageStage = (function () {
         return {state:"active",public:true,main_commit_sha:commitSha,jpeg_bytes:generatedSnapshot.jpegBytes,jpeg_cap_bytes:JPEG_CAP};
       } catch(error){
         const e=error instanceof Error?error:Error(String(error));
-        e.message="Cloud image operations stopped: "+e.message;throw e;
+        e.message="Cloud image operations stopped: "+reading+": "+e.message;throw e;
       }
     }
     async function call(name,args){
@@ -415,9 +422,16 @@ var NativeImageStage = (function () {
       }catch(e){if(e.checkpoint)throw e;throw attachFailure(e,state);}
     }
     async function branchHead(branch) {
-      const ref=await fetchJSON("/git/ref/heads/"+branch);
+      // Reusing a cached lookup of this shared ref after a fast-forward reports
+      // the preceding probe even when the connector accepted our update.
+      const query=branch===PREFLIGHT_BRANCH?"?read_nonce="+freshNonce():"";
+      const ref=await fetchJSON("/git/ref/heads/"+branch+query);
       if(ref.ref!=="refs/heads/"+branch||!GIT.test(ref.object?.sha||""))throw Error("Invalid branch response: "+branch);
       return ref.object.sha;
+    }
+    async function verifyPreflightHead(expected){
+      const observed=await branchHead(PREFLIGHT_BRANCH);
+      if(observed!==expected)throw Error("Preflight branch changed: expected "+expected+", observed "+observed);
     }
     async function transportPreflight(plan,options) {
       let phase="preflight_cloud_status";
@@ -477,7 +491,7 @@ var NativeImageStage = (function () {
           if(await branchHead(PREFLIGHT_BRANCH)!==commitSha)throw error;
         }
         phase="preflight_branch_readback";
-        if(await branchHead(PREFLIGHT_BRANCH)!==commitSha)throw Error("Concurrent transport check changed the preflight branch");
+        await verifyPreflightHead(commitSha);
         await verify(PREFLIGHT_BRANCH);
         return {kind:"native_image_transport_preflight",status:"passed",branch:PREFLIGHT_BRANCH,commit_sha:commitSha,
           receipt_path:PREFLIGHT_DIR+"/receipt.json",receipt_sha256:hashText(receiptText),observed_at:observedAt,
@@ -581,6 +595,22 @@ var NativeImageStage = (function () {
       try{return await reservePrepared(plan,options,false);}
       finally{activeGenerations.delete(plan.identity);}
     }
+    function verifyProofReceipt(plan,proof,content) {
+      const receipt=JSON.parse(content);
+      if(hashText(content)!==proof.receipt_sha256||receipt.version!==1||receipt.kind!==proof.kind
+        ||receipt.status!=="probe_only_not_an_article_candidate"||receipt.repository!==repository
+        ||receipt.candidate_identity!==plan.identity||receipt.logical_run_id!==plan.logicalRunId
+        ||receipt.observed_at!==proof.observed_at||receipt.route!==proof.route
+        ||receipt.source?.sha256!==proof.source_sha256||receipt.jpeg?.sha256!==proof.jpeg_sha256
+        ||receipt.baseline?.commit_sha!==plan.baseCommitSha
+        ||PROTECTED.some(path=>receipt.baseline.protected_hashes?.[path]!==plan.protectedHashes[path]))throw Error("Reservation preflight binding mismatch");
+    }
+    async function verifyClaimParent(claim,proof) {
+      if(proof.branch!==claim.branch)return;
+      const commit=await fetchJSON("/git/commits/"+claim.commit_sha);
+      if(commit.sha!==claim.commit_sha||commit.parents?.length!==1||commit.parents[0].sha!==proof.commit_sha)
+        throw Error("Recovered transport proof is not the generation claim's parent");
+    }
     async function verifyReserved(plan,input,readFile=read) {
       const claim=input?.generationClaim,proof=input?.transportPreflight;
       const proofFields=["kind","status","branch","commit_sha","receipt_path","receipt_sha256",
@@ -589,10 +619,11 @@ var NativeImageStage = (function () {
         ||claim.branch!==CLAIM_BRANCH_PREFIX+plan.identity||claim.receipt_path!==CLAIM_DIR+"/"+plan.identity+".json"
         ||!GIT.test(claim.commit_sha||"")||!SHA.test(claim.receipt_sha256||""))throw Error("Invalid generation reservation");
       if(!proof||proof.kind!=="native_image_transport_preflight"||proof.status!=="passed"
-        ||proof.branch!==PREFLIGHT_BRANCH||proof.receipt_path!==PREFLIGHT_DIR+"/receipt.json"
+        ||(proof.branch!==PREFLIGHT_BRANCH&&proof.branch!==claim.branch)||proof.receipt_path!==PREFLIGHT_DIR+"/receipt.json"
         ||Object.keys(proof).length!==proofFields.length||proofFields.some(key=>typeof proof[key]!=="string")
         ||!GIT.test(proof.commit_sha||"")||!SHA.test(proof.receipt_sha256||""))throw Error("Invalid reservation preflight");
       if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation reservation branch changed");
+      await verifyClaimParent(claim,proof);
       const rawClaim=await readFile(claim.receipt_path,claim.commit_sha),record=JSON.parse(rawClaim.content);
       if(hashText(rawClaim.content)!==claim.receipt_sha256||record.version!==1||record.kind!==claim.kind||record.status!==claim.status
         ||record.repository!==repository||record.identity!==plan.identity||record.slug!==plan.slug
@@ -600,14 +631,8 @@ var NativeImageStage = (function () {
         ||record.baseline?.commit_sha!==plan.baseCommitSha||record.baseline.tree_sha!==plan.baseTreeSha
         ||PROTECTED.some(path=>record.baseline.protected_hashes?.[path]!==plan.protectedHashes[path])
         ||proofFields.some(key=>record.transport_preflight?.[key]!==proof[key]))throw Error("Generation reservation binding mismatch");
-      const rawProof=await readFile(proof.receipt_path,proof.commit_sha),receipt=JSON.parse(rawProof.content);
-      if(hashText(rawProof.content)!==proof.receipt_sha256||receipt.version!==1||receipt.kind!==proof.kind
-        ||receipt.status!=="probe_only_not_an_article_candidate"||receipt.repository!==repository
-        ||receipt.candidate_identity!==plan.identity||receipt.logical_run_id!==plan.logicalRunId
-        ||receipt.observed_at!==proof.observed_at||receipt.route!==proof.route
-        ||receipt.source?.sha256!==proof.source_sha256||receipt.jpeg?.sha256!==proof.jpeg_sha256
-        ||receipt.baseline?.commit_sha!==plan.baseCommitSha
-        ||PROTECTED.some(path=>receipt.baseline.protected_hashes?.[path]!==plan.protectedHashes[path]))throw Error("Reservation preflight binding mismatch");
+      const rawProof=await readFile(proof.receipt_path,proof.commit_sha);
+      verifyProofReceipt(plan,proof,rawProof.content);
       if(!Number.isFinite(Date.parse(record.reserved_at))||!Number.isFinite(Date.parse(input.observedAt))
         ||Date.parse(input.observedAt)<Date.parse(record.reserved_at))throw Error("Generated output precedes reservation");
       await verifyProtected(plan.baseCommitSha,plan.protectedHashes,readFile);
@@ -730,7 +755,8 @@ var NativeImageStage = (function () {
       for(let i=state.verifyIndex||0;i<end;i++){
         const file=all[i],raw=await read(file.path,ref,file.encoding||"utf-8");
         const bytes=file.encoding==="base64"?runtime.fromBase64(raw.content):runtime.utf8(raw.content);
-        if(runtime.sha256(bytes)!==file.hash)throw Error("Bounded file readback mismatch: "+file.path);
+        if(runtime.sha256(bytes)!==file.hash||(state.proof?.branch===CLAIM_BRANCH_PREFIX+plan.identity
+          &&state.blobs[file.path]&&raw.sha!==state.blobs[file.path]))throw Error("Bounded file readback mismatch: "+file.path);
         state.verifyIndex=i+1;
       }
       return state.verifyIndex===all.length;
@@ -816,6 +842,24 @@ var NativeImageStage = (function () {
         jpegPath:r.jpeg.path,sourceParts:r.source.parts.map(part=>part.path),reused:true,
         sourcePngDataUrl:"data:image/png;base64,"+runtime.toBase64(source),jpegDataUrl:"data:image/jpeg;base64,"+saved.jpeg};
     }
+    // Keep a stale checkpoint's exact tree and parent. The article's own
+    // create-only claim will anchor the verified probe instead of the shared ref.
+    async function recoverPreflight(plan,state){
+      if(await lookupSaved(plan,state))return;
+      const claim=generationClaimRef(plan);
+      if(await hasGenerationClaim(plan,claim))throw Error("Generation already reserved; recover only");
+      const proof=state.proof,hashes=[proof.source_sha256,proof.jpeg_sha256,proof.receipt_sha256];
+      const paths=["probe.png","probe.jpg","receipt.json"].map(name=>PREFLIGHT_DIR+"/"+name);
+      if(proof.kind!=="native_image_transport_preflight"||proof.status!=="passed"||proof.receipt_path!==paths[2]
+        ||!GIT.test(state.treeSha||"")||state.files.length!==3||paths.some((path,i)=>
+        state.files[i].path!==path||state.files[i].hash!==hashes[i]||!SHA.test(hashes[i])
+        ||state.files[i].encoding!==(i===2?"utf-8":"base64")||!GIT.test(state.blobs[path]||"")))
+        throw Error("Incomplete retained transport probe");
+      verifyProofReceipt(plan,proof,state.files[2].content);
+      state.proof.branch=claim.branch;
+      state.verifyIndex=0;
+      state.phase=state.commitSha?"preflight_verify_commit":"preflight_recover_commit";
+    }
     async function reserveExternalGenerationStep(plan,options,checkpoint){
       return boundedStep(plan,"native_reservation_steps",checkpoint,{compact:options?.compact===true},async state=>{
         if(state.phase==="saved_readback")return await savedSlice(plan,state);
@@ -867,41 +911,67 @@ var NativeImageStage = (function () {
             const file=state.files[state.index];state.blobs[file.path]=gitSha(await call("create_blob",{content:file.content,encoding:file.encoding}),"blob");
           }
           if(state.index===state.files.length)state.phase="preflight_commit";
-        }else if(state.phase==="preflight_commit"){
+        }else if(state.phase==="preflight_commit"||state.phase==="preflight_recover_commit"){
+          if(state.phase==="preflight_commit"&&state.version===2&&state.treeSha&&!state.commitSha&&state.previousSha
+            &&await branchHead(PREFLIGHT_BRANCH)!==state.previousSha){
+            await recoverPreflight(plan,state);return;
+          }
           if(!state.treeSha)state.treeSha=gitSha(await call("create_tree",{base_tree_sha:plan.baseTreeSha,
             tree_elements:state.files.map(file=>({path:file.path,mode:"100644",type:"blob",sha:state.blobs[file.path]}))}),"tree");
           if(!state.commitSha)state.commitSha=gitSha(await call("create_commit",{parent_sha:state.previousSha||plan.baseCommitSha,
             tree_sha:state.treeSha,message:"Check native image transport: "+plan.logicalRunId}),"commit");
           state.proof.commit_sha=state.commitSha;state.verifyIndex=0;state.phase="preflight_verify_commit";
         }else if(state.phase==="preflight_verify_commit"){
-          if(await verifySlice(plan,state,state.commitSha,state.files,PREFLIGHT_VERIFY_BATCH))state.phase="preflight_publish";
+          if(await verifySlice(plan,state,state.commitSha,state.files,PREFLIGHT_VERIFY_BATCH))
+            state.phase=state.proof.branch===PREFLIGHT_BRANCH?"preflight_publish":"claim_prepare";
         }else if(state.phase==="preflight_publish"){
+          if(state.version===2&&state.previousSha){
+            const head=await branchHead(PREFLIGHT_BRANCH);
+            if(head!==state.previousSha&&head!==state.commitSha){await recoverPreflight(plan,state);return;}
+          }
           try{
             if(state.previousSha)await call("update_ref",{branch_name:PREFLIGHT_BRANCH,sha:state.commitSha,expected_sha:state.previousSha,force:false});
             else await call("create_branch",{branch_name:PREFLIGHT_BRANCH,sha:state.commitSha});
-          }catch(error){if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw error;}
-          if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Concurrent preflight branch change");
+          }catch(error){
+            const head=await branchHead(PREFLIGHT_BRANCH);
+            if(head!==state.commitSha){
+              if(state.version!==2||head===state.previousSha)throw error;
+              await recoverPreflight(plan,state);return;
+            }
+          }
+          await verifyPreflightHead(state.commitSha);
           state.verifyIndex=0;state.phase="preflight_verify_branch";
         }else if(state.phase==="preflight_verify_branch"){
-          if(await verifySlice(plan,state,PREFLIGHT_BRANCH,state.files,PREFLIGHT_VERIFY_BATCH)){
-            if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Preflight branch changed during readback");
-            state.phase="claim_prepare";
+          try{
+            if(await verifySlice(plan,state,PREFLIGHT_BRANCH,state.files,PREFLIGHT_VERIFY_BATCH)){
+              await verifyPreflightHead(state.commitSha);
+              state.phase="claim_prepare";
+            }
+          }catch(error){
+            if(state.version!==2||await branchHead(PREFLIGHT_BRANCH)===state.commitSha)throw error;
+            await recoverPreflight(plan,state);
           }
         }else if(state.phase==="claim_prepare"){
           if(await lookupSaved(plan,state))return;
           state.claim=generationClaimRef(plan);
           if(await hasGenerationClaim(plan,state.claim))throw Error("Generation already reserved; recover only");
-          const receipt={version:1,...state.claim,repository,identity:plan.identity,slug:plan.slug,article_sha256:plan.articleSha256,
-            logical_run_id:plan.logicalRunId,prompt_sha256:hashText(plan.prompt),reserved_at:new Date().toISOString(),
-            baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},transport_preflight:state.proof};
-          state.claimText=JSON.stringify(receipt,null,2)+"\n";state.claim.receipt_sha256=hashText(state.claimText);
-          const blob=gitSha(await call("create_blob",{content:state.claimText,encoding:"utf-8"}),"blob");
-          state.claimTree=gitSha(await call("create_tree",{base_tree_sha:plan.baseTreeSha,
-            tree_elements:[{path:state.claim.receipt_path,mode:"100644",type:"blob",sha:blob}]}),"tree");
+          if(!state.claimText){
+            const receipt={version:1,...state.claim,repository,identity:plan.identity,slug:plan.slug,article_sha256:plan.articleSha256,
+              logical_run_id:plan.logicalRunId,prompt_sha256:hashText(plan.prompt),reserved_at:new Date().toISOString(),
+              baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},transport_preflight:state.proof};
+            state.claimText=JSON.stringify(receipt,null,2)+"\n";
+          }
+          state.claim.receipt_sha256=hashText(state.claimText);
+          if(!state.claimBlob)state.claimBlob=gitSha(await call("create_blob",{content:state.claimText,encoding:"utf-8"}),"blob");
+          const retained=state.proof.branch===state.claim.branch;
+          state.claimTree=gitSha(await call("create_tree",{base_tree_sha:retained?state.treeSha:plan.baseTreeSha,
+            tree_elements:[{path:state.claim.receipt_path,mode:"100644",type:"blob",sha:state.claimBlob}]}),"tree");
           state.phase="claim_commit";
         }else if(state.phase==="claim_commit"){
-          if(!state.claim.commit_sha)state.claim.commit_sha=gitSha(await call("create_commit",{parent_sha:plan.baseCommitSha,
+          const parent=state.proof.branch===state.claim.branch?state.proof.commit_sha:plan.baseCommitSha;
+          if(!state.claim.commit_sha)state.claim.commit_sha=gitSha(await call("create_commit",{parent_sha:parent,
             tree_sha:state.claimTree,message:"Reserve native image generation: "+plan.slug}),"commit");
+          await verifyClaimParent(state.claim,state.proof);
           if((await read(state.claim.receipt_path,state.claim.commit_sha)).content!==state.claimText)throw Error("Claim commit readback mismatch");
           await verifyProtected(state.claim.commit_sha,plan.protectedHashes);state.phase="claim_final";
         }else if(state.phase==="claim_final"){
