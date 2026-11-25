@@ -230,10 +230,18 @@ def photo_payload(report: dict, expected_sha: str, details_url: str) -> dict:
     lines += ["", "Photo follow-ups: " + str(len(result["photo_followup"])),
               "Other image/diagram attention: " + str(len(result["attention"])),
               "Generic fallbacks: " + str(result["generic_fallback"]), "", result["note"]]
+    output = {"title": "Photo backlog empty" if complete else "Photo/image recovery required",
+              "summary": "\n".join(lines)}
+    # Chat can read an Actions check but cannot fetch a binary artifact with its GitHub reader.
+    rows = result["photo_followup"]
+    if all(isinstance(row.get("article_sha256"), str) and re.fullmatch(r"[0-9a-f]{64}", row["article_sha256"]) for row in rows):
+        compact = json.dumps({"checkout_sha": expected_sha, "photo_followup": [
+            {key: row[key] for key in ("slug", "article_sha256", "status")} for row in rows
+        ]}, separators=(",", ":"))
+        if len(compact) <= 64_000:
+            output["text"] = compact
     return {"name": "Photograph completion", "head_sha": expected_sha, "status": "completed",
-            "conclusion": "success" if complete else "failure", "details_url": details_url,
-            "output": {"title": "Photo backlog empty" if complete else "Photo/image recovery required",
-                       "summary": "\n".join(lines)}}
+            "conclusion": "success" if complete else "failure", "details_url": details_url, "output": output}
 
 
 def main(argv=None) -> int:

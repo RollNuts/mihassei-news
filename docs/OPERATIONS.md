@@ -104,7 +104,7 @@ const R = new Function(helperSource + "\nreturn PublicationReviewContext;")();
 text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 ```
 
-`fetchFile` はGitHubの `fetch_file`、`fetchRepository` は同じ接続の `fetch({url})` へ束縛する。helperはDraftを含むopen PRを列挙し、PRの分岐点と固定headから対象の公開文だけを返す。近況・写真特集・放送室等の対応外を含む明示未完は、上記「既存PRの停止・公開待ちの回収」で別途照合する。上限外の対象、未対応の変更、古い承認や取得失敗を対象0件へ置き換えない。承認済みのCIは同じPR・headの `check.yml` 実行へ結び付ける。CI成功でも未統合なら公開処理の確認対象として残し、独立初読を重ねず、既存finalizerの進行・失敗・未確認を区別して同じ引継ぎから続ける。進行中の処理へ重複着手せず、確認なしに再実行しない。画像だけの未完や公開後の本文差分は従来の担当手順で別途確認する。
+`fetchFile` はGitHubの `fetch_file`、`fetchRepository` は同じ接続の `fetch({url})` へ束縛する。helperはDraftを含むopen PRを列挙し、PRの分岐点と固定headから対象の公開文だけを返す。近況・写真特集・放送室等の対応外を含む明示未完は、上記「既存PRの停止・公開待ちの回収」で別途照合する。上限外の対象、未対応の変更、古い承認や取得失敗を対象0件へ置き換えない。承認済みのCIは同じPR・headの `check.yml` 実行へ結び付ける。CI成功でも未統合なら公開処理の確認対象として残し、独立初読を重ねず、既存finalizerの進行・失敗・未確認を区別して同じ引継ぎから続ける。進行中の処理へ重複着手せず、確認なしに再実行しない。`empty`は初読待ちと写真引継ぎの双方を確認した結果とし、open PR数は`open_pr_count`を使う。`photo_recovery.status`が`lookup_required`なら次のCodeModeセルで`R.readPhotoHandoffs({fetchRepository, fetchFile, ref: mainSha})`を実行する。`after_first_read`は独立初読後に同じメソッドを使う。扱いは[画像の採用条件](VISUAL_OPERATIONS.md#画像の採用条件)に従う。
 
 各実行でこのhelperを実取得・実行し、取得完了JST・固定main SHA・open/selected/pending/attention/machine_pendingの件数を結果へ1行残す。初読helperの対象0件でも取得証拠を残し、上記共通回収節の対応外を含む明示未完と担当工程を別途照合する。対応する未完もなければ終了し、正常素材の再検品や不要な画像生成をしない。未実施は未実施、取得不能は失敗した操作と実エラーを記録し、前回結果や不明な状態を0件にしない。結果記録のためだけのPR・コミットや新しい台帳は作らない。
 
@@ -136,7 +136,7 @@ helperはGitHubの生応答と完了ログをCodeMode内で処理し、対象PR/
 
 ### CI・公開待機の引継ぎ
 
-長いCIをGPTが繰り返し照会しない。現在の変更担当が必要な本文・実画像の確認を終えた後、同じPR本文の既存引継ぎへ、`scripts/publication_finalize.py --print-handoff`が出す`publication-finalize`ブロックを1つだけ保存する。CLIがない場合も同じJSON形式をGitHub接続で保存できる。
+長いCIをGPTが繰り返し照会しない。現在の変更担当が必要な本文・実画像の確認を終えた後、同じPR本文の既存引継ぎへ、`scripts/publication_finalize.py --print-handoff`が出す`publication-finalize`ブロックを1つだけ保存する。CLIがない場合も同じJSON形式をGitHub接続で保存できる。統合済みPRの引き継ぎ追記では配信検証を再起動しない。現行の本番でその統合版の検証が欠けている場合は、既存の承認ブロックをいったん外して保存し、同じ承認を戻すと再照合できる。
 
 `kind`は`news`・`market`・`cast_story`・`photo_issue`、`approved_head`は確認した完全40桁、`authorized_by`は実際の書込担当GitHub login。`author_run`と`reviewer_run`は実在する実行参照（例：`chatgpt:`に当該チャットUUIDを続ける）で、URLや架空のIDを作らない。`first_read: passed`と`merge_after_ci: true`を明示する。ニュース・市場記事は作者と独立reviewerの参照を分け、変更記事の現在の指紋を`article_sha256`へ全件残す。近況・写真特集は従来の同じ編集担当の確認でよく、余分なreviewerを増やさない。初読・現headの承認を保存・読み戻せたPRだけ、`draft: true`ならGitHub接続の`mark_pull_request_ready_for_review`（CLIは`gh pr ready`）で下書きを解除し、`draft: false`を読み戻してから機械処理へ渡す。
 

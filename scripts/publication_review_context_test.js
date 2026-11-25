@@ -352,7 +352,7 @@ test("latest current-head CI supersedes an older success and cancelled work rema
 });
 
 test("empty is only reported after successful complete inventories at the fixed main", async () => {
-  const w = world(), report = await w.read();
+  const w = world(), report = await w.read({ photoReport: { checkout_sha: REF, photo_followup: [] } });
   assert.equal(report.empty, true); assert.equal(report.open_pr_count, 0);
   assert.equal(w.calls.filter(c => c.route === "/pulls").length, 2);
   assert.equal(w.fileCalls.length, 0);
@@ -952,4 +952,67 @@ test("validation keeps retrieval failures and changing snapshots explicit instea
     assert.equal(result.status, "attention", mutation); assert(!JSON.stringify(result).includes("SECRET"));
     assert.deepEqual(w.logCalls, []); assert(w.calls.length <= 9);
   }
+});
+
+test("ordinary empty first-read inventory finds only explicit merged photograph handoffs", async () => {
+  const sha = i => String(i).repeat(64);
+  const rows = ["morning", "old-claim", "evening", "rejected"].map((slug, i) => ({
+    slug, article_sha256: sha(i + 1), status: i === 3 ? "rejected" : "missing" }));
+  const report = { checkout_sha: REF, photo_followup: rows };
+  const prs = [0, 2].map(i => ({ number: 101 + i, state: "closed", merged: true, author_association: "OWNER",
+    head: { sha: GIT(i + 10), repo: { full_name: REPO } }, base: { ref: "main", repo: { full_name: REPO } },
+    body: "<!-- photo-recovery:1032 -->\nSECRETS_FROM_ORIGINAL_PR\n" +
+      marker(GIT(i + 10), { article_sha256: { [rows[i].slug]: rows[i].article_sha256 } }) }));
+  const queries = [], open = [];
+  let changedPath = "assets/generated/morning.jpg";
+  const fetchRepository = async ({ url }) => {
+    const u = new URL(url), route = u.pathname.replace("/repos/" + REPO, "");
+    if (route === "/git/ref/heads/main") return { object: { sha: REF } };
+    if (route === "/pulls") return open;
+    if (route === "/pulls/1040/files") return [{ filename: changedPath, status: "modified" }];
+    if (route.startsWith("/compare/")) return { merge_base_commit: { sha: BASE } };
+    if (route.endsWith("/check-runs")) return { check_runs: [{ name: "Photograph completion", head_sha: REF,
+      app: { slug: "github-actions" }, status: "completed", conclusion: "failure", output: { text: JSON.stringify(report) } }] };
+    if (route === "/search/issues") {
+      const query = u.searchParams.get("q"); queries.push(query);
+      const found = prs.filter(pr => query.includes(rows[pr.number - 101].article_sha256));
+      return { total_count: found.length, incomplete_results: false, items: found.map(({ number }) => ({ number })) };
+    }
+    const pr = prs.find(row => route === "/pulls/" + row.number);
+    if (pr) return pr;
+    throw Error("Unexpected photo lookup " + route);
+  };
+  const normal = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF });
+  assert.equal(normal.open_prs_empty, true); assert.equal(normal.empty, false); assert.deepEqual(normal.attention, []);
+  assert.equal(normal.photo_recovery.status, "checked");
+  assert.deepEqual(normal.photo_recovery.selected.map(row => row.pr), [101, 103]);
+  assert.equal(normal.photo_recovery.may_generate, false);
+  assert(!JSON.stringify(normal).includes("SECRETS_FROM_ORIGINAL_PR"));
+  assert.equal(queries.length, 3); assert(!queries.some(q => q.includes(rows[3].article_sha256)));
+  open.push({ number: 1040, state: "open", draft: false, body: "another work in progress",
+    head: { sha: GIT(20), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const options = { fetchRepository, ref: REF, report };
+  let busy = await context.readPhotoHandoffs(options);
+  assert.deepEqual(busy.selected.map(row => row.slug), ["evening"]);
+  assert.deepEqual(busy.attention, [{ slug: "morning", pr: 1040, reason: "open_owner" }]);
+  changedPath = "content/articles.json";
+  const fetchFile = async ({ ref, path }) => ({ path, sha: GIT(25), encoding: "utf-8",
+    content: JSON.stringify([{ slug: "morning", title: "no change" }, { slug: "evening", title: ref }]) });
+  busy = await context.readPhotoHandoffs({ ...options, fetchFile });
+  assert.deepEqual(busy.selected.map(row => row.slug), ["morning"]);
+  assert.equal((await context.readPhotoHandoffs(options)).status, "unverified");
+  changedPath = "docs/EDITORIAL_LOOP.md";
+  assert.equal((await context.readPhotoHandoffs(options)).selected.length, 2);
+  let inventoryReads = 0;
+  const moved = await context.readPhotoHandoffs({ ...options, fetchRepository: args => {
+    if (new URL(args.url).pathname.endsWith("/pulls") && ++inventoryReads === 1) return [];
+    return fetchRepository(args);
+  } });
+  assert.equal(moved.status, "unverified"); assert.match(moved.reason, /owners changed/);
+  open.length = 0;
+  prs[0].body = prs[0].body.replace("<!-- photo-recovery:1032 -->", "");
+  prs[1].body = prs[1].body.replace(rows[2].article_sha256, sha(9));
+  assert.deepEqual((await context.readPhotoHandoffs({ fetchRepository, ref: REF, report })).selected, []);
+  assert.equal((await context.readPhotoHandoffs({ fetchRepository, ref: GIT(9), report })).status, "unverified");
+  assert.equal((await context.readPhotoHandoffs({ fetchRepository: () => { throw Error("offline"); }, ref: REF })).status, "unverified");
 });

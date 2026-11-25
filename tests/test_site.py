@@ -203,7 +203,9 @@ class SiteTests(unittest.TestCase):
         from scripts.build import load, editorial_lead, category_meta
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         aside=home.split('<aside class="side-brief">',1)[1].split('</aside>',1)[0]
-        remaining=[a for a in load() if a["slug"] != editorial_lead(load())["slug"]]
+        articles = load()
+        lead_slug = editorial_lead(articles)["slug"]
+        remaining = [article for article in articles if article["slug"] != lead_slug]
         self.assertEqual(aside.count('<article class="brief-card">'),min(3,len(remaining)))
         self.assertNotIn('class="engagement-actions',aside)
         self.assertNotIn('class="fiction-dateline"',aside)
@@ -935,6 +937,7 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(thumbnail.get("height"),"675" if generated or reviewed_scene_version(a,root=ROOT) else "630")
             self.assertTrue((ROOT/"dist"/social_image(a).split("?",1)[0].lstrip("/")).is_file())
 
+    @publication_json_snapshot()
     def test_visual_review_gallery_is_complete_and_nonindexable(self):
         from scripts.build import social_image, editorial_image
         from scripts.build import image_review_page

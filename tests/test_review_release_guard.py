@@ -198,6 +198,15 @@ class PhotoTests(unittest.TestCase):
         self.assertIn("rice", payload["output"]["summary"])
         self.assertEqual(payload["head_sha"], A)
 
+    def test_photograph_check_exposes_only_revision_bound_recovery_inputs_for_chat(self):
+        value = report()
+        row = {"slug": "rice", "article_sha256": "3" * 64, "status": "missing", "next_action": "read source"}
+        value["photo_followup"] = [row]
+        value["photo_followup_counts"]["missing"] = 1
+        output = g.photo_payload(value, A, "https://github.com/RollNuts/mihassei-news/actions/runs/123")["output"]
+        self.assertEqual(json.loads(output["text"]), {"checkout_sha": A, "photo_followup": [
+            {"slug": "rice", "article_sha256": "3" * 64, "status": "missing"}]})
+
     def test_check_payload_rejects_foreign_details_url(self):
         with self.assertRaises(ValueError):
             g.photo_payload(report(), A, "https://example.org/123")
