@@ -348,26 +348,61 @@ var PublicationReviewContext = (function () {
         + "This snapshot is not a lock; existing guards still decide ownership and publication. "
         + "Main-only changes and market outlook/serial widgets need their existing review." };
   }
+  function docsOnlyFiles(files, pageLimit) {
+    // At the API's page/file ceiling there may be unseen paths.
+    const inside = path => typeof path === "string" && path.startsWith("docs/") && path.length > 5;
+    require(Array.isArray(files) && files.length < pageLimit && files.every(f => f && inside(f.filename)
+      && ["added", "modified", "removed", "renamed", "copied", "changed"].includes(f.status)
+      && (!["renamed", "copied"].includes(f.status) || inside(f.previous_filename))
+      && (f.previous_filename === undefined || inside(f.previous_filename))),
+      "Incomplete or non-docs photograph-check history");
+  }
+  async function priorDocsParent(get, ref) {
+    // The merge-base and the actual first parent must agree. A net diff can
+    // hide a content change later reverted inside a merged branch.
+    const diff = await get(API + "/compare/" + ref + "~1..." + ref + "?per_page=8");
+    const base = diff.base_commit?.sha, commits = diff.commits;
+    require(diff.status === "ahead" && matches(GIT, base) && base !== ref && diff.merge_base_commit?.sha === base
+      && diff.behind_by === 0 && Array.isArray(commits) && commits.length >= 1 && commits.length <= 8
+      && diff.total_commits === commits.length && diff.ahead_by === commits.length
+      && commits.every(c => matches(GIT, c?.sha) && c.sha !== base)
+      && new Set(commits.map(c => c.sha)).size === commits.length
+      && commits.at(-1).sha === ref && commits.at(-1).parents?.[0]?.sha === base,
+      "Incomplete photograph-check ancestor comparison");
+    docsOnlyFiles(diff.files, 300);
+    for (const { sha } of commits.slice(0, -1)) {
+      const commit = await get(API + "/commits/" + sha + "?per_page=100");
+      require(commit.sha === sha, "Wrong photograph-check intermediate commit");
+      docsOnlyFiles(commit.files, 100);
+    }
+    return base;
+  }
   // A merged news PR can still own its missing photograph. A source pointer
   // does not grant generation, adoption, or permission to write.
   async function readPhotoHandoffs({ fetchRepository, fetchFile, ref, report, offset = 0, batchSize = 4 } = {}, readBudget = 14) {
     try {
       require(typeof fetchRepository === "function" && matches(GIT, ref)
+        && Number.isInteger(readBudget) && readBudget >= 1 && readBudget <= 14
         && Number.isSafeInteger(offset) && offset >= 0 && Number.isInteger(batchSize) && batchSize >= 1 && batchSize <= 4,
           "Invalid photograph lookup");
       let operations = 0;
       function countRead() { require(++operations <= readBudget, "Photo read budget reached; narrow batchSize or check the open owner"); }
       async function get(url) { countRead(); return unwrap(await fetchRepository({ url }), url, false); }
-      if (report === undefined) {
-        const data = await get(API + "/commits/" + ref + "/check-runs?check_name=Photograph%20completion&per_page=1");
+      let checkRef = ref;
+      while (report === undefined) {
+        const data = await get(API + "/commits/" + checkRef + "/check-runs?check_name=Photograph%20completion&per_page=1");
+        if (data.total_count === 0 && Array.isArray(data.check_runs) && data.check_runs.length === 0) {
+          checkRef = await priorDocsParent(get, checkRef);
+          continue;
+        }
         const check = data.check_runs?.[0];
-        require(check?.name === "Photograph completion" && check.head_sha === ref
+        require(check?.name === "Photograph completion" && check.head_sha === checkRef
           && check.app?.slug === "github-actions" && check.status === "completed"
           && ["success", "failure"].includes(check.conclusion) && typeof check.output?.text === "string",
           "Revision-bound photograph check unavailable; use the same revision's live-photo-health artifact");
         report = JSON.parse(check.output.text);
       }
-      require(report?.checkout_sha === ref && Array.isArray(report.photo_followup), "Stale or missing photo inventory");
+      require(report?.checkout_sha === checkRef && Array.isArray(report.photo_followup), "Stale or missing photo inventory");
       const seen = new Set();
       for (const row of report.photo_followup) {
         require(matches(SLUG, row?.slug) && matches(HASH, row.article_sha256) && !seen.has(row.slug)
@@ -380,6 +415,11 @@ var PublicationReviewContext = (function () {
       let cursor = offset;
       // Keep each read within the connector callback budget, even with a large backlog.
       for (; cursor < rows.length && cursor < offset + batchSize && selected.length < 3; cursor++) {
+        // On a proven docs advance reserve both owner snapshots and the final main check.
+        if (checkRef !== ref && operations + 5 > readBudget) {
+          require(cursor > offset, "Photo read budget reached before checking a handoff");
+          break;
+        }
         const row = rows[cursor];
         const query = "repo:" + REPOSITORY + ' is:pr is:merged base:main in:body "photo-recovery" "' + row.article_sha256 + '"';
         const hits = await get("https://api.github.com/search/issues?q=" + encodeURIComponent(query) + "&per_page=2");
@@ -462,10 +502,13 @@ var PublicationReviewContext = (function () {
       }
       const main = await get(API + "/git/ref/heads/main");
       require(main.object?.sha === ref, "Main moved during photograph lookup");
-      return { status: "checked", selected: selected.sort((a, b) => a.pr - b.pr), attention,
+      return { status: "checked", check_sha: checkRef, selected: selected.sort((a, b) => a.pr - b.pr), attention,
         next_offset: cursor < rows.length ? cursor : null, may_generate: false };
     } catch (error) {
-      return { status: "unverified", reason: String(error.message || error), may_generate: false };
+      const reason = String(error.message || error);
+      if (readBudget < 14 && reason.startsWith("Photo read budget reached"))
+        return { status: "lookup_required", next_operation: "readPhotoHandoffs", may_generate: false };
+      return { status: "unverified", reason, may_generate: false };
     }
   }
   // One bounded observation of an existing handoff, not a watcher or a new

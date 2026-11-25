@@ -421,10 +421,10 @@ var NativeImageStage = (function () {
         return await stage(plan,{...retained,checkpoint:state});
       }catch(e){if(e.checkpoint)throw e;throw attachFailure(e,state);}
     }
-    async function branchHead(branch) {
+    async function branchHead(branch,fresh=false) {
       // Reusing a cached lookup of this shared ref after a fast-forward reports
       // the preceding probe even when the connector accepted our update.
-      const query=branch===PREFLIGHT_BRANCH?"?read_nonce="+freshNonce():"";
+      const query=fresh||branch===PREFLIGHT_BRANCH?"?read_nonce="+freshNonce():"";
       const ref=await fetchJSON("/git/ref/heads/"+branch+query);
       if(ref.ref!=="refs/heads/"+branch||!GIT.test(ref.object?.sha||""))throw Error("Invalid branch response: "+branch);
       return ref.object.sha;
@@ -545,14 +545,17 @@ var NativeImageStage = (function () {
         await verifyProtected(ref,plan.protectedHashes);
       }
       await verify(claim.commit_sha);
-      // Atomic create-only reference ownership spans workers and fresh runtimes.
-      // A lost/invalid response never proves ownership, even if our ref exists.
-      const created=await call("create_branch",{branch_name:claim.branch,sha:claim.commit_sha});
-      if(created.branch!==claim.branch)
-        throw Error("Generation claim creation did not confirm ownership; recover without generating");
-      if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation claim branch SHA mismatch");
-      await verify(claim.branch);
+      await createVerifiedClaim(claim);
       return true;
+    }
+    async function createVerifiedClaim(claim) {
+      const created=await call("create_branch",{branch_name:claim.branch,sha:claim.commit_sha});
+      if(created.branch!==claim.branch)throw Error("Claim create response did not confirm the branch; recover only");
+      // The pre-creation branch Contents lookup may still return its cached 404.
+      // Both callers already verified the protected files at this immutable commit.
+      const receipt=await read(claim.receipt_path,claim.commit_sha);
+      if(hashText(receipt.content)!==claim.receipt_sha256)throw Error("Claim receipt readback mismatch; recover only");
+      if(await branchHead(claim.branch,true)!==claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
     }
     async function reservePrepared(plan,options,requireGenerator) {
       let phase="candidate_lookup",proof,generationClaim;
@@ -977,12 +980,7 @@ var NativeImageStage = (function () {
         }else if(state.phase==="claim_final"){
           // This entire ownership grant is one cold <=15-call cell. Never resume
           // an uncertain create response into permission to generate.
-          const created=await call("create_branch",{branch_name:state.claim.branch,sha:state.claim.commit_sha});
-          if(created.branch!==state.claim.branch)throw Error("Claim create response did not confirm the branch; recover only");
-          if((await read(state.claim.receipt_path,state.claim.branch)).content!==state.claimText)throw Error("Claim branch readback mismatch");
-          // claim_commit verified every protected file at this immutable SHA.
-          // Leave room for a fresh tree scan if main moves before the final guard.
-          if(await branchHead(state.claim.branch)!==state.claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
+          await createVerifiedClaim(state.claim);
           if(await lookupSaved(plan,state))return;
           await cloudStatus();
           return {status:"reserved",plan,transportPreflight:state.proof,generationClaim:state.claim};

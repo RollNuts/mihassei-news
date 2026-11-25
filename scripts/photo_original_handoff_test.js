@@ -893,10 +893,11 @@ function readbackFile(record, path, expectedBlob) {
   return {path, blob, data, sha256:hash(data), bytes:data.length, width:record.width, height:record.height};
 }
 
-function originalTransportFixture({active = true, changedReadback = false, fileError = false} = {}) {
-  const path = "assets/favicon-192.png", ref = "1d9b571b914d6c323a3821e46d23ae0d8e354f95";
-  const file = readbackFile({path}, path, "6608aa987c11d56ea9d7910eb4c0770bb529da9d");
-  assert.equal(file.sha256, "3713afa375160c13556a90f2347b151725ac5922498211d2d980c7c58176c40e");
+function originalTransportFixture({active = true, changedReadback = false, fileError = false, offline = false} = {}) {
+  const path = offline ? "tests/fixtures/photo-transport.png" : "assets/favicon-192.png";
+  const ref = offline ? main : "1d9b571b914d6c323a3821e46d23ae0d8e354f95";
+  const file = readbackFile({path}, path, offline ? "c3063fe8e5305c6f2d554e4870610fdc51ef5fa3" : "6608aa987c11d56ea9d7910eb4c0770bb529da9d");
+  assert.equal(file.sha256, offline ? "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744" : "3713afa375160c13556a90f2347b151725ac5922498211d2d980c7c58176c40e");
   const calls = [];
   const github = {
     async fetch_file(args) {
@@ -932,6 +933,54 @@ test("original transport checks inline and file bytes by writing only the existi
     const fileReads = route === "file" ? ["readCandidatePng"] : [];
     assert.deepEqual(calls, ["fetch_file", ...fileReads, "create_blob", "fetch_file"]);
   }
+});
+
+test("a file producer can materialize the fixed GitHub bytes without a URL and must still read the file", async () => {
+  for (const fileError of [false, true]) {
+    const {api, calls, file, handle} = originalTransportFixture({fileError});
+    const writeProbeFile = async base64 => {
+      calls.push("writeProbeFile");
+      assert.deepEqual(Buffer.from(base64, "base64"), file.data);
+      return handle;
+    };
+    const result = await api.checkOriginalTransport({route:"file", writeProbeFile});
+    if (fileError) {
+      assert.equal(result.status, "blocked");
+      assert.equal(result.operation, "readCandidatePng/upload");
+      assert.deepEqual(calls, ["fetch_file", "writeProbeFile", "readCandidatePng"]);
+    } else {
+      assert.deepEqual(result, {status:"verified", route:"file", sha256:file.sha256, blob:file.blob, bytes:file.bytes});
+      assert.deepEqual(calls, ["fetch_file", "writeProbeFile", "readCandidatePng", "create_blob", "fetch_file"]);
+    }
+  }
+  const {api, calls} = originalTransportFixture();
+  const unavailable = await api.checkOriginalTransport({route:"file", writeProbeFile:async () => undefined});
+  assert.deepEqual(unavailable, {status:"blocked", route:"file", operation:"write_probe_file", reason:"No materialized probe file"});
+  assert.deepEqual(calls, ["fetch_file"]);
+});
+
+test("top-level Python fixture requires a real file reader and readback from the same immutable commit", async () => {
+  for (const changes of [{}, {fileError:true}, {changedReadback:true}]) {
+    const {api, calls, file, handle} = originalTransportFixture({offline:true, ...changes});
+    const result = await api.checkOriginalTransport({route:"file", file:handle, offlineProbeCommit:main});
+    if (changes.fileError) {
+      assert.equal(result.status, "blocked");
+      assert.deepEqual(calls, ["fetch_file", "readCandidatePng"]);
+    } else if (changes.changedReadback) {
+      assert.equal(result.status, "blocked");
+      assert.equal(result.operation, "fetch_file_readback");
+    } else {
+      assert.deepEqual(result, {status:"verified", route:"file", bytes:138, blob:file.blob, sha256:file.sha256});
+      assert.deepEqual(calls, ["fetch_file", "readCandidatePng", "create_blob", "fetch_file"]);
+    }
+  }
+  const {api, calls, handle} = originalTransportFixture({offline:true});
+  for (const args of [{route:"file", file:handle, offlineProbeCommit:"main"}, {route:"inline_png", offlineProbeCommit:main}]) {
+    const result = await api.checkOriginalTransport(args);
+    assert.equal(result.status, "blocked");
+    assert.equal(result.operation, "select_route");
+  }
+  assert.deepEqual(calls, []);
 });
 
 test("original transport blocks a disabled workflow and rejects substituted readback bytes", async () => {
