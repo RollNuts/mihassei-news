@@ -11,6 +11,7 @@ from xml.etree import ElementTree as ET
 
 from scripts import build
 from scripts.generated_photos import article_fingerprint, generated_url
+from scripts.publication_inputs import publication_json_snapshot
 from tests.site_build_fixture import ensure_site_build
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,6 +22,7 @@ class ImageContextTests(unittest.TestCase):
     def setUpClass(cls):
         cls.articles = build.load()
 
+    @publication_json_snapshot()
     def test_image_alt_is_specific_without_pretending_to_know_rendered_pixels(self):
         descriptions = set()
         for article in self.articles:
