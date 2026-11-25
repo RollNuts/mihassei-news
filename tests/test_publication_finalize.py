@@ -86,8 +86,8 @@ class API:
             return {"total_count": len(self.jobs), "jobs": copy.deepcopy(self.jobs)}
         if path == "/git/ref/heads/main":
             return {"object": {"sha": self.main}}
-        if path == "/compare/" + M + "...main":
-            return {"status": "identical"}
+        if path == f"/compare/{M}...{self.main}?per_page=1":
+            return {"status": "ahead"}
         raise AssertionError(path)
 
     def pages(self, path):
@@ -102,6 +102,7 @@ class API:
             raise OSError("API unavailable")
         self.writes.append((method, path, data))
         if method == "PUT":
+            self.main = M
             self.pr.update(state="closed", merged=True, merge_commit_sha=M)
             return {"merged": True, "sha": M}
         return None
@@ -133,6 +134,41 @@ class FinalizationTests(unittest.TestCase):
         self.assertLess(api.calls.index(("LOCAL", "fresh merged source/history checks")),
                         api.calls.index(("GET", "fresh owner check")))
         self.assertLess(api.calls.index(("GET", "fresh owner check")), api.calls.index(("PUT", "/pulls/819/merge")))
+
+    def test_success_waits_for_stale_ref_without_repeating_merge_or_dispatch(self):
+        api = API()
+        get = api.get
+        reads = iter([B, B, M])
+
+        def stale_read(path):
+            if api.pr["merged"] and path == "/git/ref/heads/main":
+                return {"object": {"sha": next(reads)}}
+            return get(path)
+
+        api.get = stale_read
+        self.assertEqual(self.go(api)["merge_sha"], M)
+        self.assertEqual([method for method, _, _ in api.writes], ["PUT", "POST"])
+        self.assertEqual([c.args[0] for c in self.sleep.call_args_list], [1, 2])
+
+    def test_unpropagated_or_unrelated_ref_stops_without_dispatch(self):
+        for tip, relation, expected_delays in ((B, "behind", [1, 2, 4]), (H, "diverged", [])):
+            with self.subTest(tip=tip):
+                self.sleep.reset_mock()
+                api = API()
+                get = api.get
+
+                def unrelated_read(path):
+                    if api.pr["merged"] and path == "/git/ref/heads/main":
+                        return {"object": {"sha": tip}}
+                    if path == f"/compare/{M}...{tip}?per_page=1":
+                        return {"status": relation}
+                    return get(path)
+
+                api.get = unrelated_read
+                with self.assertRaisesRegex(ValueError, "not on main"):
+                    self.go(api)
+                self.assertEqual([method for method, _, _ in api.writes], ["PUT"])
+                self.assertEqual([c.args[0] for c in self.sleep.call_args_list], expected_delays)
 
     def test_success_result_binds_the_ci_attempt_that_was_actually_checked(self):
         api = API(); api.run["run_attempt"] = 3
