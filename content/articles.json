@@ -202,6 +202,7 @@
   {
     "slug": "island-club-sound-ball-remote-league",
     "category": "スポーツ",
+    "broadcast_feature": true,
     "flash": "海を越えて、初めての対戦",
     "art": "cards",
     "fiction_company": "響球リーグ運営会（架空）",
