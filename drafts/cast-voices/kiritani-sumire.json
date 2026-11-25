@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-24",
+  "created_date": "2026-11-25",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
     "issue_slug": "november-rooftop-pool-sumire-011",
-    "cut_id": "08",
-    "image_sha256": "ad2228fcc83b06bacefb4ed9f34307ccc26472fd97a9538f540cc9270a9e08f2"
+    "cut_id": "07",
+    "image_sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2"
   },
-  "post_text": "海沿いの売店で温かい紅茶を買った。紙袋の紺と白の組み合わせが妙にきれいで、捨てる前に配色だけ手帳に写した。",
-  "spoken_line": "この紺、覚えておこう。",
-  "future_idea": "2031年、衣服の修理費を購入時に積み立てる制度が普及し、新品の価格と修理職人への分配が議論になる。"
+  "post_text": "午後、温水プールの帰りに古い黒のショールを羽織った。茶色の水着に合わせたら意外としっくりきて、冬にも出番が増えそう。",
+  "spoken_line": "冬も出番がありそう。",
+  "future_idea": "2031年、舞台衣装の二次利用契約が広がり、出演者と縫製職人への収益配分が争点になる。"
 }
