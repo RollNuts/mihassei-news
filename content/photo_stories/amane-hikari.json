@@ -90,6 +90,21 @@
         "cut_id": "03",
         "image_sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261125154607989",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-25T15:46:07.989+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "移動の合間に焼き芋を買ったら、半分に割るのが下手すぎて私の方が大きくなっちゃった。ちゃんと分け直したよ！",
+      "source": {
+        "issue_slug": "november-hikari-city-and-pool-013",
+        "cut_id": "04",
+        "image_sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108"
+      }
     }
   ]
 }
