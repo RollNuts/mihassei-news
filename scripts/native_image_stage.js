@@ -14,10 +14,11 @@ var NativeImageStage = (function () {
   const CLAIM_DIR="maintenance/native-image-generation-claims";
   const CLOUD_WORKFLOW="free-cpu-scenes.yml", JPEG_CAP=1536*1024*1024;
   const FUTURE_CLOCK_TOLERANCE_MS=1000;
-  function create({runtime,github,repository,readCloudWorkflow,manifestPatch,controlOnly=false}) {
+  function create({runtime,github,repository,readCloudWorkflow,manifestPatch,controlOnly=false}, compactMetadata=false) {
     if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error("Invalid repository");
     const gitMethods = controlOnly ? ["fetch"] : ["fetch_file","create_blob","create_tree","create_commit","create_branch"];
-    const byteMethods = controlOnly ? [] : ["convert","sha256","fromBase64","toBase64","utf8"];
+    const byteMethods = controlOnly ? [] : ["sha256","fromBase64","toBase64","utf8"];
+    if(!controlOnly&&!compactMetadata)byteMethods.push("convert");
     for (const name of gitMethods) if (typeof github[name] !== "function") throw Error("Missing GitHub callback: "+name);
     for (const name of byteMethods) if (typeof runtime[name] !== "function") throw Error("Missing byte runtime: "+name);
     if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
@@ -182,7 +183,13 @@ var NativeImageStage = (function () {
       for(let i=0;i<loaded.length;i++){const r=loaded[i];if(r.status!=="fulfilled")throw r.reason;if(hashText(r.value.content)!==hashes[PROTECTED[i]])throw Error("Protected file changed: "+PROTECTED[i]);}
     }
     function equalMetadata(a,b){return JSON.stringify(a)===JSON.stringify(b);}
-    async function verifyCandidate(plan,ref,expectedSourceHash,includeBytes=false,publication=false,readFile=read){
+    async function readCandidateBinary(record,ref,readFile,publication=false){
+      const file=await readFile(record.path,ref,"base64"), data=runtime.fromBase64(file.content);
+      if(data.length!==record.bytes||runtime.sha256(data)!==record.sha256)throw Error("Candidate byte readback mismatch: "+record.path);
+      if(publication&&(!GIT.test(record.blob_sha||"")||file.sha!==record.blob_sha))throw Error("Candidate Git blob readback mismatch: "+record.path);
+      return data;
+    }
+    async function verifyCandidate(plan,ref,expectedSourceHash,includeBytes=false,publication=false,readFile=read,checkedFiles){
       const raw=await readFile(plan.directory+"/receipt.json",ref),r=JSON.parse(raw.content);
       if(r.version!==1||r.kind!=="native_image_candidate"||r.status!=="awaiting_visual_review"||r.identity!==plan.identity||r.repository!==repository||r.slug!==plan.slug||r.article_sha256!==plan.articleSha256||r.logical_run_id!==plan.logicalRunId||r.generation?.prompt!==plan.prompt||r.generation.prompt_sha256!==hashText(plan.prompt))throw Error("Candidate identity conflict; refusing branch mutation");
       if(!SHA.test(r.source?.sha256||"")||!SHA.test(r.jpeg?.sha256||"")||r.jpeg.path!==plan.directory+"/candidate.jpg"||r.jpeg.width!==1200||r.jpeg.height!==675||r.jpeg.quality!==84||!Number.isSafeInteger(r.source.bytes)||r.source.bytes<33||r.source.bytes>32*1024*1024||!Number.isSafeInteger(r.jpeg.bytes)||r.jpeg.bytes<16000||r.jpeg.bytes>700*1024)throw Error("Invalid candidate receipt");
@@ -190,20 +197,27 @@ var NativeImageStage = (function () {
       if(!Array.isArray(r.source.parts)||!r.source.parts.length||r.source.parts.length>64)throw Error("Invalid source parts");
       for(let i=0;i<r.source.parts.length;i++){const part=r.source.parts[i];if(part.path!==plan.directory+"/source.png.part"+String(i).padStart(3,"0")||!SHA.test(part.sha256||"")||!Number.isSafeInteger(part.bytes)||part.bytes<1||part.bytes>PART_SIZE)throw Error("Invalid source part record");}
       for(const path of PROTECTED)if(!SHA.test(r.baseline?.protected_hashes?.[path]||""))throw Error("Invalid candidate baseline");
-      const requests=[readFile(r.jpeg.path,ref,"base64"),...r.source.parts.map(p=>readFile(p.path,ref,"base64"))];
-      const loaded=await Promise.allSettled(requests),parts=[];let jpeg;
-      for(let i=0;i<loaded.length;i++){const item=loaded[i];if(item.status!=="fulfilled")throw item.reason;const b=runtime.fromBase64(item.value.content),record=i===0?r.jpeg:r.source.parts[i-1];if(b.length!==record.bytes||runtime.sha256(b)!==record.sha256)throw Error("Candidate byte readback mismatch: "+record.path);if(publication&&(!GIT.test(record.blob_sha||"")||item.value.sha!==record.blob_sha))throw Error("Candidate Git blob readback mismatch: "+record.path);if(i===0)jpeg=b;else parts.push(b);}
+      // A compact readback may already have checked the actual JPEG and protected files at this immutable commit.
+      if(checkedFiles&&(includeBytes||publication||checkedFiles.commit!==ref||checkedFiles.receiptSha!==hashText(raw.content)
+        ||checkedFiles.jpegSha!==r.jpeg.sha256||PROTECTED.some(path=>r.baseline.protected_hashes[path]!==plan.protectedHashes[path])))
+        throw Error("Compact immutable file checks changed");
+      const loaded=await Promise.allSettled([checkedFiles?null:readCandidateBinary(r.jpeg,ref,readFile,publication),
+        ...r.source.parts.map(part=>readCandidateBinary(part,ref,readFile,publication))]);
+      const [jpeg,...parts]=loaded.map(result=>{
+        if(result.status==="rejected")throw result.reason;
+        return result.value;
+      });
       const source=new Uint8Array(r.source.bytes);let at=0;for(const b of parts){if(at+b.length>source.length)throw Error("Source part length overflow");source.set(b,at);at+=b.length;}
       if(at!==source.length||runtime.sha256(source)!==r.source.sha256)throw Error("Reconstructed source PNG SHA mismatch");
       // Re-run the pinned conversion and metadata parser; a stored declaration alone
       // cannot establish either the JPEG correspondence or the C2PA instance ID.
       const converted=runtime.convert(source);
-      if(converted.sha256!==r.jpeg.sha256||runtime.sha256(jpeg)!==converted.sha256||converted.source_png_sha256!==r.source.sha256||!equalMetadata(serialReceipt(converted.receipt),r.source.c2pa))throw Error("Saved PNG/JPEG/provenance do not correspond");
+      if(converted.sha256!==r.jpeg.sha256||(checkedFiles?checkedFiles.jpegSha:runtime.sha256(jpeg))!==converted.sha256||converted.source_png_sha256!==r.source.sha256||!equalMetadata(serialReceipt(converted.receipt),r.source.c2pa))throw Error("Saved PNG/JPEG/provenance do not correspond");
       if(publication&&(r.source.width!==converted.sourceWidth||r.source.height!==converted.sourceHeight
         ||r.baseline.commit_sha!==plan.baseCommitSha||r.baseline.tree_sha!==plan.baseTreeSha
         ||PROTECTED.some(path=>r.baseline.protected_hashes[path]!==plan.protectedHashes[path])))
         throw Error("Candidate source dimensions or baseline differ from the original plan");
-      await verifyProtected(ref,r.baseline.protected_hashes,readFile);
+      if(!checkedFiles)await verifyProtected(ref,r.baseline.protected_hashes,readFile);
       const saved={status:"saved",branch:plan.branch,ref,receipt:r,receipt_sha256:hashText(raw.content),jpegPath:r.jpeg.path,sourceParts:r.source.parts.map(p=>p.path),reused:true};
       if(includeBytes){saved.sourcePngDataUrl="data:image/png;base64,"+runtime.toBase64(source);saved.jpegDataUrl="data:image/jpeg;base64,"+runtime.toBase64(jpeg);}
       return saved;
@@ -702,6 +716,8 @@ var NativeImageStage = (function () {
       }catch(error){
         const e=error instanceof Error?error:Error(String(error));
         e.checkpoint=sealStep(state);e.stage="bounded_"+state.phase;
+        e.toJSON=()=>({status:"stopped",message:e.message,phase:e.stage,
+          ...(state.version===2?{checkpoint:e.checkpoint}:{})});
         if(state.input){e.observedAt=state.input.observedAt;e.imageGenResult=state.input.imageGenResult;}
         if(state.claim)e.generationClaim=state.claim;
         if(state.proof)e.transportPreflight=state.proof;
@@ -733,9 +749,20 @@ var NativeImageStage = (function () {
     async function savedSlice(plan,state){
       const saved=state.saved;
       if(state.version===2){
-        // Full bytes live only in this cell. At most 8 parts + JPEG + receipt +
-        // 3 protected files + final ref (+ resumed claim) fit 15 callbacks.
-        const verified=await verifyCandidate(plan,saved.commitSha,saved.expectedSourceSha||undefined);
+        if(saved.ref!==plan.branch||!GIT.test(saved.commitSha||"")||!SHA.test(saved.receiptSha||""))throw Error("Invalid compact readback reference");
+        if(!saved.checkedFiles){
+          const raw=await read(plan.directory+"/receipt.json",saved.commitSha);
+          const receipt=JSON.parse(raw.content), receiptSha=hashText(raw.content);
+          if(receiptSha!==saved.receiptSha||receipt.jpeg?.path!==plan.directory+"/candidate.jpg"
+            ||!SHA.test(receipt.jpeg.sha256||"")||!Number.isSafeInteger(receipt.jpeg.bytes)||receipt.jpeg.bytes>700*1024
+            ||receipt.source?.bytes>COMPACT_SOURCE_LIMIT||!Array.isArray(receipt.source?.parts)||receipt.source.parts.length>8)
+            throw Error("Compact candidate readback changed");
+          await readCandidateBinary(receipt.jpeg,saved.commitSha,read);
+          await verifyProtected(saved.commitSha,plan.protectedHashes);
+          saved.checkedFiles={commit:saved.commitSha,receiptSha,jpegSha:receipt.jpeg.sha256};
+          return;
+        }
+        const verified=await verifyCandidate(plan,saved.commitSha,saved.expectedSourceSha||undefined,false,false,read,saved.checkedFiles);
         if(verified.receipt.source.bytes>COMPACT_SOURCE_LIMIT||verified.receipt.source.parts.length>8
           ||verified.receipt_sha256!==saved.receiptSha
           ||verified.receipt.baseline.commit_sha!==plan.baseCommitSha
@@ -941,7 +968,13 @@ var NativeImageStage = (function () {
           }
           const files=[...state.parts,state.jpeg];
           for(let n=0;n<2&&state.index<files.length;n++,state.index++){
-            const file=files[state.index];state.blobs[file.path]=gitSha(await call("create_blob",{content:file.content,encoding:"base64"}),"blob");
+            const file=files[state.index];
+            await cloudStatus();
+            // Five codec/helper loads leave eleven core calls. If a new main tree
+            // consumed the second write's last slot, resume at this exact part.
+            if(state.version===2&&n>0&&stepUsage.calls>=11)break;
+            const blob=await invoke("create_blob",{repository_full_name:repository,content:file.content,encoding:"base64"});
+            state.blobs[file.path]=gitSha(payload(blob),"blob");
           }
           if(state.index===files.length)state.phase="receipt";
         }else if(state.phase==="receipt"){
@@ -981,6 +1014,17 @@ var NativeImageStage = (function () {
     return {prepare,prepareArticle,probe,stage,resume,load,preparePublication,checkTransport,reserveExternalGeneration,stageReserved,generateAndStage,
       reserveExternalGenerationStep,stageReservedStep,cloudStatus};
   }
-  return {create,PART_SIZE};
+  // Select dependencies for the exact compact step inside each new GPT cell.
+  async function compactStep({bytes,fetchFile,...services},method,checkpoint){
+    if(!["reserveExternalGenerationStep","stageReservedStep"].includes(method)||checkpoint&&checkpoint.version!==2)
+      throw Error("Expected a compact image operation and its version 2 checkpoint");
+    const phase=checkpoint?.phase;
+    const needsCodec=["capture","preflight_blobs","reservation_verify","upload","receipt"].includes(phase)
+      ||phase==="saved_readback"&&Boolean(checkpoint.saved?.checkedFiles);
+    const runtime=needsCodec?bytes.initialize(await bytes.fetchSources(fetchFile)):await bytes.verificationRuntime(fetchFile);
+    const stager=create({...services,runtime},!needsCodec);
+    return (plan,input)=>stager[method](plan,{...input,compact:true},checkpoint);
+  }
+  return {create:options=>create(options),compactStep,PART_SIZE};
 })();
 if(typeof module!=="undefined"&&module.exports)module.exports=NativeImageStage;

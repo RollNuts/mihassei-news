@@ -101,6 +101,35 @@ class CISelectionTests(unittest.TestCase):
                     self.assertIn("discover", fixture.python_test_command(changes, event))
                     self.assertTrue(fixture.native_image_engine_tests_required(changes, event))
 
+    def test_weekly_handoff_scope_keeps_build_photo_contracts_and_native_engine(self):
+        helper = "scripts/photo_original_handoff.js"
+        helper_test = "scripts/photo_original_handoff_test.js"
+        docs = "docs/NATIVE_IMAGE_BYTES.md"
+        expected_modules = {"tests.test_site", "tests.test_site_build_fixture", "tests.test_photo_issues",
+                            "tests.test_photo_supplied", "tests.test_photo_original_reuse", "tests.test_photo_issue_plan"}
+        for paths in ((helper,), (helper_test,), (docs,), (helper, helper_test, docs)):
+            changes = [("M", path) for path in paths]
+            for event in ("pull_request", "push"):
+                with self.subTest(paths=paths, event=event):
+                    command = fixture.python_test_command(changes, event)
+                    self.assertEqual(command[:5], [sys.executable, "-m", "unittest", "-v", "tests.test_site"])
+                    self.assertEqual(set(command[4:]), expected_modules)
+                    self.assertTrue(fixture.native_image_engine_tests_required(changes, event))
+            for event in ("workflow_dispatch", None):
+                self.assertIn("discover", fixture.python_test_command(changes, event))
+
+        unsafe = [None, [], [("M", helper + ".bak")]]
+        unsafe.extend([("M", docs), (status, helper)] for status in ("A", "D", "R100", "T", "?"))
+        for path in ("scripts/native_image_stage.js", "scripts/photo_issues.py", "content/photo_issues.json",
+                     "docs/EDITORIAL_LOOP.md", "docs/OPERATIONS.md", "tests/site_build_fixture.py",
+                     "tests/test_site_build_fixture.py", ".github/workflows/check.yml"):
+            unsafe.append([("M", helper), ("M", path)])
+        for changes in unsafe:
+            for event in ("pull_request", "push"):
+                with self.subTest(changes=changes, event=event):
+                    self.assertIn("discover", fixture.python_test_command(changes, event))
+                    self.assertTrue(fixture.native_image_engine_tests_required(changes, event))
+
     def test_workflow_output_is_explicit_and_missing_output_keeps_native_tests(self):
         cases = [("pull_request", [("M", fixture.PHOTO_STORY_PATH)], "false"),
                  ("pull_request", [("M", "content/market_bulletins.json")], "false"),
@@ -108,6 +137,8 @@ class CISelectionTests(unittest.TestCase):
                  ("pull_request", [("M", "docs/DAILY_EDITORIAL_BRIEF.md")], "false"),
                  ("push", [("M", "docs/DAILY_EDITORIAL_BRIEF.md")], "false"),
                  ("push", [("M", "docs/SERIAL_EDITING_GUIDE.md")], "false"),
+                 ("pull_request", [("M", "scripts/photo_original_handoff.js")], "true"),
+                 ("push", [("M", "docs/NATIVE_IMAGE_BYTES.md")], "true"),
                  ("pull_request", None, "true"), ("pull_request", [], "true")]
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder) / "github-output"

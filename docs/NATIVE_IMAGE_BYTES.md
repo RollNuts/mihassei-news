@@ -32,9 +32,14 @@ Bind `readImageControl` below to the actually exposed `read_image_control` MCP t
 
 ### Native tool outside code mode: one bounded step per cell
 
-Initialize the reviewed two helper sources and three pinned dependencies in **each** code-mode cell (five connector reads). The actual GPT runtime does not retain `store`/`load` values between cells. Prepare the original plan once in a separate cell, print its small JSON, then retain that exact plan and each returned checkpoint in the existing task result/handoff. Paste those metadata objects into the next cell; never print PNG/JPEG data URLs or base64. Use `compact: true` for the steps below. Version 2 checkpoints contain references, hashes and Git object SHAs, not image bytes; old version 1 checkpoints and raw archives remain readable.
+Pin the reviewed main SHA once and retain it with the original plan, probe references and version 2 checkpoint. In each fresh cell fetch `scripts/native_image_bytes.js` and `scripts/native_image_stage.js` from that SHA and evaluate them as `bytesAPI` and `stageAPI`. Bind the existing GitHub callbacks and the live read-only image control. The cell needs these shared inputs:
 
-The old whole-macro reservation needs at least 75 connector callbacks plus the PNG read. Each step allows at most 15 callbacks and two mutations, including cold guard reads and any original-PNG read; the five initialization reads are additional. The platform's total limit and whether it applies per cell or per turn are not assumed. Every write still checks public visibility, current-main JPEG capacity and the live stop authority. Compact staging supports original PNGs **up to 4 MiB** (eight 512 KiB parts); the reader's 8 MiB download bound does not establish save capacity.
+```js
+const services = {bytes:bytesAPI, fetchFile:github.fetch_file, github,
+  repository:"RollNuts/mihassei-news", readCloudWorkflow:({nonce})=>readImageControl({nonce})};
+```
+
+`compactStep` loads the one pinned hash dependency for metadata work and the three pinned dependencies for conversion. Each operation fits 16 calls including both helper imports, original-file reads, live guards and up to two writes. Paste only the compact metadata into the next cell. Version 2 supports PNGs up to 4 MiB in eight 512 KiB parts. Old version 1 checkpoints and raw archives retain their existing recovery path.
 
 #### Resume a reservation
 
@@ -44,9 +49,8 @@ Call **one** step per code-mode cell. Use the original `plan` and the preceding 
 try {
   if (checkpoint && checkpoint.version !== 2) throw Error("Expected a compact reservation checkpoint");
   const {probeSource, expectedProbeSha256, probeSourceRef, route} = probe;
-  const result = await stager.reserveExternalGenerationStep(plan, {
-    compact: true, probeSource, expectedProbeSha256, probeSourceRef, route, readBytes
-  }, checkpoint);
+  const step = await stageAPI.compactStep(services, "reserveExternalGenerationStep", checkpoint);
+  const result = await step(plan, {probeSource, expectedProbeSha256, probeSourceRef, route, readBytes});
   if (result.status === "pending") text({status: result.status, phase: result.phase, checkpoint: result.checkpoint});
   else if (result.status === "reserved") text({status: result.status, plan: result.plan,
     transportPreflight: result.transportPreflight, generationClaim: result.generationClaim});
@@ -73,7 +77,8 @@ const input = checkpoint ? {readBytes} : {
 };
 try {
   if (checkpoint && checkpoint.version !== 2) throw Error("Expected a compact save checkpoint");
-  const result = await stager.stageReservedStep(plan, input, checkpoint);
+  const step = await stageAPI.compactStep(services, "stageReservedStep", checkpoint);
+  const result = await step(plan, input);
   text(result.status === "pending" ? result : {
     status: result.status, commitSha: result.commitSha, branch: result.branch,
     receipt_sha256: result.receipt_sha256, jpegPath: result.jpegPath,
@@ -85,7 +90,7 @@ try {
 }
 ```
 
-The helper reacquires only that exact original file for conversion/upload/receipt phases and checks its original PNG and pinned JPEG hashes. A missing original file or changed bytes stops saving; never retimestamp or regenerate. Original PNG chunks/C2PA are preserved in the existing raw archive, not copied into the checkpoint. Immutable source/JPEG/protected-file checks remain sliced; the final readback reconstructs and verifies the complete source, conversion/C2PA correspondence, baseline and branch before `saved`. Its maximum eight-part readback fits 15 core callbacks including the resumed claim check. A completed candidate remains readable while stopped. Print and retain only the compact checkpoint or the small final refs/hashes above, not the whole receipt (which can carry C2PA bytes). For visual review, use a separate cell with `const images = await stager.load(plan, savedCommitSha)` against that exact verified immutable commit, then emit `images.sourcePngDataUrl` and `images.jpegDataUrl` as images; never pass that byte-bearing object to `text`/`notify`. Candidate saving, visual acceptance and public delivery remain separate.
+The helper reacquires only that exact original file for conversion/upload/receipt phases and checks its original PNG and pinned JPEG hashes. A missing original file or changed bytes stops saving; never retimestamp or regenerate. Original PNG chunks/C2PA are preserved in the existing raw archive, not copied into the checkpoint. The readback checks the actual JPEG and protected files at one immutable candidate commit. Its next cell reconstructs every source part, reproduces the JPEG and C2PA metadata, and confirms the candidate branch before returning `saved`. A completed candidate remains readable while stopped. Print and retain only the compact checkpoint or the small final refs/hashes above, not the whole receipt (which can carry C2PA bytes). For visual review, use a separate cell with `const images = await stager.load(plan, savedCommitSha)` against that exact verified immutable commit, then emit `images.sourcePngDataUrl` and `images.jpegDataUrl` as images; never pass that byte-bearing object to `text`/`notify`. Candidate saving, visual acceptance and public delivery remain separate.
 
 The older `reserveExternalGeneration`/`stageReserved` macros remain compatible for an executor with enough callback capacity; do not fall back to them after this runtime reports a call limit.
 
@@ -397,7 +402,7 @@ The separate staging fixtures run in the same plain JavaScript runtime:
 
 ```js
 const runStageTests = new Function(stageTestSource + "\nreturn NativeImageStageTests;")();
-const report = await runStageTests(stageAPI, runtime);
+const report = await runStageTests(stageAPI, runtime, {sources, byteHelperSource, stageHelperSource});
 ```
 
 They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real image generation or publication. They cover exact byte readback, a source larger than 1 MiB, reuse without writes, branch/readback interruption, checkpoint recovery, ambiguous lookup failures, article binding and exact integer seeds. The generating entry point also checks zero generator calls after acquisition/save/readback failures, a standalone transport diagnostic without claims, distinct probe/reservation/candidate receipts, repeated real checks on the fixed branch, recovery of candidates saved during the preflight, and at most one generator call across independent workers and fresh-runtime retries. Lost or malformed claim responses cannot authorize generation, and lookup failures retain the reservation reference. A live transport check must use the actual worker's callbacks; successful current-chat transfer alone does not prove a scheduled worker received the same tools.
@@ -405,6 +410,23 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 
 
+
+<a id="weekly-original-transport"></a>
+### Test the current producer’s original PNG route
+
+When a producer has a real stock shortage, check the image tool actually exposed **in this scheduled execution**. If its callable result supplies the unmodified PNG data URL to code mode, use `inline_png`. If the tool supplies a file, open [the public probe PNG](https://raw.githubusercontent.com/RollNuts/mihassei-news/1d9b571b914d6c323a3821e46d23ae0d8e354f95/assets/favicon-192.png) through that same executor's file bridge and supply the resulting handle and its real `readCandidatePng` callback. A website preview, an ID without a reader, or a file on a different machine cannot establish this route. Existing Library originals with a real file reference can use [the original recovery path](#blocked-photo-file-reference).
+
+Load the original handoff, native byte and staging helpers at the reviewed main commit. The verification runtime loads only SHA-256. Keep the byte-bearing tool results inside code mode.
+
+```js
+const runtime = await bytesAPI.verificationRuntime(github.fetch_file);
+const {cloudStatus} = stageAPI.create({controlOnly:true, github, repository:"RollNuts/mihassei-news", readCloudWorkflow});
+const handoff = H.create({runtime, github, cloudStatus, readCandidatePng}); // undefined for inline
+const proof = await handoff.checkOriginalTransport({route, file}); // file is undefined for inline
+text(proof);
+```
+
+This writes the same 3,395 public bytes through the chosen route and re-reads their existing immutable GitHub path, checking the acknowledged blob ID and SHA-256. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
 
 <a id="weekly-photo-quota"></a>
 ### Reserve one original in the producer’s weekly allowance
@@ -488,23 +510,22 @@ An inventory is `sources_observed_not_received`, not an original-byte receipt, v
 
 #### Durable progress before the next original
 
-An upload reply contains acknowledged Git blob references, not a branch-backed original. Save transfer progress on the same `photo-issue-plan/<issue>` branch before moving on to another generated original. `prepareCheckpoint` / `publishCheckpoint` keep the actual part blobs reachable through `maintenance/photo-issue-plans/<issue>/originals-pending/`, together with `checkpoint.json`. The completed `originals/receipt.json` remains protected. Existing `generation-attempts.json` and other sibling files are preserved; these methods do not reserve generation or determine the remaining generation budget.
+An upload reply contains acknowledged Git blob references, not a branch-backed original. Save transfer progress on the same `photo-issue-plan/<issue>` branch before moving on to another generated original. `saveTransferStep` with `kind:"checkpoint"` keeps the actual part blobs reachable through `maintenance/photo-issue-plans/<issue>/originals-pending/`, together with `checkpoint.json`. The completed `originals/receipt.json` remains protected. Existing `generation-attempts.json` and other sibling files are preserved; these methods do not reserve generation or determine the remaining generation budget.
 
 Keep one packet's issue, producer, source chat and delivery turn fixed. Include the earlier assets in their original order, append acknowledged parts as a contiguous prefix, and append new assets without changing prior metadata or parts. For an upload interrupted after one of two requested parts, `error.partial` contains only the acknowledged parts from that call, the original SHA/dimensions/byte count and the next offset. Merge it with the earlier parts of that same original; it contains no image bytes. A lost blob acknowledgement is not an acknowledged part. Retain the real source file or private data URL while any original part remains missing, and recover that same original instead of generating a replacement.
 
-```js
-// packet includes all retained earlier assets and the current complete or partial asset.
-// Use the actual current candidate head, or null only when creating a new branch.
-const checkpointPlan = await original.prepareCheckpoint(packet, candidateHeadOrNull);
-text(checkpointPlan); // retain compact metadata; publish in the next cell
-```
+Use the `weekly-original-transport` verification runtime. In a fresh scheduled cell, load its three helpers and one pinned SHA dependency; restore any missing packet in a separate read-only cell. Keep the same packet, operation and **starting** candidate head on every continuation. Use `null` only for a genuinely new branch.
 
 ```js
-const checkpoint = await original.publishCheckpoint(packet, checkpointPlan);
-text(checkpoint); // checkpoint_saved_pending_readback is not usable stock
+// Store the packet, kind and starting lease before the first step, or pass their same values across cells.
+const options = {kind:"checkpoint", expectedHead:startingCandidateHeadOrNull};
+const key = "photo-transfer:" + packet.issue + ":" + options.kind;
+const saved = await original.saveTransferStep(packet, options, load(key) ?? null);
+store(key, saved.checkpoint ?? null);
+text(saved); // only compact Git references, phase and record hash
 ```
 
-Use one prepare or publish call per cell, for both checkpoints and completed receipts. Prepare reads the branch head and root tree together. Publish verifies the prepared commit against the complete parent tree and reads back the exact receipt before its guarded branch update. Both steps preserve append-only transfer history, check the registered producer and the fresh cloud guard, and use the expected candidate head. A lost branch-create/update acknowledgement can recover only the same saved record hash; a different concurrent checkpoint cannot be overwritten. Once a completed originals receipt exists, use the existing recovery path rather than modifying it through checkpoint calls.
+Run one Step per cell until `checkpoint_saved_pending_readback` (checkpoint) or `staged_pending_readback` (receipt). `transfer_pending` requires the next cell with the returned checkpoint. Each change gets a fresh stop/capacity check. The commit and ref steps independently verify the entire tree and registered producer; an existing candidate uses its exact starting head. When a call throws, retain the current step and record its phase and safe error message or connector code explicitly. When a ref acknowledgement is lost, replay the same publish step. Recovery at a newer branch head is a separate read that verifies the exact record and part IDs. A conflicting change stops this operation. If the continuation was lost after a successful save, start with the current candidate head and the identical packet to recover the saved record without writing it again.
 
 After interruption, reconstruct the packet from the exact saved commit and checkpoint hash. `restoreCheckpoint` checks metadata and the part-to-tree blob bindings, and reports whether the expected number of part references is present. Its `checkpoint_metadata_only` status and `image_bytes_verified: false` do **not** verify original PNG bytes, visual quality, acceptance or stock availability. A partial original still requires its exact remaining bytes.
 
@@ -533,35 +554,16 @@ if (result.status === "readback_pending") {
 }
 ```
 
-The continuation contains base64 bytes: never print the result or `result.state`, put it in a task result, or pass it to `text` / `notify`. Use the actual `functions` private `store` / `load` when this executor provides them; do not assume a different runtime retains values between cells. If private state is lost, restart the read-only Step at the same immutable reference. This rereads the saved original and does not generate another image. `readback_pending` is not verified bytes or usable stock. The pending Step uses at most 11 Git callbacks, and the completed-receipt Step below uses at most 9, excluding helper initialization; keep helper loading and remote packet restoration in their own cells outside that budget. Pass the normalized packet between prepare/publish cells through private store/load so restoring it does not add Git callbacks to a write phase. The legacy `readCheckpointOriginal` / `readOriginal` macros remain compatible, but a full 8 MiB source can need 19 / 17 callbacks in one call, so use the Step route for larger originals or tighter callback limits.
+The continuation contains base64 bytes: never print the result or `result.state`, put it in a task result, or pass it to `text` / `notify`. Use the actual `functions` private `store` / `load` when this executor provides them; do not assume a different runtime retains values between cells. If private state is lost, restart the read-only Step at the same immutable reference. This rereads the saved original and does not generate another image. `readback_pending` is not verified bytes or usable stock. The pending Step uses at most 11 Git callbacks, and the completed-receipt Step below uses at most 9, excluding helper initialization; four verification-runtime source loads fit in the same cell, while remote packet restoration belongs in a separate cell. Pass the normalized packet between transfer cells through private store/load so restoring it does not add Git callbacks to a write phase. The legacy `readCheckpointOriginal` / `readOriginal` macros remain compatible, but a full 8 MiB source can need 19 / 17 callbacks in one call, so use the Step route for larger originals or tighter callback limits.
 
-After all originals are complete, pass the complete packet and latest checkpoint commit to the existing `prepare` / `publish` pair below. Finalization requires the full normalized packet to match the checkpoint, reuses the same part blob IDs and writes one completed receipt; it does not upload the originals again. Then read every original through `readOriginalStep`. Original-byte verification remains separate from visual acceptance and usable-stock counting.
+After all originals are complete, use `saveTransferStep` as above with `{kind:"receipt", expectedHead:checkpoint.commit}` and a fresh continuation. The full normalized packet must match the latest checkpoint. The completed receipt reuses the same part blob IDs. Store its returned compact result as `staged`, then read every original through `readOriginalStep`. Original-byte verification remains separate from visual acceptance and usable-stock counting.
 
-Existing handoffs without a pending checkpoint remain compatible. Recover their recorded completed assets and existing receipt instead of retransferring them just to adopt this format. Record the branch lease only if continuing an existing same-issue handoff after confirming that it has no completed originals receipt. Leave it null for a genuinely new branch. A competing or occupied destination is preserved.
-
-```js
-// A restored checkpoint has already saved this packet privately in its own cell.
-// For a handoff without a checkpoint, first store the actual complete packet under the same key.
-const packet = load("photo-original-packet:" + issue);
-const plan = await original.prepare(packet, existingCandidateHeadOrNull);
-store("photo-original-final-plan:" + issue, plan);
-text(plan); // compact references only
-```
-
-Publish in the next cell, using the same private packet and plan without another remote restore:
-
-```js
-const packet = load("photo-original-packet:" + issue);
-const plan = load("photo-original-final-plan:" + issue);
-const staged = await original.publish(packet, plan);
-store("photo-original-final-staged:" + issue, staged);
-text(staged);
-```
+Existing handoffs without a pending checkpoint can finalize the same way using their confirmed candidate head or `null` for a genuinely new branch. Recover an already completed receipt before preparing new work. The legacy `prepareCheckpoint` / `publishCheckpoint` and `prepare` / `publish` methods remain available to executors with a higher callback limit.
 
 Then use one readback Step per cell for each original:
 
 ```js
-const staged = load("photo-original-final-staged:" + issue);
+// staged is the saved receipt result from the preceding transfer.
 const ref = {issue, ...staged, source_sha256:asset.source_sha256};
 const stateKey = "completed-photo-readback:" + ref.commit + ":" + ref.source_sha256;
 const result = await original.readOriginalStep(ref, load(stateKey) ?? null);
@@ -575,7 +577,11 @@ if (result.status === "readback_pending") {
 }
 ```
 
-A returned `staged_pending_readback` is an unreviewed candidate. With a completed split receipt and up to eight parts (4 MiB), the editor can call `await original.uploadReviewJpeg(ref)` once. It reads and hashes the complete PNG and prepares a portrait or landscape JPEG without private state across cells. For a larger packet, use `readOriginalStep(ref, state, 7)` in a runtime that can retain the private partial bytes. The seven-part bound leaves room for conversion and guarded upload in the final cell. Pass its `original_verified` result directly:
+A returned `staged_pending_readback` is an unreviewed candidate. Use the full conversion runtime to encode a review JPEG from the first available source.
+
+- If the receipt’s numbered original is already saved, run `await original.uploadReviewJpeg(ref, {numberedCommit})` with its immutable commit and the weekly PNG reader. This re-reads and verifies the whole original at the receipt ordinal, up to 8 MiB, without carrying bytes between cells.
+- For a split-only original of up to four parts (2 MiB), `await original.uploadReviewJpeg(ref)` fits in one fresh cell, including six helper/dependency reads and the live guard.
+- For a longer split-only original, use `readOriginalStep(ref, state, 3)` and retain its partial bytes privately. In the cell that finishes reconstruction, pass the verified result directly to the uploader. The three-part limit leaves room for the receipt read, conversion and guarded write, including cold imports.
 
 ```js
 if (result.status === "original_verified") {
@@ -584,7 +590,7 @@ if (result.status === "original_verified") {
 }
 ```
 
-Reuse a JPEG already listed for this source in the existing candidate handoff, including earlier paths and encoders. For a newly prepared blob, run one step per cell using the same small `ref`, `prepared` and returned plan. `expectedHead` is the observed head of the existing `photo-issue-plan/<issue>` branch.
+Reuse a JPEG already listed for this source in the existing candidate handoff, including earlier paths and encoders. For a newly prepared blob, load the verification runtime (three helpers plus SHA-256) for each metadata step. Run one step per cell using the same small `ref`, `prepared` and returned plan. `expectedHead` is the observed head of the existing `photo-issue-plan/<issue>` branch.
 
 ```js
 const plan = await original.prepareReviewJpeg(ref, prepared, expectedHead); // retain base and commit
@@ -656,10 +662,12 @@ Read the numbered PNG with `read_weekly_candidate_png` and the recorded JPEG wit
 const verified = await original.readOriginalStep(ref); // Continue a pending read with its state.
 const uploaded = await original.uploadNumberedOriginal(ref, verified);
 const plan = await original.prepareNumberedOriginal(ref, uploaded, uploaded.base);
-const saved = await original.publishNumberedOriginal(ref, uploaded, plan);
+const submitted = await original.submitNumberedOriginal(ref, uploaded, plan);
+// In the next cell if submission is pending or its reply was lost:
+const saved = await original.confirmNumberedOriginal(ref, uploaded, plan);
 ```
 
-Use `saved.commit` as the stock revision for both reads and for `openUnassignedStock`. This restores the selected source at its receipt ordinal on the existing candidate branch. The editor still chooses the release cuts after visual inspection. The release receipt retains the stock paths, original ordinal and split receipt.
+Use the commit returned with `numbered_original_staged` as the stock revision for both reads and for `openUnassignedStock`. Keep the same plan for confirmation. A pending response still needs a readback of the exact candidate head and PNG. If the branch moved, reopen its current head before preparing another update. The editor still chooses the release cuts after visual inspection. The release receipt retains the stock paths, original ordinal and split receipt.
 
 Use the weekly editor's normal release PR. For a new release branch, use the latest `main` commit as parent and its tree as `base_tree_sha`. For an existing release PR, use its current reviewed head and tree to preserve its other edits. Keep staging files and unused stock on the pinned candidate commit. If a release PR already includes staging-only additions, exclude those additions from its proposed release tree, preserving its other edits and the original candidate commit. Reuse that PR. Add the selected images, receipts, QA and catalog changes at their release paths. Check the full PR diff against `allowed_for("photo_issue", path)`. Within `maintenance/photo-issue-plans/<issue>/`, the finalizer accepts only matching JSON files directly in that directory. Verify that the destination blob IDs match. Before advancing a release ref, reread its head, use the reviewed head as the parent and set `force: false`. If the head moved, reconcile the changes before handing off the final PR head. See [finalizer path scope](../scripts/publication_finalize.py) and [publication handoff](OPERATIONS.md).
 

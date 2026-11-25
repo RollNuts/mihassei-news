@@ -75,6 +75,21 @@
         "cut_id": "05",
         "image_sha256": "e6897d83518c4dc0fe2d5aaec6d9ac4cecfcb4a2a6ea83181a065e2a2248fe29"
       }
+    },
+    {
+      "id": "hanase-mio-post-20261125120541517",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-25T12:05:41.517+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼、手こぎボートに挑戦した。右ばかり強くこいで、気づいたら同じ景色が三周目。左手に力を入れたら、やっと橋の方へ進めた。",
+      "source": {
+        "issue_slug": "november-mio-on-the-move-016",
+        "cut_id": "01",
+        "image_sha256": "64f27c8088537e890d0f069b3e0b8b8d310b00fa16f676dc8a374a6a08ebda98"
+      }
     }
   ]
 }

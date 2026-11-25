@@ -3,9 +3,9 @@
   "kind": "native_image_transport_preflight",
   "status": "probe_only_not_an_article_candidate",
   "repository": "RollNuts/mihassei-news",
-  "candidate_identity": "834e1821a9e388a82ce90e4a4616c842949cace7b42d5336e4983fec8a640267",
-  "logical_run_id": "news-photo-v1:3183643270fb7b911afea0be2f72e4a2d12bcf6f0f23c5d868a3828e4030fdbd",
-  "observed_at": "2026-11-24T11:07:49.606Z",
+  "candidate_identity": "0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f",
+  "logical_run_id": "news-photo-v1:edcd77e86524ebafb903977acfc3c20064b1d038954c115e3b57f541ba9be68a",
+  "observed_at": "2026-11-25T11:04:02.210Z",
   "route": "read_candidate_png through the original file adapter",
   "probe_source_ref": "/mnt/data/mihassei-offline-probe.png",
   "source": {
@@ -17,9 +17,9 @@
     "bytes": 92351
   },
   "baseline": {
-    "commit_sha": "7e4f58f74a5c9971eec15bda615fc7b5a207b26a",
+    "commit_sha": "af112736a3d6acb6ad05f0f1a8fd3fd921808445",
     "protected_hashes": {
-      "content/articles.json": "052a6cc2b1053b030ad91d0b7e95f52997f3fd5b261fdc332424830c440b3398",
+      "content/articles.json": "4793036d0123a9d53a5e5d4770c378f9892468989e03647aa470736f8b1f7590",
       "assets/generated/manifest.json": "cedbaa0eec0ee4f30bd605bb45573c395cd3d04523acb3a3477e3ac8fe1399c9",
       "content/visual_reviews.json": "6588ec0f25193526bde25f9879e557aa20b15c57a60d33f325e65482bb9c26b5"
     }

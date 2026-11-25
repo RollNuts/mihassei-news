@@ -3,6 +3,8 @@
  */
 "use strict";
 
+const {readFileSync} = require("node:fs");
+const {join} = require("node:path");
 const bytes = require("./native_image_bytes.js");
 const stage = require("./native_image_stage.js");
 const testBytes = require("./native_image_bytes_test.js");
@@ -32,7 +34,9 @@ async function main() {
   console.log(`native_image_bytes_test.js: ${byteReport.passed} checks passed`);
   const sourceReport = await testBytes.fetchSources(bytes, sources);
   console.log(`native_image_bytes source adapters: ${sourceReport.passed} checks passed`);
-  const stageReport = await testStage(stage, runtime);
+  const readHelper = name => readFileSync(join(__dirname,name),"utf8");
+  const stageReport = await testStage(stage, runtime, {sources,byteHelperSource:readHelper("native_image_bytes.js"),
+    stageHelperSource:readHelper("native_image_stage.js")});
   console.log(`native_image_stage_test.js: ${stageReport.passed} checks passed`);
 }
 

@@ -5185,5 +5185,562 @@
         "checked_on": "2026-11-24"
       }
     ]
+  },
+  {
+    "slug": "2026-11-25-am",
+    "day": "2026-11-25",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-25T09:08:26+09:00",
+    "title": "米ナスダック1.48%安、ダウ0.85%高　買収合意のインスメッドは14.13%高",
+    "summary": "米国24日の通常取引はナスダック総合1.48%安、S&P500は0.50%安、ダウ平均は0.85%高。医薬品のインスメッドはサノフィによる現金買収合意の発表後、14.13%上昇した。",
+    "lead": "米国11月24日の株式市場は、前日の急反発から一転してナスダック総合が1.48%下落しました。一方、ダウ平均は0.85%上昇し、同じ米国市場でも指数によって方向が分かれました。医薬品のインスメッドは買収合意の発表後に14.13%高となりました。いずれも通常取引の終値（日本時間25日午前6時）です。",
+    "sections": [
+      {
+        "heading": "半導体株が反落する一方、ダウは上昇",
+        "paragraphs": [
+          "24日のS&P500は7,201.09ポイント（23日比0.50%安）、ナスダック総合は23,733.54ポイント（1.48%安）、ダウ平均は50,018.70ポイント（0.85%高）でした。ダウは指数算出元提供のFRED日次終値でも23日の49,595.31から上昇したことを確認できます。ロイターの終値報道によると、半導体株が反落する一方、ヘルスケアや小売には上昇した銘柄がありました。米国株全体が同じ方向へ動いたわけではありません。"
+        ]
+      },
+      {
+        "heading": "インスメッドは170.15ドル、買収提示額は175ドル",
+        "paragraphs": [
+          "米医薬品会社インスメッド（INSM）は24日、通常取引を170.15ドルで終了しました。23日終値149.09ドルから14.13%上昇しています。フランスの製薬会社サノフィは24日、インスメッドを1株175ドル、株式価値総額約410億ドルの現金対価で買収する契約を締結したと発表しました。",
+          "サノフィは、インスメッドが販売する呼吸器疾患向けのBrinsupriとArikayceに加え、臨床開発中の吸入薬などを取り込むことで呼吸器疾患分野を拡充する狙いを説明しています。買収完了には株主承認や規制当局の認可などが必要で、同社は2027年上半期の完了を見込んでいます。24日の終値は提示額より4.85ドル低く、買収完了や提示額での換金が確定したわけではありません。"
+        ]
+      },
+      {
+        "heading": "東京市場は25日も通常取引日",
+        "paragraphs": [
+          "24日の東京市場では日経平均が前営業日比3.91%高、TOPIXが大引け速報で2.47%高と反発していました（24日引け後の既刊）。25日の東京市場は通常取引日です。米国の24日通常取引では半導体関連と他業種の方向が分かれたため、国内の半導体製造装置・電子部品株と他業種の実際の値動きを区別して読む必要があります。本稿は25日の東京寄り付き前の情報で、日本株の25日現在値は掲載していません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "us-index-nov24-divergence",
+        "kind": "bars",
+        "title": "米国24日：ダウとナスダックの騰落率",
+        "note": "ロイターの米国24日通常取引終値報道。23日終値比。",
+        "unit": "%",
+        "source_url": "https://new.streetinsider.com/Market%2BCheck/Nasdaq,%2BS&P%2B500%2Bslip%2Bfollowing%2BMondays%2BNvidia-fueled%2Brally/27390048.html",
+        "observed_at": "2026-11-25T06:00:00+09:00",
+        "values": [
+          {
+            "label": "ダウ平均",
+            "value": 0.85,
+            "state": "実績"
+          },
+          {
+            "label": "ナスダック総合",
+            "value": -1.48,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "insm-nov24-close",
+        "kind": "bars",
+        "title": "インスメッド：23日と24日の通常終値",
+        "note": "Stock Analysisの日別Close。24日の買収合意発表後に上昇。時間外取引を含まない。",
+        "unit": "米ドル",
+        "source_url": "https://stockanalysis.com/stocks/insm/history/",
+        "observed_at": "2026-11-25T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/23",
+            "value": 149.09,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/24",
+            "value": 170.15,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "INSM",
+        "name": "インスメッド",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "上昇",
+        "previous_close": 149.09,
+        "close": 170.15,
+        "price_kind": "close",
+        "market_date": "2026-11-24",
+        "previous_market_date": "2026-11-23",
+        "observed_at": "2026-11-25T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/insm/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Stock Analysisの11/23・11/24の日別CloseとAdj. Closeは各日一致。Yahoo Financeの日別履歴も同値。独自の分割補正なし。",
+        "context": "サノフィが11月24日に1株175ドルの現金買収契約を公表。呼吸器疾患分野の拡充が狙いで、株主承認・規制当局の認可等が完了条件。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "ロイター：米国24日通常取引の主要指数終値と業種の動き",
+        "url": "https://www.reuters.com/business/wall-st-futures-dip-chip-stocks-cool-after-nvidia-fueled-rally-2026-11-24/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "FRED：S&P Dow Jones Indices提供のダウ平均24日・23日終値",
+        "url": "https://fred.stlouisfed.org/series/DJIA",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "サノフィ公式発表：11月24日のインスメッド買収契約と条件",
+        "url": "https://www.sanofi.com/en/media-room/press-releases/2026/2026-11-24-06-30-00-3409002",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "Stock Analysis：インスメッド23日・24日の通常終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/insm/history/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "Yahoo Finance：インスメッドの日別通常終値と調整後終値",
+        "url": "https://finance.yahoo.com/quote/INSM/history/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：取引時間と2026年休業日",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "NYSE：通常取引時間と2026年休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "Reuters配信本文（StreetInsider）：米国24日終値・半導体とヘルスケア、小売",
+        "url": "https://new.streetinsider.com/Market%2BCheck/Nasdaq,%2BS&P%2B500%2Bslip%2Bfollowing%2BMondays%2BNvidia-fueled%2Brally/27390048.html",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-25-open",
+    "day": "2026-11-25",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-25T10:07:47+09:00",
+    "title": "日経平均2.45%安、半導体株指数9.61%安　保険株は逆行高",
+    "summary": "25日朝の東京市場は10時00分の日経平均が2.45%安、日経半導体株指数が9.61%安。10時05分更新のTOPIXは0.18%安で、非鉄金属や電気機器が下げる一方、保険業は2.89%高となった。",
+    "lead": "25日朝の東京株式市場は、前日の反発から一転して下落しています。日経平均は10時00分時点で57,205.61円（前日終値比2.45%安）、日経半導体株指数は9.61%安でした。一方、TOPIXは10時05分更新で0.18%安にとどまり、保険や輸送用機器など上昇した業種もあります。いずれも取引途中の値です。",
+    "sections": [
+      {
+        "heading": "日経平均と半導体株指数に大きな下げ",
+        "paragraphs": [
+          "日経平均は24日終値58,644.63円から1,439.02円下落しました。同じ10時00分の日経半導体株指数は15,313.81ポイント（1,628.18ポイント安）で、下落率は日経平均より7.16ポイント大きくなっています。",
+          "今朝の東京市場では半導体関連の指数の下落が日経平均より大きいことが確認できます。日経平均とTOPIXは構成銘柄や算出方法が異なるため、日経平均の下落率を日本株全体の下落率として読むことはできません。"
+        ]
+      },
+      {
+        "heading": "非鉄金属・電気機器が下落、保険業は上昇",
+        "paragraphs": [
+          "JPXの10時05分更新ではTOPIXは3,758.18ポイント（24日終値3,764.88から6.70ポイント安）。東証33業種別では非鉄金属が7.99%安、電気機器が4.12%安、機械が2.91%安でした。24日に反発した非鉄金属と電気機器は、25日朝には下落しています。",
+          "同じ更新時刻の保険業は2.89%高、輸送用機器は1.86%高でした。銀行業は0.84%安で、金融業種の中でも値動きが分かれています。指数の差は業種別にも表れており、前日の上昇をすべての業種が同じように失ったわけではありません。"
+        ]
+      },
+      {
+        "heading": "グロース250も下落、東証REIT指数は上昇",
+        "paragraphs": [
+          "10時05分更新の東証グロース市場250指数は639.09ポイント（2.41%安）、東証REIT指数は1,685.26ポイント（1.37%高）でした。大型株の一部に限らず成長株の指数も下げていますが、不動産投資信託の指数は逆方向に動いています。25日は日米とも通常取引日で、米国25日の現物取引は日本時間25日23時30分からです。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov25-open",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数の騰落率",
+        "note": "11月25日10時00分時点、24日終値比。日経の指数公表値。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-25T10:00:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": -2.45,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": -9.61,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "nonferrous-insurance-nov25-open",
+        "kind": "bars",
+        "title": "非鉄金属と保険業の騰落率",
+        "note": "JPX11月25日10時05分更新、24日終値比。取引途中の業種別指数。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T10:05:00+09:00",
+        "values": [
+          {
+            "label": "非鉄金属",
+            "value": -7.99,
+            "state": "実績"
+          },
+          {
+            "label": "保険業",
+            "value": 2.89,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth-reit-nov25-open",
+        "kind": "bars",
+        "title": "グロース250と東証REITの騰落率",
+        "note": "JPX11月25日10時05分更新、24日終値比。取引途中の指数。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T10:05:00+09:00",
+        "values": [
+          {
+            "label": "グロース250",
+            "value": -2.41,
+            "state": "実績"
+          },
+          {
+            "label": "東証REIT",
+            "value": 1.37,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：25日10時00分の日経平均・日経半導体株指数",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：現物株価指数・業種別指数の25日10時05分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：取引日・休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "NYSE：2026年取引時間・休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "11月25日寄り前の既刊：米国24日市場の動き",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-25-am/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-25-noon",
+    "day": "2026-11-25",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-25T13:08:36+09:00",
+    "title": "医薬品株指数5.99%高、半導体株指数は10.27%安　25日後場",
+    "summary": "25日12時43分の日経平均は2.78%安、日経半導体株指数は10.27%安。JPXの12時45分更新では医薬品が5.99%高、食料品が3.48%高となり、非鉄金属の8.25%安とは対照的だった。",
+    "lead": "25日の東京株式市場では後場に入っても半導体関連の下落が続いています。日経半導体株指数は12時43分時点で10.27%安。これに対しJPXの12時45分更新では医薬品が5.99%高、食料品が3.48%高でした。いずれも24日終値との比較で、25日の取引途中の値です。",
+    "sections": [
+      {
+        "heading": "半導体株指数の下落率が10%を超える",
+        "paragraphs": [
+          "日経平均は12時43分時点で57,012.38円（1,632.25円安、2.78%安）、日経半導体株指数は15,201.59ポイント（10.27%安）でした。朝の10時00分時点ではそれぞれ2.45%安、9.61%安だったため、両指数とも下落率が拡大しています。"
+        ]
+      },
+      {
+        "heading": "医薬品・食料品は上昇、非鉄金属は下落",
+        "paragraphs": [
+          "JPXの12時45分更新では医薬品が5.99%高、食料品が3.48%高となりました。非鉄金属は8.25%安、電気機器は5.11%安で、医薬品と非鉄金属の騰落率には14.24ポイントの開きがあります。朝の既刊で取り上げた半導体関連の下落とは逆方向の動きが、生活に関わる業種にも見られます。",
+          "業種別指数の上昇だけでは個別企業の買い材料や資金の移動先までは特定できません。ただし、半導体関連が大幅に下げる一方で、医薬品や食料品は同じ時間帯に上昇していたことが分かります。"
+        ]
+      },
+      {
+        "heading": "主力大型株と中型株でも異なる動き",
+        "paragraphs": [
+          "同じ12時45分更新のTOPIXは3,738.84ポイント（0.69%安）でした。TOPIX Core30は1.69%安、TOPIX Mid400は0.04%高と、規模別の指数でも差が出ています。Core30の下落率はTOPIX全体より大きく、中型株の指数は前日終値近辺にとどまりました。",
+          "25日は日米とも通常取引日ですが、米国25日の現物取引は日本時間25日23時30分からです。ここで扱う日本株の数値は大引け前の途中値であり、終値ではありません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov25-noon",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "25日12時43分時点、24日終値比。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-25T12:43:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": -2.78,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": -10.27,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "pharma-nonferrous-nov25-noon",
+        "kind": "bars",
+        "title": "医薬品と非鉄金属の騰落率",
+        "note": "JPX25日12時45分更新、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T12:45:00+09:00",
+        "values": [
+          {
+            "label": "医薬品",
+            "value": 5.99,
+            "state": "実績"
+          },
+          {
+            "label": "非鉄金属",
+            "value": -8.25,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "core30-mid400-nov25-noon",
+        "kind": "bars",
+        "title": "TOPIX Core30とMid400",
+        "note": "JPX25日12時45分更新、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T12:45:00+09:00",
+        "values": [
+          {
+            "label": "Core30",
+            "value": -1.69,
+            "state": "実績"
+          },
+          {
+            "label": "Mid400",
+            "value": 0.04,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：25日12時43分公表値",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：現物指数・業種別指数の25日12時45分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：2026年取引日・休業日",
+        "url": "https://www.jpx.co.jp/english/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "NYSE：2026年取引時間・休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "25日寄り後の既刊：10時00分の日経指数",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-25-open/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-25-close",
+    "day": "2026-11-25",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-25T16:20:27+09:00",
+    "title": "日経平均2.78%安、TOPIXは0.50%安　33業種中23業種は上昇",
+    "summary": "25日の東京市場は日経平均が57,011.62円で引け、半導体株指数は9.84%安。JPXの15時53分更新ではTOPIXが0.50%安にとどまり、33業種中23業種が上昇した。",
+    "lead": "25日の東京株式市場で日経平均は57,011.62円で引け、24日終値から1,633.01円（2.78%）下落しました。日経半導体株指数は15時30分時点で9.84%安。一方、JPXの15時53分更新のTOPIXは0.50%安で、東証33業種のうち23業種は上昇しました。日経平均の大幅安が、全業種の下落を意味する日ではありませんでした。",
+    "sections": [
+      {
+        "heading": "半導体株指数は後場の下げを一部縮める",
+        "paragraphs": [
+          "日経半導体株指数は15,274.30ポイント（24日終値比1,667.69ポイント安）。12時43分時点の10.27%安から下落率は0.43ポイント縮まりましたが、日経平均より7.06ポイント大きな下落でした。日経平均の24日終値は58,644.63円です。",
+          "同じ日経の15時50分公表値では日経平均ボラティリティー・インデックスは33.39（5.97%高）でした。この指数は日経平均の将来の変動の大きさに関する市場の期待を示すもので、株価がその割合だけ下落することを意味しません。"
+        ]
+      },
+      {
+        "heading": "33業種の過半数が上昇、銀行と保険も逆方向",
+        "paragraphs": [
+          "JPXの15時53分更新の速報値を33業種について集計すると、上昇23、下落10、横ばい0でした。非鉄金属は8.69%安、電気機器は4.48%安でしたが、医薬品は5.48%高、不動産業は3.54%高、食料品は3.53%高でした。業種数の集計は銘柄数の集計とは異なります。",
+          "金融の中でも銀行業が2.16%安、保険業が2.17%高と、反対の動きになりました。業種指数から個別企業の材料や資金移動の理由を断定することはできません。"
+        ]
+      },
+      {
+        "heading": "米国市場は25日取引の後に感謝祭休場",
+        "paragraphs": [
+          "TOPIXの大引け後速報値は3,746.20ポイント（18.68ポイント安）で、24日終値3,764.88ポイントから0.50%安でした。東証グロース市場250指数は2.17%安、東証REIT指数は1.16%高です。",
+          "米国25日の通常取引は日本時間25日23時30分開始です。NYSEの公式日程では現地26日は感謝祭で休場、27日は13時（日本時間28日3時）に通常取引を短縮終了します。日本の25日の引けと米国25日の終値は同じ時点ではありません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov25-close",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "25日大引けの日経平均と15時30分の日経半導体株指数。24日終値比。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-25T15:30:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": -2.78,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": -9.84,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "bank-insurance-nov25-close",
+        "kind": "bars",
+        "title": "銀行業と保険業の騰落率",
+        "note": "JPX25日15時53分更新の大引け後速報値、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T15:53:00+09:00",
+        "values": [
+          {
+            "label": "銀行業",
+            "value": -2.16,
+            "state": "実績"
+          },
+          {
+            "label": "保険業",
+            "value": 2.17,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth-reit-nov25-close",
+        "kind": "bars",
+        "title": "グロース250と東証REIT",
+        "note": "JPX25日15時53分更新の大引け後速報値、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T15:53:00+09:00",
+        "values": [
+          {
+            "label": "グロース250",
+            "value": -2.17,
+            "state": "実績"
+          },
+          {
+            "label": "東証REIT",
+            "value": 1.16,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：25日大引け・15時30分および15時50分公表値",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：現物指数・業種別指数の25日15時53分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：取引日・休業日",
+        "url": "https://www.jpx.co.jp/english/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "NYSE：2026年取引時間・休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "25日後場の既刊：12時43分の日経指数",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-25-noon/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      }
+    ]
   }
 ]
