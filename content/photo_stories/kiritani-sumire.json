@@ -90,6 +90,21 @@
         "cut_id": "08",
         "image_sha256": "ad2228fcc83b06bacefb4ed9f34307ccc26472fd97a9538f540cc9270a9e08f2"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261125141106453",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-25T14:11:06.453+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後、温水プールの帰りに古い黒のショールを羽織った。茶色の水着に合わせたら意外としっくりきて、冬にも出番が増えそう。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "07",
+        "image_sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2"
+      }
     }
   ]
 }
