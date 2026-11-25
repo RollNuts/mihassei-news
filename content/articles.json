@@ -1,12 +1,79 @@
 [
   {
+    "slug": "night-shift-dessert-shop-morning-production",
+    "category": "経済",
+    "flash": "夜勤明けの菓子店、朝に完売",
+    "art": "cards",
+    "fiction_company": "夕星菓房（架空）",
+    "fiction_at": "2031-11-25T07:31:41+09:00",
+    "published_at": "2026-11-25T07:31:41+09:00",
+    "publication_slot": "2026-11-25T07:30:00+09:00",
+    "title": "朝7時に売り切れる「夜のごほうび」　菓子店が夜勤明けの客向けに製造を始める",
+    "summary": "2031年、菓子店の夕星菓房が工業地区で夜勤明けの客向けにデザートを作り、朝7時に初回分が完売した。工場ごとの退勤時刻に合わせた予約製造を始め、従来は昼に集中していた販売の時間帯を広げる。",
+    "paragraphs": [
+      "25日午前7時、夜勤を終えた工場作業員が菓子店の夕星菓房でプリンを受け取った。早朝販売分の最後の一個だった。夕星菓房はこの日、工業地区で夜勤明けの客を対象とする早朝のデザート販売を始め、初回の40個を売り切った。",
+      "一日の仕事を終えた客が甘い物を買う時間は、夕方や夜だけではない。2026年には夜の自宅時間を楽しむためのスイーツが小売の商品企画にもなっていた。その後、夕星菓房は自動でプリンを容器に詰めて冷やす小型機を導入し、昼の製造ラインを動かさずに数十個ずつ作れるようになった。今回の早朝分は近隣工場の退勤が集中する時間に合わせて作った。",
+      "店は前夜までに入った予約数に、予約なしで来る客の分を少し足して製造量を決める。昼の営業用の菓子を朝から並べる方法もあるが、それでは朝の売れ残りを昼まで抱えることになる。夕星菓房は早朝勤務の人件費を負担する一方、予約によって廃棄を抑え、昼とは別の売上を得ようとしている。",
+      "初日の完売を受け、近くの物流倉庫からも注文の相談が入った。倉庫では工場より一時間遅く夜勤が終わるため、同じ時刻の販売では間に合わない。店長は翌週から午前8時台受取の製造分も設けることを決め、その場で予約を受け付けた。",
+      "午前7時半、店長は昼の営業に向けてショーケースを整えた。昼の常連向けのケーキとは別に、翌週の早朝分の注文が製造表に加わった。住宅街の客が眠りから覚める頃、仕事を終えた人に向けた新しい商売が動き始めていた。"
+    ],
+    "source": {
+      "kind": "企業公式発表",
+      "publisher": "株式会社セブン-イレブン・ジャパン",
+      "published_at": "2026-11-20T00:00:00+09:00",
+      "url": "https://www.sej.co.jp/company/news_release/news/2026/202611201100.html",
+      "topic": "2026年11月20日、セブン-イレブン・ジャパンが夜の自宅時間を充実させる冬季限定スイーツを12月1日から順次発売すると発表。2031年の夕星菓房、早朝販売、予約製造、完売と倉庫からの注文は創作。"
+    },
+    "scene_prompt": "Photorealistic horizontal 16:9 local Japanese newspaper documentary photograph at dawn in a small independent pastry shop near an industrial district. A tired adult worker in plain navy workwear receives the last small lidded pudding cup from a shopkeeper over the counter, mostly empty chilled display shelf, cool blue morning light outside and soft warm indoor light, natural candid scene, no readable signs, no logos, no real-person likeness.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "スイーツ",
+      "夜勤",
+      "小売"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "スイーツ",
+      "夜勤"
+    ],
+    "x_tickers": [],
+    "x_share_lead": "仕事が終わる時間は、人によって違う。朝7時に売り切れる夜のごほうび。",
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "2026年11月20日に夜の自宅時間を楽しむスイーツの発売が発表された",
+      "target": "2031年に予約数と受取時刻に合わせて小ロット製造する菓子店の早朝販路",
+      "action": "夜勤明けの工場作業員がプリンを受け取り、別の退勤時刻の物流倉庫から注文の相談が入る",
+      "outcome": "初回40個が完売し、物流倉庫向け午前8時台受取分の予約も始まる"
+    },
+    "reader_clarity": {
+      "who": "菓子店",
+      "action": "夜勤明けの客向けに早朝のデザートを製造販売し初回分を完売",
+      "oddity": "一日の仕事を終えた人のごほうび需要を朝の新しい商売にする"
+    },
+    "behavior_basis": {
+      "motive": "夜勤明けに仕事を終える客から昼とは別の売上を得る",
+      "ordinary_alternative": "昼の営業用の菓子を朝から並べる",
+      "why_not": "売れ残りを長く抱えるため予約に合わせて少量製造する",
+      "evidence_quote": "夕星菓房は早朝勤務の人件費を負担する一方、予約によって廃棄を抑え、昼とは別の売上を得ようとしている。"
+    },
+    "plausibility_basis": {
+      "present_signal": "夜の自宅時間を充実させるスイーツの商品企画",
+      "continuation_force": "生活時間に合わせた商品企画と小型の自動製造設備が発達し、大きな製造ラインを動かさず予約に応じて少量を作れる",
+      "future_result": "夜勤明け向けの早朝製造販売が完売し、別の退勤時刻の倉庫向けにも販路が広がる"
+    }
+  },
+  {
     "slug": "used-battery-recall-follows-new-owner",
     "category": "事件",
     "flash": "回収通知は中古の持ち主にも",
     "art": "cards",
     "fiction_company": "灯和電機（架空）",
-    "fiction_at": "2031-11-24T19:30:04+09:00",
-    "published_at": "2026-11-24T19:30:04+09:00",
+    "fiction_at": "2031-11-24T20:12:00+09:00",
+    "published_at": "2026-11-24T20:12:00+09:00",
     "publication_slot": "2026-11-24T19:30:00+09:00",
     "title": "モバイルバッテリーの出火、中古の持ち主にも回収通知",
     "summary": "2031年、灯和電機のモバイルバッテリーから出火し、メーカーが同じ製造分を回収した。購入者ではなく製品番号に通知をひも付ける仕組みで、中古品を買った人にも回収情報が届いた。売った人の個人情報を渡さず、使い続ける人に知らせる。",

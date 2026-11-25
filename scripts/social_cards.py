@@ -29,7 +29,11 @@ WIDTH = 1200
 HEIGHT = 630
 SCENE_HEIGHT = 675
 SCENE_RENDERER = "rsvg-convert 2.62.1"
-SCENE_RENDERERS = {"rsvg": SCENE_RENDERER, "cairosvg": "CairoSVG 2.7.1"}
+SCENE_RENDERERS = {
+    "rsvg": {"rsvg-convert version 2.62.1": SCENE_RENDERER},
+    "cairosvg": {"2.7.1": "CairoSVG 2.7.1", "2.8.2": "CairoSVG 2.8.2"},
+}
+RENDERER_PROOFS = frozenset(label for versions in SCENE_RENDERERS.values() for label in versions.values())
 MAX_SCENE_PNG_BYTES = 700 * 1024
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PROOF_KEYS = frozenset(("article_sha256", "svg_sha256", "renderer"))
@@ -98,7 +102,7 @@ def _scene_png_chunks(data: bytes, proof: dict | None = None) -> tuple[list[tupl
 
 
 def _scene_proof(article: dict, svg: str, *, renderer: str = SCENE_RENDERER) -> dict:
-    if renderer not in SCENE_RENDERERS.values():
+    if renderer not in RENDERER_PROOFS:
         raise ValueError("Unrecognized scene renderer")
     return {"article_sha256": article_fingerprint(article),
             "svg_sha256": hashlib.sha256(svg.encode("utf-8")).hexdigest(),
@@ -153,7 +157,7 @@ def prepare_scene_png(article: dict, *, root: Path = ROOT, renderer: str = "rsvg
             if output.stat().st_size > MAX_SCENE_PNG_BYTES:
                 raise ValueError("oversized")
             _chunks, old = _scene_png_chunks(output.read_bytes())
-            if (set(old) != PROOF_KEYS or old.get("renderer") not in SCENE_RENDERERS.values()
+            if (set(old) != PROOF_KEYS or old.get("renderer") not in RENDERER_PROOFS
                     or any(not re.fullmatch(r"[0-9a-f]{64}", old.get(key, ""))
                            for key in ("article_sha256", "svg_sha256"))):
                 raise ValueError("unrecognized provenance")
@@ -161,22 +165,21 @@ def prepare_scene_png(article: dict, *, root: Path = ROOT, renderer: str = "rsvg
             raise RuntimeError("Refusing to overwrite unmanaged scene PNG: " + str(output)) from exc
     if renderer == "cairosvg":
         command = [sys.executable, "-m", "cairosvg"]
-        expected_version = "2.7.1"
         arguments = ["-", "--format=png", "--output-width=1200", "--output-height=675",
                      "--background=#f8f6f0"]
     else:
         command = ["rsvg-convert"]
-        expected_version = "rsvg-convert version 2.62.1"
         arguments = ["--format=png", "--width=1200", "--height=675",
                      "--background-color=#f8f6f0"]
     version = subprocess.run(command + ["--version"], capture_output=True, text=True,
                              check=True, timeout=5).stdout.splitlines()
-    if not version or version[0] != expected_version:
-        raise RuntimeError("Scene preparation requires existing " + SCENE_RENDERERS[renderer])
+    supported_versions = SCENE_RENDERERS[renderer]
+    if not version or version[0] not in supported_versions:
+        raise RuntimeError("Scene preparation requires existing " + " or ".join(supported_versions.values()))
     result = subprocess.run(command + arguments,
                             input=svg.encode("utf-8"), capture_output=True, check=True, timeout=20)
     chunks, _metadata = _scene_png_chunks(result.stdout)
-    proof = _scene_proof(article, svg, renderer=SCENE_RENDERERS[renderer])
+    proof = _scene_proof(article, svg, renderer=supported_versions[version[0]])
     chunks = [c for c in chunks if c[0] != b"tEXt" or c[1].split(b"\0", 1)[0].decode("latin-1") not in PROOF_KEYS]
     tags = [(b"tEXt", key.encode("ascii") + b"\0" + value.encode("ascii")) for key, value in proof.items()]
     data = PNG_SIGNATURE + b"".join(_png_chunk(*chunk) for chunk in chunks[:-1] + tags + chunks[-1:])
