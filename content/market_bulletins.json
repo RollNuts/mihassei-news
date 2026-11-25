@@ -5185,5 +5185,150 @@
         "checked_on": "2026-11-24"
       }
     ]
+  },
+  {
+    "slug": "2026-11-25-am",
+    "day": "2026-11-25",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-25T09:08:26+09:00",
+    "title": "米ナスダック1.48%安、ダウ0.85%高　買収合意のインスメッドは14.13%高",
+    "summary": "米国24日の通常取引はナスダック総合1.48%安、S&P500は0.50%安、ダウ平均は0.85%高。医薬品のインスメッドはサノフィによる現金買収合意の発表後、14.13%上昇した。",
+    "lead": "米国11月24日の株式市場は、前日の急反発から一転してナスダック総合が1.48%下落しました。一方、ダウ平均は0.85%上昇し、同じ米国市場でも指数によって方向が分かれました。医薬品のインスメッドは買収合意の発表後に14.13%高となりました。いずれも通常取引の終値（日本時間25日午前6時）です。",
+    "sections": [
+      {
+        "heading": "半導体株が反落する一方、ダウは上昇",
+        "paragraphs": [
+          "24日のS&P500は7,201.09ポイント（23日比0.50%安）、ナスダック総合は23,733.54ポイント（1.48%安）、ダウ平均は50,018.70ポイント（0.85%高）でした。ダウは指数算出元提供のFRED日次終値でも23日の49,595.31から上昇したことを確認できます。ロイターの終値報道によると、半導体株が反落する一方、ヘルスケアや小売には上昇した銘柄がありました。米国株全体が同じ方向へ動いたわけではありません。"
+        ]
+      },
+      {
+        "heading": "インスメッドは170.15ドル、買収提示額は175ドル",
+        "paragraphs": [
+          "米医薬品会社インスメッド（INSM）は24日、通常取引を170.15ドルで終了しました。23日終値149.09ドルから14.13%上昇しています。フランスの製薬会社サノフィは24日、インスメッドを1株175ドル、株式価値総額約410億ドルの現金対価で買収する契約を締結したと発表しました。",
+          "サノフィは、インスメッドが販売する呼吸器疾患向けのBrinsupriとArikayceに加え、臨床開発中の吸入薬などを取り込むことで呼吸器疾患分野を拡充する狙いを説明しています。買収完了には株主承認や規制当局の認可などが必要で、同社は2027年上半期の完了を見込んでいます。24日の終値は提示額より4.85ドル低く、買収完了や提示額での換金が確定したわけではありません。"
+        ]
+      },
+      {
+        "heading": "東京市場は25日も通常取引日",
+        "paragraphs": [
+          "24日の東京市場では日経平均が前営業日比3.91%高、TOPIXが大引け速報で2.47%高と反発していました（24日引け後の既刊）。25日の東京市場は通常取引日です。米国の24日通常取引では半導体関連と他業種の方向が分かれたため、国内の半導体製造装置・電子部品株と他業種の実際の値動きを区別して読む必要があります。本稿は25日の東京寄り付き前の情報で、日本株の25日現在値は掲載していません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "us-index-nov24-divergence",
+        "kind": "bars",
+        "title": "米国24日：ダウとナスダックの騰落率",
+        "note": "ロイターの米国24日通常取引終値報道。23日終値比。",
+        "unit": "%",
+        "source_url": "https://new.streetinsider.com/Market%2BCheck/Nasdaq,%2BS&P%2B500%2Bslip%2Bfollowing%2BMondays%2BNvidia-fueled%2Brally/27390048.html",
+        "observed_at": "2026-11-25T06:00:00+09:00",
+        "values": [
+          {
+            "label": "ダウ平均",
+            "value": 0.85,
+            "state": "実績"
+          },
+          {
+            "label": "ナスダック総合",
+            "value": -1.48,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "insm-nov24-close",
+        "kind": "bars",
+        "title": "インスメッド：23日と24日の通常終値",
+        "note": "Stock Analysisの日別Close。24日の買収合意発表後に上昇。時間外取引を含まない。",
+        "unit": "米ドル",
+        "source_url": "https://stockanalysis.com/stocks/insm/history/",
+        "observed_at": "2026-11-25T06:00:00+09:00",
+        "values": [
+          {
+            "label": "米国11/23",
+            "value": 149.09,
+            "state": "実績"
+          },
+          {
+            "label": "米国11/24",
+            "value": 170.15,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "INSM",
+        "name": "インスメッド",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "上昇",
+        "previous_close": 149.09,
+        "close": 170.15,
+        "price_kind": "close",
+        "market_date": "2026-11-24",
+        "previous_market_date": "2026-11-23",
+        "observed_at": "2026-11-25T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/insm/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Stock Analysisの11/23・11/24の日別CloseとAdj. Closeは各日一致。Yahoo Financeの日別履歴も同値。独自の分割補正なし。",
+        "context": "サノフィが11月24日に1株175ドルの現金買収契約を公表。呼吸器疾患分野の拡充が狙いで、株主承認・規制当局の認可等が完了条件。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "ロイター：米国24日通常取引の主要指数終値と業種の動き",
+        "url": "https://www.reuters.com/business/wall-st-futures-dip-chip-stocks-cool-after-nvidia-fueled-rally-2026-11-24/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "FRED：S&P Dow Jones Indices提供のダウ平均24日・23日終値",
+        "url": "https://fred.stlouisfed.org/series/DJIA",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "サノフィ公式発表：11月24日のインスメッド買収契約と条件",
+        "url": "https://www.sanofi.com/en/media-room/press-releases/2026/2026-11-24-06-30-00-3409002",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "Stock Analysis：インスメッド23日・24日の通常終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/insm/history/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "Yahoo Finance：インスメッドの日別通常終値と調整後終値",
+        "url": "https://finance.yahoo.com/quote/INSM/history/",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：取引時間と2026年休業日",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "NYSE：通常取引時間と2026年休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "Reuters配信本文（StreetInsider）：米国24日終値・半導体とヘルスケア、小売",
+        "url": "https://new.streetinsider.com/Market%2BCheck/Nasdaq,%2BS&P%2B500%2Bslip%2Bfollowing%2BMondays%2BNvidia-fueled%2Brally/27390048.html",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-25"
+      }
+    ]
   }
 ]
