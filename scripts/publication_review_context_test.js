@@ -1016,3 +1016,129 @@ test("ordinary empty first-read inventory finds only explicit merged photograph 
   assert.equal((await context.readPhotoHandoffs({ fetchRepository, ref: GIT(9), report })).status, "unverified");
   assert.equal((await context.readPhotoHandoffs({ fetchRepository: () => { throw Error("offline"); }, ref: REF })).status, "unverified");
 });
+
+function docsAdvance() {
+  const side = GIT(3), head = GIT(4), path = "docs/VISUAL_OPERATIONS.md";
+  const rows = ["morning", "evening", "weekend", "reserve"].map((slug, i) =>
+    ({ slug, article_sha256: (i + 1).toString().repeat(64), status: "missing" }));
+  const check = { name: "Photograph completion", head_sha: BASE, status: "completed", conclusion: "failure",
+    app: { slug: "github-actions" }, output: { text: JSON.stringify({ checkout_sha: BASE, photo_followup: rows }) } };
+  const fixture = {
+    missing: { total_count: 0, check_runs: [] }, checked: { total_count: 1, check_runs: [check] },
+    diff: { status: "ahead", ahead_by: 2, behind_by: 0, total_commits: 2, base_commit: { sha: BASE },
+      merge_base_commit: { sha: BASE }, commits: [{ sha: side }, { sha: REF, parents: [{ sha: BASE }, { sha: side }] }],
+      files: [{ filename: path, status: "added" }] },
+    intermediate: { sha: side, files: [{ filename: path, status: "added" }] },
+    open: [], main: REF, rows, calls: [],
+    fetchFile() { throw Error("Unexpected blob lookup"); },
+    async fetchRepository({ url }) {
+      const u = new URL(url), route = u.pathname.replace("/repos/" + REPO, "");
+      fixture.calls.push(route);
+      if (route === "/git/ref/heads/main") return { object: { sha: fixture.main } };
+      if (route === "/pulls") return fixture.open;
+      if (route === "/pulls/1040/files") return [{ filename: "assets/generated/morning.jpg", status: "modified" }];
+      if (route === "/commits/" + REF + "/check-runs") return fixture.missing;
+      if (route === "/commits/" + BASE + "/check-runs") return fixture.checked;
+      if (route === "/compare/" + REF + "~1..." + REF) return fixture.diff;
+      if (route === "/commits/" + side) return fixture.intermediate;
+      if (route === "/search/issues") {
+        const i = rows.findIndex(r => u.searchParams.get("q").includes(r.article_sha256));
+        assert(i >= 0);
+        return { total_count: 1, incomplete_results: false, items: [{ number: 101 + i }] };
+      }
+      const i = rows.findIndex((_, n) => route === "/pulls/" + (101 + n));
+      if (i >= 0) return { number: 101 + i, state: "closed", merged: true, author_association: "OWNER",
+        head: { sha: head, repo: { full_name: REPO } }, base: { ref: "main", repo: { full_name: REPO } },
+        body: "<!-- photo-recovery -->\n" + marker(head, { article_sha256: { [rows[i].slug]: rows[i].article_sha256 } }) };
+      throw Error("Unexpected docs advance lookup: " + route);
+    }
+  };
+  return fixture;
+}
+
+test("normal reviewer carries explicit photo handoffs across a proven docs merge within the callback budget", async () => {
+  const w = docsAdvance(), opts = { ...w, ref: REF };
+  const first = await context.read(opts);
+  assert.equal(first.empty, false);
+  const page = first.photo_recovery;
+  assert.equal(page.status, "checked");
+  assert.equal(page.check_sha, BASE);
+  assert.equal(page.may_generate, false);
+  assert(page.selected.length > 0 && page.next_offset > 0);
+  assert(w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: page.next_offset });
+  assert.equal(next.status, "checked");
+  assert(w.calls.length <= 14);
+  assert.deepEqual([...page.selected, ...next.selected].map(row => row.pr), [101, 102, 103, 104]);
+  assert.equal(next.next_offset, null);
+  w.open.push({ number: 1040, state: "open", draft: false, body: null,
+    head: { sha: GIT(8), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const owner = await context.readPhotoHandoffs({ ...opts, batchSize: 1 });
+  assert.deepEqual(owner.selected, []);
+  assert.deepEqual(owner.attention, [{ slug: "morning", pr: 1040, reason: "open_owner" }]);
+});
+
+test("docs fallback rejects changed then reverted content, incomplete diffs, stale checks and moved main", async () => {
+  for (const damage of [
+    w => { w.diff.status = "diverged"; },
+    w => { w.diff.merge_base_commit.sha = GIT(9); },
+    w => { w.diff.commits.at(-1).parents[0].sha = GIT(9); },
+    w => { w.diff.total_commits++; },
+    w => { w.diff.files = Array(300).fill(w.diff.files[0]); },
+    w => { w.intermediate.files = Array(100).fill(w.diff.files[0]); },
+    w => { w.diff.files[0].filename = "content/articles.json"; },
+    w => { w.diff.files[0] = { filename: "docs/article.md", status: "renamed", previous_filename: "content/articles.json" }; },
+    // The net diff is docs-only but the branch wrote an article and the merge reverted it.
+    w => { w.intermediate.files[0].filename = "content/articles.json"; },
+    w => { w.intermediate.truncated = true; },
+    w => { w.intermediate = { error: "offline" }; },
+    w => { w.checked.check_runs[0].head_sha = GIT(9); },
+    w => { w.checked.check_runs[0].app.slug = "other-app"; },
+    w => { w.checked.check_runs[0].output.text = JSON.stringify({ checkout_sha: REF, photo_followup: [] }); },
+    w => { w.missing = { check_runs: [] }; },
+    w => { w.main = BASE; }
+  ]) {
+    const w = docsAdvance(); damage(w);
+    const result = await context.readPhotoHandoffs({ ...w, ref: REF, batchSize: 1 });
+    assert.equal(result.status, "unverified", damage.toString());
+    assert.equal(result.may_generate, false);
+    assert.equal(result.selected, undefined);
+    assert(w.calls.length <= 14);
+  }
+  const w = docsAdvance();
+  w.missing = { total_count: 1, check_runs: [{ name: "Photograph completion", head_sha: REF, status: "in_progress" }] };
+  assert.equal((await context.readPhotoHandoffs({ ...w, ref: REF })).status, "unverified");
+  assert.equal(w.calls.length, 1);
+});
+
+test("checks each main advance, including a reverted earlier change, and stops reading at the callback limit", async () => {
+  const w = docsAdvance(), seen = [];
+  let forbidden = false, longChain = false;
+  const fetchRepository = async ({ url }) => {
+    const route = new URL(url).pathname.replace("/repos/" + REPO, "");
+    seen.push(route);
+    const rev = route.match(/^\/commits\/([a-f0-9]{40})\/check-runs$/)?.[1];
+    if (rev === REF || rev === GIT(9) || (rev && longChain)) return w.missing;
+    const cmp = route.match(/^\/compare\/([a-f0-9]{40})~1\.\.\.\1$/)?.[1];
+    if (cmp) {
+      const base = cmp === REF ? GIT(9) : longChain ? GIT(parseInt(cmp, 16) + 1) : BASE;
+      return { ...w.diff, ahead_by: 1, total_commits: 1, base_commit: { sha: base }, merge_base_commit: { sha: base },
+        commits: [{ sha: cmp, parents: [{ sha: base }] }],
+        files: [{ filename: forbidden && cmp === GIT(9) ? "content/articles.json" : "docs/GUIDE.md", status: "modified" }] };
+    }
+    return w.fetchRepository({ url });
+  };
+  const opts = { ...w, ref: REF, batchSize: 1, fetchRepository };
+  assert.equal((await context.readPhotoHandoffs(opts)).check_sha, BASE);
+  forbidden = true;
+  assert.equal((await context.readPhotoHandoffs(opts)).status, "unverified");
+  forbidden = false; longChain = true; seen.length = 0;
+  const normal = await context.read(opts);
+  assert.equal(normal.photo_recovery.status, "lookup_required");
+  assert.equal(normal.empty, false);
+  assert(seen.length <= 14);
+  seen.length = 0;
+  assert.equal((await context.readPhotoHandoffs(opts)).status, "unverified");
+  assert.equal(seen.length, 14);
+});
