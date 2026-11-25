@@ -38,15 +38,27 @@ function fixture(fetchImpl=async()=>Response.json({path:workflowPath,state:'acti
       requests.push({url,options});
       return fetchImpl(url,options);
     },
-    setTimeout(fn,ms){const timer={fn,ms};timers.add(timer);return timer;},
+    setTimeout(fn,ms){const timer={fn,ms,due:now+ms};timers.add(timer);return timer;},
     clearTimeout(timer){timers.delete(timer);}
   });
   vm.runInContext(source,context);
   const service=vm.runInContext('serviceHandler',context);
   return {
     requests,timers,
-    advance(ms){now+=ms;},
-    timeout(){assert.equal(timers.size,1);const [timer]=timers;assert.equal(timer.ms,3000);timer.fn();},
+    advance(ms){
+      now+=ms;
+      for(const timer of timers) {
+        if(timer.due>now)continue;
+        timers.delete(timer);
+        timer.fn();
+      }
+    },
+    timeout(expected=3000){
+      assert.equal(timers.size,1);
+      const [timer]=timers;
+      assert.equal(timer.ms,expected);
+      this.advance(timer.due-now);
+    },
     get(uri='/api/image-control?nonce=Fresh1',options={},env={}) {
       return service.fetch(new Request('https://veripsa.com'+uri,options),env);
     }
@@ -95,14 +107,19 @@ test('public control GET exposes only the checked workflow state and echoed nonc
 
 test('authenticated reads verify the public repository before workflow and ignore caller authorization',async()=>{
   for(const state of ['active','disabled_manually']) {
-    const f=fixture(async url=>Response.json(url===repositoryApi ? publicRepository : {path:workflowPath,state}));
+    const f=fixture(async url=>{
+      // Two ordinary upstream reads can together exceed the anonymous request window.
+      await Promise.resolve();
+      f.advance(2250);
+      return Response.json(url===repositoryApi ? publicRepository : {path:workflowPath,state});
+    });
     const response=await f.get(undefined,{headers:{authorization:'Bearer caller_private_value'}},
       {IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken});
     assert.equal(response.status,200);
     const data=await response.json();
     assert.equal(data.state,state);
     assert.equal(data.nonce,'Fresh1');
-    assert.equal(data.checked_at,'2026-11-16T07:00:00.000Z');
+    assert.equal(data.checked_at,'2026-11-16T07:00:04.500Z');
     privateHeaders(response);
     assert.equal(response.headers.get('authorization'),null);
     assert.doesNotMatch(JSON.stringify(data),/test_only_server|caller_private/);
@@ -154,7 +171,7 @@ test('authenticated repository responses have the same 16 KiB bound before any w
   assert.equal(cancelled,true);
 });
 
-test('one three-second deadline spans both authenticated reads and aborts their shared signal',async()=>{
+test('one six-second deadline spans both authenticated reads and aborts their shared signal',async()=>{
   let finishRepository,startedWorkflow;
   const workflowReady=new Promise(resolve=>{startedWorkflow=resolve;});
   const f=fixture(async url=>url===repositoryApi
@@ -163,14 +180,13 @@ test('one three-second deadline spans both authenticated reads and aborts their 
   const pending=unavailable(f,'timeout',{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken},2);
   assert.equal(f.timers.size,1);
   const [originalTimer]=f.timers;
-  f.advance(2500);
+  f.advance(3500);
   finishRepository();
   await workflowReady;
   assert.equal(f.timers.size,1);
   assert.equal([...f.timers][0],originalTimer);
-  assert.equal(originalTimer.ms,3000);
-  f.advance(500);
-  f.timeout();
+  assert.equal(originalTimer.ms,6000);
+  f.advance(2500);
   await pending;
   assert.deepEqual(f.requests.map(request=>request.url),[repositoryApi,upstream]);
   assert.equal(f.requests[0].options.signal,f.requests[1].options.signal);
@@ -181,7 +197,7 @@ test('a repository response completing after the deadline cannot start a workflo
   let finishRepository;
   const f=fixture(async()=>new Promise(resolve=>{finishRepository=()=>resolve(Response.json(publicRepository));}));
   const pending=unavailable(f,'timeout',{IMAGE_CONTROL_GITHUB_READ_TOKEN:serverReadToken});
-  f.timeout();
+  f.timeout(6000);
   await pending;
   finishRepository();
   await new Promise(resolve=>setImmediate(resolve));
