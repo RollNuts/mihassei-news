@@ -24,7 +24,11 @@ var NativeImageStage = (function () {
     if(readCloudWorkflow!==undefined&&typeof readCloudWorkflow!=="function")throw Error("Invalid cloud workflow callback");
     const hashText=s=>runtime.sha256(runtime.utf8(s)), transientInputs=new Map();
     const activeGenerations=new Set(), generationAttempts=new Map();
-    let generatedSnapshot, workflowNonce=0, stepUsage=null;
+    let generatedSnapshot, requestSequence=0, stepUsage=null;
+    function freshNonce(){
+      const randomHex=Array.from({length:4},()=>Math.floor(Math.random()*0x100000000).toString(16).padStart(8,"0")).join("");
+      return Date.now().toString(16).padStart(16,"0")+(++requestSequence).toString(16).padStart(16,"0")+randomHex;
+    }
     if (controlOnly) return {cloudStatus};
     function countStep(mutation=false){
       if(!stepUsage)return;
@@ -70,16 +74,19 @@ var NativeImageStage = (function () {
       return typeof raw.content==="string"?JSON.parse(raw.content):raw;
     }
     async function cloudStatus(){
+      let reading="repository";
       try {
         // Visibility and the stop authority are live on every check. Only the
         // byte total of an immutable main commit may be reused between writes.
         const repo=await fetchJSON("");
         if(typeof repo.full_name!=="string"||repo.full_name.toLowerCase()!==repository.toLowerCase()
           ||repo.private!==false||repo.visibility!=="public")throw Error("Repository is not confirmed public");
+        reading="main branch";
         const main=await fetchJSON("/branches/main");
         const commitSha=main.commit?.sha, treeSha=main.commit?.commit?.tree?.sha;
         if(main.name!=="main"||!GIT.test(commitSha||"")||!GIT.test(treeSha||""))throw Error("Invalid current main branch response");
         if(generatedSnapshot?.commitSha!==commitSha){
+          reading="generated JPEG tree";
           const tree=await fetchJSON("/git/trees/"+treeSha+"?recursive=1");
           if(tree.sha!==treeSha||tree.truncated!==false||!Array.isArray(tree.tree))throw Error("Incomplete generated-JPEG tree");
           let jpegBytes=0;
@@ -95,11 +102,11 @@ var NativeImageStage = (function () {
         if(generatedSnapshot.jpegBytes>JPEG_CAP)throw Error("Generated JPEG total exceeds 1.5 GiB");
         // Keep this last: a stop-all disables this existing workflow, including
         // while byte conversion, claim creation or candidate recovery is busy.
+        reading=readCloudWorkflow?"image control connector":"GitHub image workflow";
         let workflow;
         if(readCloudWorkflow){
           // The stop authority echoes a per-request freshness challenge, including across cold cells.
-          const randomHex=Array.from({length:4},()=>Math.floor(Math.random()*0x100000000).toString(16).padStart(8,"0")).join("");
-          const nonce=Date.now().toString(16).padStart(16,"0")+(++workflowNonce).toString(16).padStart(16,"0")+randomHex;
+          const nonce=freshNonce();
           countStep();const raw=payload(await readCloudWorkflow({nonce}));
           workflow=typeof raw.content==="string"?JSON.parse(raw.content):raw;
           const checked=Date.parse(workflow.checked_at),age=Date.now()-checked;
@@ -113,7 +120,7 @@ var NativeImageStage = (function () {
         return {state:"active",public:true,main_commit_sha:commitSha,jpeg_bytes:generatedSnapshot.jpegBytes,jpeg_cap_bytes:JPEG_CAP};
       } catch(error){
         const e=error instanceof Error?error:Error(String(error));
-        e.message="Cloud image operations stopped: "+e.message;throw e;
+        e.message="Cloud image operations stopped: "+reading+": "+e.message;throw e;
       }
     }
     async function call(name,args){
@@ -415,9 +422,16 @@ var NativeImageStage = (function () {
       }catch(e){if(e.checkpoint)throw e;throw attachFailure(e,state);}
     }
     async function branchHead(branch) {
-      const ref=await fetchJSON("/git/ref/heads/"+branch);
+      // Reusing a cached lookup of this shared ref after a fast-forward reports
+      // the preceding probe even when the connector accepted our update.
+      const query=branch===PREFLIGHT_BRANCH?"?read_nonce="+freshNonce():"";
+      const ref=await fetchJSON("/git/ref/heads/"+branch+query);
       if(ref.ref!=="refs/heads/"+branch||!GIT.test(ref.object?.sha||""))throw Error("Invalid branch response: "+branch);
       return ref.object.sha;
+    }
+    async function verifyPreflightHead(expected){
+      const observed=await branchHead(PREFLIGHT_BRANCH);
+      if(observed!==expected)throw Error("Preflight branch changed: expected "+expected+", observed "+observed);
     }
     async function transportPreflight(plan,options) {
       let phase="preflight_cloud_status";
@@ -477,7 +491,7 @@ var NativeImageStage = (function () {
           if(await branchHead(PREFLIGHT_BRANCH)!==commitSha)throw error;
         }
         phase="preflight_branch_readback";
-        if(await branchHead(PREFLIGHT_BRANCH)!==commitSha)throw Error("Concurrent transport check changed the preflight branch");
+        await verifyPreflightHead(commitSha);
         await verify(PREFLIGHT_BRANCH);
         return {kind:"native_image_transport_preflight",status:"passed",branch:PREFLIGHT_BRANCH,commit_sha:commitSha,
           receipt_path:PREFLIGHT_DIR+"/receipt.json",receipt_sha256:hashText(receiptText),observed_at:observedAt,
@@ -880,11 +894,11 @@ var NativeImageStage = (function () {
             if(state.previousSha)await call("update_ref",{branch_name:PREFLIGHT_BRANCH,sha:state.commitSha,expected_sha:state.previousSha,force:false});
             else await call("create_branch",{branch_name:PREFLIGHT_BRANCH,sha:state.commitSha});
           }catch(error){if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw error;}
-          if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Concurrent preflight branch change");
+          await verifyPreflightHead(state.commitSha);
           state.verifyIndex=0;state.phase="preflight_verify_branch";
         }else if(state.phase==="preflight_verify_branch"){
           if(await verifySlice(plan,state,PREFLIGHT_BRANCH,state.files,PREFLIGHT_VERIFY_BATCH)){
-            if(await branchHead(PREFLIGHT_BRANCH)!==state.commitSha)throw Error("Preflight branch changed during readback");
+            await verifyPreflightHead(state.commitSha);
             state.phase="claim_prepare";
           }
         }else if(state.phase==="claim_prepare"){

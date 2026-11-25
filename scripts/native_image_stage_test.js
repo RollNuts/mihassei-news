@@ -226,7 +226,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         if (args.url === root + "/git/commits/" + baseCommitSha)
           return ok({content: JSON.stringify({sha: baseCommitSha, tree: {sha: baseTreeSha}})});
         if (args.url === root + "/git/trees/" + cloud.commit.tree.sha + "?recursive=1") return cloudResult("tree");
-        const branch = args.url.split("/git/ref/heads/")[1];
+        const branch = args.url.split("?")[0].split("/git/ref/heads/")[1];
         let sha = branch === "main" ? cloud.mainSha : branches.get(branch);
         if (branch === "main" && cloud.error === "main") return apiError("SERVICE_UNAVAILABLE", "Injected main lookup failure");
         if (!sha) return apiError("NOT_FOUND", "Not Found");
@@ -642,7 +642,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     const context = await callbackScenario("callback-block-" + label, change), counts = {reads: 0, generated: 0};
     const error = await failure(() => context.service.generateAndStage(context.plan, gateOptions(context, counts)),
       label + " blocks the callback generation route");
-    assert(error.message.includes("Cloud image operations stopped:") && counts.generated === 0 &&
+    assert(error.message.includes("Cloud image operations stopped: image control connector:") && counts.generated === 0 &&
       counts.reads === 0 && context.mock.writes().length === 0 && context.requests.length === 1 &&
       !context.mock.calls.some(call => call.name === "fetch" && call.args.url.includes("/actions/workflows/")),
       label + " permits neither generator/writes nor a fallback after callback failure");
@@ -823,6 +823,35 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     "next invocation repeats real transport rather than caching the earlier pass");
   assert([...gated.mock.branches.keys()].filter(name => name.startsWith("native-image-preflight/")).length === 1,
     "repeated transport checks advance one preflight branch without branch proliferation");
+
+  // Some connector sessions reuse a prior response for the same URL. A mutable
+  // shared ref needs fresh reads before and after a non-forced advance.
+  const cachedRef = await scenario("cached-transport-head");
+  const rawFetch = cachedRef.mock.github.fetch;
+  const refCache = new Map();
+  cachedRef.mock.github.fetch = async args => {
+    if (!args.url.includes("/git/ref/heads/" + preflightBranch)) return rawFetch(args);
+    if (!refCache.has(args.url)) refCache.set(args.url, await rawFetch(args));
+    return refCache.get(args.url);
+  };
+  const checkOptions = gateOptions(cachedRef, {reads: 0, generated: 0});
+  delete checkOptions.generate;
+  const firstProbe = await cachedRef.service.checkTransport(cachedRef.plan, checkOptions);
+  const nextProbe = await cachedRef.service.checkTransport(cachedRef.plan, checkOptions);
+  assert(nextProbe.commit_sha !== firstProbe.commit_sha &&
+    nextProbe.commit_sha === cachedRef.mock.branches.get(preflightBranch),
+    "verify a second transport on the shared ref even when the connector caches URLs");
+  const actualUpdate = cachedRef.mock.github.update_ref;
+  cachedRef.mock.github.update_ref = async args => {
+    const result = await actualUpdate(args);
+    cachedRef.mock.branches.set(preflightBranch, firstProbe.commit_sha);
+    return result;
+  };
+  const moved = await failure(() => cachedRef.service.checkTransport(cachedRef.plan, checkOptions),
+    "reject a genuine shared head change after the write");
+  assert(moved.stage === "preflight_branch_readback" && moved.message.includes("observed " + firstProbe.commit_sha) &&
+    cachedRef.mock.branches.size === 1,
+    "a fresh lookup cannot bless bytes from a different head or create a generation claim");
 
   const transportOnly = await scenario("transport-only"), transportCounters = {reads: 0, generated: 0};
   const transportOptions = gateOptions(transportOnly, transportCounters);
