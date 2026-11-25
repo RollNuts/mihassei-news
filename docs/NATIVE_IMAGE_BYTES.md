@@ -203,13 +203,14 @@ Capture the PNG payload only inside code mode (direct or inside a supported wrap
 When this worker exposes a top-level Python executor, create this deterministic transport fixture there using only the standard library (outside `functions.exec`). It avoids raw-GitHub DNS, external downloads and manual Mac attachments:
 
 ```python
-import base64, hashlib
+import base64, hashlib, tempfile
 from pathlib import Path
 png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAAUUlEQVR4nNXRMQ0AMAwDQUMMiAILnCLpbAbpF4LHTqdfIkuRpCmdaTTmvc7U0jQa49bm4uYiGuMWM4o5jda7mDYzijmNxrjFjGJOozHu/79wAV5JS/CTcXlMAAAAAElFTkSuQmCC", validate=True)
 expected = "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744"
 assert len(png) == 138 and hashlib.sha256(png).hexdigest() == expected
-path = Path("/mnt/data/mihassei-offline-probe.png")
-path.write_bytes(png)
+with tempfile.NamedTemporaryFile(dir="/mnt/data", prefix="mihassei-probe-", suffix=".png", delete=False) as probe:
+    probe.write(png)
+    path = Path(probe.name)
 print({"probeSource": str(path), "expectedProbeSha256": expected, "probeSourceRef": str(path),
        "route": "read_candidate_png through the original file adapter"})
 ```
@@ -416,21 +417,25 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 <a id="weekly-original-transport"></a>
 ### Test the current producer’s original PNG route
 
-When stock is short, choose the route for the generator actually available in this execution. Use `inline_png` only when its callable result returns the original PNG data URL. For a file-returning generator, use `file` with its real `readCandidatePng` reader. The helper fetches the fixed public probe PNG from GitHub as base64 and verifies its bytes. If you already have that probe's file handle in this executor, pass `file`. Otherwise bind `writeProbeFile(base64)` to this executor's actual file writer: base64-decode into a new temporary `.png` in the generator's accessible workspace and return its absolute path. An available Python executor can use `base64.b64decode(value, validate=True)` and `tempfile.NamedTemporaryFile(dir=workspace, suffix=".png", delete=False)`; pass the input programmatically. No browser download or public URL is required. The same reader must reopen the returned path and verify the exact PNG before any reservation. If the writer or reader is unavailable, keep the failed stage and stop. Existing Library originals can use [the original recovery path](#blocked-photo-file-reference).
+Choose the route for the generator actually available in this execution. A file-returning generator must use its real `readCandidatePng` reader.
+
+- With top-level Python, run the [138-byte offline bootstrap](#offline-png-bootstrap) there. Use the returned path and the reviewed main commit SHA as shown below. Only the path crosses tools.
+- With a writer callable from code mode, bind `writeProbeFile(base64)` to decode the helper’s GitHub fixture into a new temporary PNG in the generator’s workspace and return the path. Pass `{route:"file", writeProbeFile}`. If that favicon fixture already has a handle, pass `{route:"file", file}`.
+- Use `{route:"inline_png"}` without a file reader only when the generator actually returns the original PNG data URL.
+
+The file route must reopen the exact fixture. If no available route works, record the failed stage before any reservation. Existing Library originals can use [the original recovery path](#blocked-photo-file-reference).
 
 Load the original handoff, native byte and staging helpers at the reviewed main commit. The verification runtime loads only SHA-256. Keep the byte-bearing tool results inside code mode.
 
 ```js
 const runtime = await bytesAPI.verificationRuntime(github.fetch_file);
 const {cloudStatus} = stageAPI.create({controlOnly:true, github, repository:"RollNuts/mihassei-news", readCloudWorkflow});
-// File-returning generator with an actual writer and reader in its workspace.
+// Top-level Python has created the offline fixture and returned its path.
 const handoff = H.create({runtime, github, cloudStatus, readCandidatePng});
-text(await handoff.checkOriginalTransport({route:"file", writeProbeFile}));
+text(await handoff.checkOriginalTransport({route:"file", file:probeSource, offlineProbeCommit:reviewedMainCommit}));
 ```
 
-With an existing verified file handle, pass `{route:"file", file}` instead. For an actual inline producer omit the file reader from `H.create` and pass `{route:"inline_png"}`. Remove only the temporary probe you created after use.
-
-This writes the same 3,395 public bytes through the chosen route and re-reads their existing immutable GitHub path, checking the acknowledged blob ID and SHA-256. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
+This writes the chosen fixture’s verified public bytes through the chosen route and re-reads their existing immutable GitHub path, checking the acknowledged blob ID and SHA-256. Remove only your temporary probe after completing its checks. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
 
 <a id="weekly-photo-quota"></a>
 ### Reserve one original in the producer’s weekly allowance
