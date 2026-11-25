@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "amane-hikari",
   "name": "天音ひかり",
-  "created_date": "2026-11-24",
+  "created_date": "2026-11-25",
   "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
   "photo_reference": {
     "issue_slug": "november-hikari-city-and-pool-013",
-    "cut_id": "03",
-    "image_sha256": "4ac12dbb999f6cd2010772f5b89926496a6936e269e92fe59b074ee7191ab89b"
+    "cut_id": "04",
+    "image_sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108"
   },
-  "post_text": "休憩中に外へ出たら風が冷たくて、みんなで日なたへ移動。温かいココアを飲みながら、次の曲の振りをこっそり合わせてた。",
-  "spoken_line": "日なた、あったかい！",
-  "future_idea": "2031年、屋外イベントの休憩場所と防寒設備を契約に明記する制度が導入され、出演者と主催者の費用分担が争点に。"
+  "post_text": "移動の合間に焼き芋を買ったら、半分に割るのが下手すぎて私の方が大きくなっちゃった。ちゃんと分け直したよ！",
+  "spoken_line": "ちゃんと半分こ！",
+  "future_idea": null
 }
