@@ -247,6 +247,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-22T23:11:44.316246+00:00"
+    },
+    "island-club-sound-ball-remote-league": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "e1633ddfc3c579aa6e7f4ffcd3240aa3387919fc333155af54df81d640a2c4a0",
+      "image_sha256": "110f499cec8e799673dfd70f56a66d090f0a5e0e1177a5ca1634cd63b3dae8cc",
+      "sha256": "d9d59f5a72cf983030bcdf0985767e6361aeb4d133770699cf86591a26a27d59",
+      "bytes": 138544,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-25T13:42:48.817584+00:00"
     }
   }
 }
