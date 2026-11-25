@@ -934,6 +934,30 @@ test("original transport checks inline and file bytes by writing only the existi
   }
 });
 
+test("a file producer can materialize the fixed GitHub bytes without a URL and must still read the file", async () => {
+  for (const fileError of [false, true]) {
+    const {api, calls, file, handle} = originalTransportFixture({fileError});
+    const writeProbeFile = async base64 => {
+      calls.push("writeProbeFile");
+      assert.deepEqual(Buffer.from(base64, "base64"), file.data);
+      return handle;
+    };
+    const result = await api.checkOriginalTransport({route:"file", writeProbeFile});
+    if (fileError) {
+      assert.equal(result.status, "blocked");
+      assert.equal(result.operation, "readCandidatePng/upload");
+      assert.deepEqual(calls, ["fetch_file", "writeProbeFile", "readCandidatePng"]);
+    } else {
+      assert.deepEqual(result, {status:"verified", route:"file", sha256:file.sha256, blob:file.blob, bytes:file.bytes});
+      assert.deepEqual(calls, ["fetch_file", "writeProbeFile", "readCandidatePng", "create_blob", "fetch_file"]);
+    }
+  }
+  const {api, calls} = originalTransportFixture();
+  const unavailable = await api.checkOriginalTransport({route:"file", writeProbeFile:async () => undefined});
+  assert.deepEqual(unavailable, {status:"blocked", route:"file", operation:"write_probe_file", reason:"No materialized probe file"});
+  assert.deepEqual(calls, ["fetch_file"]);
+});
+
 test("original transport blocks a disabled workflow and rejects substituted readback bytes", async () => {
   const stopped = originalTransportFixture({active:false});
   assert.deepEqual(await stopped.api.checkOriginalTransport({route:"inline_png"}), {

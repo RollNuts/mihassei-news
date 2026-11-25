@@ -416,17 +416,19 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 <a id="weekly-original-transport"></a>
 ### Test the current producer’s original PNG route
 
-When a producer has a real stock shortage, check the image tool actually exposed **in this scheduled execution**. If its callable result supplies the unmodified PNG data URL to code mode, use `inline_png`. If the tool supplies a file, open [the public probe PNG](https://raw.githubusercontent.com/RollNuts/mihassei-news/1d9b571b914d6c323a3821e46d23ae0d8e354f95/assets/favicon-192.png) through that same executor's file bridge and supply the resulting handle and its real `readCandidatePng` callback. A website preview, an ID without a reader, or a file on a different machine cannot establish this route. Existing Library originals with a real file reference can use [the original recovery path](#blocked-photo-file-reference).
+When stock is short, choose the route for the generator actually available in this execution. Use `inline_png` only when its callable result returns the original PNG data URL. For a file-returning generator, use `file` with its real `readCandidatePng` reader. The helper fetches the fixed public probe PNG from GitHub as base64 and verifies its bytes. If you already have that probe's file handle in this executor, pass `file`. Otherwise bind `writeProbeFile(base64)` to this executor's actual file writer: base64-decode into a new temporary `.png` in the generator's accessible workspace and return its absolute path. An available Python executor can use `base64.b64decode(value, validate=True)` and `tempfile.NamedTemporaryFile(dir=workspace, suffix=".png", delete=False)`; pass the input programmatically. No browser download or public URL is required. The same reader must reopen the returned path and verify the exact PNG before any reservation. If the writer or reader is unavailable, keep the failed stage and stop. Existing Library originals can use [the original recovery path](#blocked-photo-file-reference).
 
 Load the original handoff, native byte and staging helpers at the reviewed main commit. The verification runtime loads only SHA-256. Keep the byte-bearing tool results inside code mode.
 
 ```js
 const runtime = await bytesAPI.verificationRuntime(github.fetch_file);
 const {cloudStatus} = stageAPI.create({controlOnly:true, github, repository:"RollNuts/mihassei-news", readCloudWorkflow});
-const handoff = H.create({runtime, github, cloudStatus, readCandidatePng}); // undefined for inline
-const proof = await handoff.checkOriginalTransport({route, file}); // file is undefined for inline
-text(proof);
+// File-returning generator with an actual writer and reader in its workspace.
+const handoff = H.create({runtime, github, cloudStatus, readCandidatePng});
+text(await handoff.checkOriginalTransport({route:"file", writeProbeFile}));
 ```
+
+With an existing verified file handle, pass `{route:"file", file}` instead. For an actual inline producer omit the file reader from `H.create` and pass `{route:"inline_png"}`. Remove only the temporary probe you created after use.
 
 This writes the same 3,395 public bytes through the chosen route and re-reads their existing immutable GitHub path, checking the acknowledged blob ID and SHA-256. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
 
