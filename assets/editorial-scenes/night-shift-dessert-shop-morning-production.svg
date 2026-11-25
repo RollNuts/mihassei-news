@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="創作イラスト：夜明けの菓子店で、仕事を終えた作業員が最後のプリンを受け取る" data-visual-topic="parcel" data-article-sha256="a340864892e24850294e6d9c3c0d40c0b482e238e4d62d744d7c9b5a60b003c9">
+<title>夜勤明け、朝の菓子店でごほうび</title>
+<desc>青い朝空の工場街を背に、紺色の作業着の客が、菓子店の店員から最後の蓋付きプリンを受け取る。ショーケースの棚には空いたトレーが並ぶ。</desc>
+<defs><linearGradient id="dawn" x2="0" y2="1"><stop stop-color="#53748a"/><stop offset="1" stop-color="#ecbfa0"/></linearGradient></defs>
+<path fill="#f5e8ce" d="M0 0h1200v675H0z"/>
+<path fill="#d3b38f" d="M0 0h1200v28H0z"/>
+<path fill="url(#dawn)" stroke="#725b49" stroke-width="12" d="M52 60h500v375H52z"/>
+<circle fill="#f9dbab" cx="441" cy="294" r="35"/>
+<path fill="#66737d" d="M59 377V274l73-39v39l76-39v39l78-39v142zM335 377v-66h50v-85h28v85h41v-39h91v105z"/>
+<path stroke="#80664f" stroke-width="12" d="M301 60v375M53 382h498"/>
+<path fill="#e6c68f" d="M580 45h574v376H580z"/>
+<circle cx="1010" cy="130" r="61" fill="#f8f0df" stroke="#78644c" stroke-width="9"/>
+<path d="M1010 82v14m48 34h-13m-35 48v-14m-48-34h13M1010 130v-42m0 42-21 36" fill="none" stroke="#78644c" stroke-width="7" stroke-linecap="round"/>
+<path fill="#eee8db" stroke="#8a7967" stroke-width="10" d="M634 240h470v227H634z"/>
+<path fill="#d6e2df" d="M649 256h440v91H649z"/>
+<path stroke="#a7b4ad" stroke-width="8" d="M647 349h443M672 325h98m36 0h98m36 0h116"/>
+<path fill="#e7ddc9" d="M650 365h438v86H650z"/>
+<path fill="#596b70" d="M0 620h1200v55H0z"/>
+<path fill="#38526a" d="M131 641V416q0-73 73-79h67q66 9 67 86v218z"/>
+<path fill="#f0c3a0" d="M190 291h80v76q-36 39-80 0z"/>
+<ellipse fill="#f0c3a0" cx="228" cy="260" rx="63" ry="77"/>
+<path fill="#343a3d" d="M163 258v-40q8-65 68-58 73-3 72 84l-31-24-25-17-68 24v31z"/>
+<path d="M198 268h10m44 0h10m-44 39q14 6 26-1" stroke="#685242" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M191 401h84m-42 0v208m-57-145h39m50 0h35" stroke="#7890a2" stroke-width="6" fill="none"/>
+<path fill="#38526a" stroke="#2a4053" stroke-width="8" d="m311 401 45 71 122-17 11 48-154 32q-23 3-36-25l-43-66z"/>
+<path fill="#f0c3a0" d="m468 454 51-8q17 0 21 14l1 28q-2 13-21 15l-37-1z"/>
+<path fill="#a75e47" d="M754 624V339q0-71 71-71h69q72 0 72 76v280z"/>
+<path fill="#f2c5a1" d="M820 227h64v64q-28 33-64 0z"/>
+<ellipse fill="#f2c5a1" cx="854" cy="190" rx="57" ry="68"/>
+<path fill="#594438" d="M794 198v-44q0-55 62-55 60 0 60 70l-26-8-22-35-41 38-20 34z"/>
+<path d="M831 196h8m35 0h8m-40 28q14 9 26-1" stroke="#6c4f3e" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path fill="#f5ddaf" d="m798 288 19 9v82h79v-83l18-9 21 337H779z"/>
+<path fill="#a75e47" stroke="#8e4e3c" stroke-width="8" d="m793 336-40 64-191 35 8 47 222-31q20-5 32-28l28-61z"/>
+<path fill="#f2c5a1" d="m573 431-57 6q-17 1-17 17v22q1 13 18 14l55-7z"/>
+<path fill="#8b6544" d="M47 543h1103v50H47z"/>
+<path fill="#c99764" d="M64 593h1067v82H64z"/>
+<path fill="#eadfbf" stroke="#6b5340" stroke-width="5" d="m500 399 13 65h50l14-65z"/>
+<path fill="#ca874d" d="m511 418 8 38h38l8-38z"/>
+<ellipse fill="#f8efd7" stroke="#6b5340" stroke-width="5" cx="538" cy="399" rx="41" ry="10"/>
+</svg>
