@@ -15,7 +15,9 @@ python3 scripts/build.py
 
 一覧の `pending` は未検品、`rejected` は品質保留であり、失敗した生成ジョブとは別。発行・改稿担当は今回変更した記事を確認し、残る未検品は[画像回収担当](OPERATIONS.md#画像動画の担当を重ねない)へ引き継ぐ。通常の回収は`attention`と変更対象に限り、正常な既刊全件の再取得・再検品は週次の横断確認へ任せる。現在の記事・画像SHAに一致するacceptedは、新しい不具合がなければ再承認しない。件数を満たすために雑な合格を付けない。
 
-通常の新着写真は[既存の画像担当](OPERATIONS.md#画像動画の担当を重ねない)が、独立初読で確定した本文と同じPRで仕上げる。[未着手・障害・CI待機の扱い](OPERATIONS.md#未着手を未完報告だけで持ち越さない)に従い、Nativeの成功経路で処理する。GPTが実行可能な工程を担当し、保存・目視採用・通常PR・本番確認を同じPRで進める。保存・実機・ツール能力不足は現記事SHA・候補・同PR・実際に失敗した操作を既存引継ぎへ残し、Codexへの障害修理依頼は[OPERATIONSの担当表](OPERATIONS.md#担当と正本)に従う。最初は`visual_review.py --compact`の集計・attentionと明示引継ぎだけを読み、対象0件なら正常な既刊本文をモデルへ流さず終了する。保存済み候補・生成claim・担当PRを先に回収し、CPUを先行自動生成しない。手動CPUは[FREE_CPU_IMAGES](FREE_CPU_IMAGES.md)に従う。
+通常の新着写真は[既存の画像担当](OPERATIONS.md#画像動画の担当を重ねない)が、独立初読で確定した本文と同じPRで仕上げる。[未着手・障害・CI待機の扱い](OPERATIONS.md#未着手を未完報告だけで持ち越さない)に従い、Nativeの成功経路で処理する。GPTが実行可能な工程を担当し、保存・目視採用・通常PR・本番確認を同じPRで進める。保存・実機・ツール能力不足は現記事SHA・候補・同PR・実際に失敗した操作を既存引継ぎへ残し、Codexへの障害修理依頼は[OPERATIONSの担当表](OPERATIONS.md#担当と正本)に従う。最初は集計・`attention`と、`photo_followup`に残る現記事SHAの明示引継ぎを確認する。保存済み候補・生成claim・担当PRを先に回収し、CPUを先行自動生成しない。手動CPUは[FREE_CPU_IMAGES](FREE_CPU_IMAGES.md)に従う。
+
+記事を挿絵で先に公開し、写真の回収を続ける場合は、元PR本文の引継ぎに `<!-- photo-recovery -->` を1行で付け、元plan・checkpoint・候補・claimと次操作を保持する。既存reviewerの `photo_recovery.selected` は固定mainの `Photograph completion` と元PRの明示引継ぎ・記事SHAを照合した一覧。`unverified` は対象0件として扱わず、同じSHAの本番artifactを `report` として `readPhotoHandoffs` に渡せる。`next_offset` が残れば同じSHAの `offset` に渡す。元PRの発見だけでは生成できない。担当PR・進行中run・候補の有無を再確認し、既存claimでは同一の生成物だけを回収する。元PRが統合済みなら元planを継続し、採用した写真差分だけを現mainから通常PRで公開する。
 
 時間切れ・表示不能は検品完了とせず、担当中の同PR・既存引継ぎで待つ。生成成功だけで終えず、現在の実画像を採用して本番照合するか、不合格を記録して本文に合う専用SVGを本番照合する。写真待ちでも記事発行は続け、無料枠・停止範囲・容量・Mac負荷・X/OFFの保護はOPERATIONSと各正本を維持する。
 
