@@ -5467,5 +5467,142 @@
         "checked_on": "2026-11-25"
       }
     ]
+  },
+  {
+    "slug": "2026-11-25-noon",
+    "day": "2026-11-25",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-25T12:46:30+09:00",
+    "title": "医薬品株指数5.99%高、半導体株指数は10.27%安　25日後場",
+    "summary": "25日12時43分の日経平均は2.78%安、日経半導体株指数は10.27%安。JPXの12時45分更新では医薬品が5.99%高、食料品が3.48%高となり、非鉄金属の8.25%安とは対照的だった。",
+    "lead": "25日の東京株式市場では後場に入っても半導体関連の下落が続いています。日経半導体株指数は12時43分時点で10.27%安。これに対しJPXの12時45分更新では医薬品が5.99%高、食料品が3.48%高でした。いずれも24日終値との比較で、25日の取引途中の値です。",
+    "sections": [
+      {
+        "heading": "半導体株指数の下落率が10%を超える",
+        "paragraphs": [
+          "日経平均は12時43分時点で57,012.38円（1,632.25円安、2.78%安）、日経半導体株指数は15,201.59ポイント（10.27%安）でした。朝の10時00分時点ではそれぞれ2.45%安、9.61%安だったため、両指数とも下落率が拡大しています。"
+        ]
+      },
+      {
+        "heading": "医薬品・食料品は上昇、非鉄金属は下落",
+        "paragraphs": [
+          "JPXの12時45分更新では医薬品が5.99%高、食料品が3.48%高となりました。非鉄金属は8.25%安、電気機器は5.11%安で、医薬品と非鉄金属の騰落率には14.24ポイントの開きがあります。朝の既刊で取り上げた半導体関連の下落とは逆方向の動きが、生活に関わる業種にも見られます。",
+          "業種別指数の上昇だけでは個別企業の買い材料や資金の移動先までは特定できません。ただし、半導体関連が大幅に下げる一方で、医薬品や食料品は同じ時間帯に上昇していたことが分かります。"
+        ]
+      },
+      {
+        "heading": "主力大型株と中型株でも異なる動き",
+        "paragraphs": [
+          "同じ12時45分更新のTOPIXは3,738.84ポイント（0.69%安）でした。TOPIX Core30は1.69%安、TOPIX Mid400は0.04%高と、規模別の指数でも差が出ています。Core30の下落率はTOPIX全体より大きく、中型株の指数は前日終値近辺にとどまりました。",
+          "25日は日米とも通常取引日ですが、米国25日の現物取引は日本時間25日23時30分からです。ここで扱う日本株の数値は大引け前の途中値であり、終値ではありません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov25-noon",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "25日12時43分時点、24日終値比。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-25T12:43:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": -2.78,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": -10.27,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "pharma-nonferrous-nov25-noon",
+        "kind": "bars",
+        "title": "医薬品と非鉄金属の騰落率",
+        "note": "JPX25日12時45分更新、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T12:45:00+09:00",
+        "values": [
+          {
+            "label": "医薬品",
+            "value": 5.99,
+            "state": "実績"
+          },
+          {
+            "label": "非鉄金属",
+            "value": -8.25,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "core30-mid400-nov25-noon",
+        "kind": "bars",
+        "title": "TOPIX Core30とMid400",
+        "note": "JPX25日12時45分更新、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-25T12:45:00+09:00",
+        "values": [
+          {
+            "label": "Core30",
+            "value": -1.69,
+            "state": "実績"
+          },
+          {
+            "label": "Mid400",
+            "value": 0.04,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：25日12時43分公表値",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：現物指数・業種別指数の25日12時45分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "JPX：2026年取引日・休業日",
+        "url": "https://www.jpx.co.jp/english/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "NYSE：2026年取引時間・休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "25日寄り後の既刊：10時00分の日経指数",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-25-open/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      }
+    ]
   }
 ]
