@@ -14,6 +14,58 @@
   },
   "producer_handoff": {
     "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/0ceca247dc55f020f0b8202f4bac0b6afd081660/maintenance/photo-issue-plans/november-mio-on-the-move-016/weekly-generation-coverage-20261122.json",
-    "weekly_quota_next_step": "当週の正規台帳 photo-issue-plan/stock-hanase-mio-2026-11-22 を使う。現在の本人枠で原本を返す画像ツールを確認し、最新mainの docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport で実際の返却経路を検証後、通常の1枚予約へ進む。"
+    "weekly_quota_next_step": "今週の実消費台帳は復旧しbaseline0・attempts0。今回CodeModeに内蔵生成原本PNGを返す実callbackは露出なし。file-only原本参照も確立しておらず、checkOriginalTransportの入力routeを実証できないため予約・生成なし。次回の実行環境で生成の実返却形式・対応保存経路を確認し、既存checkOriginalTransport成功後だけ週予約へ進む。",
+    "stock_checked_at": "2026-11-25T03:07:34.598Z",
+    "stock_main_commit": "a9642d28a3ccf2965ddbad1bfe3262cbdc1bfdb8",
+    "stock_source_handoff_commit": "108dd3cfd7df0e446615cec8ef413d3ca4d10c05",
+    "stock_source_handoff_blob": "11e22560e9c38656e2f8b074f9821dc7021d725c",
+    "stock_review_run": "chatgpt:6af8677a-48b8-83ee-9bda-5703c13629aa",
+    "stock_review_basis": "本人顔基準JPEG・予備4枚の実表示、各JPEG SHA照合、read_weekly_candidate_pngで同固定commitの全原本SHA・PNG CRC・寸法・容量を再照合。掲載済み30枚の原本SHAとJPEG SHAを除外。既存stock_reviewの過去誌面比較も維持。正式入稿の採否は編集担当。",
+    "usable_count": 4,
+    "received_unreviewed_count": 0,
+    "unreceived_count": "unknown",
+    "next_issue_shortfall": 6,
+    "target_stock_shortfall": 26,
+    "stock_review": [
+      {
+        "candidate_number": "05",
+        "source_sha256": "fffdae50eaeccc15707d178cac96c18f35918e4eddb789b09270ef8c71cb7000",
+        "jpeg_sha256": "0e0cc0ed7192086aa88e1d8aa619b3228d6f8582c41ebcc67f2ce3939f40e65a",
+        "remote_original_sha_verified": true,
+        "actual_jpeg_display_review": "stock_usable",
+        "swimwear_visible": false,
+        "note": "船上の手すりと全身、白のスポーツ服・青ショートパンツ。顔髪・手足の接続、光、船と海の描写に目立つ破綻なし。"
+      },
+      {
+        "candidate_number": "09",
+        "source_sha256": "541fe2b3d235c2bfbd63bdb95d5888f367c8eb1dbdabd52855ee2102825fc045",
+        "jpeg_sha256": "624ef570d2542264dcca688ba39cf2d74ec971f64ee99c3a8bada28de7d862bc",
+        "remote_original_sha_verified": true,
+        "actual_jpeg_display_review": "stock_usable",
+        "swimwear_visible": false,
+        "note": "桟橋の座位・寄り。コーラルの衣服、顔・指・膝の形、反射が自然。インナーは水着と確定しない。"
+      },
+      {
+        "candidate_number": "10",
+        "source_sha256": "0b5cafaf007e07b0effa31591a92b4e3e91508ebb666f1655942a194cd03d354",
+        "jpeg_sha256": "eee70bbdcd73996597f6a27ac6510ab48f186f0237f3956ecb79f225b32f4965",
+        "remote_original_sha_verified": true,
+        "actual_jpeg_display_review": "stock_usable",
+        "swimwear_visible": false,
+        "note": "夕日の浜辺を裸足で歩く全身、ピンクの羽織・短パン・手持ちサンダル。既刊016の柄ワンピース夕景と衣服・動きが異なる。"
+      },
+      {
+        "candidate_number": "12",
+        "source_sha256": "5cca809de02b7af089455bfb80e9a76186c5367a3c0f55a02e94b6a69b30c5cf",
+        "jpeg_sha256": "1016a624dc6b8f3455527d98451beafffd734ec50dcae0c1327fdfca5c4152a6",
+        "remote_original_sha_verified": true,
+        "actual_jpeg_display_review": "stock_usable",
+        "swimwear_visible": false,
+        "note": "海沿い歩道でリュックを背負い振り向く全身。顔・髪、手足、歩道と海が自然。"
+      }
+    ],
+    "weekly_ledger_commit": "7c25caa56e4b729de215e24b0a12f9752157cc5a",
+    "weekly_consumed": 0,
+    "weekly_remaining": 20
   }
 }
