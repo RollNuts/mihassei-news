@@ -5191,7 +5191,7 @@
     "day": "2026-11-25",
     "slot": "am",
     "coverage": "investor",
-    "published_at": "2026-11-25T08:31:16+09:00",
+    "published_at": "2026-11-25T09:08:26+09:00",
     "title": "米ナスダック1.48%安、ダウ0.85%高　買収合意のインスメッドは14.13%高",
     "summary": "米国24日の通常取引はナスダック総合1.48%安、S&P500は0.50%安、ダウ平均は0.85%高。医薬品のインスメッドはサノフィによる現金買収合意の発表後、14.13%上昇した。",
     "lead": "米国11月24日の株式市場は、前日の急反発から一転してナスダック総合が1.48%下落しました。一方、ダウ平均は0.85%上昇し、同じ米国市場でも指数によって方向が分かれました。医薬品のインスメッドは買収合意の発表後に14.13%高となりました。いずれも通常取引の終値（日本時間25日午前6時）です。",
@@ -5223,7 +5223,7 @@
         "title": "米国24日：ダウとナスダックの騰落率",
         "note": "ロイターの米国24日通常取引終値報道。23日終値比。",
         "unit": "%",
-        "source_url": "https://www.reuters.com/business/wall-st-futures-dip-chip-stocks-cool-after-nvidia-fueled-rally-2026-11-24/",
+        "source_url": "https://new.streetinsider.com/Market%2BCheck/Nasdaq,%2BS&P%2B500%2Bslip%2Bfollowing%2BMondays%2BNvidia-fueled%2Brally/27390048.html",
         "observed_at": "2026-11-25T06:00:00+09:00",
         "values": [
           {
@@ -5321,6 +5321,12 @@
         "title": "NYSE：通常取引時間と2026年休場日",
         "url": "https://www.nyse.com/trade/hours-calendars",
         "published_on": "2026-11-25",
+        "checked_on": "2026-11-25"
+      },
+      {
+        "title": "Reuters配信本文（StreetInsider）：米国24日終値・半導体とヘルスケア、小売",
+        "url": "https://new.streetinsider.com/Market%2BCheck/Nasdaq,%2BS&P%2B500%2Bslip%2Bfollowing%2BMondays%2BNvidia-fueled%2Brally/27390048.html",
+        "published_on": "2026-11-24",
         "checked_on": "2026-11-25"
       }
     ]
