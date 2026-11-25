@@ -1104,6 +1104,14 @@
     "students-waste-collection-reuse-boxes-win": {"article_sha256":"0b67397b5ace9ee444210d35d00451ff6f4af2ffeaf88b2d31546f184a8c280d","decision":"accepted","image_sha256":"468284d80aed9251cf52a30dcda0e2d07227e558c3b43aaf3f5f8b07ff07908e","reviewed_at":"2026-11-23T11:19:16.146Z","note":"固定候補commit 86ea9a455dc5ba88127b2e2883be468ae45a4ebbから原PNGと1200×675 JPEGを取得・実表示し、生成直後の原画像とも照合。駅前の二店舗に面した返却場所で制服姿の高校生3人、一人が小さな透明ごみ袋を持ち、一人が共通の持ち帰り容器を返却箱へ戻し、店主が見守る動作を確認。現本文の主役・ごみ拾いと容器返却の対比に合う。夕暮れの自然光と店の照明、布地、肌の陰影、容器の樹脂、路面の質感が現場写真として自然で、主役の手や物の融合等は目立たない。写真は削減数値・正確な重量・勝敗を証明するものではない。保存原本とJPEGの全SHA読戻し済み。"}
   ,
     "island-club-sound-ball-remote-league": {"article_sha256":"e1633ddfc3c579aa6e7f4ffcd3240aa3387919fc333155af54df81d640a2c4a0","decision":"accepted","image_sha256":"110f499cec8e799673dfd70f56a66d090f0a5e0e1177a5ca1634cd63b3dae8cc","reviewed_at":"2026-11-23T23:16:25.771Z","note":"固定候補commit 5fc7667d07e044d44d8f3bc0fecec6aec3dea257の原PNGと1200×675 JPEGを取得・実表示し全文と照合。島の体育館の成人選手が両手の小型端末を装着し、実物の球のない空間へ両手を伸ばす場面。後方の別区画の選手と端の三脚カメラ、木床・窓・海の背景を確認。身体動作を計測する音と振動の球技という本文に合う。肌、指、衣服の陰影、床の反射が自然で目立つ融合や余分な球・ホログラム・文字はない。試合の通信や得点、島外の対戦相手をこの写真が証明するとは扱わない。保存原本とJPEGの全SHA読戻し済み。"}
+  ,
+    "city-station-dressing-space-accessible-toilet": {
+  "article_sha256": "f813e7cf9a690cde9ed0c28b59289d9aef6597010947eeeb68f1ea6de36b0f0a",
+  "decision": "accepted",
+  "image_sha256": "309df75f664a8d101df43c15008813fe679bb73df4a47f154fdf87aecf80ef59",
+  "reviewed_at": "2026-11-25T23:14:30.085Z",
+  "note": "現本文全文、固定候補commit 895ad0888aef66af560eafecd89ad6ae3736ba9b の原PNGと1200×675 JPEGを実表示して照合。駅ホームが窓越しに見える身支度室で、成人女性が大きな鏡の前でコートの襟を整え、かばんを棚に置く動作が明瞭。奥の独立した着替え個室も本文の設備構成に一致する。自然な窓光、コートの毛織りと皺、鏡の反射、顔と手の陰影、床と棚の材質が普通の現場スナップとして成立し、目立つ人体の破綻・可読文字・ロゴなし。制度変更や待ち時間数値を写真だけで証明せず、主場面の再現写真として採用。"
+}
   },
   "version": 1
 }
