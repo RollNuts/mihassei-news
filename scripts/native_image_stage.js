@@ -879,17 +879,28 @@ var NativeImageStage = (function () {
             ||typeof options.route!=="string"||!options.route.trim()||options.route.length>500
             ||typeof options.probeSourceRef!=="string"||!options.probeSourceRef.trim()||options.probeSourceRef.length>1000)
             throw Error("Provide the actual byte callback and existing probe reference/SHA");
-          if(state.version===2)state.probeSource=sourceRef(options.probeSource);
+          if(state.version===2){
+            const ref=sourceRef(options.probeSource);
+            if(state.probeSource!==undefined&&state.probeSource!==ref)throw Error("Probe source reference changed on retry");
+            state.probeSource=ref;
+          }
           await cloudStatus();countStep();const image=await options.readBytes(options.probeSource);
           const observedAt=new Date().toISOString(),captured=capture({imageGenResult:image,observedAt,expectedSourcePngSha256:options.expectedProbeSha256});
           if(captured.source.length>PART_SIZE)throw Error("Use a probe PNG no larger than 512 KiB");
-          state.previousSha=false;
-          try{
-            await read(PREFLIGHT_DIR+"/receipt.json",PREFLIGHT_BRANCH);
-            state.previousSha=await branchHead(PREFLIGHT_BRANCH);
-            const previous=JSON.parse((await read(PREFLIGHT_DIR+"/receipt.json",state.previousSha)).content);
-            if(previous.version!==1||previous.kind!=="native_image_transport_preflight"||previous.repository!==repository)throw Error("Preflight branch is not an owned probe");
-          }catch(error){if(!absentRef(error,PREFLIGHT_BRANCH))throw error;}
+          const ownProbe=state.version===2&&!state.proof;
+          if(ownProbe){
+            // Older capture errors could retain a shared head before saving any probe.
+            // This fresh transfer is anchored only to the article's own baseline/claim.
+            delete state.previousSha;
+          }else{
+            state.previousSha=false;
+            try{
+              await read(PREFLIGHT_DIR+"/receipt.json",PREFLIGHT_BRANCH);
+              state.previousSha=await branchHead(PREFLIGHT_BRANCH);
+              const previous=JSON.parse((await read(PREFLIGHT_DIR+"/receipt.json",state.previousSha)).content);
+              if(previous.version!==1||previous.kind!=="native_image_transport_preflight"||previous.repository!==repository)throw Error("Preflight branch is not an owned probe");
+            }catch(error){if(!absentRef(error,PREFLIGHT_BRANCH))throw error;}
+          }
           const receipt={version:1,kind:"native_image_transport_preflight",status:"probe_only_not_an_article_candidate",repository,
             candidate_identity:plan.identity,logical_run_id:plan.logicalRunId,observed_at:observedAt,route:options.route,
             probe_source_ref:options.probeSourceRef,source:{sha256:captured.sourceSha,bytes:captured.source.length},
@@ -900,7 +911,7 @@ var NativeImageStage = (function () {
             {path:PREFLIGHT_DIR+"/probe.jpg",content:captured.converted.base64,encoding:"base64",hash:captured.converted.sha256},
             {path:PREFLIGHT_DIR+"/receipt.json",content:text,encoding:"utf-8",hash:hashText(text)}];
           state.blobs={};state.index=0;
-          state.proof={kind:receipt.kind,status:"passed",branch:PREFLIGHT_BRANCH,receipt_path:PREFLIGHT_DIR+"/receipt.json",
+          state.proof={kind:receipt.kind,status:"passed",branch:ownProbe?generationClaimRef(plan).branch:PREFLIGHT_BRANCH,receipt_path:PREFLIGHT_DIR+"/receipt.json",
             receipt_sha256:hashText(text),observed_at:observedAt,route:options.route,
             source_sha256:captured.sourceSha,jpeg_sha256:captured.converted.sha256};
           state.phase="preflight_blobs";
