@@ -5742,5 +5742,178 @@
         "checked_on": "2026-11-25"
       }
     ]
+  },
+  {
+    "slug": "2026-11-26-am",
+    "day": "2026-11-26",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-26T08:32:56+09:00",
+    "title": "米ナスダック0.62%安、アンバレラ19.77%安　メモリー高が顧客に波及",
+    "summary": "25日の米国株はダウ平均が0.33%高、ナスダック総合が0.62%安。半導体企業アンバレラは決算翌日に19.77%下落した。同社はメモリーの値上がりと供給不足が顧客の見通しに影響していると説明した。",
+    "lead": "米国25日の通常取引（日本時間26日6時終了）でナスダック総合は0.62%下落しました。半導体企業アンバレラ（NASDAQ: AMBA）は前日の決算発表後、25日に19.77%安の35.68ドルで取引を終えました。一方、ダウ平均は0.33%上昇しています。",
+    "sections": [
+      {
+        "heading": "ダウ平均は上昇、ナスダックは値上がり銘柄の方が多い",
+        "paragraphs": [
+          "米国24日終値との比較で、ダウ平均は50,182.95ポイント（0.33%高）、S&P500は7,182.78ポイント（0.25%安）、ナスダック総合は23,585.80ポイント（0.62%安）でした。ロイターの25日終値報道と日本時間26日6時31分のみんかぶの市況報道で一致しています。",
+          "ロイターによるとナスダック市場では上昇2,902銘柄、下落2,009銘柄でした。時価総額の大きい銘柄の影響を受ける指数が下落しても、個々の銘柄の過半が下落したとは限りません。"
+        ]
+      },
+      {
+        "heading": "アンバレラ、増収の一方で次の四半期は売上減を見込む",
+        "paragraphs": [
+          "アンバレラが米国24日16時05分に公表した2027年1月期第3四半期（10月31日まで）の売上高は1億1,520万ドルで、前年同期比6.2%増でした。GAAP純損失は1,270万ドル。機器側でAI処理を行う半導体の売上が過去最高となる一方、消費者向けIoTの売上は会社の想定を下回りました。",
+          "同社の24日付会社発表では、第4四半期（2027年1月31日まで）の売上高見通しを7,000万〜7,500万ドルとしています。CEOはメモリー価格の上昇と供給不足が深刻化し、多くの顧客が見通しを引き下げていると説明しました。機器を作る顧客にメモリー調達の制約が及んでいることが、AI半導体の供給企業にも関わる材料です。会社の見通しと株価の変動は区別します。"
+        ]
+      },
+      {
+        "heading": "米PCE物価は前年比3.8%上昇、26日は感謝祭休場",
+        "paragraphs": [
+          "米商務省経済分析局（BEA）が25日8時30分（日本時間22時30分）に発表した10月のPCE物価指数は前年比3.8%高、食品・エネルギーを除くコア指数は3.3%高でした。前月比はいずれも0.3%高。物価変動を除いた実質個人消費支出は前月比でほぼ横ばいでした。",
+          "26日の東京市場は通常取引日で、米国25日の取引終了後に始まります。NYSEは現地26日が感謝祭休場、27日は13時（日本時間28日3時）に短縮終了します。日本の26日の株価は寄り付き前のため、ここでは米国25日終値のみを扱います。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "us-indices-nov26-am",
+        "kind": "bars",
+        "title": "米国主要3指数の騰落率",
+        "note": "米国25日通常取引終値、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.reuters.com/business/nasdaq-futures-slide-over-2-fresh-us-tariff-concerns-inflation-data-focus-2026-11-25/",
+        "observed_at": "2026-11-26T06:00:00+09:00",
+        "values": [
+          {
+            "label": "ダウ平均",
+            "value": 0.33,
+            "state": "実績"
+          },
+          {
+            "label": "S&P500",
+            "value": -0.25,
+            "state": "実績"
+          },
+          {
+            "label": "ナスダック総合",
+            "value": -0.62,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "amba-sales-nov26-am",
+        "kind": "bars",
+        "title": "アンバレラ第3四半期売上高の前年同期比較",
+        "note": "10月31日までの第3四半期実績。アンバレラ24日公表。",
+        "unit": "百万ドル",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1280263/000119312526475716/d912526dex991.htm",
+        "observed_at": "2026-11-25T06:05:00+09:00",
+        "values": [
+          {
+            "label": "前年同期",
+            "value": 108.5,
+            "state": "実績"
+          },
+          {
+            "label": "今期",
+            "value": 115.2,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "pce-inflation-nov26-am",
+        "kind": "bars",
+        "title": "米10月PCE物価指数の前年比",
+        "note": "BEAが米国25日に公表した10月実績。",
+        "unit": "%",
+        "source_url": "https://bea.gov/news/2026/personal-income-and-outlays-october-2026",
+        "observed_at": "2026-11-25T22:30:00+09:00",
+        "values": [
+          {
+            "label": "総合",
+            "value": 3.8,
+            "state": "実績"
+          },
+          {
+            "label": "コア",
+            "value": 3.3,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "AMBA",
+        "name": "アンバレラ",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "急落",
+        "previous_close": 44.47,
+        "close": 35.68,
+        "price_kind": "close",
+        "market_date": "2026-11-25",
+        "previous_market_date": "2026-11-24",
+        "observed_at": "2026-11-26T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/amba/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Stock Analysisの日別CloseとAdj. Closeが24日44.47ドル、25日35.68ドルで各日一致。みんかぶの25日価格と変動額も一致。独自の分割補正なし。",
+        "context": "24日公表の会社決算では第3四半期の増収と消費者向けIoT売上の想定未達を記載。メモリー高と供給不足による顧客への影響、第4四半期売上見通し7,000万〜7,500万ドルを示した。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "ロイター：米国25日主要指数終値と市場の騰落銘柄数",
+        "url": "https://www.reuters.com/business/nasdaq-futures-slide-over-2-fresh-us-tariff-concerns-inflation-data-focus-2026-11-25/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "みんかぶ：日本時間26日6時31分の米国25日終値",
+        "url": "https://fx.minkabu.jp/news/385448",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "アンバレラ：SEC提出の24日付決算発表（Exhibit 99.1）",
+        "url": "https://www.sec.gov/Archives/edgar/data/1280263/000119312526475716/d912526dex991.htm",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "アンバレラ：24日16時05分の会社配信",
+        "url": "https://www.globenewswire.com/news-release/2026/11/24/3409869/0/en/Ambarella-Inc-Announces-Third-Quarter-Fiscal-Year-2027-Financial-Results.html",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "Stock Analysis：AMBA 24・25日通常終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/amba/history/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "BEA：10月個人所得・消費支出、25日公表",
+        "url": "https://bea.gov/news/2026/personal-income-and-outlays-october-2026",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：2026年取引日・休業日",
+        "url": "https://www.jpx.co.jp/english/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "NYSE：2026年休場日・取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      }
+    ]
   }
 ]
