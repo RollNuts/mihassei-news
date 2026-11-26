@@ -6,6 +6,7 @@ It runs after GitHub pushes; Cloudflare may take a little time to deploy.
 """
 from __future__ import annotations
 
+import argparse
 import html
 import hashlib
 import json
@@ -45,7 +46,7 @@ if __package__:
     )
     from .market_figures import render_market_svg
     from .build import (
-        editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
+        editorial_lead, broadcast_track_url, broadcast_vtt, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
     )
 else:
@@ -68,7 +69,7 @@ else:
     )
     from market_figures import render_market_svg
     from build import (
-        editorial_lead, broadcast_playlist, CATEGORIES, CATEGORY_PATHS,
+        editorial_lead, broadcast_track_url, broadcast_vtt, CATEGORIES, CATEGORY_PATHS,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
     )
 
@@ -378,6 +379,34 @@ def verify_icon_crawl_rules(robots: bytes) -> None:
         if matches and not max(matches)[1]:
             raise RuntimeError("robots.txt blocks " + bot + " from " + path)
     print("Public robots rules OK: homepage and 3 icon URLs; Google crawling not observed")
+
+
+def verify_article_clip_delivery(article, *, fetch=get):
+    """Fetch the article's actual player, movie and optional subtitle track."""
+    movie_path = clip_url(article)
+    slug = article["slug"]
+    clip = article_clip(article)
+    if not clip:
+        raise RuntimeError(slug + ": no approved clip for this article revision")
+    movie_url = movie_path + "?v=" + clip["sha256"][:12]
+    track_url = broadcast_track_url(article, clip)
+    markup, mime = fetch("/articles/" + slug + "/")
+    players = re.findall(r'<video\b[^>]*class="article-visual article-video"[^>]*>(.*?)</video>',
+                         markup.decode("utf-8"), re.S)
+    if ("text/html" not in mime or len(players) != 1
+            or '<source src="' + movie_url + '" type="video/mp4">' not in players[0]):
+        raise RuntimeError(slug + ": article player is missing its versioned MP4")
+    tracks = re.findall(r'<track\b[^>]*\bsrc="([^"]+)"', players[0])
+    if tracks != ([track_url] if track_url else []):
+        raise RuntimeError(slug + ": article player subtitle tracks differ from its selection")
+    movie, mime = fetch(movie_url)
+    if "video/mp4" not in mime or hashlib.sha256(movie).hexdigest() != clip["sha256"]:
+        raise RuntimeError(slug + ": published article MP4 has wrong MIME or SHA-256")
+    if track_url:
+        subtitles, mime = fetch(track_url)
+        if "text/vtt" not in mime or subtitles != broadcast_vtt(article, clip).encode("utf-8"):
+            raise RuntimeError(slug + ": published subtitles differ from the editorial cues")
+    print("Public article clip OK:", slug, movie_url, track_url or "(no subtitle track)")
 
 
 def verify_broadcast_delivery(markup, expected_playlist, *, fetch=None, root=ROOT):
@@ -1748,6 +1777,16 @@ def check():
     print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; {checked_diagrams} verified article diagrams; real SEO dates; whole-archive recent-PV recommendations; separate site/article PV with coverage; free channel attribution; free hosting.")
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--article-clip", metavar="SLUG", help="Verify one published movie and its subtitles")
+    args = parser.parse_args()
+    if args.article_clip is not None:
+        articles = json.loads((ROOT / "content/articles.json").read_text(encoding="utf-8"))
+        article = next((row for row in articles if row["slug"] == args.article_clip), None)
+        if article is None:
+            parser.error("Unknown article slug: " + args.article_clip)
+        verify_article_clip_delivery(article)
+        return
     last=None
     for i in range(15):
         try:
