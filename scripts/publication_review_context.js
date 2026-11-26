@@ -390,6 +390,49 @@ var PublicationReviewContext = (function () {
     }
     return base;
   }
+  async function publishedCheckReport(get, ref) {
+    let checkRef = ref;
+    for (;;) {
+      const data = await get(API + "/commits/" + checkRef + "/check-runs?check_name=Photograph%20completion&per_page=1");
+      if (data.total_count === 0 && Array.isArray(data.check_runs) && data.check_runs.length === 0) {
+        checkRef = await priorDocsParent(get, checkRef);
+        continue;
+      }
+      const check = data.check_runs?.[0];
+      require(check?.name === "Photograph completion" && check.head_sha === checkRef
+        && check.app?.slug === "github-actions" && check.status === "completed"
+        && ["success", "failure"].includes(check.conclusion) && typeof check.output?.text === "string",
+        "Revision-bound photograph check unavailable; use the same revision's live-photo-health artifact");
+      return { checkRef, report: JSON.parse(check.output.text) };
+    }
+  }
+  // One day's pre-writing input. Article validation and publication use their own checks.
+  async function readEditorialGuidance({ fetchRepository, ref, day } = {}) {
+    try {
+      require(typeof fetchRepository === "function" && matches(GIT, ref)
+        && matches(/^\d{4}-\d\d-\d\d$/, day) && !day.startsWith("0000-")
+        && new Date(day + "T00:00:00Z").toISOString().slice(0, 10) === day, "Invalid editorial guidance input");
+      let reads = 0;
+      async function get(url) {
+        require(++reads <= 14, "Editorial guidance read budget reached");
+        return unwrap(await fetchRepository({ url }), url, false);
+      }
+      const { checkRef, report } = await publishedCheckReport(get, ref);
+      require(report?.checkout_sha === checkRef && object(report.editorial_guidance), "Missing editorial guidance");
+      const value = report.editorial_guidance[day];
+      require(typeof value === "string" && value.startsWith(day + ": published="), "Missing requested day");
+      const [summary, topicHeading, ...topics] = value.split("\n");
+      require(/^\d+; tracked=\d+; /.test(summary.slice((day + ": published=").length))
+        && /; desk_next=[^;\s][^;]*/.test(summary) && topicHeading?.startsWith("題材比較（指定JST日までの直近7本")
+        && topics.length >= 1 && topics.length <= 7
+        && (topics.every(line => /^- \d\d\/\d\d \d\d:\d\d｜[^｜]+｜.+｜.+$/.test(line))
+          || (topics.length === 1 && topics[0] === "- 比較できる公開日時のある記事なし。")), "Incomplete editorial guidance");
+      if (checkRef !== ref) require((await get(API + "/git/ref/heads/main")).object?.sha === ref, "Main moved");
+      return { status: "verified", ref, check_sha: checkRef, day, report: value };
+    } catch (_) {
+      return { status: "unavailable" };
+    }
+  }
   // A merged news PR can still own its missing photograph. A source pointer
   // does not grant generation, adoption, or permission to write.
   async function readPhotoHandoffs({ fetchRepository, fetchFile, ref, report, offset = 0, batchSize = 4 } = {}, readBudget = 14) {
@@ -402,19 +445,7 @@ var PublicationReviewContext = (function () {
       function countRead() { require(++operations <= readBudget, "Photo read budget reached; narrow batchSize or check the open owner"); }
       async function get(url) { countRead(); return unwrap(await fetchRepository({ url }), url, false); }
       let checkRef = ref;
-      while (report === undefined) {
-        const data = await get(API + "/commits/" + checkRef + "/check-runs?check_name=Photograph%20completion&per_page=1");
-        if (data.total_count === 0 && Array.isArray(data.check_runs) && data.check_runs.length === 0) {
-          checkRef = await priorDocsParent(get, checkRef);
-          continue;
-        }
-        const check = data.check_runs?.[0];
-        require(check?.name === "Photograph completion" && check.head_sha === checkRef
-          && check.app?.slug === "github-actions" && check.status === "completed"
-          && ["success", "failure"].includes(check.conclusion) && typeof check.output?.text === "string",
-          "Revision-bound photograph check unavailable; use the same revision's live-photo-health artifact");
-        report = JSON.parse(check.output.text);
-      }
+      if (report === undefined) ({ checkRef, report } = await publishedCheckReport(get, ref));
       require(report?.checkout_sha === checkRef && Array.isArray(report.photo_followup), "Stale or missing photo inventory");
       const seen = new Set();
       for (const row of report.photo_followup) {
@@ -829,6 +860,6 @@ var PublicationReviewContext = (function () {
       return result;
     }
   }
-  return Object.freeze({ read, readHandoffStatus, readValidationStatus, readPhotoHandoffs });
+  return Object.freeze({ read, readHandoffStatus, readValidationStatus, readPhotoHandoffs, readEditorialGuidance });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = PublicationReviewContext;

@@ -193,7 +193,9 @@ text(await C.readWeeklyHandoff({fetchFile, ref: mainSha, modelName}));
 
 原稿を初読へ移譲する前に、今回の記事を含むデータを`python3 -c "from scripts.build import load; load()"`で形式確認する。`fiction_company`は企業・自治体・団体など本文に登場する架空主体を記録する欄で、検索用の描画にも使う。必須欄が欠けていれば示された記事と欄を同じ原稿で修正する。実行できない場合は実際に不足する入力・操作を引き継ぎ、検証成功と扱わない。
 
-**配分確認は、checkoutがなくても次の2ファイルを実配置してから実行できる。** GitHubで内容を読んだだけでは、実行環境へ配置したことにはならない。
+**checkoutのないGPTは、執筆前の担当面と直近7本を既存の本番確認から読む。** 最新mainの完全なSHAから [PublicationReviewContext](../scripts/publication_review_context.js) を読み込み、`readEditorialGuidance({fetchRepository: github.fetch, ref, day})` にそのSHAと発行枠のJST日付を渡す。`verified` の `report` が、その版の掲載データで計算した配分と直近7本の見出し・要約。確認時の当日・翌日分があり、指定日の分だけを読む。原稿追加後の検査はその変更を含む版で行う。
+
+該当日の資料が取得できず、GitHubからPython実行先へファイルを渡せる場合は、次の2ファイルで直接確認する。
 
 1. 最新mainの完全なSHAを1つ取得し、そのSHAに固定して `scripts/editorial_mix.py` と `content/articles.json` をGitHub接続から取得する。Contents APIなら `https://api.github.com/repos/RollNuts/mihassei-news/contents/<path>?ref=<完全なSHA>` を使い、2ファイルを異なるrevisionから混ぜない。
 2. 取得したUTF-8文字列を、利用可能なファイル書き込み手段で今回の専用フォルダーの `scripts/editorial_mix.py` と `content/articles.json` へそのまま保存する。コード実行内で取得結果を捕捉できる場合は、文字列をモデル本文へ転記せず `apply_patch` 等へ直接渡す。JSONを再保存して整数や内容を変えない。
