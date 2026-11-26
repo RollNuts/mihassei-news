@@ -31,6 +31,7 @@ jobs:
       - name: Validate article fields, editorial lanes and exact duplicate guards
         run: |
           python3 -c "from scripts.build import load; load()"
+          python3 -c "from pathlib import Path; from scripts.market_bulletins import load_market_bulletins; load_market_bulletins(Path.cwd())"
           python3 scripts/editorial_mix.py --check
       - name: Install free local image validation dependency
         run: |
