@@ -105,6 +105,21 @@
         "cut_id": "03",
         "image_sha256": "17d05de85421219ead92bdf7e1fedff0092729c7e654edd432241ec09626a671"
       }
+    },
+    {
+      "id": "tsukishiro-rena-post-20261126205137806000",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-26T20:51:37.806+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "帰りに寄った店で、片方だけのイヤリングを見つけた。失くした方ではなく、残った方が売られている。少し気になって、買って帰った。",
+      "source": {
+        "issue_slug": "november-city-pause-rena-008",
+        "cut_id": "09",
+        "image_sha256": "db9628382316306997e6cf96d9045eed19792a296a989adf961dc95ada2e2300"
+      }
     }
   ]
 }
