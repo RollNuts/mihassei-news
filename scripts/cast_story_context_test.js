@@ -5,6 +5,7 @@ const path = require("node:path");
 const test = require("node:test");
 const context = require("./cast_story_context.js");
 
+const BRIEF = "docs/DAILY_EDITORIAL_BRIEF.md", WEEKLY = BRIEF + "#weekly-stock-handoff";
 const NOW = "2026-11-18T09:10:00+09:00";
 const SHA = n => n.toString(16).padStart(64, "0");
 const persona = { occupation: "取材担当", casting_specialty: "体験取材", first_person: "私",
@@ -195,7 +196,7 @@ test("read uses the person’s stream and two fixed-repository UTF-8 fetches at 
     value => ({ content: [{ type: "text", text: "Action completed." }], structuredContent: value, isError: false })]) {
     const transport = reader(input, wrap);
     const result = await context.read({ fetchFile: transport.fetchFile, ref: REF, modelId: input.modelId, now: NOW });
-    assert.deepEqual(result.source, { repository: "RollNuts/mihassei-news", ref: REF, story_path: "content/photo_stories/" + input.modelId + ".json", blob_shas: transport.blobs });
+    assert.deepEqual(result.source, { repository: "RollNuts/mihassei-news", ref: REF, story_path: "content/photo_stories/" + input.modelId + ".json", weekly_handoff: WEEKLY, blob_shas: transport.blobs });
     assert.deepEqual(result.photos, context.build(input).photos);
     assert.equal(transport.calls.length, 3);
     assert(transport.calls.every(args => args.repository_full_name === "RollNuts/mihassei-news"
@@ -256,6 +257,8 @@ test("daily creator reads both story streams, omits the catalog on a recorded JS
   const result = await context.read({ ...args, fetchFile: transport.fetchFile });
   assert.equal(result.verification, "story_records_only");
   assert.equal(result.weekly_stock_status, "not_checked");
+  assert.equal(result.source.weekly_handoff, WEEKLY);
+  assert.equal(result.source.ref, REF);
   assert.equal(result.today_has_record, true);
   assert.deepEqual(result.today_story_ids, [past.id]);
   assert.equal(result.future_today_record_count, 1);
@@ -309,4 +312,54 @@ test("compact candidates keep the same order and recover the selected location w
   assert.throws(() => context.photoLocation({ ...photo, issue_slug: "../another" }), /photo reference/);
   assert.throws(() => context.photoLocation({ ...photo, cut_id: "00" }), /photo reference/);
   assert.throws(() => context.photoLocation({ ...photo, image_sha256: "missing" }), /photo reference/);
+});
+
+test("weekly handoffs read one fixed brief and return only the matching bold person's bullet", async () => {
+  const content = [
+    "- **月城れな** — earlier unrelated note",
+    '<a id="weekly-stock-handoff"></a>', "",
+    "- **第3号** — 月城れな and 汐羽りお in the issue summary",
+    "- **月城れな** — 本人の[写真引継ぎ](photo-plan)を確認。",
+    "- **桐谷すみれ** — 月城れなの名前が出ても選ばない。",
+    "- **汐羽りおの繰越** — 次号用の候補を使う。", "",
+    "- **月城れな** — 後段の通常引継ぎ " + "x".repeat(2048),
+    "- **凪野さや** — 後段でのみ登場。"
+  ].join("\r\n");
+  for (const [modelName, handoff] of [
+    ["月城れな", "本人の[写真引継ぎ](photo-plan)を確認。"], ["汐羽りお", "次号用の候補を使う。"], ["凪野さや", undefined]
+  ]) {
+    let calls = 0;
+    const result = await context.readWeeklyHandoff({ ref: REF, modelName, fetchFile: async args => {
+      calls++;
+      assert.deepEqual(args, { repository_full_name: "RollNuts/mihassei-news", ref: REF, path: BRIEF, encoding: "utf-8" });
+      return { structuredContent: { result: { path: BRIEF, encoding: "utf-8", sha: "a".repeat(40), content } } };
+    } });
+    assert.equal(calls, 1);
+    assert.equal(result.handoff, handoff);
+    assert.equal(result.status, handoff ? "found" : "not_listed");
+    assert.equal(result.weekly_stock_status, "not_checked");
+    assert.equal(result.source.weekly_handoff, WEEKLY);
+    assert.equal(result.source.blob_sha, "a".repeat(40));
+    assert.equal(result.source.ref, REF);
+    assert(!JSON.stringify(result).includes("通常引継ぎ"));
+  }
+});
+
+test("unreadable, unrecognized and ambiguous weekly handoffs never imply empty stock", async () => {
+  const anchor = '<a id="weekly-stock-handoff"></a>', heading = "- **第3号** — 掲載順", row = "- **汐羽りお** — 写真の受取";
+  const file = content => ({ path: BRIEF, encoding: "utf-8", sha: "a".repeat(40), content });
+  for (const [reply, reason] of [
+    [{ isError: true }, "weekly_file_unavailable"], [{ ...file(row), truncated: true }, "weekly_file_unavailable"],
+    [file(row), "weekly_section_unverified"], [file([anchor, anchor, heading, row].join("\n")), "weekly_section_unverified"],
+    [file([anchor, row].join("\n")), "weekly_section_unverified"], [file([anchor, heading, ""].join("\n")), "weekly_section_unverified"],
+    [file([anchor, heading, row, "- **汐羽りおの繰越** — 同じ本人"].join("\n")), "duplicate_model_handoff"],
+    [file([anchor, heading, row + "x".repeat(1500)].join("\n")), "invalid_model_handoff"]
+  ]) {
+    const result = await context.readWeeklyHandoff({ ref: REF, modelName: "汐羽りお", fetchFile: async () => reply });
+    assert.equal(result.status, "unverified");
+    assert.equal(result.reason, reason);
+    assert.equal(result.weekly_stock_status, "not_checked");
+    assert.equal(result.handoff, undefined);
+  }
+  await assert.rejects(context.readWeeklyHandoff({ ref: "main", modelName: "汐羽りお", fetchFile: () => assert.fail() }), /immutable/);
 });
