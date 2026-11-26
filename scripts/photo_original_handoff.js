@@ -167,14 +167,17 @@ var PhotoOriginalHandoff = (() => {
       "Cloud image operations stopped");
       return status.main_commit_sha;
     }
-    async function write(name, args) {
+    async function write(name, args, reportOperation) {
+      reportOperation?.("cloud_status");
       await guard();
+      reportOperation?.(name);
       return git(name, args);
     }
     function sourceReference(expectedSha, start, count) {
       requireThat(HASH.test(expectedSha) && Number.isInteger(start) && start >= 0 && (count === 1 || count === 2), "Invalid source reference");
     }
-    async function uploadPng(dataUrl, expectedSha, start, count, metadata = null) {
+    async function uploadPng(dataUrl, expectedSha, start, count, metadata = null, reportOperation) {
+      reportOperation?.("verify_png");
       requireThat(typeof dataUrl === "string" && dataUrl.startsWith("data:image/png;base64,") &&
         dataUrl.length > 22 && dataUrl.length <= 22 + 4 * Math.ceil(MAX/3), "Unexpected original PNG data URL");
       const bytes = runtime.fromBase64(dataUrl);
@@ -190,7 +193,7 @@ var PhotoOriginalHandoff = (() => {
       try {
         for (let index = start; index < start + count && index * PART < bytes.length; index++) {
           const chunk = bytes.subarray(index * PART, (index + 1) * PART);
-          const blob = await write("create_blob", {content:runtime.toBase64(chunk), encoding:"base64"});
+          const blob = await write("create_blob", {content:runtime.toBase64(chunk), encoding:"base64"}, reportOperation);
           parts.push({index, blob:gitId(blob, "blob"), sha256:runtime.sha256(chunk)});
         }
       } catch (error) {
@@ -201,13 +204,19 @@ var PhotoOriginalHandoff = (() => {
       }
       return progress();
     }
-    async function upload(file, expectedSha, start = 0, count = 1) {
-      sourceReference(expectedSha, start, count);
+    async function readPngFile(file, expectedSha, reportOperation) {
+      reportOperation?.("read_candidate_png");
       const png = payload(await readCandidatePng({file}));
+      reportOperation?.("verify_png");
       requireThat(png.status === "read" && png.mime_type === "image/png" && png.sha256 === expectedSha &&
         Number.isInteger(png.bytes) && png.bytes > 0 && png.bytes <= MAX &&
         typeof png.image_url === "string" && png.image_url.startsWith("data:image/png;base64,") &&
         png.image_url.length === 22 + 4 * Math.ceil(png.bytes/3), "Unexpected original PNG response");
+      return png;
+    }
+    async function upload(file, expectedSha, start = 0, count = 1) {
+      sourceReference(expectedSha, start, count);
+      const png = await readPngFile(file, expectedSha);
       return uploadPng(png.image_url, expectedSha, start, count, png);
     }
     async function uploadDataUrl(dataUrl, expectedSha, start = 0, count = 1) {
@@ -242,9 +251,10 @@ var PhotoOriginalHandoff = (() => {
           file = await writeProbeFile(runtime.toBase64(bytes));
           requireThat(typeof file === "string" && file.length > 0, "No materialized probe file");
         }
-        operation = route === "file" ? "readCandidatePng/upload" : "uploadDataUrl";
-        const saved = route === "file" ? await upload(file, probe.sha256) :
-          await uploadDataUrl("data:image/png;base64," + runtime.toBase64(bytes), probe.sha256);
+        const reportOperation = name => { operation = name; };
+        const png = route === "file" ? await readPngFile(file, probe.sha256, reportOperation) : null;
+        const dataUrl = png?.image_url ?? "data:image/png;base64," + runtime.toBase64(bytes);
+        const saved = await uploadPng(dataUrl, probe.sha256, 0, 1, png, reportOperation);
         requireThat(saved.next === null && saved.parts.length === 1 && saved.parts[0].blob === probe.blob, "Unconfirmed probe blob");
         operation = "fetch_file_readback";
         await readFixture();
@@ -252,7 +262,11 @@ var PhotoOriginalHandoff = (() => {
       } catch (error) {
         // Do not echo unknown connector payloads or file references into a task log.
         const detail = String(error?.message ?? "");
-        const message = detail.startsWith("Cloud image operations stopped:") ? "Cloud image operations stopped" : detail;
+        const blockedFile = operation === "read_candidate_png" && (error?.code === "BLOCKED_FILE_REFERENCE" ||
+          error?.error_code === "BLOCKED_FILE_REFERENCE" ||
+          /^BLOCKED_FILE_REFERENCE(?:$|:)/.test(typeof error === "string" ? error : detail));
+        const message = blockedFile ? "Photo transport tool failed (BLOCKED_FILE_REFERENCE)" :
+          detail.startsWith("Cloud image operations stopped:") ? "Cloud image operations stopped" : detail;
         const safe = /^(?:Missing original PNG route|Missing file handle or readCandidatePng|No materialized probe file|Offline probe needs its file and a commit SHA|Unexpected probe file|Probe bytes changed|Unconfirmed probe blob|Cloud image operations stopped|Photo transport tool failed(?: [(][a-zA-Z0-9_-]{1,48}[)])?|Unexpected original PNG response|Original PNG changed|Invalid Git blob response)$/;
         return {status:"blocked", route:["inline_png","file"].includes(route) ? route : null, operation,
           reason:safe.test(message) ? message : "Transport callback failed", ...(Number.isInteger(error?.status) ? {http_status:error.status} : {})};

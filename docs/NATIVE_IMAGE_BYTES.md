@@ -419,7 +419,7 @@ Choose the route for the generator actually available in this execution. A file-
 - With a writer callable from code mode, bind `writeProbeFile(base64)` to decode the helper’s GitHub fixture into a new temporary PNG in the generator’s workspace and return the path. Pass `{route:"file", writeProbeFile}`. If that favicon fixture already has a handle, pass `{route:"file", file}`.
 - Use `{route:"inline_png"}` without a file reader only when the generator actually returns the original PNG data URL.
 
-The file route must reopen the exact fixture. If no available route works, record the failed stage before any reservation. Existing Library originals can use [the original recovery path](#blocked-photo-file-reference).
+The file route must reopen the exact fixture. Record the failed operation before reserving an image. A `read_candidate_png` failure with `BLOCKED_FILE_REFERENCE` requires a changed, authorized file reference. For an existing original, follow [Library recovery](#blocked-photo-file-reference). After the reader returns bytes, a `verify_png` failure identifies a byte or metadata mismatch. For `cloud_status`, `create_blob` or `fetch_file_readback` failures, keep the same verified fixture and address the indicated stop or GitHub operation.
 
 Load the original handoff, native byte and staging helpers at the reviewed main commit. The verification runtime loads only SHA-256. Keep the byte-bearing tool results inside code mode.
 
