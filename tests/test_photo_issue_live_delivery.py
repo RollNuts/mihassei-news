@@ -198,8 +198,9 @@ class LatestPhotoIssueLiveDeliveryTests(unittest.TestCase):
         files = self.fixture()
         reads = []
 
-        def fetch(path):
+        def fetch(path, *, indexable=False):
             reads.append(path)
+            self.assertEqual(indexable, path in ("/", check_live.issue_url(self.latest)))
             if path == "/":
                 raise RuntimeError("next homepage check")
             return files[path]
