@@ -147,7 +147,7 @@ GPTは許可の保存と再読後に「CI・公開検証へ移譲済み」とし
 
 ### 7人の近況
 
-日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。当日分の投稿記録があれば、当日のID・未来時刻の件数と照合元だけを返す。未投稿なら本人設定・直近3投稿・写真候補の説明と出典を読む。選んだ1枚の保存パスと版付きURLは、その候補を`C.photoLocation(photo)`に渡して取得する。
+日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。当日分の投稿記録があれば、当日のID・未来時刻の件数・照合元と、週刊の引継ぎ先を返す。未投稿なら本人設定・直近3投稿・写真候補の説明と出典を読む。選んだ1枚の保存パスと版付きURLは、その候補を`C.photoLocation(photo)`に渡して取得する。
 
 ```js
 const C = new Function(helperSource + "\nreturn CastStoryContext;")();
@@ -155,6 +155,14 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 ```
 
 `fetchFile`は実際に露出したGitHubの`fetch_file`へ束縛する。`story_records_only`は当日記録の照合、`metadata_only`は投稿準備用のメタデータ照合を示す。どちらも実画像と本番配信は未確認。`open_prs: unknown`を0件とせず、本人のPRだけ別に確認する。当日既刊があれば追加しない。新規投稿は返却された `source.story_path`（本人専用ファイル）へ原文を1件追記し、そのファイルの `blob_shas` を照合して通常のPRへ進める。CLIの `adopt_cast_story.py --write` も同じ場所を使う。採用時は下記の既存原文・写真照合を通す。
+
+週刊の制作に進む際は、近況が当日公開済みでも、同じセルで読み込んだhelperまたは同じmainのhelperに本人名を渡す。
+
+```js
+text(await C.readWeeklyHandoff({fetchFile, ref: mainSha, modelName}));
+```
+
+正本から本人宛ての行だけを読み、そこにある候補と次の操作を使う。記載がなくても在庫数は未確認。取得できなければ週刊の引継ぎ先から確認する。
 
 人物別の既存制作タスクが、自分の近況をJSTで1日1件ずつ投稿する。開始枠は以下とし、実際の公開時刻を記録する。遅延分の一括投稿や過去時刻への書換えはしない。日次近況は検品済み本人写真を使い、写真ストックはEDITORIAL_LOOP「写真ストックと制作量」の在庫基準と既存週上限に従い、同じ既存枠内で補充・受渡しする。グラビア編集は特集を担当し、本人タスクの正常な近況を重複して書き直さない。
 
@@ -185,7 +193,9 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 
 原稿を初読へ移譲する前に、今回の記事を含むデータを`python3 -c "from scripts.build import load; load()"`で形式確認する。`fiction_company`は企業・自治体・団体など本文に登場する架空主体を記録する欄で、検索用の描画にも使う。必須欄が欠けていれば示された記事と欄を同じ原稿で修正する。実行できない場合は実際に不足する入力・操作を引き継ぎ、検証成功と扱わない。
 
-**配分確認は、checkoutがなくても次の2ファイルを実配置してから実行できる。** GitHubで内容を読んだだけでは、実行環境へ配置したことにはならない。
+**checkoutのないGPTは、執筆前の担当面と直近7本を既存の本番確認から読む。** 最新mainの完全なSHAから [PublicationReviewContext](../scripts/publication_review_context.js) を読み込み、`readEditorialGuidance({fetchRepository: github.fetch, ref, day})` にそのSHAと発行枠のJST日付を渡す。`verified` の `report` が、その版の掲載データで計算した配分と直近7本の見出し・要約。確認時の当日・翌日分があり、指定日の分だけを読む。原稿追加後の検査はその変更を含む版で行う。
+
+該当日の資料が取得できず、GitHubからPython実行先へファイルを渡せる場合は、次の2ファイルで直接確認する。
 
 1. 最新mainの完全なSHAを1つ取得し、そのSHAに固定して `scripts/editorial_mix.py` と `content/articles.json` をGitHub接続から取得する。Contents APIなら `https://api.github.com/repos/RollNuts/mihassei-news/contents/<path>?ref=<完全なSHA>` を使い、2ファイルを異なるrevisionから混ぜない。
 2. 取得したUTF-8文字列を、利用可能なファイル書き込み手段で今回の専用フォルダーの `scripts/editorial_mix.py` と `content/articles.json` へそのまま保存する。コード実行内で取得結果を捕捉できる場合は、文字列をモデル本文へ転記せず `apply_patch` 等へ直接渡す。JSONを再保存して整数や内容を変えない。
@@ -197,9 +207,12 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 
 ### 本番確認の代替経路
 
+記事・近況・市況・週刊特集の掲載確認には、まず対象の統合SHAにある既存の `Photograph completion` checkを1回読む（`/commits/<SHA>/check-runs?check_name=Photograph%20completion&per_page=1`）。完了した `github-actions` の当該checkで `head_sha`・`output.text` 内の `checkout_sha`・`verified_targets.served_sha` が統合SHAと一致し、対象slugまたは近況IDが該当欄にあれば、その実行で本番確認済み。写真待ちの件数・採否は別欄を読む。対象や記録が欠ける場合は下記の実run・対象URLを照合する。
+
 タスクの実行環境から本番へ直接接続できない場合は、既存の読み取り専用 `.github/workflows/verify-public-photos.yml` の実行結果をGitHub接続から回収できる。新しい監視タスクを作らず、次の証拠をそろえる。
 
 - 対象main SHAのrunは `https://api.github.com/repos/RollNuts/mihassei-news/actions/runs?head_sha=<完全なSHA>&per_page=20` からeventを限定せず探す。通常pushと、既存finalizerからの `workflow_dispatch` を含め、workflow pathが `.github/workflows/verify-public-photos.yml` であること、head SHA、実際の `check` jobを照合する。`fetch_commit_workflow_runs` はPR実行限定のため、この本番確認には使わない。先頭のrunやskipped実行だけを公開の証拠にしない。
+- 本番revisionの待機が期限に達したときは、受取時に `GET /repos/RollNuts/mihassei-news/commits/<対象mainの完全SHA>/check-runs?check_name=Workers%20Builds%3A%20mihassei-news&filter=latest` を1回照合する。Cloudflareのビルド結果はActionsの待機終了後に届くことがある。`head_sha`・check名 `Workers Builds: mihassei-news`・`app.slug=cloudflare-workers-and-pages` が一致する公式結果で、失敗時は `details_url` の本番ビルドを既存のサイト日次担当が調べる。結果未着・実行中ならその状態を残し、成功時は下記の本番revisionと対象URLの配信を確認する。
 - jobの実stepが成功し、ログの本番revisionが対象SHAと一致することを確認する。docs-only祖先を許容した結果なら、その差分証明も残す。run全体のsuccessやPRのCI成功だけで完了にしない。
 - 対象slugの `Public article OK`、変更した画像・図の検証結果、必要な共有画像の対象を確認する。現行 `check_live.py` の本文確認は最新10記事、`check_share_cards.py` は選抜したカードの確認であり、対象外まで検証済みにしない。ログに含まれない対象や変更素材は、直接の取得・対象を指定した検証・次担当での確認を未完として残す。
 - 結果は「Actionsで実配信検証済み」と「今回のブラウザ目視」を分けて記録する。取得不能・実行中・対象外を0件や本番障害へ読み替えない。取得不能なら失敗した取得操作を残し、実行中なら同じrunの完了を確認する。対象外は対象を指定した検証へ引き継ぐ。

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+from datetime import date
 import hashlib
 import json
 import os
@@ -216,6 +217,28 @@ def photo_check(report: dict, expected_sha: str) -> dict:
             "note": "Delivery and photograph completion are separate. Empty backlog is not an all-article visual audit."}
 
 
+def _editorial_guidance(report: dict) -> dict:
+    """Only carry the short, dated reports from the observed news channel."""
+    operations = report.get("content_operations")
+    news = operations.get("news") if isinstance(operations, dict) else None
+    if not isinstance(news, dict) or news.get("status") != "observed":
+        return {}
+    guidance = news.get("editorial_guidance")
+    if not isinstance(guidance, dict) or not 1 <= len(guidance) <= 2:
+        return {}
+    for day, text in guidance.items():
+        try:
+            if date.fromisoformat(day).isoformat() != day:
+                return {}
+        except (TypeError, ValueError):
+            return {}
+        if (not isinstance(text, str) or len(text) > 64_000
+                or not re.match(re.escape(day) + r": published=[0-9]+; tracked=[0-9]+; ", text)
+                or "\n題材比較（" not in text or "\n- " not in text):
+            return {}
+    return guidance
+
+
 def photo_payload(report: dict, expected_sha: str, details_url: str) -> dict:
     require(re.fullmatch(r"https://github\.com/RollNuts/mihassei-news/actions/runs/[0-9]+", details_url)
             is not None, "Invalid verification run URL")
@@ -235,11 +258,31 @@ def photo_payload(report: dict, expected_sha: str, details_url: str) -> dict:
     # Chat can read an Actions check but cannot fetch a binary artifact with its GitHub reader.
     rows = result["photo_followup"]
     if all(isinstance(row.get("article_sha256"), str) and re.fullmatch(r"[0-9a-f]{64}", row["article_sha256"]) for row in rows):
-        compact = json.dumps({"checkout_sha": expected_sha, "photo_followup": [
+        evidence = {"checkout_sha": expected_sha, "photo_followup": [
             {key: row[key] for key in ("slug", "article_sha256", "status")} for row in rows
-        ]}, separators=(",", ":"))
-        if len(compact) <= 64_000:
-            output["text"] = compact
+        ]}
+        targets = report.get("verified_targets")
+        if isinstance(targets, dict) and targets.get("served_sha") == expected_sha:
+            limits = {"news": 10, "stories": 7, "market": 1, "photo_issues": 1}
+            for channel, limit in limits.items():
+                ids = targets.get(channel)
+                require(isinstance(ids, list) and len(ids) <= limit
+                        and all(isinstance(val, str) and SLUG.fullmatch(val) for val in ids)
+                        and len(ids) == len(set(ids)), "Invalid verified targets for " + channel)
+            evidence["verified_targets"] = {"served_sha": expected_sha, **{key: targets[key] for key in limits}}
+        guidance = _editorial_guidance(report)
+        if guidance:
+            evidence["editorial_guidance"] = guidance
+        # Keep exact-SHA delivery and photograph evidence ahead of optional editorial copy.
+        for optional_key in ("editorial_guidance", "verified_targets", None):
+            try:
+                compact = json.dumps(evidence, ensure_ascii=False, separators=(",", ":"))
+                if len(compact.encode("utf-8")) <= 64_000:
+                    output["text"] = compact
+                    break
+            except UnicodeEncodeError:
+                pass  # Malformed optional copy must not prevent the photograph check.
+            evidence.pop(optional_key, None)
     return {"name": "Photograph completion", "head_sha": expected_sha, "status": "completed",
             "conclusion": "success" if complete else "failure", "details_url": details_url, "output": output}
 

@@ -893,7 +893,8 @@ function readbackFile(record, path, expectedBlob) {
   return {path, blob, data, sha256:hash(data), bytes:data.length, width:record.width, height:record.height};
 }
 
-function originalTransportFixture({active = true, changedReadback = false, fileError = false, offline = false} = {}) {
+function originalTransportFixture({active = true, changedReadback = false, fileError = false, offline = false,
+  readerFailure, changedFileBytes = false, blobFailure = false} = {}) {
   const path = offline ? "tests/fixtures/photo-transport.png" : "assets/favicon-192.png";
   const ref = offline ? main : "1d9b571b914d6c323a3821e46d23ae0d8e354f95";
   const file = readbackFile({path}, path, offline ? "c3063fe8e5305c6f2d554e4870610fdc51ef5fa3" : "6608aa987c11d56ea9d7910eb4c0770bb529da9d");
@@ -908,6 +909,7 @@ function originalTransportFixture({active = true, changedReadback = false, fileE
     },
     async create_blob(args) {
       calls.push("create_blob");
+      if (blobFailure) throw Error("private provider diagnostic");
       assert.deepEqual(args, {repository_full_name:repo, content:file.data.toString("base64"), encoding:"base64"});
       return {sha:file.blob};
     }
@@ -916,9 +918,12 @@ function originalTransportFixture({active = true, changedReadback = false, fileE
   const readCandidatePng = async ({file:actual}) => {
     calls.push("readCandidatePng");
     assert.equal(actual, handle);
+    if (readerFailure !== undefined) throw readerFailure;
     if (fileError) return {isError:true, error_code:"BLOCKED_FILE_REFERENCE"};
+    const returned = Buffer.from(file.data);
+    if (changedFileBytes) returned[returned.length - 1] ^= 1;
     return {status:"read", mime_type:"image/png", sha256:file.sha256, bytes:file.bytes,
-      ...bytes.inspectPng(file.data), image_url:dataUrl(file.data)};
+      ...bytes.inspectPng(file.data), image_url:dataUrl(returned)};
   };
   const api = helper.create({github, readCandidatePng, runtime:{...bytes, sha256:hash},
     cloudStatus:async () => ({public:true, state:active ? "active" : "disabled", main_commit_sha:main, jpeg_bytes:123})});
@@ -946,7 +951,7 @@ test("a file producer can materialize the fixed GitHub bytes without a URL and m
     const result = await api.checkOriginalTransport({route:"file", writeProbeFile});
     if (fileError) {
       assert.equal(result.status, "blocked");
-      assert.equal(result.operation, "readCandidatePng/upload");
+      assert.equal(result.operation, "read_candidate_png");
       assert.deepEqual(calls, ["fetch_file", "writeProbeFile", "readCandidatePng"]);
     } else {
       assert.deepEqual(result, {status:"verified", route:"file", sha256:file.sha256, blob:file.blob, bytes:file.bytes});
@@ -986,7 +991,7 @@ test("top-level Python fixture requires a real file reader and readback from the
 test("original transport blocks a disabled workflow and rejects substituted readback bytes", async () => {
   const stopped = originalTransportFixture({active:false});
   assert.deepEqual(await stopped.api.checkOriginalTransport({route:"inline_png"}), {
-    status:"blocked", route:"inline_png", operation:"uploadDataUrl", reason:"Cloud image operations stopped"
+    status:"blocked", route:"inline_png", operation:"cloud_status", reason:"Cloud image operations stopped"
   });
   assert.deepEqual(stopped.calls, ["fetch_file"]);
 
@@ -1004,9 +1009,29 @@ test("a missing or unreadable file handle cannot pass the original transport che
   });
   assert.deepEqual(calls, []);
   assert.deepEqual(await api.checkOriginalTransport({route:"file", file:handle}), {
-    status:"blocked", route:"file", operation:"readCandidatePng/upload", reason:"Photo transport tool failed (BLOCKED_FILE_REFERENCE)"
+    status:"blocked", route:"file", operation:"read_candidate_png", reason:"Photo transport tool failed (BLOCKED_FILE_REFERENCE)"
   });
   assert.deepEqual(calls, ["fetch_file", "readCandidatePng"]);
+});
+
+test("weekly file preflight identifies where to resume without disclosing raw connector errors", async () => {
+  const blocked = "Photo transport tool failed (BLOCKED_FILE_REFERENCE)";
+  const denied = "BLOCKED_FILE_REFERENCE: this file is unavailable for connector egress";
+  const unknown = "Transport callback failed";
+  const cases = [
+    [{readerFailure:denied}, "read_candidate_png", blocked],
+    [{readerFailure:Object.assign(Error("private path"), {code:"BLOCKED_FILE_REFERENCE"})}, "read_candidate_png", blocked],
+    [{readerFailure:Error("private path and signed URL")}, "read_candidate_png", unknown],
+    [{changedFileBytes:true}, "verify_png", "Original PNG changed"],
+    [{active:false}, "cloud_status", "Cloud image operations stopped"],
+    [{blobFailure:true}, "create_blob", unknown],
+  ];
+  for (const [options, operation, reason] of cases) {
+    const {api, calls, handle} = originalTransportFixture({...options, offline:true});
+    const result = await api.checkOriginalTransport({route:"file", file:handle, offlineProbeCommit:main});
+    assert.deepEqual(result, {status:"blocked", route:"file", operation, reason});
+    assert.deepEqual(calls, ["fetch_file", "readCandidatePng", ...(operation === "create_blob" ? ["create_blob"] : [])]);
+  }
 });
 
 // #963 retained the published bytes and the source and JPEG paths at the candidate commit.

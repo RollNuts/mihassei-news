@@ -1032,7 +1032,7 @@ test("ordinary empty first-read inventory finds only explicit merged photograph 
   const options = { fetchRepository, ref: REF, report };
   let busy = await context.readPhotoHandoffs(options);
   assert.deepEqual(busy.selected.map(row => row.slug), ["evening"]);
-  assert.deepEqual(busy.attention, [{ slug: "morning", pr: 1040, reason: "open_owner" }]);
+  assert.deepEqual(busy.attention, [{ ...rows[1], reason: "source_pr_not_found" }, { slug: "morning", pr: 1040, reason: "open_owner" }]);
   changedPath = "content/articles.json";
   const fetchFile = async ({ ref, path }) => ({ path, sha: GIT(25), encoding: "utf-8",
     content: JSON.stringify([{ slug: "morning", title: "no change" }, { slug: "evening", title: ref }]) });
@@ -1050,7 +1050,26 @@ test("ordinary empty first-read inventory finds only explicit merged photograph 
   open.length = 0;
   prs[0].body = prs[0].body.replace("<!-- photo-recovery:1032 -->", "");
   prs[1].body = prs[1].body.replace(rows[2].article_sha256, sha(9));
-  assert.deepEqual((await context.readPhotoHandoffs({ fetchRepository, ref: REF, report })).selected, []);
+  const gaps = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF });
+  assert.equal(gaps.empty, false); assert.equal(gaps.open_pr_count, 0);
+  assert.equal(gaps.photo_recovery.may_generate, false); assert.equal(gaps.photo_recovery.next_offset, null);
+  assert.deepEqual(gaps.photo_recovery.selected, []);
+  assert.deepEqual(gaps.photo_recovery.attention, [
+    { ...rows[0], pr: 101, reason: "source_recovery_marker_missing" }, { ...rows[1], reason: "source_pr_not_found" },
+    { ...rows[2], pr: 103, reason: "source_article_sha_mismatch" }]);
+  const noSource = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF,
+    photoReport: { checkout_sha: REF, photo_followup: [rows[1], rows[3]] } });
+  assert.equal(noSource.empty, false); assert.equal(noSource.photo_recovery.next_offset, null);
+  assert.deepEqual(noSource.photo_recovery.selected, []);
+  assert.deepEqual(noSource.photo_recovery.attention, [{ ...rows[1], reason: "source_pr_not_found" }]);
+  const pending = { ...rows[0], status: "pending" };
+  prs[0].body = "<!-- photo-recovery -->\n" + prs[0].body;
+  prs[0].head.sha = GIT(66);
+  const inspectPending = () => context.readPhotoHandoffs({ fetchRepository, ref: REF,
+    report: { checkout_sha: REF, photo_followup: [pending] } });
+  assert.deepEqual((await inspectPending()).attention, [{ ...pending, pr: 101, reason: "source_approval_not_current" }]);
+  prs[0].merged = false;
+  assert.deepEqual((await inspectPending()).attention, [{ ...pending, pr: 101, reason: "source_pr_mismatch" }]);
   assert.equal((await context.readPhotoHandoffs({ fetchRepository, ref: GIT(9), report })).status, "unverified");
   assert.equal((await context.readPhotoHandoffs({ fetchRepository: () => { throw Error("offline"); }, ref: REF })).status, "unverified");
 });
@@ -1093,6 +1112,60 @@ function docsAdvance() {
   };
   return fixture;
 }
+
+const guidanceDay = "2026-11-27";
+const guidanceText = guidanceDay + ": published=1; tracked=1; desk_next=スポーツ; next=quality-first"
+  + "\n題材比較（指定JST日までの直近7本・公開順）：見出し・summary"
+  + "\n- 11/26 20:09｜スポーツ｜四方の客席へ踊る｜選手が向き合う方向を変えた。";
+function guidanceCheck(w, ref) {
+  const check = w.checked.check_runs[0];
+  check.head_sha = ref;
+  check.output.text = JSON.stringify({ checkout_sha: ref, editorial_guidance: { [guidanceDay]: guidanceText,
+    "2026-11-28": "OTHER_DAY" }, photo_followup: ["PHOTO_DATA"] });
+  if (ref === REF) w.missing = w.checked;
+  return check;
+}
+test("editor can read just the pinned day's guidance in one GET even when photographs are outstanding", async () => {
+  const w = docsAdvance();
+  guidanceCheck(w, REF);
+  assert.deepEqual(await context.readEditorialGuidance({ ...w, ref: REF, day: guidanceDay }),
+    { status: "verified", ref: REF, check_sha: REF, day: guidanceDay, report: guidanceText });
+  assert.deepEqual(w.calls, ["/commits/" + REF + "/check-runs"]);
+});
+
+test("editorial guidance carries a proven docs advance, with a final main check", async () => {
+  const w = docsAdvance(), read = () => context.readEditorialGuidance({ ...w, ref: REF, day: guidanceDay });
+  guidanceCheck(w, BASE);
+  assert.deepEqual(await read(), { status: "verified", ref: REF, check_sha: BASE, day: guidanceDay, report: guidanceText });
+  assert.equal(w.calls.length, 5);
+  w.main = BASE;
+  assert.deepEqual(await read(), { status: "unavailable" });
+  w.main = REF;
+  w.intermediate.files[0].filename = "content/articles.json";
+  assert.deepEqual(await read(), { status: "unavailable" });
+});
+
+test("invalid dates, untrusted checks and incomplete daily outputs cannot supply editorial guidance", async () => {
+  const w = docsAdvance(), check = guidanceCheck(w, REF);
+  const read = (day = guidanceDay, ref = REF) => context.readEditorialGuidance({ ...w, ref, day });
+  for (const day of ["2026-02-30", "2026-2-03", "2026-11-27\n"]) assert.equal((await read(day)).status, "unavailable");
+  assert.equal((await read(guidanceDay, "main")).status, "unavailable");
+  assert.equal(w.calls.length, 0);
+  assert.deepEqual(await read("2026-11-29"), { status: "unavailable" });
+  for (const mutate of [
+    c => { c.app = { slug: "untrusted" }; }, c => { c.status = "in_progress"; }, c => { c.head_sha = BASE; },
+    c => { c.output.text = JSON.stringify({ checkout_sha: BASE, editorial_guidance: { [guidanceDay]: guidanceText } }); },
+    c => { c.output.text = JSON.stringify({ checkout_sha: REF, photo_followup: [] }); },
+    ...[guidanceText.replace(guidanceDay, "2026-11-28"), guidanceDay + ": published=0",
+      guidanceText.replace("desk_next=", "desk="), guidanceText.split("\n").slice(0, 2).join("\n")].map(incomplete =>
+      c => { c.output.text = JSON.stringify({ checkout_sha: REF, editorial_guidance: { [guidanceDay]: incomplete } }); })
+  ]) {
+    const broken = clone(check); mutate(broken); w.missing.check_runs = [broken];
+    assert.deepEqual(await read(), { status: "unavailable" });
+  }
+  w.fetchRepository = () => { throw Error("offline"); };
+  assert.deepEqual(await read(), { status: "unavailable" });
+});
 
 test("normal reviewer carries explicit photo handoffs across a proven docs merge within the callback budget", async () => {
   const w = docsAdvance(), opts = { ...w, ref: REF };
