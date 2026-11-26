@@ -541,6 +541,7 @@ var NativeImageStage = (function () {
       for(const name of ["fetch","update_ref"])if(typeof github[name]!=="function")throw Error("Missing preflight GitHub callback: "+name);
       return await transportPreflight(plan,options);
     }
+    function readyBranch(plan){return plan.branch+"-ready-"+plan.identity;}
     function generationClaimRef(plan) {
       return {kind:"native_image_generation_claim",status:"reserved_generation_unconfirmed",
         branch:CLAIM_BRANCH_PREFIX+plan.identity,receipt_path:CLAIM_DIR+"/"+plan.identity+".json"};
@@ -579,15 +580,16 @@ var NativeImageStage = (function () {
       await createVerifiedClaim(claim);
       return true;
     }
-    async function createVerifiedClaim(claim) {
+    async function createVerifiedClaim(claim,prepared=false) {
       const created=await call("create_branch",{branch_name:claim.branch,sha:claim.commit_sha});
       if(created.branch!==claim.branch)throw Error("Claim create response did not confirm the branch; recover only");
       // The pre-creation branch Contents lookup may still return its cached 404.
       // Both callers already verified the protected files at this immutable commit.
       const [receipt,head]=await Promise.all([
-        read(claim.receipt_path,claim.commit_sha),branchHead(claim.branch,true)
+        prepared?null:read(claim.receipt_path,claim.commit_sha),branchHead(claim.branch,true)
       ]);
-      if(hashText(receipt.content)!==claim.receipt_sha256)throw Error("Claim receipt readback mismatch; recover only");
+      if(!prepared && hashText(receipt.content)!==claim.receipt_sha256)
+        throw Error("Claim receipt readback mismatch; recover only");
       if(head!==claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
     }
     async function reservePrepared(plan,options,requireGenerator) {
@@ -647,7 +649,7 @@ var NativeImageStage = (function () {
       if(commit.sha!==claim.commit_sha||commit.parents?.length!==1||commit.parents[0].sha!==proof.commit_sha)
         throw Error("Recovered transport proof is not the generation claim's parent");
     }
-    async function verifyReserved(plan,input,readFile=read) {
+    async function verifyReserved(plan,input,readFile=read,prepared=false) {
       const claim=input?.generationClaim,proof=input?.transportPreflight;
       const proofFields=["kind","status","branch","commit_sha","receipt_path","receipt_sha256",
         "observed_at","route","source_sha256","jpeg_sha256"];
@@ -658,10 +660,11 @@ var NativeImageStage = (function () {
         ||(proof.branch!==PREFLIGHT_BRANCH&&proof.branch!==claim.branch)||proof.receipt_path!==PREFLIGHT_DIR+"/receipt.json"
         ||Object.keys(proof).length!==proofFields.length||proofFields.some(key=>typeof proof[key]!=="string")
         ||!GIT.test(proof.commit_sha||"")||!SHA.test(proof.receipt_sha256||""))throw Error("Invalid reservation preflight");
-      if(await branchHead(claim.branch)!==claim.commit_sha)throw Error("Generation reservation branch changed");
+      if(prepared&&proof.branch!==claim.branch)throw Error("Preparation requires an article-owned probe parent");
+      if(await branchHead(prepared?readyBranch(plan):claim.branch,prepared)!==claim.commit_sha)throw Error("Generation reservation branch changed");
       await verifyClaimParent(claim,proof);
       const rawClaim=await readFile(claim.receipt_path,claim.commit_sha),record=JSON.parse(rawClaim.content);
-      if(hashText(rawClaim.content)!==claim.receipt_sha256||record.version!==1||record.kind!==claim.kind||record.status!==claim.status
+      if(hashText(rawClaim.content)!==claim.receipt_sha256||(prepared&&record.protocol!=="ready_then_claim")||record.version!==1||record.kind!==claim.kind||record.status!==claim.status
         ||record.repository!==repository||record.identity!==plan.identity||record.slug!==plan.slug
         ||record.article_sha256!==plan.articleSha256||record.logical_run_id!==plan.logicalRunId||record.prompt_sha256!==hashText(plan.prompt)
         ||record.baseline?.commit_sha!==plan.baseCommitSha||record.baseline.tree_sha!==plan.baseTreeSha
@@ -808,15 +811,25 @@ var NativeImageStage = (function () {
         state.phase="saved_readback";return true;
       }catch(error){if(!foundCommit&&absentRef(error,plan.branch))return false;throw error;}
     }
-    async function lookupCandidateAfterClaim(plan,state){
-      // The normal no-candidate result is HTTP 200 with an empty array, not a thrown Contents 404.
-      const refs=await fetchJSON("/git/matching-refs/heads/"+plan.branch+"?read_nonce="+freshNonce());
-      if(!Array.isArray(refs))throw Error("Missing Git ref list for the candidate; recover only");
-      if(!refs.length)return false;
-      const ref=refs[0];
-      if(refs.length!==1||ref?.ref!=="refs/heads/"+plan.branch||ref.object?.type!=="commit"||!GIT.test(ref.object.sha||""))
-        throw Error("Ambiguous Git ref list for the candidate; recover only");
-      return lookupSaved(plan,state,undefined,ref.object.sha);
+    async function matchingHeads(branch,other){
+      // Empty is a positive GitHub response. An unknown sibling is not an empty result.
+      const refs=await fetchJSON("/git/matching-refs/heads/"+branch+"?read_nonce="+freshNonce());
+      if(!Array.isArray(refs))throw Error("Missing Git ref list for "+branch);
+      const found=new Map();
+      for(const ref of refs){
+        const name=ref?.ref;
+        if((name!=="refs/heads/"+branch&&(!other||name!=="refs/heads/"+other))
+          ||found.has(name)||ref.object?.type!=="commit"||!GIT.test(ref.object.sha||""))
+          throw Error("Ambiguous Git ref list for "+branch);
+        found.set(name,ref.object.sha);
+      }
+      return [found.get("refs/heads/"+branch),found.get("refs/heads/"+other)];
+    }
+    async function lookupCurrentCandidate(plan,state){
+      const [candidate,ready]=await matchingHeads(plan.branch,readyBranch(plan));
+      if(candidate)return lookupSaved(plan,state,undefined,candidate);
+      if(state.separateStart&&ready!==state.claim.commit_sha)throw Error("Prepared revision changed");
+      return false;
     }
     async function savedSlice(plan,state){
       const saved=state.saved;
@@ -916,7 +929,34 @@ var NativeImageStage = (function () {
             if(await lookupSaved(plan,state))return;
             throw Error("Generation is already reserved at "+claim.branch+"; recover the original output instead of generating again");
           }
+          if(state.version===2){
+            const [ready]=await matchingHeads(readyBranch(plan));
+            state.separateStart=true;
+            if(ready){
+              const raw=await read(claim.receipt_path,ready),record=JSON.parse(raw.content);
+              if(record.protocol!=="ready_then_claim"||record.kind!==claim.kind||record.repository!==repository
+                ||record.identity!==plan.identity||record.slug!==plan.slug||record.article_sha256!==plan.articleSha256
+                ||record.logical_run_id!==plan.logicalRunId||record.prompt_sha256!==hashText(plan.prompt)
+                ||!GIT.test(record.baseline?.commit_sha||""))throw Error("Unrecognized generation preparation");
+              if(record.baseline.commit_sha!==plan.baseCommitSha)
+                throw Error("Resume the original photograph plan at "+record.baseline.commit_sha);
+              state.claim={...claim,commit_sha:ready,receipt_sha256:hashText(raw.content)};
+              state.proof=record.transport_preflight;
+              state.phase="ready_transport";return;
+            }
+          }
           state.phase="capture";
+        }else if(state.phase==="ready_transport"){
+          const proof=state.proof;
+          const raw=await read(PREFLIGHT_DIR+"/receipt.json",proof.commit_sha);
+          verifyProofReceipt(plan,proof,raw.content);
+          if(options.route!==proof.route||options.expectedProbeSha256!==proof.source_sha256
+            ||typeof options.probeSourceRef!=="string"||!options.probeSourceRef.trim()||options.probeSourceRef.length>1000)
+            throw Error("Use the original verified transport route");
+          state.probeSource=sourceRef(options.probeSource);
+          await cloudStatus();
+          await compactCapture(state,options.readBytes,true);
+          state.phase="ready_verify";
         }else if(state.phase==="capture"){
           if(typeof options?.readBytes!=="function"||!SHA.test(options.expectedProbeSha256||"")
             ||typeof options.route!=="string"||!options.route.trim()||options.route.length>500
@@ -1013,7 +1053,7 @@ var NativeImageStage = (function () {
           state.claim=generationClaimRef(plan);
           if(await hasGenerationClaim(plan,state.claim))throw Error("Generation already reserved; recover only");
           if(!state.claimText){
-            const receipt={version:1,...state.claim,repository,identity:plan.identity,slug:plan.slug,article_sha256:plan.articleSha256,
+            const receipt={version:1,...(state.separateStart?{protocol:"ready_then_claim"}:{}),...state.claim,repository,identity:plan.identity,slug:plan.slug,article_sha256:plan.articleSha256,
               logical_run_id:plan.logicalRunId,prompt_sha256:hashText(plan.prompt),reserved_at:new Date().toISOString(),
               baseline:{commit_sha:plan.baseCommitSha,tree_sha:plan.baseTreeSha,protected_hashes:plan.protectedHashes},transport_preflight:state.proof};
             state.claimText=JSON.stringify(receipt,null,2)+"\n";
@@ -1030,15 +1070,41 @@ var NativeImageStage = (function () {
             tree_sha:state.claimTree,message:"Reserve native image generation: "+plan.slug}),"commit");
           await verifyClaimParent(state.claim,state.proof);
           if((await read(state.claim.receipt_path,state.claim.commit_sha)).content!==state.claimText)throw Error("Claim commit readback mismatch");
-          await verifyProtected(state.claim.commit_sha,plan.protectedHashes);state.phase="claim_final";
+          await verifyProtected(state.claim.commit_sha,plan.protectedHashes);
+          state.phase=state.separateStart?"ready_publish":"claim_final";
+        }else if(state.phase==="ready_publish"){
+          const ready=readyBranch(plan);
+          const [started]=await matchingHeads(state.claim.branch);
+          if(started)throw Error("Generation already reserved; recover only");
+          const [existing]=await matchingHeads(ready);
+          if(existing && existing!==state.claim.commit_sha)throw Error("Another preparation exists; restart the same plan");
+          if(!existing){
+            const ack=await call("create_branch",{branch_name:ready,sha:state.claim.commit_sha});
+            if(ack.branch!==ready)throw Error("Preparation not confirmed; restart the same plan");
+          }
+          state.phase="ready_verify";
+        }else if(state.phase==="ready_verify"){
+          await verifyReserved(plan,{generationClaim:state.claim,transportPreflight:state.proof,
+            observedAt:new Date().toISOString()},read,true);
+          await verifyProtected(state.claim.commit_sha,plan.protectedHashes);
+          state.phase="claim_final";
         }else if(state.phase==="claim_final"){
           // This entire ownership grant is one cold <=15-call cell. Never resume
           // an uncertain create response into permission to generate.
           let operation="create and confirm the claim";
           try{
-            await createVerifiedClaim(state.claim);
-            operation="check the candidate ref";
-            if(await lookupCandidateAfterClaim(plan,state))return;
+            if(state.separateStart){
+              // ready_verify checked this immutable receipt, its ref, probe and protected files.
+              if(state.claim?.branch!==CLAIM_BRANCH_PREFIX+plan.identity || state.claim.receipt_path!==CLAIM_DIR+"/"+plan.identity+".json"
+                ||!GIT.test(state.claim.commit_sha||"")||!SHA.test(state.claim.receipt_sha256||""))
+                throw Error("Invalid prepared revision");
+              operation="check the candidate ref";
+              if(await lookupCurrentCandidate(plan,state))return;
+              operation="create and confirm the claim";
+            }
+            await createVerifiedClaim(state.claim,state.separateStart===true);
+            operation="check the candidate ref after claiming";
+            if(await lookupCurrentCandidate(plan,state))return;
             operation="verify the final live guard";
             await cloudStatus();
           }catch(error){
@@ -1149,7 +1215,7 @@ var NativeImageStage = (function () {
     if(!["reserveExternalGenerationStep","stageReservedStep"].includes(method)||checkpoint&&checkpoint.version!==2)
       throw Error("Expected a compact image operation and its version 2 checkpoint");
     const phase=checkpoint?.phase;
-    const needsCodec=["capture","preflight_blobs","reservation_verify","upload","receipt"].includes(phase)
+    const needsCodec=["capture","preflight_blobs","ready_transport","reservation_verify","upload","receipt"].includes(phase)
       ||phase==="saved_readback"&&Boolean(checkpoint.saved?.checkedFiles);
     const runtime=needsCodec?bytes.initialize(await bytes.fetchSources(fetchFile)):await bytes.verificationRuntime(fetchFile);
     const stager=create({...services,runtime},!needsCodec);
