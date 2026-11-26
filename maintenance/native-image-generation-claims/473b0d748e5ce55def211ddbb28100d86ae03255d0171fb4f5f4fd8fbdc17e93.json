@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "473b0d748e5ce55def211ddbb28100d86ae03255d0171fb4f5f4fd8fbdc17e93",
+  "slug": "student-town-model-opens-after-school-study-room",
+  "article_sha256": "6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+  "logical_run_id": "news-photo-v1:6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+  "prompt_sha256": "caef185c77547adee4da8c1ed147a91301f75277840b8176d8ec427294d6ddb2",
+  "reserved_at": "2026-11-26T23:06:39.633Z",
+  "baseline": {
+    "commit_sha": "9b2543a13d03ad3b96c3818f2af298649d45aeac",
+    "tree_sha": "b0b6f06e2f9c942ed064b1a61165dc53acfe4a69",
+    "protected_hashes": {
+      "content/articles.json": "4eec4bc3fbe06614a9c20853fc4841df22b4233814308a1d8e1dc3eef197804d",
+      "assets/generated/manifest.json": "7d4642a97b04c160d471ede99e445fecc9b6983add0abda52c2a7d82becf523e",
+      "content/visual_reviews.json": "0382b449cc3172e02c8af3237a8a3da9c62ff9f90f182504a3907302de93f197"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-preflight/transport",
+    "commit_sha": "adb23fee28a493209ac6b53562702598f659f35b",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "24a99a6e5c8d20973dea799153ee05ccca451ab007ac1eb9ecc8151d6ef46af3",
+    "observed_at": "2026-11-26T23:06:11.963Z",
+    "route": "PNG data URL in this code runtime to GitHub candidate storage",
+    "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+    "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+  }
+}
