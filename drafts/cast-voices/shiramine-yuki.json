@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shiramine-yuki",
   "name": "白峰ゆき",
-  "created_date": "2026-11-25",
+  "created_date": "2026-11-26",
   "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
   "photo_reference": {
-    "issue_slug": "november-a-longer-breath-yuki-005",
-    "cut_id": "04",
-    "image_sha256": "115c694a398df1d070feb34a4bd8b0019ace9d78ce51d08cffdfc69b79b6fce2"
+    "issue_slug": "november-warm-water-and-riverside-yuki-009",
+    "cut_id": "05",
+    "image_sha256": "6a62b6b71b3657ecff3be1746cf45e2ff65ed197c3aaa8ed24b56652bbd6997f"
   },
-  "post_text": "夕方、外したマフラーを畳んでいたら、まだ首のあたりの温かさが残っていました。椅子の背に掛けて、今夜は窓を少しだけ開けています。",
-  "spoken_line": "まだ少し温かいです。",
-  "future_idea": "2031年、旅先の宿で衣類を傷めず乾かせる低温の共用乾燥棚を試す。"
+  "post_text": "砂浜で拾った小さな貝殻を水で洗いました。乾いた布の上に並べていたら、夕食に出る支度が少し遅くなってしまいました。",
+  "spoken_line": "ひとつずつ、色が違いますね。",
+  "future_idea": "2031年、旅先の海辺で拾った貝殻を持ち帰れる範囲を示す案内板を取材する。"
 }
