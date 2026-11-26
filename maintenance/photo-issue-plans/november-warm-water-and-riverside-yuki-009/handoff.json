@@ -731,9 +731,9 @@
     }
   },
   "stock_latest_check": {
-    "checked_at": "2026-11-25T09:17:09.744Z",
-    "main_sha": "0c70d83e0a572e198e58d960c949f0235c8f7ab7",
-    "scope": "本人既存候補branch・固定6原本の既存目視採否・週台帳",
+    "checked_at": "2026-11-26T09:13:36.593Z",
+    "main_sha": "252f985f51b49cf19fe5fbee2ae2dbb9a4e8e921",
+    "scope": "本人の既存候補2 branch・固定6原本の既存採否・現週台帳（その他の原本は不明）",
     "usable_count_in_checked_inventory": 0,
     "unreceived_known_count": 6,
     "held_count": 1,
@@ -747,12 +747,14 @@
     "new_originals_saved": 0,
     "probe": {
       "route": "file",
-      "operation": "public probe PNG acquisition before checkOriginalTransport",
-      "url": "https://raw.githubusercontent.com/RollNuts/mihassei-news/1d9b571b914d6c323a3821e46d23ae0d8e354f95/assets/favicon-192.png",
-      "error": "Web fetch DisabledError; container download rejected because URL not successfully viewed; no actual probe file handle returned.",
-      "inline_generator": "No callable native ImageGen result returning PNG data URL in CodeMode exposed in this run.",
-      "verified": false
+      "operation": "checkOriginalTransport: readCandidatePng/upload",
+      "fixture": "documented offline 138-byte PNG",
+      "fixture_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "error": "Transport callback failed",
+      "status": "blocked",
+      "verified": false,
+      "inline_generator": "No code-callable native ImageGen PNG data URL generator exposed."
     },
-    "next_operation": "現実行の画像返却形式に合う公開probeの実ファイルbridgeまたは内蔵生成の直接PNG data URL経路を確立し、checkOriginalTransportの保存・読戻しを確認してから既存週台帳で1枚予約する。既存6枚は採否変更や新しい具体参照がない限り再送しない。"
+    "next_operation": "同じ原本の再送なし。実ファイルadapterでoffline fixtureの読取・保存・読戻しが成立する環境、または実PNG data URLを返す内蔵生成経路が利用可能になった時だけ現週台帳で1枚予約。既存6枚は採否変更や新しい具体参照がない限り再送しない。"
   }
 }
