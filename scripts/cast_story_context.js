@@ -6,6 +6,8 @@ var CastStoryContext = (function () {
   "use strict";
   const SHA = /^[0-9a-f]{64}$/, GIT = /^[0-9a-f]{40}$/, SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const CUT = /^(?:0[1-9]|10)$/, JST = 9 * 60 * 60 * 1000;
+  const REPOSITORY = "RollNuts/mihassei-news", WEEKLY_PATH = "docs/DAILY_EDITORIAL_BRIEF.md";
+  const WEEKLY_ANCHOR = "weekly-stock-handoff", WEEKLY_REF = WEEKLY_PATH + "#" + WEEKLY_ANCHOR;
   const PERSONA = ["occupation", "casting_specialty", "first_person", "personality", "voice", "likes", "weakness"];
 
   function object(value) {
@@ -182,20 +184,55 @@ var CastStoryContext = (function () {
     }
     throw Error("Unrecognized GitHub fetch_file response: " + path);
   }
+  async function fileAt(fetchFile, ref, path) {
+    let reply;
+    try { reply = await fetchFile({ repository_full_name: REPOSITORY, path, ref, encoding: "utf-8" }); }
+    catch (_) { throw Error("GitHub fetch_file failed: " + path); }
+    return filePayload(reply, path);
+  }
+  async function readWeeklyHandoff({ fetchFile, ref, modelName } = {}) {
+    if (typeof fetchFile !== "function" || typeof ref !== "string" || ref.length !== 40 || !GIT.test(ref)
+        || typeof modelName !== "string" || !modelName.trim() || modelName !== modelName.trim()
+        || modelName.length > 100 || /[\r\n*]/.test(modelName))
+      throw Error("Provide fetchFile, a full immutable commit SHA, and an exact display name");
+    const source = { repository: REPOSITORY, ref, weekly_handoff: WEEKLY_REF };
+    const result = { model_name: modelName, weekly_stock_status: "not_checked", source };
+    let file;
+    try { file = await fileAt(fetchFile, ref, WEEKLY_PATH); }
+    catch (_) { return { ...result, status: "unverified", reason: "weekly_file_unavailable" }; }
+    source.blob_sha = file.sha;
+    const lines = file.content.split(/\r?\n/);
+    const marker = '<a id="' + WEEKLY_ANCHOR + '"></a>';
+    let i = lines.indexOf(marker);
+    if (i < 0 || i !== lines.lastIndexOf(marker))
+      return { ...result, status: "unverified", reason: "weekly_section_unverified" };
+    i++;
+    while (i < lines.length && !lines[i].trim()) i++;
+    const issue = /^- \*\*第[1-9][0-9]*号\*\*\s+—\s+\S/;
+    if (!issue.test(lines[i]) || !lines[i + 1]?.startsWith("- "))
+      return { ...result, status: "unverified", reason: "weekly_section_unverified" };
+    let handoff;
+    for (i++; i < lines.length && lines[i].startsWith("- "); i++) {
+      const row = /^- \*\*([^*]+)\*\*\s+—\s+(.+)$/.exec(lines[i]);
+      if (!row || issue.test(lines[i])) return { ...result, status: "unverified", reason: "weekly_section_unverified" };
+      if (row[1] !== modelName && row[1] !== modelName + "の繰越") continue;
+      if (handoff !== undefined) return { ...result, status: "unverified", reason: "duplicate_model_handoff" };
+      handoff = row[2].trim();
+      if (!handoff || handoff.length > 1500)
+        return { ...result, status: "unverified", reason: "invalid_model_handoff" };
+    }
+    return handoff === undefined ? { ...result, status: "not_listed" } : { ...result, status: "found", handoff };
+  }
   async function read({ fetchFile, ref, modelId, now, skipIfRecorded = false, compactPhotos = false } = {}) {
     const clock = stamp(now);
     if (typeof fetchFile !== "function" || !GIT.test(ref || "") || !SLUG.test(modelId || "")
         || typeof skipIfRecorded !== "boolean" || typeof compactPhotos !== "boolean")
       throw Error("Provide fetchFile, a full immutable commit SHA, and a creator ID");
-    const repository = "RollNuts/mihassei-news";
     const storyPath = "content/photo_stories/" + modelId + ".json";
     const catalogPath = "content/photo_issues.json", historyPath = "content/photo_stories.json";
-    const source = { repository, ref, story_path: storyPath, blob_shas: {} };
+    const source = { repository: REPOSITORY, ref, story_path: storyPath, weekly_handoff: WEEKLY_REF, blob_shas: {} };
     async function load(path) {
-      let reply;
-      try { reply = await fetchFile({ repository_full_name: repository, path, ref, encoding: "utf-8" }); }
-      catch (_) { throw Error("GitHub fetch_file failed: " + path); }
-      const file = filePayload(reply, path);
+      const file = await fileAt(fetchFile, ref, path);
       source.blob_shas[path] = file.sha;
       return JSON.parse(file.content);
     }
@@ -221,6 +258,6 @@ var CastStoryContext = (function () {
     }
     return { ...result, source };
   }
-  return Object.freeze({ build, read, photoLocation });
+  return Object.freeze({ build, read, readWeeklyHandoff, photoLocation });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = CastStoryContext;
