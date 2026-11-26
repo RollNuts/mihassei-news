@@ -10,6 +10,8 @@ var PhotoOriginalHandoff = (() => {
   const PROBE = {ref:"1d9b571b914d6c323a3821e46d23ae0d8e354f95", path:"assets/favicon-192.png",
     blob:"6608aa987c11d56ea9d7910eb4c0770bb529da9d", sha256:"3713afa375160c13556a90f2347b151725ac5922498211d2d980c7c58176c40e",
     bytes:3395};
+  const OFFLINE_PROBE = {path:"tests/fixtures/photo-transport.png", blob:"c3063fe8e5305c6f2d554e4870610fdc51ef5fa3",
+    sha256:"e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744", bytes:138};
   const PART = 512 * 1024, MAX = 8 * 1024 * 1024;
   function requireThat(condition, message) {
     if (!condition) throw Error(message);
@@ -165,14 +167,17 @@ var PhotoOriginalHandoff = (() => {
       "Cloud image operations stopped");
       return status.main_commit_sha;
     }
-    async function write(name, args) {
+    async function write(name, args, reportOperation) {
+      reportOperation?.("cloud_status");
       await guard();
+      reportOperation?.(name);
       return git(name, args);
     }
     function sourceReference(expectedSha, start, count) {
       requireThat(HASH.test(expectedSha) && Number.isInteger(start) && start >= 0 && (count === 1 || count === 2), "Invalid source reference");
     }
-    async function uploadPng(dataUrl, expectedSha, start, count, metadata = null) {
+    async function uploadPng(dataUrl, expectedSha, start, count, metadata = null, reportOperation) {
+      reportOperation?.("verify_png");
       requireThat(typeof dataUrl === "string" && dataUrl.startsWith("data:image/png;base64,") &&
         dataUrl.length > 22 && dataUrl.length <= 22 + 4 * Math.ceil(MAX/3), "Unexpected original PNG data URL");
       const bytes = runtime.fromBase64(dataUrl);
@@ -188,7 +193,7 @@ var PhotoOriginalHandoff = (() => {
       try {
         for (let index = start; index < start + count && index * PART < bytes.length; index++) {
           const chunk = bytes.subarray(index * PART, (index + 1) * PART);
-          const blob = await write("create_blob", {content:runtime.toBase64(chunk), encoding:"base64"});
+          const blob = await write("create_blob", {content:runtime.toBase64(chunk), encoding:"base64"}, reportOperation);
           parts.push({index, blob:gitId(blob, "blob"), sha256:runtime.sha256(chunk)});
         }
       } catch (error) {
@@ -199,47 +204,70 @@ var PhotoOriginalHandoff = (() => {
       }
       return progress();
     }
-    async function upload(file, expectedSha, start = 0, count = 1) {
-      sourceReference(expectedSha, start, count);
+    async function readPngFile(file, expectedSha, reportOperation) {
+      reportOperation?.("read_candidate_png");
       const png = payload(await readCandidatePng({file}));
+      reportOperation?.("verify_png");
       requireThat(png.status === "read" && png.mime_type === "image/png" && png.sha256 === expectedSha &&
         Number.isInteger(png.bytes) && png.bytes > 0 && png.bytes <= MAX &&
         typeof png.image_url === "string" && png.image_url.startsWith("data:image/png;base64,") &&
         png.image_url.length === 22 + 4 * Math.ceil(png.bytes/3), "Unexpected original PNG response");
+      return png;
+    }
+    async function upload(file, expectedSha, start = 0, count = 1) {
+      sourceReference(expectedSha, start, count);
+      const png = await readPngFile(file, expectedSha);
       return uploadPng(png.image_url, expectedSha, start, count, png);
     }
     async function uploadDataUrl(dataUrl, expectedSha, start = 0, count = 1) {
       sourceReference(expectedSha, start, count);
       return uploadPng(dataUrl, expectedSha, start, count);
     }
-    async function checkOriginalTransport({route, file} = {}) {
+    async function checkOriginalTransport({route, file, writeProbeFile, offlineProbeCommit} = {}) {
       let operation = "select_route";
       try {
         requireThat(route === "inline_png" || route === "file", "Missing original PNG route");
-        if (route === "file") requireThat(file && typeof readCandidatePng === "function", "Missing file handle or readCandidatePng");
+        if (route === "file") requireThat((file || typeof writeProbeFile === "function") &&
+          typeof readCandidatePng === "function", "Missing file handle or readCandidatePng");
+        let probe = PROBE;
+        if (offlineProbeCommit !== undefined) {
+          requireThat(route === "file" && file && typeof offlineProbeCommit === "string" && GIT.test(offlineProbeCommit),
+            "Offline probe needs its file and a commit SHA");
+          probe = {...OFFLINE_PROBE, ref:offlineProbeCommit};
+        }
         // The public fixture is already reachable. Its guarded write deduplicates to the same Git blob.
         async function readFixture() {
-          const ref = await git("fetch_file", {ref:PROBE.ref, path:PROBE.path, encoding:"base64"});
-          requireThat(ref.sha === PROBE.blob && ref.encoding === "base64" && typeof ref.content === "string" &&
+          const ref = await git("fetch_file", {ref:probe.ref, path:probe.path, encoding:"base64"});
+          requireThat(ref.sha === probe.blob && ref.encoding === "base64" && typeof ref.content === "string" &&
             ref.content.length <= 8192, "Unexpected probe file");
           const bytes = runtime.fromBase64(ref.content);
-          requireThat(bytes.length === PROBE.bytes && runtime.sha256(bytes) === PROBE.sha256, "Probe bytes changed");
+          requireThat(bytes.length === probe.bytes && runtime.sha256(bytes) === probe.sha256, "Probe bytes changed");
           return bytes;
         }
         operation = "fetch_file";
         const bytes = await readFixture();
-        operation = route === "file" ? "readCandidatePng/upload" : "uploadDataUrl";
-        const saved = route === "file" ? await upload(file, PROBE.sha256) :
-          await uploadDataUrl("data:image/png;base64," + runtime.toBase64(bytes), PROBE.sha256);
-        requireThat(saved.next === null && saved.parts.length === 1 && saved.parts[0].blob === PROBE.blob, "Unconfirmed probe blob");
+        if (route === "file" && !file) {
+          operation = "write_probe_file";
+          file = await writeProbeFile(runtime.toBase64(bytes));
+          requireThat(typeof file === "string" && file.length > 0, "No materialized probe file");
+        }
+        const reportOperation = name => { operation = name; };
+        const png = route === "file" ? await readPngFile(file, probe.sha256, reportOperation) : null;
+        const dataUrl = png?.image_url ?? "data:image/png;base64," + runtime.toBase64(bytes);
+        const saved = await uploadPng(dataUrl, probe.sha256, 0, 1, png, reportOperation);
+        requireThat(saved.next === null && saved.parts.length === 1 && saved.parts[0].blob === probe.blob, "Unconfirmed probe blob");
         operation = "fetch_file_readback";
         await readFixture();
-        return {status:"verified", route, sha256:PROBE.sha256, blob:PROBE.blob, bytes:PROBE.bytes};
+        return {status:"verified", route, sha256:probe.sha256, blob:probe.blob, bytes:probe.bytes};
       } catch (error) {
         // Do not echo unknown connector payloads or file references into a task log.
         const detail = String(error?.message ?? "");
-        const message = detail.startsWith("Cloud image operations stopped:") ? "Cloud image operations stopped" : detail;
-        const safe = /^(?:Missing original PNG route|Missing file handle or readCandidatePng|Unexpected probe file|Probe bytes changed|Unconfirmed probe blob|Cloud image operations stopped|Photo transport tool failed(?: [(][a-zA-Z0-9_-]{1,48}[)])?|Unexpected original PNG response|Original PNG changed|Invalid Git blob response)$/;
+        const blockedFile = operation === "read_candidate_png" && (error?.code === "BLOCKED_FILE_REFERENCE" ||
+          error?.error_code === "BLOCKED_FILE_REFERENCE" ||
+          /^BLOCKED_FILE_REFERENCE(?:$|:)/.test(typeof error === "string" ? error : detail));
+        const message = blockedFile ? "Photo transport tool failed (BLOCKED_FILE_REFERENCE)" :
+          detail.startsWith("Cloud image operations stopped:") ? "Cloud image operations stopped" : detail;
+        const safe = /^(?:Missing original PNG route|Missing file handle or readCandidatePng|No materialized probe file|Offline probe needs its file and a commit SHA|Unexpected probe file|Probe bytes changed|Unconfirmed probe blob|Cloud image operations stopped|Photo transport tool failed(?: [(][a-zA-Z0-9_-]{1,48}[)])?|Unexpected original PNG response|Original PNG changed|Invalid Git blob response)$/;
         return {status:"blocked", route:["inline_png","file"].includes(route) ? route : null, operation,
           reason:safe.test(message) ? message : "Transport callback failed", ...(Number.isInteger(error?.status) ? {http_status:error.status} : {})};
       }

@@ -16,7 +16,7 @@ content/serials.json ────┘                │
 - 記事の本文、アーカイブ、連載、検索導線は静的生成。読者APIが停止しても本文は閲覧可能。
 - AdSenseの広告スクリプトは、index可能な通常ニュース記事の本文だけに出力する。検索への掲載可否とは別条件とし、市場面は全文を広告なしで配信する。所有確認メタタグと`ads.txt`は維持し、この出力制限をサイト全体の審査対象除外やGoogleによる承認とは扱わない。
 - 通常のビルドは外部AI生成APIを使いません。画像生成は独立した任意の処理です。
-- `main`への更新をCloudflareのGit連携でデプロイ。GitHub Actionsではテストと公開後の読み取り検証を実施。
+- `veripsa.com`の公開先はCloudflare Workers Static Assets。GPTで作った記事・写真もGitHubの`main`から同じ本番へ配信する。OpenAI Sitesで別作品や編集用ボードを作る場合は、そのSites用URLを使い、新聞のドメインを割り当てない。GitHub Actionsでテストと公開後の読み取り検証を実施。
 - Cloudflareのビルド監視は含むパス`*`・除外`docs/*`、非本番ビルドはOFF。公開SHAがmainより古くても、祖先関係と差分が`docs/`だけだとGitで証明できる場合に限り同じ公開物として扱い、実配信SHAを報告する。記事・画像・コード等の差分は配信を待つ。
 - 生成結果は`dist/`。手元で公開するだけならCloudflareアカウントは不要です。
 - `build()`内では生成manifest・画像review台帳のJSON解析だけを再利用し、各読込でファイルの識別子・サイズ・更新時刻を照合する。変更時は読み直し、build終了時に破棄する。画像の採否・来歴・JPEGのSHAや寸法は毎回検証し、生成・レビュー処理単独では台帳を常に読み直す。
@@ -83,7 +83,7 @@ python3 -m unittest discover -s tests -v
 - Cloudflare Buildsは本番`main`の自動デプロイを有効にし、非本番のプレビューブランチビルドはOFFにします。ブランチごとの`wrangler preview`がDurable Objectの無料namespace枠を使い切るためです。既存namespaceは削除せず、PRは上記CIで検証し、統合後の本番revisionと実配信を確認します。プレビュー停止を画像・記事発行や本番ビルドの停止と混同しません。再有効化する場合は無料枠と実行コマンドを確認し、本番のbindings・migrationsを変更したり、検証失敗時に本番deployへ切り替えたりしません。
 - 本番の公開確認は[`.github/workflows/verify-public-photos.yml`](../.github/workflows/verify-public-photos.yml)を参照。公開revisionの完全SHA一致を最大12分待つ処理はここへ集約し、同一リポジトリのmainの公開確認が成功してからPV/API診断を実行します（定時・手動診断は維持）。PR・CIの成功と、公開URLの到達・画像表示の成功を混同しません。
 - 記事の編集方針と引き継ぎは[`EDITORIAL_LOOP.md`](EDITORIAL_LOOP.md)、検索インデックスは[`SEARCH_INDEX_REFRESH.md`](SEARCH_INDEX_REFRESH.md)を参照。
-- 不要な従量課金サービス、外部AI API、広告費を勝手に導入しません。ホスティング・ドメイン等の契約状況は契約画面で確認が必要です。
+- 不要な従量課金サービス、外部AI API、広告費を勝手に導入しません。限定公開の編集レビューボードはOpenAI Sitesの別サイト。費用確認は、新聞本体のCloudflare契約・ドメインと、所有する全Sitesが共有する月間枠を分けて行う。[Sitesの利用量と料金](https://learn.chatgpt.com/docs/sites/usage-and-cost)
 
 ## Docsの原則
 

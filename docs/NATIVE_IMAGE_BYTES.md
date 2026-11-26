@@ -6,11 +6,15 @@
 
 Cloud image operations use the live GitHub image-workflow stop state defined in [VISUAL_OPERATIONS](VISUAL_OPERATIONS.md), without a Mac CLI requirement. The helper fails closed for a private repository, disabled/unknown workflow, failed control lookup, or an excessive public JPEG total. It rechecks before generation and remote writes; stopped candidates remain readable. This changes stop control, not byte-bridge availability or visual approval.
 
-When the native generator is available only as a top-level tool outside code mode, use `reserveExternalGenerationStep` → one actual native tool call → `stageReservedStep`. The reservation reads an existing PNG through the actual byte callback, converts it, saves and reads back PNG/JPEG hashes, acquires a durable create-only claim, and rechecks the stop state before returning. `stageReservedStep` verifies that persisted claim and its immutable preflight against the original plan before using the existing storage path. If the generator is actually callable inside code mode, `generateAndStage` remains a convenience wrapper over the same reservation checks. Neither path generates after a failed check; a saved candidate is recovered first.
+When the native generator is available only as a top-level tool outside code mode, use `reserveExternalGenerationStep` → one actual native tool call → `stageReservedStep`. The reservation reads an existing PNG through the actual byte callback, converts it, saves and reads back PNG/JPEG hashes, acquires a durable create-only claim, and rechecks the stop state before returning. `stageReservedStep` verifies that persisted claim and its immutable preflight against the original plan before using the existing storage path. For a generator callable inside code mode, `generateAndStage` uses its original single-run reservation. The compact file-adapter path below also supports resuming a verified preparation before the exclusive start. Neither path generates after a failed check; a saved candidate is recovered first.
 
-`scripts/native_image_stage.js` uses one isolated `native-image-preflight/transport` branch for the transport sample. A fresh reservation checks for a saved candidate and an existing claim before transferring the probe. When another worker already holds the claim, recovery reads the candidate and leaves the shared probe branch untouched. For an unclaimed plan, the worker performs its own transfer and advances the probe branch with an expected-head, non-forced update. Concurrent changes stop the check. The sample receipt has kind `native_image_transport_preflight`, never an article candidate, generation claim or visual approval. Its PNG is at most 512 KiB. This checks the tested route and size, not unlimited future transfers. The actual generated image still receives all ordinary integrity and readback checks.
+A fresh compact reservation checks for an existing candidate or claim, then reads its own probe PNG (at most 512 KiB) through the actual file adapter. The helper verifies PNG/JPEG bytes, receipt and protected files at a fixed probe commit. The article’s create-only claim links directly to that commit. Two articles can reserve independently. An old `capture` checkpoint with a source path and shared head but no proof must still read the original file and pass the same checks.
 
-After the preflight, the entry point checks the candidate again, then atomically creates `native-image-generation-claim/<plan.identity>` before permitting the one generator call. Ownership requires a successful create response naming that branch, the exact commit SHA from the subsequent Git ref lookup, and matching file readback. An existing reservation blocks another worker or a fresh runtime from generating the same plan; a candidate completed during the check is recovered instead. A lost or malformed creation response does not establish ownership. The receipt's `reserved_generation_unconfirmed` status does not prove that the generator was called or completed. Reservations have no automatic expiry, replacement or deletion; use the recorded source/checkpoint for recovery, without changing the originating identity to bypass the reservation. Candidate and reservation branches remain separate, so recovery with `stage/resume/load` does not require creating a new claim.
+Legacy reservations and the standalone transport diagnostic use `native-image-preflight/transport`. A compact checkpoint already carrying a shared proof continues from its recorded position. If its saved tree has outlived its expected shared head, the helper verifies those original blobs and anchors the probe in that article’s own claim. A transport sample is never article artwork.
+
+A new compact run saves its verified preparation at `<candidate branch>-ready-<identity>`. If the connection fails before the start, run the same compact entry point with the original plan. A fresh workspace may provide its own temporary copy of the diagnostic fixture. The helper reads it through the same adapter and verifies both the PNG and converted JPEG against the immutable proof. A changed article base returns the original commit to its owner.
+
+Immediately before starting, one fresh GitHub lookup verifies the preparation SHA and checks for a finished candidate. The winner must receive a successful create response for `native-image-generation-claim/<plan.identity>`, confirm its exact ref, check again for a candidate completed during the claim, and pass the final live guard. Only a returned `reserved` permits one generation. An existing claim, including a legacy reservation, allows recovery of the original output only. Keep both refs and the original plan. A missing or ambiguous response after the start never grants a replacement.
 
 For a transport-only diagnostic, `checkTransport(plan, options)` takes the same probe and `readBytes` options without a `generate` callback. It performs the actual transfer/save/readback and creates no generation claim or article candidate. Its returned proof cannot replace either reservation entry point's own actual check.
 
@@ -28,7 +32,7 @@ This read-only wrapper verifies the Git commit/tree, derives the article fingerp
 
 Bind `readImageControl` below to the actually exposed `read_image_control` MCP tool, pass the nonce unchanged and return the whole actual response to the stager. Do not unconditionally select `.structuredContent`: the helper normalizes direct, `.result` and legacy `.structuredContent` responses and rejects errors at either level. Connector runtimes that reject GitHub workflow API URLs use this existing read-only tool; do not synthesize an active state or reuse an old reply. The endpoint echoes a per-call nonce and timestamp, both verified by the helper. An unavailable reader stops image operations. Use the same logical run ID on retry; a retry's wall-clock time is not a new identity. A recovery owner inherits the originating plan and logical run ID, rather than replacing them with its later review slot. Check the existing publication/recovery handoff and candidate branch before preparing a new generation.
 
-**Unchanged main does not imply no recovery work.** For each unresolved slug in the existing handoff, check its recorded candidate references and enumerate the matching `native-image-candidate/<slug>/` branches before returning idle. Read new or changed `receipt.json` files and compare the slug, current article fingerprint, logical run ID, source/JPEG hashes and existing acceptance/rejection history. Recover an unprocessed matching candidate with its originating plan before generating another image; skip identities already adopted or rejected. Record changed branch/commit and receipt SHA in the existing task result or handoff, without creating another ledger. A failed or incomplete branch lookup is an unresolved lookup, not evidence that no candidate exists; do not replace it with an unchanged-main shortcut.
+**Unchanged main does not imply no recovery work.** For each unresolved slug in the existing handoff, check its recorded candidate references and enumerate the matching `native-image-candidate/<slug>/` branches before returning idle. A branch ending in `-ready-<plan.identity>` holds preparation only. On the exact candidate branch, read its new or changed `receipt.json` and compare the slug, current article fingerprint, logical run ID, source/JPEG hashes and existing acceptance/rejection history. Recover an unprocessed matching candidate with its originating plan before generating another image; skip identities already adopted or rejected. Record changed branch/commit and receipt SHA in the existing task result or handoff, without creating another ledger. A failed or incomplete branch lookup is an unresolved lookup, not evidence that no candidate exists; do not replace it with an unchanged-main shortcut.
 
 ### Native tool outside code mode: one bounded step per cell
 
@@ -43,7 +47,7 @@ const services = {bytes:bytesAPI, fetchFile:github.fetch_file, github,
 
 #### Resume a reservation
 
-Call **one** step per code-mode cell. Use the original `plan` and the preceding reservation `checkpoint`, or `undefined` on the first call. Retain the four small strings of `probe` **once**, before the first lookup: the actual file ID/path (`probeSource`), verified SHA-256 (`expectedProbeSha256`), source reference (`probeSourceRef`) and transfer route (`route`). The [offline probe](#offline-png-bootstrap) prints this object for the file-adapter route. Reuse those original values and bind a fresh `readBytes` to the same reader in **every reservation cell**. The first lookup can return a `capture` checkpoint before recording any probe inputs.
+Call **one** step per code-mode cell. Use the original `plan` and the preceding reservation `checkpoint`, or `undefined` on the first call. Retain the four small strings of `probe` **once**, before the first lookup: the actual file ID/path (`probeSource`), verified SHA-256 (`expectedProbeSha256`), source reference (`probeSourceRef`) and transfer route (`route`). The [offline probe](#offline-png-bootstrap) prints this object for the file-adapter route. Within that run, reuse those values and bind a fresh `readBytes` to the same reader in **every reservation cell**. The first lookup can return a `capture` checkpoint before recording any probe inputs.
 
 ```js
 try {
@@ -63,11 +67,11 @@ try {
 
 `probeSource` is the real file ID/path string, retained unchanged. The capture reads the existing PNG; its upload step reacquires that same file and verifies both PNG and pinned JPEG hashes before writing. Do not loop all steps inside one `functions.exec`, create self-messages/tasks, or retry to evade an account quota. `pending` is progress, not generation permission. Preserve the plan, checkpoint and original references in the existing handoff if the turn/run ends. Stop on error or no progress; retain the error's checkpoint. The API rejects edited/cross-plan/exhausted checkpoints and bounds total progression to 256 steps.
 
-Only the fresh final `status: "reserved"` response permits the immediately following **one** top-level native generation call with the exact original prompt. The final create-only claim, positive ownership/ref/receipt readback, candidate check and live guard occur together within one bounded cell. `saved`, an existing claim, a lost/aborted final reply or a replayed old checkpoint permits recovery only. Never change the logical identity to try again. The claim remains `reserved_generation_unconfirmed`, not evidence that generation happened.
+Only the fresh final `status: "reserved"` response permits the immediately following **one** top-level native generation call with the exact original prompt. The preceding step verifies the immutable preparation receipt. The final cell requires the expected preparation ref, checks for a finished candidate before and after claiming, confirms the new claim ref and checks the live guard. A finished candidate resumes readback. An empty, changed or ambiguous preparation lookup stops a fresh compact run. `saved`, an existing claim, a lost/aborted final reply or a replayed old checkpoint permits recovery only. Never change the logical identity to try again. The claim remains `reserved_generation_unconfirmed`, not evidence that generation happened.
 
 #### Resume saving the original
 
-After the native tool returns, record its actual file ID/path and the **first** real observation time once, together with the returned proof/claim. Start a new `stageReservedStep` with `checkpoint` set to `undefined`. Subsequent save cells use the preceding **save** checkpoint and a fresh reader callback:
+After the native tool returns, record its actual file ID/path and the **first** real observation time once, together with the returned proof/claim. Start a new `stageReservedStep` with `checkpoint` set to `undefined`. Bind the same [PNG reader](#file-adapter-to-code-mode-png-bytes) in every save cell, including when resuming from the preceding **save** checkpoint.
 
 ```js
 const input = checkpoint ? {readBytes} : {
@@ -181,33 +185,26 @@ For a local-file or file-ID generator, use an existing PNG in that actual execut
 The existing receiver also exposes the read-only `read_candidate_png` tool. The PNG reader additionally permits the bounded Azure account form `^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$`; JPEG probe/storage still permit only their existing exact observed Azure accounts. This is an untrusted read-only relay: the prefix does not establish OpenAI ownership, generation provenance or adoption eligibility. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. For an observed blocked file reference, use the [Library recovery procedure](#blocked-photo-file-reference) and retain the individual source inventory. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
 
 ```js
-const readBytes = async actualPngPath => {
-  const received = await readCandidatePng({file: actualPngPath});
-  const png = received?.structuredContent ?? received?.result ?? received;
-  if (received?.isError || received?.error_code || received?.error || png?.isError || png?.error_code || png?.error ||
-      png?.status !== "read" || png.mime_type !== "image/png" ||
-      typeof png.image_url !== "string" || !png.image_url.startsWith("data:image/png;base64,"))
-    throw Error("Original PNG byte transfer failed");
-  if (runtime.sha256(runtime.fromBase64(png.image_url)) !== png.sha256)
-    throw Error("Original PNG transfer SHA mismatch");
-  return {image_url: png.image_url};
-};
+const readBytes = actualPngPath => readCandidatePng({file: actualPngPath});
 ```
 
-Capture the PNG payload only inside code mode (direct or inside a supported wrapper): never `text(received)`, `notify(received)`, or print the data URL/base64 into the conversation. Tool text contains a small metadata summary. This reader preserves the exact PNG bytes, including C2PA chunks; it checks MIME, bounded PNG structure and dimensions, without decoding, converting, verifying CRC/signatures, storing or approving. The existing native helper performs CRC/decode/C2PA parsing and `native_image_stage` retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
+Return the whole tool response. The stager checks the receiver’s reported SHA-256, byte count and dimensions against the original PNG. The receiver puts the bytes in `structuredContent.image_url` and a metadata summary in `content`. Keep both the response and the data URL in code mode. An existing byte adapter can still return a PNG `{image_url}` object. A bare data URL passed as the callback result stops the step. Resume from its checkpoint with the original file reference and the reader above.
+
+The reader preserves the exact PNG bytes, including C2PA chunks. It checks MIME, bounded PNG structure and dimensions. The existing native helper performs CRC/decode/C2PA parsing and retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Receiver limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
 
 ### Offline PNG bootstrap
 
 When this worker exposes a top-level Python executor, create this deterministic transport fixture there using only the standard library (outside `functions.exec`). It avoids raw-GitHub DNS, external downloads and manual Mac attachments:
 
 ```python
-import base64, hashlib
+import base64, hashlib, tempfile
 from pathlib import Path
 png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAAUUlEQVR4nNXRMQ0AMAwDQUMMiAILnCLpbAbpF4LHTqdfIkuRpCmdaTTmvc7U0jQa49bm4uYiGuMWM4o5jda7mDYzijmNxrjFjGJOozHu/79wAV5JS/CTcXlMAAAAAElFTkSuQmCC", validate=True)
 expected = "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744"
 assert len(png) == 138 and hashlib.sha256(png).hexdigest() == expected
-path = Path("/mnt/data/mihassei-offline-probe.png")
-path.write_bytes(png)
+with tempfile.NamedTemporaryFile(dir="/mnt/data", prefix="mihassei-probe-", suffix=".png", delete=False) as probe:
+    probe.write(png)
+    path = Path(probe.name)
 print({"probeSource": str(path), "expectedProbeSha256": expected, "probeSourceRef": str(path),
        "route": "read_candidate_png through the original file adapter"})
 ```
@@ -220,7 +217,7 @@ After staging, `const images = await stager.load(plan)` returns verified `source
 
 For a compact version 2 checkpoint, follow [the reservation example](#resume-a-reservation) for `native_reservation_steps` or [the save example](#resume-saving-the-original) for `native_stage_steps`. Keep the original plan and the metadata in that example in the existing task handoff. A missing source file before upload completes requires recovering that exact original.
 
-For legacy `stage` checkpoints only, `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish tree/commit/branch/readback without original data-URI bytes. Before that boundary, retain the raw native result, real byte-returning callback and first observation time; recover `error.transferredImage ?? await readBytes(error.imageGenResult)` through the corresponding legacy storage method with its original proof/claim. Legacy `store` examples require an executor that actually retains values; current GPT does not retain them across cells. A blob or unreferenced commit is incomplete. Authorization failures, missing files on existing branches, malformed responses and ambiguous lookups never authorize overwriting a branch or generating again.
+For legacy `stage` checkpoints only, `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish tree/commit/branch/readback without original data-URI bytes. Before that boundary, retain the raw native result, real byte-returning callback and first observation time. Pass `error.transferredImage` to the legacy storage method with the original proof/claim when available. If the file must be reread, that legacy method expects an `imageGenResult` object containing the actual PNG data URL. Verify the reread bytes against the receiver’s SHA-256 before passing `{image_url: png.image_url}`. Legacy `store` examples require an executor that actually retains values; current GPT does not retain them across cells. A blob or unreferenced commit is incomplete. Authorization failures, missing files on existing branches, malformed responses and ambiguous lookups never authorize overwriting a branch or generating again.
 
 ### Install a reviewed candidate in its existing publication PR
 
@@ -240,6 +237,10 @@ const prepared = await stager.preparePublication({
 `reviewSource` is the original JSON text of the actual accepted decision for that article fingerprint and JPEG SHA, with the observed review time and notes. The helper does not perform visual review or create an acceptance. It rechecks the fixed candidate's bytes and provenance, the current PR's article and head, and returns `prepared_not_published` with the current PR's `baseTreeSha`, `expectedHeadSha`, and three `files` for GitHub `create_tree`: the public JPEG blob, the manifest append, and the review update. Existing manifest and review text, including large integer seeds, is preserved. An existing manifest slug requires its explicit replacement/history procedure; this append-only path must not overwrite it.
 
 Before any GitHub write, run the existing fresh image guard. Use these three files on the returned **current PR tree**, then follow the existing expected-head non-forced update, readback, CI, and publication-finalize procedure. If the head changes, prepare again against the new head. Do not merge the candidate branch or copy its tree into the publication PR: `source.png.partNNN`, `candidate.jpg`, and `receipt.json` remain retrievable at the original candidate commit. A prepared patch is neither saved nor published, and a successful save is not proof of visible delivery.
+
+If the original article PR has merged, continue its plan and fixed candidate. Check for an existing owner before branching from current `main`. [Photo recovery ownership](VISUAL_OPERATIONS.md#画像の採用条件)
+
+When the reviewer has a new handoff to record in `docs/DAILY_EDITORIAL_BRIEF.md`, that update can open the recovery PR. For the pump article, the reviewer recorded the original PR, article and image hashes, fixed candidate commit, visual decision and next owner. The next commit added the three public files to the same PR for news photo finalization. [Recovery PR #1041](https://github.com/RollNuts/mihassei-news/pull/1041) · [Publication handoff](OPERATIONS.md#ci公開待機の引継ぎ)
 
 ## Runtime without Node
 
@@ -414,19 +415,25 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 <a id="weekly-original-transport"></a>
 ### Test the current producer’s original PNG route
 
-When a producer has a real stock shortage, check the image tool actually exposed **in this scheduled execution**. If its callable result supplies the unmodified PNG data URL to code mode, use `inline_png`. If the tool supplies a file, open [the public probe PNG](https://raw.githubusercontent.com/RollNuts/mihassei-news/1d9b571b914d6c323a3821e46d23ae0d8e354f95/assets/favicon-192.png) through that same executor's file bridge and supply the resulting handle and its real `readCandidatePng` callback. A website preview, an ID without a reader, or a file on a different machine cannot establish this route. Existing Library originals with a real file reference can use [the original recovery path](#blocked-photo-file-reference).
+Choose the route for the generator actually available in this execution. A file-returning generator must use its real `readCandidatePng` reader.
+
+- With top-level Python, run the [138-byte offline bootstrap](#offline-png-bootstrap) there. Use the returned path and the reviewed main commit SHA as shown below. Only the path crosses tools.
+- With a writer callable from code mode, bind `writeProbeFile(base64)` to decode the helper’s GitHub fixture into a new temporary PNG in the generator’s workspace and return the path. Pass `{route:"file", writeProbeFile}`. If that favicon fixture already has a handle, pass `{route:"file", file}`.
+- Use `{route:"inline_png"}` without a file reader only when the generator actually returns the original PNG data URL.
+
+The file route must reopen the exact fixture. Record the failed operation before reserving an image. A `read_candidate_png` failure with `BLOCKED_FILE_REFERENCE` requires a changed, authorized file reference. For an existing original, follow [Library recovery](#blocked-photo-file-reference). After the reader returns bytes, a `verify_png` failure identifies a byte or metadata mismatch. For `cloud_status`, `create_blob` or `fetch_file_readback` failures, keep the same verified fixture and address the indicated stop or GitHub operation.
 
 Load the original handoff, native byte and staging helpers at the reviewed main commit. The verification runtime loads only SHA-256. Keep the byte-bearing tool results inside code mode.
 
 ```js
 const runtime = await bytesAPI.verificationRuntime(github.fetch_file);
 const {cloudStatus} = stageAPI.create({controlOnly:true, github, repository:"RollNuts/mihassei-news", readCloudWorkflow});
-const handoff = H.create({runtime, github, cloudStatus, readCandidatePng}); // undefined for inline
-const proof = await handoff.checkOriginalTransport({route, file}); // file is undefined for inline
-text(proof);
+// Top-level Python has created the offline fixture and returned its path.
+const handoff = H.create({runtime, github, cloudStatus, readCandidatePng});
+text(await handoff.checkOriginalTransport({route:"file", file:probeSource, offlineProbeCommit:reviewedMainCommit}));
 ```
 
-This writes the same 3,395 public bytes through the chosen route and re-reads their existing immutable GitHub path, checking the acknowledged blob ID and SHA-256. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
+This writes the chosen fixture’s verified public bytes through the chosen route and re-reads their existing immutable GitHub path, checking the acknowledged blob ID and SHA-256. Remove only your temporary probe after completing its checks. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
 
 <a id="weekly-photo-quota"></a>
 ### Reserve one original in the producer’s weekly allowance

@@ -69,6 +69,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const jpegPath = prefix + "candidate.jpg";
   const preflightBranch = "native-image-preflight/transport";
   const preflightPrefix = "maintenance/native-image-preflight/";
+  const readyBranch = p => p.branch+"-ready-"+p.identity;
   const claimBranchPrefix = "native-image-generation-claim/";
   const claimPrefix = "maintenance/native-image-generation-claims/";
 
@@ -134,6 +135,9 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         const blob = tree.get(args.path);
         if (!blob) return apiError("NOT_FOUND", "Repository path does not exist");
         const encoding = args.encoding || "utf-8";
+        if(faults.corruptCreatedClaim && args.path.startsWith(claimPrefix) &&
+          [...branches].some(([ref,sha])=>ref.startsWith(claimBranchPrefix)&&sha===args.ref))
+          return ok({content:"unrelated receipt",encoding,sha:blob.sha});
         if (faults.preflightCorrupt && args.ref === preflightBranch && args.path === preflightPrefix + "probe.png")
           return ok({content: "AAAA", encoding, sha: blob.sha});
         // Reproduce the Contents API/connector's observed large-file empty result.
@@ -155,7 +159,9 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       },
       async create_tree(args) {
         log("create_tree", args);
-        demand(args.base_tree_sha === baseTreeSha, "tree must inherit the supplied base tree");
+        const probeBase=trees.get(args.base_tree_sha)?.has(preflightPrefix+"receipt.json");
+        demand(args.base_tree_sha === baseTreeSha || (probeBase && args.tree_elements.length===1 &&
+          args.tree_elements[0].path.startsWith(claimPrefix)), "only a recovered claim may inherit the probe tree");
         demand(Array.isArray(args.tree_elements), "tree_elements must be an array");
         if (faults.treeOnce) {
           faults.treeOnce = false;
@@ -175,7 +181,9 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       },
       async create_commit(args) {
         log("create_commit", args);
-        demand(args.parent_sha === baseCommitSha || args.parent_sha === branches.get(preflightBranch),
+        const probeParent=trees.get(commits.get(args.parent_sha)?.tree)?.has(preflightPrefix+"receipt.json");
+        demand(args.parent_sha === baseCommitSha || args.parent_sha === branches.get(preflightBranch) ||
+          (probeParent && /^(Reserve native image generation|Check native image transport): /.test(args.message)),
           "commit must parent the immutable base or advance the isolated preflight branch");
         demand(trees.has(args.tree_sha), "commit must reference a created tree");
         demand(!args.additional_parent_shas || args.additional_parent_shas.length === 0,
@@ -226,7 +234,15 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         if (args.url === root + "/git/commits/" + baseCommitSha)
           return ok({content: JSON.stringify({sha: baseCommitSha, tree: {sha: baseTreeSha}})});
         if (args.url === root + "/git/trees/" + cloud.commit.tree.sha + "?recursive=1") return cloudResult("tree");
-        const branch = args.url.split("/git/ref/heads/")[1];
+        const commitSha=args.url.split("/git/commits/")[1], commit=commits.get(commitSha);
+        if(commit)return ok({content:JSON.stringify({sha:commitSha,tree:{sha:commit.tree},parents:[{sha:commit.parent}]})});
+        const matchPrefix = args.url.split("?")[0].split("/git/matching-refs/heads/")[1];
+        if (matchPrefix) {
+          const refs = Array.from(branches).filter(([name]) => name.startsWith(matchPrefix))
+            .map(([name, sha]) => ({ref:"refs/heads/"+name,object:{type:"commit",sha}}));
+          return ok({content: JSON.stringify(refs)});
+        }
+        const branch = args.url.split("?")[0].split("/git/ref/heads/")[1];
         let sha = branch === "main" ? cloud.mainSha : branches.get(branch);
         if (branch === "main" && cloud.error === "main") return apiError("SERVICE_UNAVAILABLE", "Injected main lookup failure");
         if (!sha) return apiError("NOT_FOUND", "Not Found");
@@ -642,7 +658,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     const context = await callbackScenario("callback-block-" + label, change), counts = {reads: 0, generated: 0};
     const error = await failure(() => context.service.generateAndStage(context.plan, gateOptions(context, counts)),
       label + " blocks the callback generation route");
-    assert(error.message.includes("Cloud image operations stopped:") && counts.generated === 0 &&
+    assert(error.message.includes("Cloud image operations stopped: image control connector:") && counts.generated === 0 &&
       counts.reads === 0 && context.mock.writes().length === 0 && context.requests.length === 1 &&
       !context.mock.calls.some(call => call.name === "fetch" && call.args.url.includes("/actions/workflows/")),
       label + " permits neither generator/writes nor a fallback after callback failure");
@@ -744,7 +760,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const fetchBeforeStop = stoppedBeforeGenerate.mock.github.fetch;
   stoppedBeforeGenerate.mock.github.fetch = async args => {
     const result = await fetchBeforeStop(args);
-    if (args.url.endsWith("/git/ref/heads/" + claimBranchPrefix + stoppedBeforeGenerate.plan.identity))
+    if (args.url.split("?")[0].endsWith("/git/ref/heads/" + claimBranchPrefix + stoppedBeforeGenerate.plan.identity))
       stoppedBeforeGenerate.mock.cloud.workflow.state = "disabled_manually";
     return result;
   };
@@ -824,6 +840,35 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   assert([...gated.mock.branches.keys()].filter(name => name.startsWith("native-image-preflight/")).length === 1,
     "repeated transport checks advance one preflight branch without branch proliferation");
 
+  // Some connector sessions reuse a prior response for the same URL. A mutable
+  // shared ref needs fresh reads before and after a non-forced advance.
+  const cachedRef = await scenario("cached-transport-head");
+  const rawFetch = cachedRef.mock.github.fetch;
+  const refCache = new Map();
+  cachedRef.mock.github.fetch = async args => {
+    if (!args.url.includes("/git/ref/heads/" + preflightBranch)) return rawFetch(args);
+    if (!refCache.has(args.url)) refCache.set(args.url, await rawFetch(args));
+    return refCache.get(args.url);
+  };
+  const checkOptions = gateOptions(cachedRef, {reads: 0, generated: 0});
+  delete checkOptions.generate;
+  const firstProbe = await cachedRef.service.checkTransport(cachedRef.plan, checkOptions);
+  const nextProbe = await cachedRef.service.checkTransport(cachedRef.plan, checkOptions);
+  assert(nextProbe.commit_sha !== firstProbe.commit_sha &&
+    nextProbe.commit_sha === cachedRef.mock.branches.get(preflightBranch),
+    "verify a second transport on the shared ref even when the connector caches URLs");
+  const actualUpdate = cachedRef.mock.github.update_ref;
+  cachedRef.mock.github.update_ref = async args => {
+    const result = await actualUpdate(args);
+    cachedRef.mock.branches.set(preflightBranch, firstProbe.commit_sha);
+    return result;
+  };
+  const moved = await failure(() => cachedRef.service.checkTransport(cachedRef.plan, checkOptions),
+    "reject a genuine shared head change after the write");
+  assert(moved.stage === "preflight_branch_readback" && moved.message.includes("observed " + firstProbe.commit_sha) &&
+    cachedRef.mock.branches.size === 1,
+    "a fresh lookup cannot bless bytes from a different head or create a generation claim");
+
   const transportOnly = await scenario("transport-only"), transportCounters = {reads: 0, generated: 0};
   const transportOptions = gateOptions(transportOnly, transportCounters);
   delete transportOptions.generate;
@@ -870,6 +915,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   for (const [label, faults] of [
     ["lost claim response", {claimLostResponse: true}],
     ["invalid claim response", {claimBadResponse: true}],
+    ["mismatched immutable receipt after creation", {corruptCreatedClaim: true}],
     ["mismatched claim ref SHA", {claimWrongHead: true}]
   ]) {
     const context = await scenario(label, faults), counts = {reads: 0, generated: 0};
@@ -1057,7 +1103,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const lateExternalFetch = lateExternalStop.mock.github.fetch;
   lateExternalStop.mock.github.fetch = async args => {
     const result = await lateExternalFetch(args);
-    if (args.url.endsWith("/git/ref/heads/" + claimBranchPrefix + lateExternalStop.plan.identity))
+    if (args.url.split("?")[0].endsWith("/git/ref/heads/" + claimBranchPrefix + lateExternalStop.plan.identity))
       lateExternalStop.mock.cloud.workflow.state = "disabled_manually";
     return result;
   };
@@ -1354,13 +1400,36 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       context.stepCounters.reads++;context.refsRead.push(reference);
       demand(reference === context.probeRef || reference === context.originalRef,
         "compact reads must use the actual provided original/probe reference");
-      return {image_url: "data:image/png;base64," + runtime.toBase64(
-        reference === context.probeRef ? pngBytes : context.originalBytes)};
+      const bytes = reference === context.probeRef ? pngBytes : context.originalBytes;
+      if (context.readerReply) return context.readerReply(bytes, reference);
+      return {image_url: "data:image/png;base64," + runtime.toBase64(bytes)};
     }};
+  }
+  function receiverReply(bytes, reference) {
+    const metadata = {status:"read", mime_type:"image/png", width:32, height:32,
+      bytes:bytes.length, sha256:runtime.sha256(bytes), file_id_sha256:runtime.sha256(reference)};
+    return {content:[{type:"text", text:JSON.stringify(metadata)}], isError:false,
+      structuredContent:{...metadata, image_url:"data:image/png;base64," + runtime.toBase64(bytes)}};
   }
   function compactReservationOptions(context) {
     return {compact: true, probeSource: context.probeRef, probeSourceRef: context.probeRef,
       expectedProbeSha256: runtime.sha256(pngBytes), route: "synthetic original-file read to bounded fake GitHub"};
+  }
+  function historicalCheckpoint(body) {
+    delete body.checksum;
+    const canonical=JSON.stringify(body,(_k,v)=>v&&typeof v==="object"&&!Array.isArray(v)
+      ?Object.fromEntries(Object.keys(v).sort().map(key=>[key,v[key]])):v);
+    return {...body,checksum:runtime.sha256(runtime.utf8(canonical))};
+  }
+  async function sharedCompactCheckpoint(context){
+    // The former compact wire format contains the v1 shared proof with its bytes stripped.
+    const options={...compactInput(context,compactReservationOptions(context)),compact:false};
+    const initial=await context.service.reserveExternalGenerationStep(context.plan,options);
+    const {checkpoint}=await context.service.reserveExternalGenerationStep(context.plan,options,initial.checkpoint);
+    const files=checkpoint.files.map(file=>{
+      const copy={...file};if(copy.encoding==="base64")delete copy.content;return copy;
+    });
+    return historicalCheckpoint({...checkpoint,version:2,compact:true,probeSource:context.probeRef,files});
   }
   function checkCompactCheckpoint(context, method, checkpoint) {
     assert(checkpoint.version === 2 && plainJSON(checkpoint), "compact checkpoint is version two with only JSON values");
@@ -1416,9 +1485,11 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     } finally {
       const calls = context.mock.calls.slice(beforeCalls), toolCalls = calls.length + context.stepCounters.reads - beforeReads;
       const mutations = calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref").length;
-      assert(toolCalls+imports <= 16 && mutations <= 2,
+      const newReservation=retained?.separateStart && ["ready_publish","ready_verify","ready_transport","claim_final"].includes(retained.phase);
+      assert(toolCalls+imports <= (newReservation?15:16) && mutations <= 2,
         "compact "+method+"/"+(retained?.phase||"lookup")+" cold cell used "+imports+" imports + "+toolCalls+" calls, "+mutations+" mutations");
-      if (result && ["preflight_verify_commit", "preflight_verify_branch"].includes(checkpoint?.phase)) {
+      if (result && result.phase!=="preflight_verify_commit" &&
+        ["preflight_verify_commit", "preflight_verify_branch"].includes(checkpoint?.phase)) {
         const onBranch = checkpoint.phase === "preflight_verify_branch";
         const ref = onBranch ? preflightBranch : checkpoint.commitSha;
         const paths = ["probe.png", "probe.jpg", "receipt.json"].map(file => preflightPrefix + file)
@@ -1426,7 +1497,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         const reads = calls.filter(call => call.name === "fetch_file").map(call => call.args);
         assert(reads.length === paths.length && reads.every((args, i) => args.ref === ref && args.path === paths[i]) &&
           mutations === 0 && toolCalls === paths.length + Number(onBranch) &&
-          result.phase === (onBranch ? "claim_prepare" : "preflight_publish"),
+          result.phase === (onBranch || checkpoint.proof.branch.startsWith(claimBranchPrefix) ? "claim_prepare" : "preflight_publish"),
           "one read-only cell verifies all remaining probe and protected paths on the expected ref");
       }
       if (result) assert(result.tool_calls === toolCalls && result.mutations === mutations,
@@ -1451,6 +1522,19 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     assert(false, "compact operation finishes within 256 explicit invocations");
   }
   const compact = await compactContext("compact-four-MiB");
+  // The file adapter returns the MCP tool result to code mode. A transport
+  // reading JSON-RPC directly sees the same result nested under 'result'.
+  compact.readerReply = (bytes, reference) => reference === compact.probeRef ? receiverReply(bytes, reference) :
+    {jsonrpc:"2.0", id:1, result:receiverReply(bytes, reference)};
+  const namedClaim=claimBranchPrefix+compact.plan.identity;
+  const normalContents=compact.mock.github.fetch_file;
+  compact.mock.github.fetch_file=async args=>{
+    if(args.ref===compact.branch && compact.mock.branches.has(namedClaim) && !compact.mock.branches.has(compact.branch))
+      throw {code:"OPAQUE_CONTENTS_404"};
+    if(args.ref===namedClaim && compact.mock.branches.has(namedClaim))
+      return {isError:true,structuredContent:{error_code:"NOT_FOUND",error_data:{message:"No commit found for the ref "+namedClaim}}};
+    return normalContents(args);
+  };
   const createCompactBranch = compact.mock.github.create_branch;
   const nextMain = "a".repeat(40), nextMainTree = "b".repeat(40);
   compact.mock.github.create_branch = async args => {
@@ -1473,7 +1557,18 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     return response;
   };
   const compactReserved = await compactDrive(compact, "reserveExternalGenerationStep", compactReservationOptions(compact));
-  assert(compactReserved.steps === 11, "an uninterrupted compact reservation takes eleven cold cells");
+  compact.mock.github.fetch_file=normalContents;
+  const claimCommit=compactReserved.result.generationClaim.commit_sha;
+  const afterCreate=compact.mock.calls.slice(compact.mock.calls.findLastIndex(call=>
+    call.name==="create_branch" && call.args.branch_name===namedClaim)+1);
+  assert(compact.mock.calls.slice(0,compact.mock.calls.length-afterCreate.length-1).some(call=>call.name==="fetch_file" && call.args.ref===claimCommit &&
+    call.args.path===compactReserved.result.generationClaim.receipt_path) &&
+    afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/ref/heads/"+namedClaim+"?read_nonce=")) &&
+    afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/matching-refs/heads/"+compact.branch+"?read_nonce=")) &&
+    afterCreate.every(call=>call.name!=="fetch_file"||![namedClaim,compact.branch].includes(call.args.ref)),
+    "newly created claim survives cached branch-name 404 only with immutable receipt and positive fresh ref readback");
+  assert(compactReserved.steps === 11 && compactReserved.result.transportPreflight.branch===namedClaim &&
+    !compact.mock.branches.has(preflightBranch), "compact reservation uses eleven bounded cells and its own create-only preparation and claim");
   assert(compactReserved.result.status === "reserved" && compact.mock.calls.some(call =>
     call.name === "fetch" && call.args.url.endsWith("/git/trees/" + nextMainTree + "?recursive=1")) &&
     compact.mock.calls.at(-1).args.url.endsWith("/actions/workflows/free-cpu-scenes.yml"),
@@ -1492,10 +1587,129 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     duplicateLookups.every(call => call.name === "fetch_file") &&
     duplicateLookups[1].args.ref === claimBranchPrefix + compact.plan.identity,
     "an uncertain generation is recovery-only with no second byte probe, shared branch change, or generation");
+  const stale=await compactContext("resume-retained-probe");
+  const probeOptions=gateOptions(stale,stale.stepCounters), reserveMethod="reserveExternalGenerationStep";
+  const alt={...article,slug:"second-independent-article",title:"別の記事の写真",scene_prompt:"A different article's own synthetic probe."};
+  const secondSha=runtime.sha256(runtime.utf8(JSON.stringify(Object.fromEntries(
+    Object.keys(fingerprintFields).map(k=>[k,alt[k]])))));
+  const concurrent=await compactContext("two-articles", {protectedRaw:{"content/articles.json":JSON.stringify([article,alt])}});
+  const plans=[concurrent.plan,await concurrent.service.prepare({...concurrent.args,slug:alt.slug,articleSha256:secondSha,
+    logicalRunId:"second-independent-run",prompt:alt.scene_prompt})];
+  const firstCalls=concurrent.mock.calls.length;
+  const claims=await Promise.all(plans.map(async plan=>{
+    let checkpoint;
+    for(let n=0;n<12;n++){
+      const service=stageAPI.create({repository,github:concurrent.mock.github,runtime:concurrent.measuredRuntime});
+      const result=await service.reserveExternalGenerationStep(plan,compactInput(concurrent,compactReservationOptions(concurrent)),checkpoint);
+      if(result.status==="reserved")return result;
+      demand(result.status==="pending","parallel article must progress toward its own reservation");
+      checkpoint=restored(result.checkpoint);
+    }
+    throw Error("Parallel article exceeded its fixture step bound");
+  }));
+  const work=concurrent.mock.calls.slice(firstCalls);
+  assert(!work.some(({args})=>args.ref===preflightBranch||args.branch_name===preflightBranch||args.url?.includes(preflightBranch)) &&
+    concurrent.mock.branches.size===4 && plans.every(p=>concurrent.mock.branches.has(readyBranch(p))) && new Set(claims.map(r=>r.transportPreflight.commit_sha)).size===2 &&
+    claims.every(({plan,generationClaim:claim,transportPreflight:proof})=>{
+      const receipt=JSON.parse(concurrent.mock.readText(claim.branch,proof.receipt_path));
+      return claim.branch===claimBranchPrefix+plan.identity && proof.branch===claim.branch && receipt.candidate_identity===plan.identity &&
+        receipt.logical_run_id===plan.logicalRunId && receipt.source.sha256===proof.source_sha256;
+    }), "two articles reserve concurrently, each with its own immutable PNG proof and no shared ref reads or writes");
+  const oldLookup=await compactCall(stale,reserveMethod,compactReservationOptions(stale));
+  const historicHead="f".repeat(40);
+  const early=historicalCheckpoint({...oldLookup.checkpoint,probeSource:stale.probeRef,previousSha:historicHead});
+  const earlyWrites=stale.mock.writes().length, earlyReads=stale.stepCounters.reads;
+  await failure(()=>compactCall(stale,reserveMethod,{...compactReservationOptions(stale),probeSource:"/some-other.png"},early),
+    "old capture without proof refuses another source path");
+  await failure(()=>compactCall(stale,reserveMethod,{...compactReservationOptions(stale),expectedProbeSha256:"f".repeat(64)},early),
+    "the old shared head cannot turn mismatching real bytes into a completed capture");
+  const fixed=await compactCall(stale,reserveMethod,compactReservationOptions(stale),early);
+  assert(stale.mock.writes().length===earlyWrites && stale.stepCounters.reads===earlyReads+2 && fixed.phase==="preflight_blobs" &&
+    fixed.checkpoint.proof.branch===claimBranchPrefix+stale.plan.identity && !("previousSha" in fixed.checkpoint) &&
+    !fixed.checkpoint.claim, "legacy capture without a proof re-reads the real source and resumes read-only into the article's own probe");
+  const prior=await stale.service.prepare({...stale.args,logicalRunId:"prior-shared-probe"});
+  const originalProof=await stale.service.checkTransport(prior,probeOptions);
+  const createCommit=stale.mock.github.create_commit;
+  const legacyShared=await sharedCompactCheckpoint(stale);
+  stale.mock.github.create_commit=async ()=>{throw Error("Interrupted before probe commit");};
+  const interrupted=await failure(()=>compactDrive(stale,reserveMethod,compactReservationOptions(stale),legacyShared),
+    "interrupted compact preflight retains the exact tree before publishing");
+  stale.mock.github.create_commit=createCommit;
+  const previous=interrupted.checkpoint;
+  assert(previous.phase==="preflight_commit" && previous.treeSha && !previous.commitSha &&
+    previous.previousSha===originalProof.commit_sha, "retained tree precedes its commit");
+  const newer=await stale.service.prepare({...stale.args,logicalRunId:"newer-shared-probe"});
+  const newerProof=await stale.service.checkTransport(newer,probeOptions);
+  const readsBefore=stale.stepCounters.reads, writesBefore=stale.mock.writes().length;
+  const selected=await compactCall(stale,reserveMethod,{},previous);
+  assert(selected.phase==="preflight_recover_commit" && selected.mutations===0 &&
+    selected.checkpoint.previousSha===previous.previousSha && selected.checkpoint.treeSha===previous.treeSha,
+    "a stale shared head selects a read-only recovery without rebasing the probe");
+  const immutable=await compactCall(stale,reserveMethod,{},selected.checkpoint);
+  const fetchFile=stale.mock.github.fetch_file;
+  stale.mock.github.fetch_file=async args=>{
+    const result=await fetchFile(args);
+    if(args.path===preflightPrefix+"probe.jpg" && args.ref===immutable.checkpoint.commitSha)
+      result.structuredContent.sha="0".repeat(40);
+    return result;
+  };
+  const wrongBlob=await failure(()=>compactCall(stale,reserveMethod,{},immutable.checkpoint),
+    "different Git blob id blocks recovery even with identical returned JPEG bytes");
+  assert(!stale.mock.branches.has(claimBranchPrefix+stale.plan.identity),"no claim exists after a failed retained probe readback");
+  stale.mock.github.fetch_file=fetchFile;
+  const verified=await compactCall(stale,reserveMethod,{},wrongBlob.checkpoint);
+  const createTree=stale.mock.github.create_tree;
+  stale.mock.github.create_tree=async ()=>{throw Error("Claim tree unavailable");};
+  const partialClaim=await failure(()=>compactCall(stale,reserveMethod,{},verified.checkpoint),"claim tree failure preserves its confirmed receipt blob");
+  stale.mock.github.create_tree=createTree;
+  const recovery=await compactDrive(stale,reserveMethod,{},partialClaim.checkpoint), reservation=recovery.result;
+  const recoveryWrites=stale.mock.writes().slice(writesBefore);
+  const claimName=claimBranchPrefix+stale.plan.identity;
+  assert(reservation.status==="reserved" && reservation.transportPreflight.branch===claimName &&
+    stale.mock.branches.get(preflightBranch)===newerProof.commit_sha &&
+    recoveryWrites.filter(item=>item.name==="create_blob").length===1 &&
+    recoveryWrites.filter(item=>item.name==="create_branch").length===1 &&
+    recoveryWrites.every(item=>item.name!=="update_ref" && (!item.args.branch_name||item.args.branch_name===claimName)) &&
+    stale.stepCounters.reads===readsBefore && stale.stepCounters.generated===0,
+    "recovery reuses all three saved blobs and publishes only the create-only claim, preserving the newer shared probe");
+  const proof=reservation.transportPreflight, claim=reservation.generationClaim;
+  assert(recoveryWrites.some(item=>item.name==="create_commit" && item.args.tree_sha===previous.treeSha &&
+    item.args.parent_sha===previous.previousSha) && recoveryWrites.some(item=>item.name==="create_commit" &&
+    item.args.parent_sha===proof.commit_sha) && stale.mock.readText(claim.branch,proof.receipt_path)===previous.files[2].content,
+    "claim anchors the unchanged original probe tree and its read-back receipt");
+  await failure(()=>compactCall(stale,reserveMethod,{},previous),"stale checkpoint cannot obtain another permission after its own claim exists");
+  const observed=new Date().toISOString();
+  const imageInput={compact:true,transportPreflight:proof,generationClaim:claim,observedAt:observed,
+    originalSourceRef:stale.originalRef};
+  const staging=await compactCall(stale,"stageReservedStep",imageInput);
+  const goodFetch=stale.mock.github.fetch;
+  stale.mock.github.fetch=async args=>{
+    const result=await goodFetch(args);
+    if(args.url.endsWith("/git/commits/"+claim.commit_sha))
+      result.structuredContent.content=JSON.stringify({sha:claim.commit_sha,parents:[{sha:newerProof.commit_sha}]});
+    return result;
+  };
+  await failure(()=>compactCall(stale,"stageReservedStep",{},staging.checkpoint),
+    "staging rejects a recovered receipt pinned to another probe parent");
+  stale.mock.github.fetch=goodFetch;
+  const staged=await compactCall(stale,"stageReservedStep",{},staging.checkpoint);
+  assert(staged.phase==="candidate_lookup","staging accepts the verified claim with its own immutable probe parent");
+  const interleaved=await compactContext("preflight-readback-after-advance");
+  let shared={checkpoint:await sharedCompactCheckpoint(interleaved)};
+  do{
+    shared=await compactCall(interleaved,reserveMethod,compactReservationOptions(interleaved),shared?.checkpoint);
+  }while(shared.phase!=="preflight_verify_branch");
+  const otherPlan=await interleaved.service.prepare({...interleaved.args,logicalRunId:"interleaved-probe"});
+  const otherProof=await interleaved.service.checkTransport(otherPlan,gateOptions(interleaved,interleaved.stepCounters));
+  const afterAdvance=await compactCall(interleaved,reserveMethod,{},shared.checkpoint);
+  assert(afterAdvance.phase==="preflight_verify_commit" && afterAdvance.checkpoint.verifyIndex===0 &&
+    afterAdvance.checkpoint.commitSha===shared.checkpoint.commitSha && afterAdvance.mutations===0 &&
+    interleaved.mock.branches.get(preflightBranch)===otherProof.commit_sha,
+    "a competing publication during named-ref readback restarts all checks on the original immutable probe without writes");
   const interruptedRead = await compactContext("resume-partial-preflight");
   const readOptions = compactReservationOptions(interruptedRead);
   const readFile = interruptedRead.mock.github.fetch_file;
-  let corruptReceipt, preflightCheckpoint;
+  let corruptReceipt, preflightCheckpoint=await sharedCompactCheckpoint(interruptedRead);
   interruptedRead.mock.github.fetch_file = async args => {
     const response = await readFile(args);
     if (corruptReceipt && args.path === preflightPrefix + "receipt.json" && response.structuredContent.content)
@@ -1522,6 +1736,31 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(fourMiBPng)}, observedAt: compactFirstTime,
     transportPreflight: compactReserved.result.transportPreflight, generationClaim: compactReserved.result.generationClaim};
   const compactFirst = await compactCall(compact, "stageReservedStep", compactStageInput);
+  const realReader = compact.readerReply, receiver = receiverReply(pngBytes, compact.originalRef);
+  const writesBeforeCapture = compact.mock.writes().length;
+  for (const [label, reply, message] of [
+    ["bare data URL", receiver.structuredContent.image_url, "full read_candidate_png response"],
+    ["metadata summary", {content:receiver.content}, "full read_candidate_png response"],
+    ["ambiguous envelopes", {result:receiver, structuredContent:receiver.structuredContent}, "Ambiguous PNG"],
+    ["outer error", {error:"private value", result:receiver}, "error or truncated"],
+    ["tool error", {result:{...receiver, isError:true}}, "error or truncated"],
+    ["inner error", {structuredContent:{...receiver.structuredContent, error_code:"ERROR"}}, "error or truncated"],
+    ["truncated result", {result:{...receiver, truncated:true}}, "error or truncated"],
+    ["missing metadata", {structuredContent:{image_url:receiver.structuredContent.image_url}}, "Invalid read_candidate_png"],
+    ["wrong MIME", {...receiver.structuredContent, mime_type:"image/jpeg"}, "Invalid read_candidate_png"],
+    ["wrong size", {...receiver.structuredContent, bytes:1}, "Invalid read_candidate_png"],
+    ["oversize dimension", {...receiver.structuredContent, width:8193}, "Invalid read_candidate_png"],
+    ["wrong SHA", {...receiver.structuredContent, sha256:"0".repeat(64)}, "transfer size or SHA mismatch"],
+    ["wrong dimensions", {...receiver.structuredContent, height:17}, "transfer dimensions mismatch"],
+  ]) {
+    compact.readerReply = () => reply;
+    const error = await failure(() => compactCall(compact, "stageReservedStep", {}, compactFirst.checkpoint),
+      "compact save rejects " + label);
+    assert(error.message.includes(message) && !error.message.includes(pngBase64) &&
+      error.checkpoint.phase === "reservation_verify" && compact.mock.writes().length === writesBeforeCapture,
+      label + " keeps the original checkpoint and stops before writes without printing bytes");
+  }
+  compact.readerReply = realReader;
   const compactCaptured = await compactCall(compact, "stageReservedStep", {compact: true, originalSourceRef: compact.originalRef},
     compactFirst.checkpoint);
   assert(compactCaptured.status === "pending" && !!compactCaptured.checkpoint.sourceSha,
@@ -1589,6 +1828,95 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   await failure(()=>compactCall(compact,"reserveExternalGenerationStep",{},sourceCheck),"split readback verifies each immutable source after the JPEG");
   savedTree.set(firstPart.path,goodPart);
 
+  for(const outcome of ["present", "during", "ambiguous", "truncated", "malformed", "unknown"]) {
+    const ctx=await compactContext("late-candidate-"+outcome);
+    const method="reserveExternalGenerationStep", options=compactReservationOptions(ctx);
+    let checkpoint;
+    do {checkpoint=(await compactCall(ctx,method,options,checkpoint)).checkpoint;}
+    while (checkpoint.phase!=="claim_final");
+    if(outcome==="present"||outcome==="during"){
+      const saved=await ctx.service.stage(ctx.plan,ctx.input);
+      if(outcome==="during"){
+        ctx.mock.branches.delete(ctx.branch);
+        const create=ctx.mock.github.create_branch;
+        ctx.mock.github.create_branch=async args=>{
+          const response=await create(args);
+          if(args.branch_name===claimBranchPrefix+ctx.plan.identity)ctx.mock.branches.set(ctx.branch,saved.commitSha);
+          return response;
+        };
+      }
+      const result=await compactCall(ctx,method,options,checkpoint);
+      assert(result.status==="pending" && result.phase==="saved_readback" &&
+        result.checkpoint.saved.commitSha===saved.commitSha &&
+        ctx.mock.branches.has(claimBranchPrefix+ctx.plan.identity)===(outcome==="during"),
+        "a candidate published before or during the claim is recovered at its exact SHA instead of granting generation");
+    }else{
+      const original=ctx.mock.github.fetch;
+      ctx.mock.github.fetch=async args=>{
+        if (!args.url.includes("/git/matching-refs/"))return original(args);
+        if(outcome==="unknown")throw {};
+        const ref={ref:"refs/heads/"+ctx.branch+"-other",object:{type:"commit",sha:baseCommitSha}};
+        const content=JSON.stringify(outcome==="ambiguous"?[ref]:outcome==="malformed"?{}:[]);
+        return {structuredContent:{content,truncated:outcome==="truncated"}};
+      };
+      const error=await failure(()=>compactCall(ctx,method,options,checkpoint),"uncertain final candidate ref search: "+outcome);
+      assert(error.stage==="bounded_claim_final" && error.message.includes("check the candidate ref") &&
+        !ctx.mock.branches.has(claimBranchPrefix+ctx.plan.identity) && ctx.mock.branches.has(readyBranch(ctx.plan)),"uncertain candidate lookup preserves a recoverable preparation");
+    }
+  }
+  const recoverable=await compactContext("lost-preparation");
+  const preparation=readyBranch(recoverable.plan), started=claimBranchPrefix+recoverable.plan.identity;
+  const method="reserveExternalGenerationStep", options=()=>compactReservationOptions(recoverable);
+  const issue=()=>compactDrive(recoverable,method,options());
+  const createReady=recoverable.mock.github.create_branch;
+  recoverable.mock.github.create_branch=async args=>{
+    const reply=await createReady(args);
+    if(args.branch_name===preparation)throw Error("lost preparation response");
+    return reply;
+  };
+  const lostReady=await failure(issue,"a lost preparation response issues no permission");
+  assert(lostReady.stage==="bounded_ready_publish" && recoverable.mock.branches.has(preparation)
+    && !recoverable.mock.branches.has(started),"the unconsumed reservation survives on its own ref");
+  recoverable.mock.github.create_branch=createReady;
+  const preparedSha=recoverable.mock.branches.get(preparation),startWrites=recoverable.mock.writes().length;
+  const recovered=(await compactCall(recoverable,method,options())).checkpoint;
+  assert(recovered.phase==="ready_transport" && recovered.claim.commit_sha===preparedSha,"a fresh executor finds the exact prepared commit");
+  const differentBase=await failure(()=>recoverable.service.reserveExternalGenerationStep(
+    {...recoverable.plan,baseCommitSha:"e".repeat(40)},compactInput(recoverable,options())),
+    "a newly pinned main cannot replace the original plan with the same identity");
+  assert(differentBase.message.includes(recoverable.plan.baseCommitSha),"recovery returns the original article commit to its owner");
+  const oldPath=recoverable.probeRef;
+  recoverable.probeRef="/synthetic-existing/next-run-fixture.png";
+  const resume=()=>compactCall(recoverable,method,options(),recovered);
+  const originalProbeReply=recoverable.readerReply;
+  recoverable.readerReply=()=>({image_url:"data:image/png;base64,"+runtime.toBase64(fourMiBPng)});
+  await failure(resume,"a different fixture result cannot satisfy the retained PNG/JPEG hashes");
+  recoverable.readerReply=originalProbeReply;
+  await failure(()=>compactCall(recoverable,method,{...options(),route:"other adapter"},recovered),
+    "a different adapter cannot reuse the prepared transport");
+  recoverable.mock.cloud.workflow.state="disabled_manually";
+  const beforeReads=recoverable.stepCounters.reads;
+  await failure(resume,"a stopped workflow cannot rerun the preparation transfer");
+  assert(beforeReads===recoverable.stepCounters.reads,"the live stop check precedes the file read");
+  recoverable.mock.cloud.workflow.state="active";
+  const readyVerify=(await resume()).checkpoint;
+  assert(readyVerify.phase==="ready_verify" && recoverable.refsRead.at(-1)===recoverable.probeRef &&
+    JSON.parse(recoverable.mock.readText(preparedSha,readyVerify.proof.receipt_path)).probe_source_ref===oldPath,
+    "a new temporary path to the same verified probe works without relabeling the immutable receipt");
+  const beforeStart=(await compactCall(recoverable,method,options(),readyVerify)).checkpoint;
+  assert(beforeStart.phase==="claim_final" && recoverable.mock.writes().length===startWrites,
+    "prepared recovery revalidates its protected data with no new uploads");
+  recoverable.mock.branches.set(preparation,baseCommitSha);
+  await failure(()=>compactCall(recoverable,method,options(),beforeStart),"a changed ready SHA blocks activation");
+  recoverable.mock.branches.set(preparation,preparedSha);
+  assert(!recoverable.mock.branches.has(started),"a changed ready SHA leaves the exclusive start unconsumed");
+  const finalReader=()=>stageAPI.create({runtime:recoverable.measuredRuntime,github:recoverable.mock.github,repository})
+    .reserveExternalGenerationStep(recoverable.plan,compactInput(recoverable,options()),restored(beforeStart));
+  const raced=await Promise.allSettled([finalReader(),finalReader()]);
+  assert(raced.filter(v=>v.status==="fulfilled"&&v.value.status==="reserved").length===1
+    && raced.filter(v=>v.status==="rejected").length===1 && recoverable.mock.branches.get(started)===preparedSha,
+    "two executors racing the same prepared plan obtain exactly one confirmed start");
+  await failure(issue,"a fresh executor seeing the consumed preparation remains recovery-only");
   const stopOnClaim=await compactContext("compact-stop-after-claim");
   const stopCreate=stopOnClaim.mock.github.create_branch;
   stopOnClaim.mock.github.create_branch=async args=>{
@@ -1636,9 +1964,10 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     "exact thrown Contents missing-ref string establishes candidate absence in bounded lookup without writes");
   const thrownReserved = await compactDrive(thrownMissing, "reserveExternalGenerationStep", {}, thrownLookup.checkpoint);
   assert(thrownReserved.result.status === "reserved" &&
-    [thrownMissing.branch, preflightBranch, claimBranchPrefix + thrownMissing.plan.identity].every(ref => normalizedRefs.has(ref)) &&
+    [thrownMissing.branch, claimBranchPrefix + thrownMissing.plan.identity].every(ref => normalizedRefs.has(ref)) &&
+    !normalizedRefs.has(preflightBranch) &&
     thrownMissing.stepCounters.generated === 0 && !thrownMissing.mock.branches.has(thrownMissing.branch),
-    "exact thrown candidate, preflight and claim misses support bounded reservation while preserving callback budgets and no generation");
+    "exact thrown candidate and claim misses support bounded reservation without querying the shared probe");
 
   for (const [label, makeThrown] of [
     ["another ref", ref => thrownRefString(ref + "-other")],

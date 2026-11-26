@@ -203,7 +203,9 @@ class SiteTests(unittest.TestCase):
         from scripts.build import load, editorial_lead, category_meta
         home=(ROOT/"dist/index.html").read_text(encoding="utf-8")
         aside=home.split('<aside class="side-brief">',1)[1].split('</aside>',1)[0]
-        remaining=[a for a in load() if a["slug"] != editorial_lead(load())["slug"]]
+        articles = load()
+        lead_slug = editorial_lead(articles)["slug"]
+        remaining = [article for article in articles if article["slug"] != lead_slug]
         self.assertEqual(aside.count('<article class="brief-card">'),min(3,len(remaining)))
         self.assertNotIn('class="engagement-actions',aside)
         self.assertNotIn('class="fiction-dateline"',aside)
@@ -860,7 +862,7 @@ class SiteTests(unittest.TestCase):
                 if "T" in posted:
                     self.assertEqual(
                         parsedate_to_datetime(item.findtext("pubDate")).isoformat(),
-                        datetime.fromisoformat(posted).isoformat())
+                        datetime.fromisoformat(posted).replace(microsecond=0).isoformat())
                 self.assertNotIn(a["fiction_at"][:4],item.findtext("pubDate") or "")
                 thumbnail=item.find("media:thumbnail",ns)
                 image=item.find("media:content",ns)
@@ -879,6 +881,18 @@ class SiteTests(unittest.TestCase):
         self.assertEqual(len(main.findall("./channel/item")),min(90,len(articles)))
         self.assertEqual(main.find("channel").find("atom:link",ns).get("href"),
                          SITE+"/feed.xml")
+
+    def test_news_rss_keeps_publication_second_and_offset_for_subsecond_inputs(self):
+        from scripts.build import generate_rss
+        for published, expected in [
+            ("2026-11-25T08:10:41.833+09:00", "Wed, 25 Nov 2026 08:10:41 +0900"),
+            ("2026-11-25T11:03:29.053Z", "Wed, 25 Nov 2026 11:03:29 +0000"),
+        ]:
+            with self.subTest(published=published):
+                article = {**self.articles[0], "published_at": published}
+                feed = generate_rss([article], "test", "test", "https://veripsa.com/", "/feed.xml")
+                self.assertEqual(ET.fromstring(feed).findtext("channel/item/pubDate"), expected)
+                self.assertEqual(article["published_at"], published)
 
     def test_topic_rss_caps_growth_without_extra_api_requests(self):
         from scripts.build import generate_rss
@@ -923,6 +937,7 @@ class SiteTests(unittest.TestCase):
                 self.assertEqual(thumbnail.get("height"),"675" if generated or reviewed_scene_version(a,root=ROOT) else "630")
             self.assertTrue((ROOT/"dist"/social_image(a).split("?",1)[0].lstrip("/")).is_file())
 
+    @publication_json_snapshot()
     def test_visual_review_gallery_is_complete_and_nonindexable(self):
         from scripts.build import social_image, editorial_image
         from scripts.build import image_review_page

@@ -268,10 +268,19 @@ def validate_merge(api, pr, run, root):
     return current
 
 
-def dispatch(api, revision):
+def dispatch(api, revision, *, previous_main=None):
     revision = sha(revision)
-    comparison = api.get("/compare/" + revision + "...main")
-    require(comparison.get("status") in {"ahead", "identical"}, "Merged revision is not on main")
+    current = sha(api.get("/git/ref/heads/main")["object"]["sha"])
+    # A confirmed merge can reach the ref reader after the PUT response.
+    # Poll only the exact pre-merge tip; never repeat the merge or dispatch.
+    for delay in (1, 2, 4):
+        if current != previous_main or current == revision:
+            break
+        time.sleep(delay)
+        current = sha(api.get("/git/ref/heads/main")["object"]["sha"])
+    if current != revision:
+        comparison = api.get(f"/compare/{revision}...{current}?per_page=1")
+        require(comparison.get("status") == "ahead", "Merged revision is not on main")
     api.request("POST", VERIFY, {"ref": "main", "inputs": {"expected_sha": revision}})
     return {"status": "verification_dispatched", "merge_sha": revision}
 
@@ -416,7 +425,7 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     require(isinstance(result, dict) and result.get("merged") is True, "Merge was not confirmed")
     # workflow_run uses trusted-main metadata, not the reviewed PR head. Bind
     # the completed operation to exactly the PR and CI attempt checked above.
-    return {**dispatch(api, result["sha"]), "pr": number, "head": expected_head,
+    return {**dispatch(api, result["sha"], previous_main=current), "pr": number, "head": expected_head,
             "ci_run_id": run_id, "ci_run_attempt": run["run_attempt"]}
 
 

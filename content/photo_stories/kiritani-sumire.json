@@ -105,6 +105,21 @@
         "cut_id": "07",
         "image_sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261126142207932",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-26T14:22:07.932+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後、緑の布見本を窓辺に並べてみた。曇りの日の光だと、同じ緑でもずいぶん違う。二枚に絞るつもりが三枚残った。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "09",
+        "image_sha256": "8c2153e0b862e3dc4e8b130171c097a336cea845aa08e49c2f972815ea0d4ab8"
+      }
     }
   ]
 }

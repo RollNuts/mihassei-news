@@ -10,6 +10,8 @@ var PublicationReviewContext = (function () {
   const HASH = /^[0-9a-f]{64}$/, LOGIN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
   const RUN = /^[A-Za-z0-9][A-Za-z0-9_.:-]{7,199}$/;
   const INPUTS = ["content/articles.json", "content/market_bulletins.json"];
+  const EDITORIAL_HANDOFF_FILES = new Set(["docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDEAS.md",
+    "content/broadcasts.json"]);
   const OTHER_MARKET = new Set(["content/market_outlook.json", "content/market_outlooks.json",
     "content/market_figures.json", "content/serials.json"]);
   const PHOTO_INPUT = /^(?:content\/photo_(?:issues|editions|stories)(?:\.json|\/)|maintenance\/photo-)/;
@@ -154,11 +156,13 @@ var PublicationReviewContext = (function () {
       return "invalid";
     return claim.approved_head === pr.head.sha ? "current_head_claim" : "stale";
   }
-  async function read({ fetchFile, fetchRepository, ref, limit = 3 } = {}) {
+  async function read({ fetchFile, fetchRepository, ref, limit = 3, photoReport } = {}) {
     require(typeof fetchFile === "function" && typeof fetchRepository === "function"
       && matches(GIT, ref) && Number.isInteger(limit) && limit >= 1 && limit <= 3,
     "Provide GitHub readers, a full main SHA and a limit from 1 to 3");
+    let reads = 0;
     async function get(path) {
+      reads++;
       let reply;
       try { reply = await fetchRepository({ url: API + path }); }
       catch (_) { throw Error("GitHub GET failed: " + path + "; review scope is unverified"); }
@@ -196,6 +200,7 @@ var PublicationReviewContext = (function () {
       const key = revision + ":" + path;
       if (!files.has(key)) files.set(key, (async () => {
         let reply;
+        reads++;
         try { reply = await fetchFile({ repository_full_name: REPOSITORY, path, ref: revision, encoding: "utf-8" }); }
         catch (_) { throw Error("GitHub file read failed: " + key + "; review scope is unverified"); }
         const file = unwrap(reply, path, true);
@@ -266,13 +271,6 @@ var PublicationReviewContext = (function () {
       const unsupported = paths.filter(path => OTHER_MARKET.has(path));
       const photo = paths.some(path => PHOTO_INPUT.test(path));
       const images = paths.filter(path => ARTICLE_IMAGE.test(path) && !path.includes("/photo-issue-"));
-      if (!relevant.length && !unsupported.length && (photo || !images.length)) {
-        const story = !pr.draft && changed.length === 1 && changed[0].status === "modified"
-          && /^content\/photo_stories\/[a-z0-9-]+\.json$/.test(paths[0]) && handoff(pr, ["cast_story"]) === "current_head_claim";
-        outside.push({ ...binding, reason: photo ? "photo_or_cast_story" : "outside_first_read_scope",
-          ...(story ? { finalizer_title_prefix: "Publication head " + pr.head.sha } : {}) });
-        continue;
-      }
       require(relevant.every(f => INPUTS.includes(f.filename) && f.status === "modified"
         && !f.previous_filename), "Removed/renamed/unknown publication input");
       const targets = [];
@@ -296,6 +294,24 @@ var PublicationReviewContext = (function () {
         }
       }
       const state = handoff(pr), references = targets.map(({ reader, ...target }) => target);
+      // The existing morning desk and broadcast PRs use prose handoffs. Surface the
+      // section's presence only; its current owner and conditions need a separate read.
+      if (!targets.length && state === "absent" && paths.some(path => EDITORIAL_HANDOFF_FILES.has(path))
+          && changed.every(f => f.status === "modified" && !f.previous_filename
+            && (EDITORIAL_HANDOFF_FILES.has(f.filename) || f.filename === INPUTS[0]))
+          && /^##[ \t]+(?:安全な)?通常統合(?:の|／)既存引き?継ぎ[ \t]*\r?$/m.test(pr.body || "")) {
+        attention.push({ ...binding, draft: pr.draft, reason: "ordinary_editorial_handoff",
+          next_operation: "After first read, check the latest handoff, owner/run, changed files against current main, "
+            + "and required CI under the existing ordinary merge procedure." });
+        continue;
+      }
+      if (!relevant.length && !unsupported.length && (photo || !images.length)) {
+        const story = !pr.draft && changed.length === 1 && changed[0].status === "modified"
+          && /^content\/photo_stories\/[a-z0-9-]+\.json$/.test(paths[0]) && handoff(pr, ["cast_story"]) === "current_head_claim";
+        outside.push({ ...binding, reason: photo ? "photo_or_cast_story" : "outside_first_read_scope",
+          ...(story ? { finalizer_title_prefix: "Publication head " + pr.head.sha } : {}) });
+        continue;
+      }
       if (state === "current_head_claim" && pr.draft === false) {
         const ci = await ciState(pr);
         if (ci.state === "ci_pending") {
@@ -327,15 +343,226 @@ var PublicationReviewContext = (function () {
     await main();
     const selected = candidates.slice(0, limit);
     const pending = candidates.slice(limit).map(({ reader, ...row }) => row);
+    // Keep the existing first-read and the photograph lookup within the same cold cell
+    // only when its four inventory reads leave room for every optional callback.
+    let photoRecovery;
+    if (selected.length) photoRecovery = { status: "after_first_read" };
+    else if (reads > 4) photoRecovery = { status: "lookup_required", next_operation: "readPhotoHandoffs" };
+    else photoRecovery = await readPhotoHandoffs({ fetchRepository, fetchFile, ref, report: photoReport }, 14 - reads);
     return { schema_version: 1, verification: "review_input_only", review_completed: false,
       publication_authorized: false, source: { repository: REPOSITORY, ref },
       scope: "open_pr_reader_text", open_prs: "complete", open_pr_count: prs.length,
       total: candidates.length, selected_count: selected.length, pending_count: pending.length,
       selected, pending, attention, machine_pending: machine, outside_scope: outside, already_on_main: current,
-      empty: prs.length === 0,
+      photo_recovery: photoRecovery, open_prs_empty: prs.length === 0,
+      empty: prs.length === 0 && photoRecovery.status === "checked" && !photoRecovery.selected.length
+        && !photoRecovery.attention.length && photoRecovery.next_offset === null,
       note: "Read the reader fields before opening PR explanations. Retain pending and attention in the existing handoff. "
         + "This snapshot is not a lock; existing guards still decide ownership and publication. "
         + "Main-only changes and market outlook/serial widgets need their existing review." };
+  }
+  function docsOnlyFiles(files, pageLimit) {
+    // At the API's page/file ceiling there may be unseen paths.
+    const inside = path => typeof path === "string" && path.startsWith("docs/") && path.length > 5;
+    require(Array.isArray(files) && files.length < pageLimit && files.every(f => f && inside(f.filename)
+      && ["added", "modified", "removed", "renamed", "copied", "changed"].includes(f.status)
+      && (!["renamed", "copied"].includes(f.status) || inside(f.previous_filename))
+      && (f.previous_filename === undefined || inside(f.previous_filename))),
+      "Incomplete or non-docs photograph-check history");
+  }
+  async function priorDocsParent(get, ref) {
+    // The merge-base and the actual first parent must agree. A net diff can
+    // hide a content change later reverted inside a merged branch.
+    const diff = await get(API + "/compare/" + ref + "~1..." + ref + "?per_page=8");
+    const base = diff.base_commit?.sha, commits = diff.commits;
+    require(diff.status === "ahead" && matches(GIT, base) && base !== ref && diff.merge_base_commit?.sha === base
+      && diff.behind_by === 0 && Array.isArray(commits) && commits.length >= 1 && commits.length <= 8
+      && diff.total_commits === commits.length && diff.ahead_by === commits.length
+      && commits.every(c => matches(GIT, c?.sha) && c.sha !== base)
+      && new Set(commits.map(c => c.sha)).size === commits.length
+      && commits.at(-1).sha === ref && commits.at(-1).parents?.[0]?.sha === base,
+      "Incomplete photograph-check ancestor comparison");
+    docsOnlyFiles(diff.files, 300);
+    for (const { sha } of commits.slice(0, -1)) {
+      const commit = await get(API + "/commits/" + sha + "?per_page=100");
+      require(commit.sha === sha, "Wrong photograph-check intermediate commit");
+      docsOnlyFiles(commit.files, 100);
+    }
+    return base;
+  }
+  async function publishedCheckReport(get, ref) {
+    let checkRef = ref;
+    for (;;) {
+      const data = await get(API + "/commits/" + checkRef + "/check-runs?check_name=Photograph%20completion&per_page=1");
+      if (data.total_count === 0 && Array.isArray(data.check_runs) && data.check_runs.length === 0) {
+        checkRef = await priorDocsParent(get, checkRef);
+        continue;
+      }
+      const check = data.check_runs?.[0];
+      require(check?.name === "Photograph completion" && check.head_sha === checkRef
+        && check.app?.slug === "github-actions" && check.status === "completed"
+        && ["success", "failure"].includes(check.conclusion) && typeof check.output?.text === "string",
+        "Revision-bound photograph check unavailable; use the same revision's live-photo-health artifact");
+      return { checkRef, report: JSON.parse(check.output.text) };
+    }
+  }
+  // One day's pre-writing input. Article validation and publication use their own checks.
+  async function readEditorialGuidance({ fetchRepository, ref, day } = {}) {
+    try {
+      require(typeof fetchRepository === "function" && matches(GIT, ref)
+        && matches(/^\d{4}-\d\d-\d\d$/, day) && !day.startsWith("0000-")
+        && new Date(day + "T00:00:00Z").toISOString().slice(0, 10) === day, "Invalid editorial guidance input");
+      let reads = 0;
+      async function get(url) {
+        require(++reads <= 14, "Editorial guidance read budget reached");
+        return unwrap(await fetchRepository({ url }), url, false);
+      }
+      const { checkRef, report } = await publishedCheckReport(get, ref);
+      require(report?.checkout_sha === checkRef && object(report.editorial_guidance), "Missing editorial guidance");
+      const value = report.editorial_guidance[day];
+      require(typeof value === "string" && value.startsWith(day + ": published="), "Missing requested day");
+      const [summary, topicHeading, ...topics] = value.split("\n");
+      require(/^\d+; tracked=\d+; /.test(summary.slice((day + ": published=").length))
+        && /; desk_next=[^;\s][^;]*/.test(summary) && topicHeading?.startsWith("題材比較（指定JST日までの直近7本")
+        && topics.length >= 1 && topics.length <= 7
+        && (topics.every(line => /^- \d\d\/\d\d \d\d:\d\d｜[^｜]+｜.+｜.+$/.test(line))
+          || (topics.length === 1 && topics[0] === "- 比較できる公開日時のある記事なし。")), "Incomplete editorial guidance");
+      if (checkRef !== ref) require((await get(API + "/git/ref/heads/main")).object?.sha === ref, "Main moved");
+      return { status: "verified", ref, check_sha: checkRef, day, report: value };
+    } catch (_) {
+      return { status: "unavailable" };
+    }
+  }
+  // A merged news PR can still own its missing photograph. A source pointer
+  // does not grant generation, adoption, or permission to write.
+  async function readPhotoHandoffs({ fetchRepository, fetchFile, ref, report, offset = 0, batchSize = 4 } = {}, readBudget = 14) {
+    try {
+      require(typeof fetchRepository === "function" && matches(GIT, ref)
+        && Number.isInteger(readBudget) && readBudget >= 1 && readBudget <= 14
+        && Number.isSafeInteger(offset) && offset >= 0 && Number.isInteger(batchSize) && batchSize >= 1 && batchSize <= 4,
+          "Invalid photograph lookup");
+      let operations = 0;
+      function countRead() { require(++operations <= readBudget, "Photo read budget reached; narrow batchSize or check the open owner"); }
+      async function get(url) { countRead(); return unwrap(await fetchRepository({ url }), url, false); }
+      let checkRef = ref;
+      if (report === undefined) ({ checkRef, report } = await publishedCheckReport(get, ref));
+      require(report?.checkout_sha === checkRef && Array.isArray(report.photo_followup), "Stale or missing photo inventory");
+      const seen = new Set();
+      for (const row of report.photo_followup) {
+        require(matches(SLUG, row?.slug) && matches(HASH, row.article_sha256) && !seen.has(row.slug)
+          && ["missing", "pending", "rejected"].includes(row.status), "Invalid photograph inventory row");
+        seen.add(row.slug);
+      }
+      const rows = report.photo_followup.filter(row => row.status !== "rejected");
+      let selected = [];
+      const attention = [];
+      let cursor = offset;
+      // Keep each read within the connector callback budget, even with a large backlog.
+      for (; cursor < rows.length && cursor < offset + batchSize && selected.length < 3; cursor++) {
+        // On a proven docs advance reserve both owner snapshots and the final main check.
+        if (checkRef !== ref && operations + 5 > readBudget) {
+          require(cursor > offset, "Photo read budget reached before checking a handoff");
+          break;
+        }
+        const row = rows[cursor];
+        const query = "repo:" + REPOSITORY + ' is:pr is:merged base:main in:body "photo-recovery" "' + row.article_sha256 + '"';
+        const hits = await get("https://api.github.com/search/issues?q=" + encodeURIComponent(query) + "&per_page=2");
+        require(hits.incomplete_results === false && Number.isSafeInteger(hits.total_count)
+          && hits.total_count >= 0 && Array.isArray(hits.items) && hits.items.length === Math.min(2, hits.total_count), "Incomplete handoff search");
+        const source = { slug: row.slug, article_sha256: row.article_sha256, status: row.status };
+        if (hits.total_count !== 1) {
+          attention.push({ ...source, reason: hits.total_count ? "ambiguous_source_pr" : "source_pr_not_found" });
+          continue;
+        }
+        const number = hits.items[0].number;
+        require(Number.isSafeInteger(number) && number > 0, "Invalid handoff PR number");
+        const pr = await get(API + "/pulls/" + number);
+        if (pr.number !== number || pr.state !== "closed" || pr.merged !== true
+            || pr.base?.ref !== "main" || pr.base.repo?.full_name !== REPOSITORY
+            || pr.head?.repo?.full_name !== REPOSITORY || !matches(GIT, pr.head.sha)
+            || !["OWNER", "MEMBER", "COLLABORATOR"].includes(pr.author_association)) {
+          attention.push({ ...source, pr: number, reason: "source_pr_mismatch" });
+        } else if (!/^<!-- photo-recovery(?::[1-9][0-9]*)? -->\r?$/m.test(pr.body || "")) {
+          attention.push({ ...source, pr: number, reason: "source_recovery_marker_missing" });
+        } else if (handoff(pr, ["news"]) !== "current_head_claim") {
+          attention.push({ ...source, pr: number, reason: "source_approval_not_current" });
+        } else {
+          const approval = JSON.parse(pr.body.match(/<!-- publication-finalize\s*\n([\s\S]*?)\n-->/)[1]);
+          if (approval.article_sha256[row.slug] === row.article_sha256)
+            selected.push({ ...source, pr: number, head: pr.head.sha });
+          else attention.push({ ...source, pr: number, reason: "source_article_sha_mismatch" });
+        }
+      }
+      if (selected.length) {
+        const listOpen = async () => {
+          const prs = await get(API + OPEN + "&per_page=100");
+          require(Array.isArray(prs) && prs.length < 100, "Open photograph owner inventory incomplete");
+          prs.forEach(identity);
+          return prs;
+        };
+        const open = await listOpen();
+        const occupied = new Set();
+        const shared = {
+          "content/articles.json": null, "assets/generated/manifest.json": ["images", "rejected"],
+          "content/visual_reviews.json": ["reviews"], "content/approved_photos.json": ["approved"] };
+        async function recordMap(path, revision) {
+          require(typeof fetchFile === "function", "Use fetchFile to verify the open owner's article data");
+          countRead();
+          const raw = unwrap(await fetchFile({ repository_full_name: REPOSITORY, path, ref: revision, encoding: "utf-8" }), path, true);
+          const data = JSON.parse(raw.content);
+          if (path === "content/articles.json") {
+            require(Array.isArray(data), "Invalid open article records");
+            return slug => data.filter(row => row.slug === slug);
+          }
+          require(shared[path].every(field => object(data[field])), "Invalid open photograph records");
+          return slug => shared[path].map(field => data[field][slug] ?? null);
+        }
+        for (const pr of open) {
+          const changes = await get(API + "/pulls/" + pr.number + "/files?per_page=100");
+          require(Array.isArray(changes) && changes.length < 100 && changes.every(f => typeof f.filename === "string"),
+            "Incomplete open PR files");
+          const paths = new Set(changes.flatMap(f => [f.filename, f.previous_filename].filter(Boolean)));
+          const mark = row => { if (!occupied.has(row.slug)) attention.push({
+            slug: row.slug, reason: "open_owner", pr: pr.number }); occupied.add(row.slug); };
+          const declared = new Set([...(pr.body || "").matchAll(/^[ *-]*(?:対象\s*slug|slug)\s*[:：]\s*`?([a-z0-9-]+)`?[ *]*$/gmi)].map(m => m[1]));
+          for (const section of (pr.body || "").matchAll(/^##[ \t]+対象[ \t]*\r?\n([\s\S]*?)(?=^##[ \t]|(?![\s\S]))/gm))
+            for (const match of section[1].matchAll(/公開記事\s+`([a-z0-9-]+)`/g)) declared.add(match[1]);
+          for (const row of selected) {
+            if (declared.has(row.slug) || [...paths].some(path => path.includes("/" + row.slug + ".")
+                || path.includes("/" + row.slug + "/"))) mark(row);
+          }
+          const common = Object.keys(shared).filter(path => paths.has(path));
+          if (!common.length || occupied.size === selected.length) continue;
+          const base = (await get(API + "/compare/" + pr.base.sha + "..." + pr.head.sha + "?per_page=1")).merge_base_commit?.sha;
+          require(matches(GIT, base), "Open PR merge base unavailable");
+          for (const path of common) {
+            const before = await recordMap(path, base), after = await recordMap(path, pr.head.sha);
+            for (const row of selected.filter(r => !occupied.has(r.slug))) {
+              const records = [before(row.slug), after(row.slug)];
+              // Large generation seeds can lose precision when parsed by JavaScript.
+              let unsafe = false;
+              const serial = records.map(value => JSON.stringify(value, (_key, item) => {
+                if (Number.isInteger(item) && !Number.isSafeInteger(item)) unsafe = true;
+                return item;
+              }));
+              if (unsafe || serial[0] !== serial[1]) mark(row);
+            }
+          }
+        }
+        require(JSON.stringify(open.map(identity)) === JSON.stringify((await listOpen()).map(identity)),
+          "Open photograph owners changed during lookup");
+        selected = selected.filter(row => !occupied.has(row.slug));
+      }
+      const main = await get(API + "/git/ref/heads/main");
+      require(main.object?.sha === ref, "Main moved during photograph lookup");
+      return { status: "checked", check_sha: checkRef, selected: selected.sort((a, b) => a.pr - b.pr), attention,
+        next_offset: cursor < rows.length ? cursor : null, may_generate: false };
+    } catch (error) {
+      const reason = String(error.message || error);
+      if (readBudget < 14 && reason.startsWith("Photo read budget reached"))
+        return { status: "lookup_required", next_operation: "readPhotoHandoffs", may_generate: false };
+      return { status: "unverified", reason, may_generate: false };
+    }
   }
   // One bounded observation of an existing handoff, not a watcher or a new
   // approval. A discovered run must also supply evidence for the exact handoff.
@@ -633,6 +860,6 @@ var PublicationReviewContext = (function () {
       return result;
     }
   }
-  return Object.freeze({ read, readHandoffStatus, readValidationStatus });
+  return Object.freeze({ read, readHandoffStatus, readValidationStatus, readPhotoHandoffs, readEditorialGuidance });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = PublicationReviewContext;

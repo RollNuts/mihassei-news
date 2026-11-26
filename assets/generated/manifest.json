@@ -11041,6 +11041,342 @@
     }
   }
 }
+  ,
+    "city-station-dressing-space-accessible-toilet": {
+  "article_sha256": "f813e7cf9a690cde9ed0c28b59289d9aef6597010947eeeb68f1ea6de36b0f0a",
+  "bytes": 136775,
+  "generated_at": "2026-11-25T23:10:26.595Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "f4f95c92-ef54-4211-b3ba-325b405be7bb",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:f4f95c92-ef54-4211-b3ba-325b405be7bb",
+  "generation_prompt": "Natural horizontal 16:9 documentary news photograph of an adult Japanese commuter adjusting her coat in front of a large mirror in a bright modest railway station grooming room, her work bag on a shelf. Ordinary station interior, a separate private changing cubicle in the background, realistic morning light, no readable text, no logos, no identifiable real person.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "309df75f664a8d101df43c15008813fe679bb73df4a47f154fdf87aecf80ef59",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:776cd06c-8e02-4275-9df6-f8151efa1019",
+    "instanceID": "xmp:iid:f4f95c92-ef54-4211-b3ba-325b405be7bb",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          130,
+          168,
+          149,
+          17,
+          137,
+          30,
+          155,
+          12,
+          193,
+          50,
+          223,
+          161,
+          161,
+          107,
+          181,
+          159,
+          232,
+          167,
+          87,
+          0,
+          68,
+          19,
+          248,
+          96,
+          203,
+          190,
+          201,
+          139,
+          133,
+          207,
+          208,
+          155
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-25T23:10:23.227551003Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-25T23:10:23.227562033Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-25T23:10:23.225649819Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "d195505eea082902bce22fab4ce4de8b4cebdef40d3df943db3dc27763bb55bd",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:f813e7cf9a690cde9ed0c28b59289d9aef6597010947eeeb68f1ea6de36b0f0a",
+    "actual_output_hint": "/workspace/scratch/4abb4e8056dc/generated_images/exec-2d67c65b-ae74-4899-acbb-93bc13a97f12.png",
+    "observed_at": "2026-11-25T23:10:26.595Z",
+    "bytes": 2021420,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "ad014d0ce0a36eca253e949b527e06c166f337990b0531ec3548870deedb3eb1",
+    "candidate_branch": "native-image-candidate/city-station-dressing-space-accessible-toilet/f813e7cf9a690cde-fa18b181270f",
+    "candidate_commit": "895ad0888aef66af560eafecd89ad6ae3736ba9b",
+    "receipt_path": "maintenance/native-image-candidates/city-station-dressing-space-accessible-toilet/receipt.json",
+    "receipt_sha256": "e009f1f93c239c9c1f9d9e3ff4298fc28e6d6d37f0e00f42ac766f19b7022792",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/city-station-dressing-space-accessible-toilet/source.png.part000",
+        "bytes": 524288,
+        "sha256": "ed2ae9a16dcbc626528ddf69972830bd235c9a2ca38a8b85b7b7b0f2d192e195",
+        "blob_sha": "948d0a5cce897d8c728756ce9a2fd1ef35b8a755"
+      },
+      {
+        "path": "maintenance/native-image-candidates/city-station-dressing-space-accessible-toilet/source.png.part001",
+        "bytes": 524288,
+        "sha256": "e889bf066d753649c2f4651f93f9c47f9ba16faac638b9dc548cdcfb7cd45766",
+        "blob_sha": "f36b2c662f88a91b715c126d7d5a75565f2fdf9b"
+      },
+      {
+        "path": "maintenance/native-image-candidates/city-station-dressing-space-accessible-toilet/source.png.part002",
+        "bytes": 524288,
+        "sha256": "80d3d69c8e3bbd273d2962b6472cbfde14bbf05607c70526b11d5a9ff54ed1b2",
+        "blob_sha": "345c9e433800ada88c2d067b7db39f5c96f97549"
+      },
+      {
+        "path": "maintenance/native-image-candidates/city-station-dressing-space-accessible-toilet/source.png.part003",
+        "bytes": 448556,
+        "sha256": "2ca952f3123ff2fa70d520c1c51867c21a66b80f16848a9a2c6935818e08a34c",
+        "blob_sha": "3dcfd23ac7ae2d7cb322ab3201778ec5fec77280"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-generation-claim/a9493d1ed31be5fc0aa238ad944a9a789441ac0b0c567e8d1570786f6a567ea5",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "7a8fce7613e0030719fd72b81274f5112c6fbd7a43d47a45311513b8f44d7f0f",
+      "observed_at": "2026-11-25T23:08:26.684Z",
+      "route": "GitHub base64 PNG in code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98",
+      "commit_sha": "d78ff414419cd66e9dcbb5e18f704cec939ba0e4"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/a9493d1ed31be5fc0aa238ad944a9a789441ac0b0c567e8d1570786f6a567ea5",
+      "receipt_path": "maintenance/native-image-generation-claims/a9493d1ed31be5fc0aa238ad944a9a789441ac0b0c567e8d1570786f6a567ea5.json",
+      "receipt_sha256": "2bff629034144e5770f4d3a7c87568cf40b37c4906c7a19a809dcb7a7a5fd11d",
+      "commit_sha": "16196b59c5ba0cd7fddce0a5a01473982b15f866"
+    }
+  }
+}
+  ,
+    "unknown-alloy-pump-wear-ring-field-test": {
+  "article_sha256": "edcd77e86524ebafb903977acfc3c20064b1d038954c115e3b57f541ba9be68a",
+  "bytes": 204069,
+  "generated_at": "2026-11-26T00:07:12.946Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "6772eb2a-2066-4ebf-9a56-8a0f0fa79502",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:6772eb2a-2066-4ebf-9a56-8a0f0fa79502",
+  "generation_prompt": "Photorealistic horizontal 16:9 Japanese local newspaper documentary photograph inside a clean coastal seafood processing plant maintenance room. An adult materials engineer in plain work clothes and protective gloves carefully holds a palm-sized machined metallic wear ring beside an open, stationary spare seawater pump housing on a maintenance bench, with a second conventional ring resting nearby. Natural industrial light, realistic metal and machinery, no readable text, no logos, no real-person likeness.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "deb71c57f70287ae86aac0b0b6ffa06f54494cdeb64541a2ab48e159ce1ef5c6",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:bef19117-ffc0-44a5-bda1-12e1d0fd94d3",
+    "instanceID": "xmp:iid:6772eb2a-2066-4ebf-9a56-8a0f0fa79502",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          129,
+          48,
+          126,
+          210,
+          141,
+          208,
+          97,
+          67,
+          125,
+          5,
+          106,
+          32,
+          244,
+          54,
+          164,
+          57,
+          86,
+          20,
+          109,
+          161,
+          44,
+          158,
+          129,
+          132,
+          128,
+          152,
+          61,
+          252,
+          160,
+          239,
+          192,
+          210
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-26T00:07:09.504647439Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-26T00:07:09.504650143Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-26T00:07:09.503386381Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "3cd57fec925548a803df842adc69fe82885aade96ccdb600b631c7c148bf78be",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:edcd77e86524ebafb903977acfc3c20064b1d038954c115e3b57f541ba9be68a",
+    "actual_output_hint": "/workspace/scratch/9ceefb4a62ca/generated_images/exec-c44632a9-bd6e-4a6a-ae03-aedc37028f5b.png",
+    "observed_at": "2026-11-26T00:07:12.946Z",
+    "bytes": 2699338,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "5261143115038d514d78175da50d1ac532e83ad65e8d73600189a3c0923750f4",
+    "candidate_branch": "native-image-candidate/unknown-alloy-pump-wear-ring-field-test/edcd77e86524ebaf-9ff78ed985ef",
+    "candidate_commit": "313e2c2cb4110cbe28387e72ddba2b8e6bb3d44d",
+    "receipt_path": "maintenance/native-image-candidates/unknown-alloy-pump-wear-ring-field-test/receipt.json",
+    "receipt_sha256": "cf3762983e4e89a54e8b81453887576f1429b07f2936088ff68928b1daec53e9",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/unknown-alloy-pump-wear-ring-field-test/source.png.part000",
+        "bytes": 524288,
+        "sha256": "8f66f98e08cc6b03c99584a7d29b0dc891de11739674e5ce0a350c146f57c069",
+        "blob_sha": "cbbe273cf790e6d04555fa78a8783a68656bffed"
+      },
+      {
+        "path": "maintenance/native-image-candidates/unknown-alloy-pump-wear-ring-field-test/source.png.part001",
+        "bytes": 524288,
+        "sha256": "0e3b19b3b9f3cc8620b7cc9452aec45266681d9b903d400f78ae658f8f3a631c",
+        "blob_sha": "4e3b654a9d6daa479c62664d1bbed7eae0847148"
+      },
+      {
+        "path": "maintenance/native-image-candidates/unknown-alloy-pump-wear-ring-field-test/source.png.part002",
+        "bytes": 524288,
+        "sha256": "2171f6b2d9d28ed4ab1b45e02a2e5482c1ecc4f0ece5bf2157e47fda41c22cf6",
+        "blob_sha": "786064ef4b6f5dbb7b85296963277cb57f60a837"
+      },
+      {
+        "path": "maintenance/native-image-candidates/unknown-alloy-pump-wear-ring-field-test/source.png.part003",
+        "bytes": 524288,
+        "sha256": "0fdefe50901f0020b26006ada375e876cba9744a5e8a0da4560d577440c5f747",
+        "blob_sha": "f2ed0a90fffd8ad4b54c5b2536db2228dc462261"
+      },
+      {
+        "path": "maintenance/native-image-candidates/unknown-alloy-pump-wear-ring-field-test/source.png.part004",
+        "bytes": 524288,
+        "sha256": "6b431df200c76daa5f895fec8cea1ca2391c251e9e97913daf96e4b4fb39fbed",
+        "blob_sha": "5faf438005ab7faf75c78c50b5465881b35ca082"
+      },
+      {
+        "path": "maintenance/native-image-candidates/unknown-alloy-pump-wear-ring-field-test/source.png.part005",
+        "bytes": 77898,
+        "sha256": "0c1474501674594abf9330bd148362b38d59714aab2bd01c941c9f368f03d841",
+        "blob_sha": "ffc0e2b5c4a8dba11b9292251589a10cfdb73bbf"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-generation-claim/0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "dc8277d421975791d80d170be547366eab6f644e4c55a7dafb755332b5f1926f",
+      "observed_at": "2026-11-25T23:17:21.900Z",
+      "route": "read_candidate_png through the original file adapter",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "cfedb0e7d77fd13c9570122751b27fc4045b3e30"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f",
+      "receipt_path": "maintenance/native-image-generation-claims/0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f.json",
+      "receipt_sha256": "55f159f485b7b9294c74417fc2de5de39994bbdbd0331dd56d4113b9ad26a7fb",
+      "commit_sha": "30413b1d98e2b42ed2e38b8cbb328b170a03b07d"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {

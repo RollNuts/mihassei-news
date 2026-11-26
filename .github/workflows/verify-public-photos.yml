@@ -93,6 +93,13 @@ jobs:
       - name: Verify the published revision and live stories without generating traffic
         id: live
         run: python3 scripts/check_live.py
+      - name: Check changed article movies and subtitles at their published URLs
+        shell: bash
+        run: |
+          git diff --diff-filter=AM --name-only HEAD^1 HEAD -- 'assets/clips/*.mp4' |
+            while IFS= read -r movie; do
+              python3 scripts/check_live.py --article-clip "$(basename "$movie" .mp4)"
+            done
       - name: Verify that Twitterbot can fetch each first-party image card
         id: cards
         run: python3 scripts/check_share_cards.py
@@ -104,6 +111,7 @@ jobs:
         env:
           PHOTO_REVISION_CHECK: ${{ steps.revision.outcome }}
           PHOTO_ARTICLE_CHECK: ${{ steps.live.outcome }}
+          VERIFIED_PUBLIC_TARGETS: ${{ steps.live.outputs.verified_targets }}
           PHOTO_SHARE_CARD_CHECK: ${{ steps.cards.outcome }}
         run: python3 scripts/report_photo_health.py --output "$RUNNER_TEMP/live-photo-health.json"
       - name: Keep the revision-bound photograph recovery report
@@ -297,7 +305,7 @@ jobs:
   finalize:
     # workflow_run executes this workflow from trusted main, never a PR checkout.
     # No PR artifacts or code are executed. Ordinary validation remains read-only.
-    if: ${{ github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success') || (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.ref == 'main' && ((github.event.pull_request.state == 'open' && github.event.pull_request.draft == false) || (github.event.action == 'edited' && github.event.pull_request.merged == true)) && contains(github.event.pull_request.body, '<!-- publication-finalize') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)) || (github.event_name == 'workflow_dispatch' && inputs.finalize_pr != '')) }}
+    if: ${{ github.repository == 'RollNuts/mihassei-news' && github.event.repository.private == false && github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success') || (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.base.ref == 'main' && ((github.event.pull_request.state == 'open' && github.event.pull_request.draft == false) || (github.event.action == 'edited' && github.event.pull_request.merged == true && github.event.changes.body && contains(github.event.changes.body['from'], '<!-- publication-finalize') == false)) && contains(github.event.pull_request.body, '<!-- publication-finalize') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)) || (github.event_name == 'workflow_dispatch' && inputs.finalize_pr != '')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 7
     concurrency:

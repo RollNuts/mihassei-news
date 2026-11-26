@@ -105,6 +105,36 @@
         "cut_id": "09",
         "image_sha256": "eaec9ea808601033289773116b681cb7f3ed0a2e30cbb4da7b2fcc57fdbe9df1"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261126071559900000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-26T07:15:59.900+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝のスパで窓が曇っていたので、指で小さな丸を描いてみました。外の紅葉がちょっとだけ見えて、得した気分です。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "02",
+        "image_sha256": "026376c7ab28205040b978908e21564264c3764564ed6808e7a80d4cc3d8c14f"
+      }
+    },
+    {
+      "id": "nagino-saya-post-20261127071833472000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-27T07:18:33.472+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝のプールで、手ですくった水を落とさない競争をしてみました。三歩目でほとんどこぼれて、もう一回だけ、とお願いしました。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "03",
+        "image_sha256": "4f84c197aadeab21c42fb7009b8a7f49dbd0bc8eb9ba225e8551bec44bd7538a"
+      }
     }
   ]
 }

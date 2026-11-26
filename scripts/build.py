@@ -274,6 +274,9 @@ def five_years_later(iso):
 
 def matches_fictional_dateline(published_at, fiction_at):
     canonical = five_years_later(published_at)
+    # JavaScript spells UTC as Z. Preserve the local clock and all other offsets.
+    if isinstance(fiction_at, str) and fiction_at.endswith("Z"):
+        fiction_at = fiction_at[:-1] + "+00:00"
     if fiction_at == canonical:
         return True
     # JavaScript emits milliseconds. Only accept that spelling when it is lossless.

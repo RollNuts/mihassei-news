@@ -311,7 +311,8 @@ def load_market_bulletins(root, *, now=None):
                 raise ValueError("Chart cannot cite market data after publication")
             values = fig.get("values")
             if not isinstance(values, list) or len(values) != 2:
-                raise ValueError("Chart requires two comparable sourced numbers")
+                count = len(values) if isinstance(values, list) else "non-array"
+                raise ValueError(f"{slug}/{fid}: Chart requires two comparable sourced numbers (got {count})")
             for value in values:
                 _txt(value.get("label") if isinstance(value, dict) else None, "chart label", maximum=18)
                 _amount(value.get("value"), signed=fig["kind"] == "bars" and fig["unit"] in ("%", "％"))

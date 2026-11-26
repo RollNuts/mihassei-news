@@ -143,6 +143,7 @@ async function imageControl(req, url, env={}) {
     // Fixed-origin reads only: anonymous workflow access implies public
     // visibility; authenticated access must verify it before reading workflow.
     // Both reads share this deadline/controller; no result is cached or retried.
+    const deadlineMs=headers.authorization ? 6000 : 3000;
     const workflow=await Promise.race([
       (async()=>{
         if(headers.authorization) {
@@ -157,7 +158,7 @@ async function imageControl(req, url, env={}) {
           timedOut=true;
           controller.abort();
           reject(new Error("unavailable"));
-        },3000);
+        },deadlineMs);
       })
     ]);
     if(workflow?.path!==".github/workflows/free-cpu-scenes.yml" ||

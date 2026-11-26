@@ -10,8 +10,7 @@
 | --- | --- | --- |
 | 記事発行 | 毎日07:30・19:30 | 通常ニュースは既存の2枠で1日2本程度とし、1本の具体性と初見の分かりやすさを優先する。題材・形式の幅と品質判定は[EDITORIAL_LOOP](EDITORIAL_LOOP.md)を正本とし、品質ゲートを下げた穴埋め・他枠での増刊をしない。今回の記事の画像・選抜字幕、発行引き継ぎ2行 |
 | 公開後レビュー・画像回収（ChatGPT） | 平日08:05・09:05・10:05・13:05・16:15・20:05／土日08:05・20:05 | 停止後の明示引継ぎも下記共通手順で同枠内に回収する。市況担当からの明示的初読移譲を含む、初読待ちPR、新着・改稿・未完了を合わせて最大3記事。本文の独立初読・必要修正・CI・通常統合・記事の本番確認を続け、写真も実行可能な工程はGPTが担当する。保存・実機・ツール能力が足りない画像も現記事SHA・候補参照・同PRを既存引継ぎに残し、基盤の故障だけ担当表に従って修理を依頼する。補助解説図と初見理解はEDITORIAL_LOOP、写真はVISUAL_OPERATIONSに従う |
-| 題材探し・品質改善 | 毎日05:45 | 前日の掲載と初読結果を照合し、必要な記事を再読。日次メモと次候補。対象の選び方は[日次編集](EDITORIAL_LOOP.md#次の発行へ学ぶ)に従う |
-| 週次編集・成長判断 | 月曜04:30 | 過去7日の編集判断と実測比較、翌週に変えること1つ。日次編集と当日最初の発行より前に週次方針を確定 |
+| 朝編集・月曜は週次判断 | 毎日05:45 | 月曜だけ冒頭に週次編集を行い、過去7日の実文と実測から翌週に変えることを1つ決める。続いて通常の[日次編集](EDITORIAL_LOOP.md#次の発行へ学ぶ)で前日の掲載と初読結果を照合し、日次メモと次候補を07:30の発行へ渡す |
 | 障害修理（ChatGPT） | 定例なし／明示された障害時のみ | 既存のサイト日次改善が、各編集担当から実証されたコード・CI・認証・保存基盤の故障を引き取り、今回使える実行環境とGitHub接続で修理する。修復成果と同じ候補・PRを元の編集担当へ返し、正常な執筆・画像採否・公開処理は重ねない |
 | サイト日次改善 | 毎日22:40 JST | Xの定常監査はGitHubに任せ、前回の取得成功以降に変わった送達・実投稿・異常だけを照合する。初回は旧X担当の最終取得成功から続ける。下記の未公開PR回収後、水曜は[週次SEO・UX点検](SEARCH_INDEX_REFRESH.md)、他の曜日は表示・操作の不具合と明示された未完画像を扱う |
 | 週刊グラビア編集・公開 | 毎日06:00 JST | 日曜〜土曜の7人を週初めに一度だけシャッフルして固定し、毎日当日担当1人の新しい10枚とコラムを公開する。既刊第1号は保持し、新号は公開済み特集だけを目次へ順に追加する。素材は既存のモデル別GPT制作チャットから受領し、編集・掲載担当は新規生成をしない。日次近況は下記の人物別既存タスクへ分担し、編集は未完了の復旧だけを扱う。新しいタスク・workflowは作らない。既存7人の制作タスクは毎日の近況と、EDITORIAL_LOOP「写真ストックと制作量」に定める在庫連動の補充・原本受渡しを同じ既存枠で行う。100枚は累計目標で、追加の枠や臨時起動による埋め合わせはしない。形式・固定順・遅延・品質・プロフィールはEDITORIAL_LOOPを正本とする |
@@ -29,7 +28,7 @@
 | Xの現行経路・停止中経路・編集基準 | [social-bot/README.md](../social-bot/README.md) |
 | 実装・PV定義／SEO点検 | [ARCHITECTURE.md](ARCHITECTURE.md)／[SEARCH_INDEX_REFRESH.md](SEARCH_INDEX_REFRESH.md) |
 
-朝のメモは日次編集、次枠の2行は発行、次週方針は週次編集が更新する。候補の採用済みURLは公開を確認してから更新する。他担当の引き継ぎを上書きせず、正常な箇所を毎回改稿しない。
+朝のメモと月曜の次週方針は朝編集が、次枠の2行は発行担当が更新する。候補の採用済みURLは公開を確認してから更新する。他担当の引き継ぎを上書きせず、正常な箇所を毎回改稿しない。
 
 **公開確認だけを記録するdocs-onlyのmain更新は作らない。** 記事を本番確認した後はURL・revision・検証結果をその発行タスクの結果へ残し、次の発行枠の開始時に最新mainの既刊・本番revision・直前の公開結果を照合する。前回分の候補採用状態、公開URL、末尾の発行引き継ぎ2行が遅れていれば、**今回の新記事など公開物を含むPRへ同梱して**正本を追いつかせる。次枠が見送りなら引き継ぎだけのPRは作らず、次の公開変更または日次編集の通常更新で回収する。これによりCloudflareの本番Buildを公開物が変わらないmain commitで増やさない。
 
@@ -71,7 +70,7 @@
 
 共通して既存引継ぎのheadと現head、現担当、main・本番の状態を照合し、同じ対象が今も未完であることを確認する。回収に着手する自分の実行を除き、別の変更担当とCI・finalizer・配信検証に実行中の作業がないことを実確認する。初読の移譲先実行が未到来の原稿、正常な機械処理中、他担当の回収中は着手しない。取得不能や不明を実行中なし・未起動に置き換えない。Automations応答とPR本文はCodeMode内で捕捉し、`last_run.id`と`latest_result.run_id`が違う本文は過去の記録とする。`no_update`・`failed`・結果欠落だけで停止や対象0件と判定しない。
 
-初読helperは公開予定文の初読入力に使う。承認後の停止と通常統合待ちは、既存引継ぎと同PRの実状態をkind・工程別に別途照合する。helperの`empty`・`outside_scope`を公開待ち全体の0件にしない。公開済みの過去PRを再監査せず、初読が必要な原稿は作者説明より先に公開文だけを独立初読する。近況・写真特集へニュース用の独立reviewerを追加しない。
+初読helperの `attention` にある `ordinary_editorial_handoff` は、朝編集・放送室の所定ファイルを変更し、PR本文に「通常統合の既存引継ぎ」などの見出しがある回収候補を示す。独立初読を先に済ませ、同PRの最新の移譲先・受取条件と上表の証拠を確認する。候補台帳は引継ぎ後に実際に公開された記事と照合する。他の明示未完も、既存引継ぎと同PRの実状態をkind・工程別に照合する。helperの`empty`・`outside_scope`を公開待ち全体の0件にしない。公開済みの過去PRを再監査せず、初読が必要な原稿は作者説明より先に公開文だけを独立初読する。近況・写真特集へニュース用の独立reviewerを追加しない。
 
 条件がそろった古い同じPRから1件を回収する。書込み直前にheadと担当状態を再確認し、同PRの既存引継ぎ欄へ移譲時刻・終了済み元run・現head・止まった段階・一時復旧担当・次操作を保存して読み戻す。書込み担当は同時に1人とし、元担当は回収中のPRへ重複着手しない。既刊・元予測・原画像来歴を保持し、必要修正と独立再読、画像採否、現headのCIと公開許可は既存手順を通す。独立初読など必要条件を満たせない場合は承認せず、具体的な不足と次担当を残す。
 
@@ -104,7 +103,7 @@ const R = new Function(helperSource + "\nreturn PublicationReviewContext;")();
 text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 ```
 
-`fetchFile` はGitHubの `fetch_file`、`fetchRepository` は同じ接続の `fetch({url})` へ束縛する。helperはDraftを含むopen PRを列挙し、PRの分岐点と固定headから対象の公開文だけを返す。近況・写真特集・放送室等の対応外を含む明示未完は、上記「既存PRの停止・公開待ちの回収」で別途照合する。上限外の対象、未対応の変更、古い承認や取得失敗を対象0件へ置き換えない。承認済みのCIは同じPR・headの `check.yml` 実行へ結び付ける。CI成功でも未統合なら公開処理の確認対象として残し、独立初読を重ねず、既存finalizerの進行・失敗・未確認を区別して同じ引継ぎから続ける。進行中の処理へ重複着手せず、確認なしに再実行しない。画像だけの未完や公開後の本文差分は従来の担当手順で別途確認する。
+`fetchFile` はGitHubの `fetch_file`、`fetchRepository` は同じ接続の `fetch({url})` へ束縛する。helperはDraftを含むopen PRを列挙し、PRの分岐点と固定headから対象の公開文だけを返す。近況・写真特集・放送室等の対応外を含む明示未完は、上記「既存PRの停止・公開待ちの回収」で別途照合する。上限外の対象、未対応の変更、古い承認や取得失敗を対象0件へ置き換えない。承認済みのCIは同じPR・headの `check.yml` 実行へ結び付ける。CI成功でも未統合なら公開処理の確認対象として残し、独立初読を重ねず、既存finalizerの進行・失敗・未確認を区別して同じ引継ぎから続ける。進行中の処理へ重複着手せず、確認なしに再実行しない。`empty`は初読待ちと写真引継ぎの双方を確認した結果とし、open PR数は`open_pr_count`を使う。`photo_recovery.status`が`lookup_required`なら次のCodeModeセルで`R.readPhotoHandoffs({fetchRepository, fetchFile, ref: mainSha})`を実行する。`after_first_read`は独立初読後に同じメソッドを使う。扱いは[画像の採用条件](VISUAL_OPERATIONS.md#画像の採用条件)に従う。
 
 各実行でこのhelperを実取得・実行し、取得完了JST・固定main SHA・open/selected/pending/attention/machine_pendingの件数を結果へ1行残す。初読helperの対象0件でも取得証拠を残し、上記共通回収節の対応外を含む明示未完と担当工程を別途照合する。対応する未完もなければ終了し、正常素材の再検品や不要な画像生成をしない。未実施は未実施、取得不能は失敗した操作と実エラーを記録し、前回結果や不明な状態を0件にしない。結果記録のためだけのPR・コミットや新しい台帳は作らない。
 
@@ -136,7 +135,7 @@ helperはGitHubの生応答と完了ログをCodeMode内で処理し、対象PR/
 
 ### CI・公開待機の引継ぎ
 
-長いCIをGPTが繰り返し照会しない。現在の変更担当が必要な本文・実画像の確認を終えた後、同じPR本文の既存引継ぎへ、`scripts/publication_finalize.py --print-handoff`が出す`publication-finalize`ブロックを1つだけ保存する。CLIがない場合も同じJSON形式をGitHub接続で保存できる。
+長いCIをGPTが繰り返し照会しない。現在の変更担当が必要な本文・実画像の確認を終えた後、同じPR本文の既存引継ぎへ、`scripts/publication_finalize.py --print-handoff`が出す`publication-finalize`ブロックを1つだけ保存する。CLIがない場合も同じJSON形式をGitHub接続で保存できる。統合済みPRの引き継ぎ追記では配信検証を再起動しない。現行の本番でその統合版の検証が欠けている場合は、既存の承認ブロックをいったん外して保存し、同じ承認を戻すと再照合できる。
 
 `kind`は`news`・`market`・`cast_story`・`photo_issue`、`approved_head`は確認した完全40桁、`authorized_by`は実際の書込担当GitHub login。`author_run`と`reviewer_run`は実在する実行参照（例：`chatgpt:`に当該チャットUUIDを続ける）で、URLや架空のIDを作らない。`first_read: passed`と`merge_after_ci: true`を明示する。ニュース・市場記事は作者と独立reviewerの参照を分け、変更記事の現在の指紋を`article_sha256`へ全件残す。近況・写真特集は従来の同じ編集担当の確認でよく、余分なreviewerを増やさない。初読・現headの承認を保存・読み戻せたPRだけ、`draft: true`ならGitHub接続の`mark_pull_request_ready_for_review`（CLIは`gh pr ready`）で下書きを解除し、`draft: false`を読み戻してから機械処理へ渡す。
 
@@ -148,7 +147,7 @@ GPTは許可の保存と再読後に「CI・公開検証へ移譲済み」とし
 
 ### 7人の近況
 
-日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。当日分の投稿記録があれば、当日のID・未来時刻の件数と照合元だけを返す。未投稿なら本人設定・直近3投稿・写真候補の説明と出典を読む。選んだ1枚の保存パスと版付きURLは、その候補を`C.photoLocation(photo)`に渡して取得する。
+日次入力は`scripts/cast_story_context.js`の`read`で本人分だけを取得する。helperと入力は同じ完全main SHAへ固定し、GitHubの応答はCodeMode内で捕捉してから使う。当日分の投稿記録があれば、当日のID・未来時刻の件数・照合元と、週刊の引継ぎ先を返す。未投稿なら本人設定・直近3投稿・写真候補の説明と出典を読む。選んだ1枚の保存パスと版付きURLは、その候補を`C.photoLocation(photo)`に渡して取得する。
 
 ```js
 const C = new Function(helperSource + "\nreturn CastStoryContext;")();
@@ -156,6 +155,14 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 ```
 
 `fetchFile`は実際に露出したGitHubの`fetch_file`へ束縛する。`story_records_only`は当日記録の照合、`metadata_only`は投稿準備用のメタデータ照合を示す。どちらも実画像と本番配信は未確認。`open_prs: unknown`を0件とせず、本人のPRだけ別に確認する。当日既刊があれば追加しない。新規投稿は返却された `source.story_path`（本人専用ファイル）へ原文を1件追記し、そのファイルの `blob_shas` を照合して通常のPRへ進める。CLIの `adopt_cast_story.py --write` も同じ場所を使う。採用時は下記の既存原文・写真照合を通す。
+
+週刊の制作に進む際は、近況が当日公開済みでも、同じセルで読み込んだhelperまたは同じmainのhelperに本人名を渡す。
+
+```js
+text(await C.readWeeklyHandoff({fetchFile, ref: mainSha, modelName}));
+```
+
+正本から本人宛ての行だけを読み、そこにある候補と次の操作を使う。記載がなくても在庫数は未確認。取得できなければ週刊の引継ぎ先から確認する。
 
 人物別の既存制作タスクが、自分の近況をJSTで1日1件ずつ投稿する。開始枠は以下とし、実際の公開時刻を記録する。遅延分の一括投稿や過去時刻への書換えはしない。日次近況は検品済み本人写真を使い、写真ストックはEDITORIAL_LOOP「写真ストックと制作量」の在庫基準と既存週上限に従い、同じ既存枠内で補充・受渡しする。グラビア編集は特集を担当し、本人タスクの正常な近況を重複して書き直さない。
 
@@ -186,7 +193,9 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 
 原稿を初読へ移譲する前に、今回の記事を含むデータを`python3 -c "from scripts.build import load; load()"`で形式確認する。`fiction_company`は企業・自治体・団体など本文に登場する架空主体を記録する欄で、検索用の描画にも使う。必須欄が欠けていれば示された記事と欄を同じ原稿で修正する。実行できない場合は実際に不足する入力・操作を引き継ぎ、検証成功と扱わない。
 
-**配分確認は、checkoutがなくても次の2ファイルを実配置してから実行できる。** GitHubで内容を読んだだけでは、実行環境へ配置したことにはならない。
+**checkoutのないGPTは、執筆前の担当面と直近7本を既存の本番確認から読む。** 最新mainの完全なSHAから [PublicationReviewContext](../scripts/publication_review_context.js) を読み込み、`readEditorialGuidance({fetchRepository: github.fetch, ref, day})` にそのSHAと発行枠のJST日付を渡す。`verified` の `report` が、その版の掲載データで計算した配分と直近7本の見出し・要約。確認時の当日・翌日分があり、指定日の分だけを読む。原稿追加後の検査はその変更を含む版で行う。
+
+該当日の資料が取得できず、GitHubからPython実行先へファイルを渡せる場合は、次の2ファイルで直接確認する。
 
 1. 最新mainの完全なSHAを1つ取得し、そのSHAに固定して `scripts/editorial_mix.py` と `content/articles.json` をGitHub接続から取得する。Contents APIなら `https://api.github.com/repos/RollNuts/mihassei-news/contents/<path>?ref=<完全なSHA>` を使い、2ファイルを異なるrevisionから混ぜない。
 2. 取得したUTF-8文字列を、利用可能なファイル書き込み手段で今回の専用フォルダーの `scripts/editorial_mix.py` と `content/articles.json` へそのまま保存する。コード実行内で取得結果を捕捉できる場合は、文字列をモデル本文へ転記せず `apply_patch` 等へ直接渡す。JSONを再保存して整数や内容を変えない。
@@ -198,9 +207,12 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 
 ### 本番確認の代替経路
 
+記事・近況・市況・週刊特集の掲載確認には、まず対象の統合SHAにある既存の `Photograph completion` checkを1回読む（`/commits/<SHA>/check-runs?check_name=Photograph%20completion&per_page=1`）。完了した `github-actions` の当該checkで `head_sha`・`output.text` 内の `checkout_sha`・`verified_targets.served_sha` が統合SHAと一致し、対象slugまたは近況IDが該当欄にあれば、その実行で本番確認済み。写真待ちの件数・採否は別欄を読む。対象や記録が欠ける場合は下記の実run・対象URLを照合する。
+
 タスクの実行環境から本番へ直接接続できない場合は、既存の読み取り専用 `.github/workflows/verify-public-photos.yml` の実行結果をGitHub接続から回収できる。新しい監視タスクを作らず、次の証拠をそろえる。
 
 - 対象main SHAのrunは `https://api.github.com/repos/RollNuts/mihassei-news/actions/runs?head_sha=<完全なSHA>&per_page=20` からeventを限定せず探す。通常pushと、既存finalizerからの `workflow_dispatch` を含め、workflow pathが `.github/workflows/verify-public-photos.yml` であること、head SHA、実際の `check` jobを照合する。`fetch_commit_workflow_runs` はPR実行限定のため、この本番確認には使わない。先頭のrunやskipped実行だけを公開の証拠にしない。
+- 本番revisionの待機が期限に達したときは、受取時に `GET /repos/RollNuts/mihassei-news/commits/<対象mainの完全SHA>/check-runs?check_name=Workers%20Builds%3A%20mihassei-news&filter=latest` を1回照合する。Cloudflareのビルド結果はActionsの待機終了後に届くことがある。`head_sha`・check名 `Workers Builds: mihassei-news`・`app.slug=cloudflare-workers-and-pages` が一致する公式結果で、失敗時は `details_url` の本番ビルドを既存のサイト日次担当が調べる。結果未着・実行中ならその状態を残し、成功時は下記の本番revisionと対象URLの配信を確認する。
 - jobの実stepが成功し、ログの本番revisionが対象SHAと一致することを確認する。docs-only祖先を許容した結果なら、その差分証明も残す。run全体のsuccessやPRのCI成功だけで完了にしない。
 - 対象slugの `Public article OK`、変更した画像・図の検証結果、必要な共有画像の対象を確認する。現行 `check_live.py` の本文確認は最新10記事、`check_share_cards.py` は選抜したカードの確認であり、対象外まで検証済みにしない。ログに含まれない対象や変更素材は、直接の取得・対象を指定した検証・次担当での確認を未完として残す。
 - 結果は「Actionsで実配信検証済み」と「今回のブラウザ目視」を分けて記録する。取得不能・実行中・対象外を0件や本番障害へ読み替えない。取得不能なら失敗した取得操作を残し、実行中なら同じrunの完了を確認する。対象外は対象を指定した検証へ引き継ぐ。
@@ -216,7 +228,7 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 - 通常の執筆・判断・独立初読・記事公開はGPTが中心となり、写真も現環境で実行可能な工程を担当する。画像担当を移す必要がある時だけ、現記事SHA・画像SHA（あれば）・候補/run/claimの実参照・不足する能力・同PRを既存引継ぎへ1回渡す。ほかの記事の検品在庫を各発行枠で毎回取り直さない。
 - ChatGPTタスク `6afd025e80a08190b93269882fc89609` が通常の画像工程を担当する。実行先と会話の継続設定はAutomationsの実設定で確認し、本文指示へ「新しい会話」と書いただけで切替済みとは扱わない。会話履歴に依存せず、同じPRと保存済み候補から未完了を継続する。保存経路が使えない候補も同じPR・既存引継ぎへ保持し、障害修理の依頼は上表の担当範囲に従う。保存済み候補を先に回収し、元の来歴・整数seedを保持する。Nativeの成功経路を使い、CPUは明示slugの手動レビュー補助として先行自動生成しない。
 - GPTの公開後レビューは上表の既存枠で行い、明示された初読移譲は同じPRで引き取る。Mac電源OFF・利用枠不足・取得不能でも適合する代替で記事を継続し、同じ引継ぎで待つ。設定保存をGPTだけの全自動運転成功とは扱わない。
-- サイト日次担当は、自分が引き取った停止PRの未完工程と、既存の画像引き継ぎで対象・次の操作が明示され担当PR・実行中runがない案件だけを扱う。週次担当は不一致と再発を点検し、現在の記事・画像SHAに一致するacceptedは、新しい不具合がなければ再承認しない。
+- サイト日次担当は、自分が引き取った停止PRの未完工程と、既存の画像引き継ぎで対象・次の操作が明示され担当PR・実行中runがない案件だけを扱う。月曜の週次編集では不一致と再発を点検し、現在の記事・画像SHAに一致するacceptedは、新しい不具合がなければ再承認しない。
 - 目視採用・不合格の記録は `VISUAL_OPERATIONS.md`、動画のplanと待ち理由は `MOTION_CLIPS.md` に従う。未生成・未検品・不合格は区別し、画像/動画待ちでも合う代替画像で記事を発行する。
 - 本文の対象抽出・上限外の持ち越し・確認件数は[EDITORIAL_LOOPの公開後レビューの対象と持ち越し](EDITORIAL_LOOP.md#公開後レビューの対象と持ち越し)を正本にする。観測mainと全文確認したslug・記事SHAを分け、古い公開日の本文改稿と未確認の持ち越しを落とさない。未解決は `slug／待ち理由／次の作業と担当` を残す。前回から条件が変わらない不合格や利用枠待ちを毎時再生成しない。生成0件・idle・skipped、OFFの空一覧、生成済み、本番配信済みを同じ成功にしない。旧画像の指紋・seed・reviewを書き換えて待ちを解消しない。
 - 画像回収の時間切れ・取得不能は、このチャットの結果と`DAILY_EDITORIAL_BRIEF.md`の画像引き継ぎへ、記事・画像SHA、run ID、失敗箇所、次の操作を最大3行で残す。他担当の編集メモを保持し、次の回収枠・サイト日次担当が新規改善より先に引き取る。完了した自分の引き継ぎは整理し、時刻だけの更新を作らない。

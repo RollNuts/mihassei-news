@@ -1,6 +1,26 @@
 {
   "version": 1,
   "stories": {
+    "island-club-sound-ball-remote-league": {
+      "article_sha256": "e1633ddfc3c579aa6e7f4ffcd3240aa3387919fc333155af54df81d640a2c4a0",
+      "cues": [
+        {
+          "at": 0,
+          "label": "島の体育館で初戦",
+          "text": "両手の端末が震え、音を頼りに仮想の球を受ける"
+        },
+        {
+          "at": 4,
+          "label": "海の向こうへ投げ返す",
+          "text": "実物の球はなく、球の向きと速さを両会場で共有"
+        },
+        {
+          "at": 8,
+          "label": "船の時刻表より体育館",
+          "text": "次の対戦日を決め、船ではなく体育館の空きを確かめた"
+        }
+      ]
+    },
     "private-rocket-town-satellite-first-ocean-image": {
       "article_sha256": "d2de5961397d86bba41e6109cbdf975faca0f23476243cf0d418f71cdc7172a6",
       "cues": [

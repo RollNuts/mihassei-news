@@ -266,6 +266,44 @@ test("unhandled market and article-image work needs attention, unrelated code/ph
   }
 });
 
+test("existing ordinary editorial handoffs reach attention without exposing the prose or requesting CI", async () => {
+  const brief = "docs/DAILY_EDITORIAL_BRIEF.md", ideas = "docs/EDITORIAL_IDEAS.md";
+  for (const [heading, files, draft] of [
+    ["通常統合の既存引継ぎ", [brief, ideas], false],
+    ["安全な通常統合／既存引継ぎ", [brief, ideas, "content/broadcasts.json", ARTICLES], true],
+  ]) {
+    const w = world(), pr = w.add(10, ARTICLES, []);
+    pr.body = "## " + heading + "\nPR_BODY_SECRET";
+    pr.draft = draft;
+    w.files.set(10, files.map(filename => ({ filename, status: "modified" }))); pr.changed_files = files.length;
+    w.add(11); // The other PR still needs a blinded first read.
+    const result = await w.read();
+    assert.deepEqual(result.selected.map(target => target.pr), [11]);
+    assert.deepEqual(result.attention.map(({ pr, head, draft, reason }) => ({ pr, head, draft, reason })),
+      [{ pr: 10, head: pr.head.sha, draft, reason: "ordinary_editorial_handoff" }]);
+    assert.equal(result.publication_authorized, false);
+    assert(!JSON.stringify(result).includes("PR_BODY_SECRET"));
+    assert(!w.calls.some(call => call.route.startsWith("/actions/")));
+  }
+});
+
+test("ordinary handoff discovery requires its scope and heading, and never skips changed reader text", async () => {
+  for (const state of ["missing_heading", "negated_heading", "unrelated_file", "renamed_file", "changed_reader", "finalizer_claim"]) {
+    const w = world(), pr = w.add(10);
+    const files = [{ filename: "docs/EDITORIAL_IDEAS.md", status: "modified" }];
+    pr.body = state === "missing_heading" ? "通常統合の既存引継ぎ" : "## 通常統合の既存引継ぎ";
+    if (state === "negated_heading") pr.body += "はありません";
+    if (state === "unrelated_file") files.push({ filename: "scripts/build.py", status: "modified" });
+    if (state === "renamed_file") Object.assign(files[0], { previous_filename: "other.md", status: "renamed" });
+    if (state === "changed_reader") files.push({ filename: ARTICLES, status: "modified" });
+    if (state === "finalizer_claim") pr.body += "\n" + marker(pr.head.sha);
+    w.files.set(10, files); pr.changed_files = files.length;
+    const result = await w.read();
+    assert(!result.attention.some(row => row.reason === "ordinary_editorial_handoff"), state);
+    assert.equal(result.selected_count, state === "changed_reader" ? 1 : 0);
+  }
+});
+
 test("an approved creator story carries its exact finalizer title without reading actions or joining first read", async () => {
   for (const state of ["approved", "draft", "stale", "wrong_kind", "mixed_paths"]) {
     const w = world(), pr = w.add(972);
@@ -352,7 +390,7 @@ test("latest current-head CI supersedes an older success and cancelled work rema
 });
 
 test("empty is only reported after successful complete inventories at the fixed main", async () => {
-  const w = world(), report = await w.read();
+  const w = world(), report = await w.read({ photoReport: { checkout_sha: REF, photo_followup: [] } });
   assert.equal(report.empty, true); assert.equal(report.open_pr_count, 0);
   assert.equal(w.calls.filter(c => c.route === "/pulls").length, 2);
   assert.equal(w.fileCalls.length, 0);
@@ -952,4 +990,266 @@ test("validation keeps retrieval failures and changing snapshots explicit instea
     assert.equal(result.status, "attention", mutation); assert(!JSON.stringify(result).includes("SECRET"));
     assert.deepEqual(w.logCalls, []); assert(w.calls.length <= 9);
   }
+});
+
+test("ordinary empty first-read inventory finds only explicit merged photograph handoffs", async () => {
+  const sha = i => String(i).repeat(64);
+  const rows = ["morning", "old-claim", "evening", "rejected"].map((slug, i) => ({
+    slug, article_sha256: sha(i + 1), status: i === 3 ? "rejected" : "missing" }));
+  const report = { checkout_sha: REF, photo_followup: rows };
+  const prs = [0, 2].map(i => ({ number: 101 + i, state: "closed", merged: true, author_association: "OWNER",
+    head: { sha: GIT(i + 10), repo: { full_name: REPO } }, base: { ref: "main", repo: { full_name: REPO } },
+    body: "<!-- photo-recovery:1032 -->\nSECRETS_FROM_ORIGINAL_PR\n" +
+      marker(GIT(i + 10), { article_sha256: { [rows[i].slug]: rows[i].article_sha256 } }) }));
+  const queries = [], open = [];
+  let changedPath = "assets/generated/morning.jpg";
+  const fetchRepository = async ({ url }) => {
+    const u = new URL(url), route = u.pathname.replace("/repos/" + REPO, "");
+    if (route === "/git/ref/heads/main") return { object: { sha: REF } };
+    if (route === "/pulls") return open;
+    if (route === "/pulls/1040/files") return [{ filename: changedPath, status: "modified" }];
+    if (route.startsWith("/compare/")) return { merge_base_commit: { sha: BASE } };
+    if (route.endsWith("/check-runs")) return { check_runs: [{ name: "Photograph completion", head_sha: REF,
+      app: { slug: "github-actions" }, status: "completed", conclusion: "failure", output: { text: JSON.stringify(report) } }] };
+    if (route === "/search/issues") {
+      const query = u.searchParams.get("q"); queries.push(query);
+      const found = prs.filter(pr => query.includes(rows[pr.number - 101].article_sha256));
+      return { total_count: found.length, incomplete_results: false, items: found.map(({ number }) => ({ number })) };
+    }
+    const pr = prs.find(row => route === "/pulls/" + row.number);
+    if (pr) return pr;
+    throw Error("Unexpected photo lookup " + route);
+  };
+  const normal = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF });
+  assert.equal(normal.open_prs_empty, true); assert.equal(normal.empty, false); assert.deepEqual(normal.attention, []);
+  assert.equal(normal.photo_recovery.status, "checked");
+  assert.deepEqual(normal.photo_recovery.selected.map(row => row.pr), [101, 103]);
+  assert.equal(normal.photo_recovery.may_generate, false);
+  assert(!JSON.stringify(normal).includes("SECRETS_FROM_ORIGINAL_PR"));
+  assert.equal(queries.length, 3); assert(!queries.some(q => q.includes(rows[3].article_sha256)));
+  open.push({ number: 1040, state: "open", draft: false, body: "another work in progress",
+    head: { sha: GIT(20), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const options = { fetchRepository, ref: REF, report };
+  let busy = await context.readPhotoHandoffs(options);
+  assert.deepEqual(busy.selected.map(row => row.slug), ["evening"]);
+  assert.deepEqual(busy.attention, [{ ...rows[1], reason: "source_pr_not_found" }, { slug: "morning", pr: 1040, reason: "open_owner" }]);
+  changedPath = "content/articles.json";
+  const fetchFile = async ({ ref, path }) => ({ path, sha: GIT(25), encoding: "utf-8",
+    content: JSON.stringify([{ slug: "morning", title: "no change" }, { slug: "evening", title: ref }]) });
+  busy = await context.readPhotoHandoffs({ ...options, fetchFile });
+  assert.deepEqual(busy.selected.map(row => row.slug), ["morning"]);
+  assert.equal((await context.readPhotoHandoffs(options)).status, "unverified");
+  changedPath = "docs/EDITORIAL_LOOP.md";
+  assert.equal((await context.readPhotoHandoffs(options)).selected.length, 2);
+  let inventoryReads = 0;
+  const moved = await context.readPhotoHandoffs({ ...options, fetchRepository: args => {
+    if (new URL(args.url).pathname.endsWith("/pulls") && ++inventoryReads === 1) return [];
+    return fetchRepository(args);
+  } });
+  assert.equal(moved.status, "unverified"); assert.match(moved.reason, /owners changed/);
+  open.length = 0;
+  prs[0].body = prs[0].body.replace("<!-- photo-recovery:1032 -->", "");
+  prs[1].body = prs[1].body.replace(rows[2].article_sha256, sha(9));
+  const gaps = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF });
+  assert.equal(gaps.empty, false); assert.equal(gaps.open_pr_count, 0);
+  assert.equal(gaps.photo_recovery.may_generate, false); assert.equal(gaps.photo_recovery.next_offset, null);
+  assert.deepEqual(gaps.photo_recovery.selected, []);
+  assert.deepEqual(gaps.photo_recovery.attention, [
+    { ...rows[0], pr: 101, reason: "source_recovery_marker_missing" }, { ...rows[1], reason: "source_pr_not_found" },
+    { ...rows[2], pr: 103, reason: "source_article_sha_mismatch" }]);
+  const noSource = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF,
+    photoReport: { checkout_sha: REF, photo_followup: [rows[1], rows[3]] } });
+  assert.equal(noSource.empty, false); assert.equal(noSource.photo_recovery.next_offset, null);
+  assert.deepEqual(noSource.photo_recovery.selected, []);
+  assert.deepEqual(noSource.photo_recovery.attention, [{ ...rows[1], reason: "source_pr_not_found" }]);
+  const pending = { ...rows[0], status: "pending" };
+  prs[0].body = "<!-- photo-recovery -->\n" + prs[0].body;
+  prs[0].head.sha = GIT(66);
+  const inspectPending = () => context.readPhotoHandoffs({ fetchRepository, ref: REF,
+    report: { checkout_sha: REF, photo_followup: [pending] } });
+  assert.deepEqual((await inspectPending()).attention, [{ ...pending, pr: 101, reason: "source_approval_not_current" }]);
+  prs[0].merged = false;
+  assert.deepEqual((await inspectPending()).attention, [{ ...pending, pr: 101, reason: "source_pr_mismatch" }]);
+  assert.equal((await context.readPhotoHandoffs({ fetchRepository, ref: GIT(9), report })).status, "unverified");
+  assert.equal((await context.readPhotoHandoffs({ fetchRepository: () => { throw Error("offline"); }, ref: REF })).status, "unverified");
+});
+
+function docsAdvance() {
+  const side = GIT(3), head = GIT(4), path = "docs/VISUAL_OPERATIONS.md";
+  const rows = ["morning", "evening", "weekend", "reserve"].map((slug, i) =>
+    ({ slug, article_sha256: (i + 1).toString().repeat(64), status: "missing" }));
+  const check = { name: "Photograph completion", head_sha: BASE, status: "completed", conclusion: "failure",
+    app: { slug: "github-actions" }, output: { text: JSON.stringify({ checkout_sha: BASE, photo_followup: rows }) } };
+  const fixture = {
+    missing: { total_count: 0, check_runs: [] }, checked: { total_count: 1, check_runs: [check] },
+    diff: { status: "ahead", ahead_by: 2, behind_by: 0, total_commits: 2, base_commit: { sha: BASE },
+      merge_base_commit: { sha: BASE }, commits: [{ sha: side }, { sha: REF, parents: [{ sha: BASE }, { sha: side }] }],
+      files: [{ filename: path, status: "added" }] },
+    intermediate: { sha: side, files: [{ filename: path, status: "added" }] },
+    open: [], main: REF, rows, calls: [],
+    fetchFile() { throw Error("Unexpected blob lookup"); },
+    async fetchRepository({ url }) {
+      const u = new URL(url), route = u.pathname.replace("/repos/" + REPO, "");
+      fixture.calls.push(route);
+      if (route === "/git/ref/heads/main") return { object: { sha: fixture.main } };
+      if (route === "/pulls") return fixture.open;
+      if (route === "/pulls/1040/files") return [{ filename: "assets/generated/morning.jpg", status: "modified" }];
+      if (route === "/commits/" + REF + "/check-runs") return fixture.missing;
+      if (route === "/commits/" + BASE + "/check-runs") return fixture.checked;
+      if (route === "/compare/" + REF + "~1..." + REF) return fixture.diff;
+      if (route === "/commits/" + side) return fixture.intermediate;
+      if (route === "/search/issues") {
+        const i = rows.findIndex(r => u.searchParams.get("q").includes(r.article_sha256));
+        assert(i >= 0);
+        return { total_count: 1, incomplete_results: false, items: [{ number: 101 + i }] };
+      }
+      const i = rows.findIndex((_, n) => route === "/pulls/" + (101 + n));
+      if (i >= 0) return { number: 101 + i, state: "closed", merged: true, author_association: "OWNER",
+        head: { sha: head, repo: { full_name: REPO } }, base: { ref: "main", repo: { full_name: REPO } },
+        body: "<!-- photo-recovery -->\n" + marker(head, { article_sha256: { [rows[i].slug]: rows[i].article_sha256 } }) };
+      throw Error("Unexpected docs advance lookup: " + route);
+    }
+  };
+  return fixture;
+}
+
+const guidanceDay = "2026-11-27";
+const guidanceText = guidanceDay + ": published=1; tracked=1; desk_next=スポーツ; next=quality-first"
+  + "\n題材比較（指定JST日までの直近7本・公開順）：見出し・summary"
+  + "\n- 11/26 20:09｜スポーツ｜四方の客席へ踊る｜選手が向き合う方向を変えた。";
+function guidanceCheck(w, ref) {
+  const check = w.checked.check_runs[0];
+  check.head_sha = ref;
+  check.output.text = JSON.stringify({ checkout_sha: ref, editorial_guidance: { [guidanceDay]: guidanceText,
+    "2026-11-28": "OTHER_DAY" }, photo_followup: ["PHOTO_DATA"] });
+  if (ref === REF) w.missing = w.checked;
+  return check;
+}
+test("editor can read just the pinned day's guidance in one GET even when photographs are outstanding", async () => {
+  const w = docsAdvance();
+  guidanceCheck(w, REF);
+  assert.deepEqual(await context.readEditorialGuidance({ ...w, ref: REF, day: guidanceDay }),
+    { status: "verified", ref: REF, check_sha: REF, day: guidanceDay, report: guidanceText });
+  assert.deepEqual(w.calls, ["/commits/" + REF + "/check-runs"]);
+});
+
+test("editorial guidance carries a proven docs advance, with a final main check", async () => {
+  const w = docsAdvance(), read = () => context.readEditorialGuidance({ ...w, ref: REF, day: guidanceDay });
+  guidanceCheck(w, BASE);
+  assert.deepEqual(await read(), { status: "verified", ref: REF, check_sha: BASE, day: guidanceDay, report: guidanceText });
+  assert.equal(w.calls.length, 5);
+  w.main = BASE;
+  assert.deepEqual(await read(), { status: "unavailable" });
+  w.main = REF;
+  w.intermediate.files[0].filename = "content/articles.json";
+  assert.deepEqual(await read(), { status: "unavailable" });
+});
+
+test("invalid dates, untrusted checks and incomplete daily outputs cannot supply editorial guidance", async () => {
+  const w = docsAdvance(), check = guidanceCheck(w, REF);
+  const read = (day = guidanceDay, ref = REF) => context.readEditorialGuidance({ ...w, ref, day });
+  for (const day of ["2026-02-30", "2026-2-03", "2026-11-27\n"]) assert.equal((await read(day)).status, "unavailable");
+  assert.equal((await read(guidanceDay, "main")).status, "unavailable");
+  assert.equal(w.calls.length, 0);
+  assert.deepEqual(await read("2026-11-29"), { status: "unavailable" });
+  for (const mutate of [
+    c => { c.app = { slug: "untrusted" }; }, c => { c.status = "in_progress"; }, c => { c.head_sha = BASE; },
+    c => { c.output.text = JSON.stringify({ checkout_sha: BASE, editorial_guidance: { [guidanceDay]: guidanceText } }); },
+    c => { c.output.text = JSON.stringify({ checkout_sha: REF, photo_followup: [] }); },
+    ...[guidanceText.replace(guidanceDay, "2026-11-28"), guidanceDay + ": published=0",
+      guidanceText.replace("desk_next=", "desk="), guidanceText.split("\n").slice(0, 2).join("\n")].map(incomplete =>
+      c => { c.output.text = JSON.stringify({ checkout_sha: REF, editorial_guidance: { [guidanceDay]: incomplete } }); })
+  ]) {
+    const broken = clone(check); mutate(broken); w.missing.check_runs = [broken];
+    assert.deepEqual(await read(), { status: "unavailable" });
+  }
+  w.fetchRepository = () => { throw Error("offline"); };
+  assert.deepEqual(await read(), { status: "unavailable" });
+});
+
+test("normal reviewer carries explicit photo handoffs across a proven docs merge within the callback budget", async () => {
+  const w = docsAdvance(), opts = { ...w, ref: REF };
+  const first = await context.read(opts);
+  assert.equal(first.empty, false);
+  const page = first.photo_recovery;
+  assert.equal(page.status, "checked");
+  assert.equal(page.check_sha, BASE);
+  assert.equal(page.may_generate, false);
+  assert(page.selected.length > 0 && page.next_offset > 0);
+  assert(w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: page.next_offset });
+  assert.equal(next.status, "checked");
+  assert(w.calls.length <= 14);
+  assert.deepEqual([...page.selected, ...next.selected].map(row => row.pr), [101, 102, 103, 104]);
+  assert.equal(next.next_offset, null);
+  w.open.push({ number: 1040, state: "open", draft: false, body: null,
+    head: { sha: GIT(8), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const owner = await context.readPhotoHandoffs({ ...opts, batchSize: 1 });
+  assert.deepEqual(owner.selected, []);
+  assert.deepEqual(owner.attention, [{ slug: "morning", pr: 1040, reason: "open_owner" }]);
+});
+
+test("docs fallback rejects changed then reverted content, incomplete diffs, stale checks and moved main", async () => {
+  for (const damage of [
+    w => { w.diff.status = "diverged"; },
+    w => { w.diff.merge_base_commit.sha = GIT(9); },
+    w => { w.diff.commits.at(-1).parents[0].sha = GIT(9); },
+    w => { w.diff.total_commits++; },
+    w => { w.diff.files = Array(300).fill(w.diff.files[0]); },
+    w => { w.intermediate.files = Array(100).fill(w.diff.files[0]); },
+    w => { w.diff.files[0].filename = "content/articles.json"; },
+    w => { w.diff.files[0] = { filename: "docs/article.md", status: "renamed", previous_filename: "content/articles.json" }; },
+    // The net diff is docs-only but the branch wrote an article and the merge reverted it.
+    w => { w.intermediate.files[0].filename = "content/articles.json"; },
+    w => { w.intermediate.truncated = true; },
+    w => { w.intermediate = { error: "offline" }; },
+    w => { w.checked.check_runs[0].head_sha = GIT(9); },
+    w => { w.checked.check_runs[0].app.slug = "other-app"; },
+    w => { w.checked.check_runs[0].output.text = JSON.stringify({ checkout_sha: REF, photo_followup: [] }); },
+    w => { w.missing = { check_runs: [] }; },
+    w => { w.main = BASE; }
+  ]) {
+    const w = docsAdvance(); damage(w);
+    const result = await context.readPhotoHandoffs({ ...w, ref: REF, batchSize: 1 });
+    assert.equal(result.status, "unverified", damage.toString());
+    assert.equal(result.may_generate, false);
+    assert.equal(result.selected, undefined);
+    assert(w.calls.length <= 14);
+  }
+  const w = docsAdvance();
+  w.missing = { total_count: 1, check_runs: [{ name: "Photograph completion", head_sha: REF, status: "in_progress" }] };
+  assert.equal((await context.readPhotoHandoffs({ ...w, ref: REF })).status, "unverified");
+  assert.equal(w.calls.length, 1);
+});
+
+test("checks each main advance, including a reverted earlier change, and stops reading at the callback limit", async () => {
+  const w = docsAdvance(), seen = [];
+  let forbidden = false, longChain = false;
+  const fetchRepository = async ({ url }) => {
+    const route = new URL(url).pathname.replace("/repos/" + REPO, "");
+    seen.push(route);
+    const rev = route.match(/^\/commits\/([a-f0-9]{40})\/check-runs$/)?.[1];
+    if (rev === REF || rev === GIT(9) || (rev && longChain)) return w.missing;
+    const cmp = route.match(/^\/compare\/([a-f0-9]{40})~1\.\.\.\1$/)?.[1];
+    if (cmp) {
+      const base = cmp === REF ? GIT(9) : longChain ? GIT(parseInt(cmp, 16) + 1) : BASE;
+      return { ...w.diff, ahead_by: 1, total_commits: 1, base_commit: { sha: base }, merge_base_commit: { sha: base },
+        commits: [{ sha: cmp, parents: [{ sha: base }] }],
+        files: [{ filename: forbidden && cmp === GIT(9) ? "content/articles.json" : "docs/GUIDE.md", status: "modified" }] };
+    }
+    return w.fetchRepository({ url });
+  };
+  const opts = { ...w, ref: REF, batchSize: 1, fetchRepository };
+  assert.equal((await context.readPhotoHandoffs(opts)).check_sha, BASE);
+  forbidden = true;
+  assert.equal((await context.readPhotoHandoffs(opts)).status, "unverified");
+  forbidden = false; longChain = true; seen.length = 0;
+  const normal = await context.read(opts);
+  assert.equal(normal.photo_recovery.status, "lookup_required");
+  assert.equal(normal.empty, false);
+  assert(seen.length <= 14);
+  seen.length = 0;
+  assert.equal((await context.readPhotoHandoffs(opts)).status, "unverified");
+  assert.equal(seen.length, 14);
 });

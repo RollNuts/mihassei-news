@@ -13,6 +13,7 @@ from unittest.mock import patch
 
 from scripts.generated_photos import article_fingerprint
 from scripts import content_operation_health
+from scripts.editorial_mix import report_day
 from scripts.photo_editions import freeze_daily_schedule
 from scripts.photo_issues import MODEL_CHAT_URLS
 from scripts.report_photo_health import collect, main, operation_lines, summary
@@ -34,15 +35,19 @@ class PhotoHealthReportTests(unittest.TestCase):
 
     def test_successful_delivery_keeps_missing_photo_visible_without_failing(self):
         artifact, markdown = self.root / "health.json", self.root / "summary.md"
+        targets = {"served_sha": "a" * 40, "news": ["photo-waiting"], "market": [],
+                   "stories": ["example-post-1"], "photo_issues": []}
         with patch.dict(os.environ, {
             "GITHUB_STEP_SUMMARY": str(markdown), "PHOTO_REVISION_CHECK": "success",
             "PHOTO_ARTICLE_CHECK": "success", "PHOTO_SHARE_CARD_CHECK": "success",
+            "VERIFIED_PUBLIC_TARGETS": json.dumps(targets),
         }), patch("scripts.report_photo_health.subprocess.check_output", return_value="a" * 40), \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(main(["--root", str(self.root), "--output", str(artifact)]), 0)
         report = json.loads(artifact.read_text(encoding="utf-8"))
         self.assertEqual(report["checkout_sha"], "a" * 40)
         self.assertEqual(report["live_checks"]["articles"], "success")
+        self.assertEqual(report["verified_targets"], targets)
         self.assertEqual(report["counts"]["missing"], 2)
         self.assertEqual(report["publication_counts"]["generic_fallback"], 2)
         self.assertEqual(report["photo_followup_counts"], {"pending": 0, "missing": 1, "rejected": 0})
@@ -166,6 +171,29 @@ class ContentOperationObservationTests(unittest.TestCase):
 
     def observe(self):
         return content_operation_health.collect(self.root, now=self.now)
+
+    def test_editorial_guidance_contains_both_full_reports_across_jst_new_year(self):
+        self.now = datetime(2026, 12, 30, 15, tzinfo=timezone.utc)  # December 31 in Japan.
+        rows = [{"slug": f"recent-{n}", "published_at": f"2026-12-30T{n:02d}:00:00+09:00",
+                 "title": f"見出し{n}", "summary": f"要約{n}", "category": "技術"} for n in range(7)]
+        rows.append({"slug": "new-year", "published_at": "2026-12-31T15:00:00+00:00",
+                     "title": "元日の見出し", "summary": "元日の要約", "category": "社会"})
+        self.write("articles.json", rows)
+        reports = self.observe()["news"]["editorial_guidance"]
+        self.assertEqual(reports, {day: report_day(rows, day) for day in ("2026-12-31", "2027-01-01")})
+        self.assertNotIn("元日の見出し", reports["2026-12-31"])
+        self.assertIn("元日の見出し｜元日の要約", reports["2027-01-01"])
+
+    def test_invalid_mix_metadata_keeps_publication_and_stock_observations(self):
+        self.write("articles.json", [{"slug": "bad-lane", "published_at": "2026-11-22T09:30:00+09:00",
+                                      "editorial_lane": ["not a lane"]}])
+        report = self.observe()
+        news = report["news"]
+        self.assertEqual(news["editorial_guidance"], {})
+        self.assertTrue(news["editorial_guidance_error"])
+        self.assertEqual((news["status"], news["today_count"]), ("observed", 1))
+        self.assertEqual(report["photo_editions"]["status"], "observed")
+        self.assertEqual(report["photo_editions"]["stock_status"], "not_observed")
 
     def test_jst_boundaries_actual_instants_and_future_records_are_distinct(self):
         report = self.observe()

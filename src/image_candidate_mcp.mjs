@@ -63,7 +63,7 @@ const PROBE={
 const READ_PNG={
   name:"read_candidate_png",
   title:"Read an original PNG into code",
-  description:"Read one original PNG up to 8 MiB without converting, saving, generating or approving it. Call inside code mode and capture structuredContent.image_url directly for the existing native image helper. Never print or forward the image data URL/base64 into conversation text. Text content contains only a short metadata summary; original bytes remain in structuredContent.",
+  description:"Read one original PNG up to 8 MiB without converting, saving, generating or approving it. In code mode, return the whole tool response from the native stager’s readBytes callback. It verifies the PNG in structuredContent.image_url against the receiver metadata. Keep the data URL/base64 out of conversation text. Text content contains only a short metadata summary.",
   inputSchema:{type:"object",properties:{file:fileSchema},required:["file"],additionalProperties:false},
   outputSchema:pngOutputSchema({file_id_sha256:{type:"string",pattern:SHA.source}}),
   annotations:{readOnlyHint:true,destructiveHint:false,openWorldHint:false},

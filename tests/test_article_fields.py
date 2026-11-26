@@ -24,6 +24,19 @@ class ArticleFieldTests(unittest.TestCase):
                 self.assertFalse(build.matches_fictional_dateline(before + ".418+09:00", wrong))
         self.assertFalse(build.matches_fictional_dateline(before + ".418001+09:00", after + ".418+09:00"))
 
+    def test_fictional_utc_dateline_accepts_z_without_changing_the_offset_or_instant(self):
+        source = "2026-11-25T11:03:29.053Z"
+        future = "2031-11-25T11:03:29.053"
+        for display in [future + "Z", future + "+00:00"]:
+            self.assertTrue(build.matches_fictional_dateline(source, display))
+        self.assertTrue(build.matches_fictional_dateline(source[:-1] + "+00:00", future + "Z"))
+        for wrong in ["2031-11-25T20:03:29.053+09:00", "2031-11-25T11:03:30.053Z",
+                      "2031-11-25T11:03:29.054Z", "2030-11-25T11:03:29.053Z"]:
+            with self.subTest(wrong=wrong):
+                self.assertFalse(build.matches_fictional_dateline(source, wrong))
+        with self.assertRaises(ValueError):
+            build.matches_fictional_dateline("2028-02-29T09:00:00Z", "2033-03-01T09:00:00Z")
+
     def test_missing_fiction_company_is_reported_by_load_before_rendering(self):
         articles = json.loads((build.BASE / "content/articles.json").read_text(encoding="utf-8"))
         slug = articles[0]["slug"]
