@@ -105,6 +105,21 @@
         "cut_id": "02",
         "image_sha256": "8e3519bd6f4d4fd27564fa4a43f67521f346cdfde398a0ddd064474449ced7a5"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261126091600012000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-26T09:16:00.012+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "通勤の電車で小説を一章だけ読むつもりが、続きが気になって駅のベンチでもう一章。今日は少し早めに家を出て正解でした。",
+      "source": {
+        "issue_slug": "november-coast-city-rio-015",
+        "cut_id": "07",
+        "image_sha256": "527e7bb2c55ef19c09a700c53a834cd7d5dbdc54e222722fb2dbe6d4750dedee"
+      }
     }
   ]
 }
