@@ -22,12 +22,30 @@ ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 
 
+def excludes_google_index(values, *, http_header=False):
+    """Honor all general and Googlebot directives, preserving each header's agent scope."""
+    parameterized = {"max-snippet", "max-image-preview", "max-video-preview", "unavailable_after"}
+    for value in values:
+        agent = None
+        for directive in value.lower().split(","):
+            rule, colon, argument = directive.strip().partition(":")
+            if colon:
+                if not http_header or rule.strip() in parameterized:
+                    continue
+                agent, rule = rule.strip(), argument.strip()
+            if agent in (None, "*", "googlebot") and ":" not in rule:
+                if {"noindex", "none"}.intersection(rule.split()):
+                    return True
+    return False
+
+
 class Page(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.titles: list[str] = []
         self.meta: dict[str, str] = {}
         self.canonicals: list[str] = []
+        self.index_directives: list[str] = []
         self.links: list[str] = []
         self.ids: set[str] = set()
         self.schemas: list[dict] = []
@@ -41,10 +59,12 @@ class Page(HTMLParser):
         if tag == "title":
             self._title_parts = []
         elif tag == "meta":
+            if (values.get("name") or "").strip().lower() in ("robots", "googlebot"):
+                self.index_directives.append(values.get("content") or "")
             key = values.get("name") or values.get("property")
             if key:
                 self.meta[key.lower()] = values.get("content", "")
-        elif tag == "link" and values.get("rel", "").lower() == "canonical":
+        elif tag == "link" and "canonical" in (values.get("rel") or "").lower().split():
             self.canonicals.append(values.get("href", ""))
         elif tag == "a" and values.get("href"):
             self.links.append(values["href"])
@@ -270,7 +290,7 @@ def audit(dist: Path = DIST) -> dict:
         pages[path] = page
         if page.canonicals != [url]:
             errors.append("Missing, wrong or repeated canonical: " + path)
-        if "noindex" in page.meta.get("robots", "").lower():
+        if excludes_google_index(page.index_directives):
             errors.append("An indexed sitemap URL carries noindex: " + path)
         if len(page.titles) != 1 or not page.titles[0]:
             errors.append("Missing or repeated HTML <title>: " + path)

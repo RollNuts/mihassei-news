@@ -27,6 +27,7 @@ from urllib.robotparser import RobotFileParser
 from xml.etree import ElementTree as ET
 
 if __package__:
+    from .audit_search_index import Page, excludes_google_index
     from .media_policy import jpeg_dimensions
     from .generated_photos import generated_url, generated_scene_entry
     from .social_cards import reviewed_scene_png
@@ -50,6 +51,7 @@ if __package__:
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
     )
 else:
+    from audit_search_index import Page, excludes_google_index
     from media_policy import jpeg_dimensions
     from generated_photos import generated_url, generated_scene_entry
     from social_cards import reviewed_scene_png
@@ -81,12 +83,36 @@ HEADERS={
     "Accept":"text/html,image/jpeg,application/xml,*/*",
 }
 
-def get(path):
-    req=urllib.request.Request(SITE+path,headers=HEADERS)
-    with urllib.request.urlopen(req,timeout=17) as response:
-        if response.status!=200:
-            raise RuntimeError("HTTP "+str(response.status)+" at "+path)
-        return response.read(4*1024*1024),response.headers.get("Content-Type","")
+class _DirectResponse(urllib.request.HTTPErrorProcessor):
+    """Return the origin response so a 3xx cannot pass as the target's HTTP 200."""
+    def http_response(self, request, response):
+        return response
+
+    https_response = http_response
+
+
+_direct_opener = urllib.request.build_opener(_DirectResponse())
+
+
+def get(path, *, indexable=False):
+    url = SITE + path
+    req = urllib.request.Request(url, headers=HEADERS)
+    opener = _direct_opener.open if indexable else urllib.request.urlopen
+    with opener(req, timeout=17) as response:
+        if response.status != 200:
+            raise RuntimeError(f"HTTP {response.status} at {path}")
+        data, mime = response.read(4*1024*1024), response.headers.get("Content-Type", "")
+        if indexable:
+            if response.geturl() != url or mime.split(";", 1)[0].strip().lower() != "text/html":
+                raise RuntimeError("Expected canonical HTML at " + path)
+            if excludes_google_index(response.headers.get_all("X-Robots-Tag", []), http_header=True):
+                raise RuntimeError("X-Robots-Tag excludes indexed URL: " + path)
+            page = Page()
+            page.feed(data.decode("utf-8"))
+            page.close()
+            if excludes_google_index(page.index_directives) or page.canonicals != [url]:
+                raise RuntimeError("Robots meta or canonical excludes indexed URL: " + path)
+        return data, mime
 
 
 def verify_adsense_markup(markup, *, loader_expected):
@@ -773,11 +799,11 @@ def verify_latest_photo_issue_delivery(issues, *, fetch=None):
         return 0
     issue = issues[0]
     path = issue_url(issue)
-    fetch = fetch or get
     try:
-        page, mime = fetch(path)
+        page, mime = fetch(path) if fetch is not None else get(path, indexable=True)
     except (urllib.error.URLError, TimeoutError) as exc:
         raise RuntimeError(path + ": photo feature is unreachable") from exc
+    fetch = fetch or get
     if mime.split(";", 1)[0].strip().lower() != "text/html":
         raise RuntimeError(path + ": photo feature is not served as HTML")
     markup = _RecommendationMarkup()
@@ -860,10 +886,10 @@ def verify_latest_market_bulletin_delivery(reports, *, fetch=None):
     """
     if not reports:
         return 0
-    fetch = fetch or get
     report = reports[-1]
     path = bulletin_url(report)
-    page_bytes, content_type = fetch(path)
+    page_bytes, content_type = fetch(path) if fetch is not None else get(path, indexable=True)
+    fetch = fetch or get
     if content_type.split(";", 1)[0].strip().lower() != "text/html":
         raise RuntimeError(path + ": market dispatch is not served as HTML")
     page = page_bytes.decode("utf-8")
@@ -1119,7 +1145,7 @@ def check():
     articles=json.loads((ROOT/"content/articles.json").read_text(encoding="utf-8"))
     sorted_articles=latest_articles(articles, limit=None)
     recent=sorted_articles[:10]
-    home,mime=get("/")
+    home,mime=get("/", indexable=True)
     verify_site_icons(home.decode("utf-8"))
     body=html.unescape(home.decode("utf-8"))
     for token in ("未発生新聞","data-edition-status","data-issue-picker","data-pick-issue","fiction-mark"):
@@ -1189,7 +1215,7 @@ def check():
     serials=public_serials(json.loads((ROOT/"content/serials.json").read_text(encoding="utf-8")))
     if 'class="serials-feature"' not in body or 'href="/serials/market-lab/"' not in body:
         raise RuntimeError("New serials not discoverable on published homepage")
-    serial_hub, serial_type=get("/serials/")
+    serial_hub, serial_type=get("/serials/", indexable=True)
     serial_index=serial_hub.decode("utf-8")
     if "text/html" not in serial_type:
         raise RuntimeError("Live serial index was not deployed")
@@ -1197,7 +1223,8 @@ def check():
         '"@type": "ItemList"' not in serial_index or
         '"@type": "BreadcrumbList"' not in serial_index):
         raise RuntimeError("Serial index lacks clear non-fiction/fiction SEO labels")
-    live_sitemap=get("/sitemap.xml")[0].decode("utf-8")
+    sitemap,_=get("/sitemap.xml")
+    live_sitemap=sitemap.decode("utf-8")
     if SITE+"/saved/" in live_sitemap:
         raise RuntimeError("Private saved list should not be indexed")
     if "https://veripsa.com/serials/" not in live_sitemap:
@@ -1206,7 +1233,7 @@ def check():
         prefix="/serials/"+serial["slug"]+"/"
         if 'href="'+prefix+'"' not in serial_index:
             raise RuntimeError("Serial missing from landing page: "+serial["slug"])
-        series_markup,series_type=get(prefix)
+        series_markup,series_type=get(prefix, indexable=True)
         if "text/html" not in series_type or serial["title"] not in series_markup.decode("utf-8"):
             raise RuntimeError("Series detail page missing: "+prefix)
         if ('"@type": "ItemList"' not in series_markup.decode("utf-8") or
@@ -1248,7 +1275,7 @@ def check():
         for ep in serial["episodes"]:
             path=prefix+ep["slug"]+"/"
             url=SITE+path
-            article,article_type=get(path)
+            article,article_type=get(path, indexable=True)
             page=article.decode("utf-8")
             if "text/html" not in article_type or expected_kind not in page:
                 raise RuntimeError("Serial chapter missing or type mislabeled: "+path)
@@ -1363,11 +1390,11 @@ def check():
     if ('href="/feed.xml">' not in body or
         '<link rel="alternate" type="application/rss+xml" title="未発生新聞 RSS" href="/feed.xml">' not in body):
         raise RuntimeError("Footer and metadata RSS links are missing from production")
-    editorial, editorial_mime = get("/editorial/")
+    editorial, editorial_mime = get("/editorial/", indexable=True)
     editorial_html = html.unescape(editorial.decode("utf-8"))
     if "text/html" not in editorial_mime or any(x not in editorial_html for x in ("生成AI", "広告・アフィリエイト", "創作")):
         raise RuntimeError("Editorial transparency page is not yet fully deployed")
-    commercial, commercial_mime = get("/advertise/")
+    commercial, commercial_mime = get("/advertise/", indexable=True)
     commercial_html = html.unescape(commercial.decode("utf-8"))
     if "text/html" not in commercial_mime or any(x not in commercial_html for x in (
         "広告・協賛のご案内", "公開", "PR", "GitHub",
@@ -1391,7 +1418,7 @@ def check():
 
     # Check the growth path against the live deployment, not just the local
     # generator. All archived article links must remain accessible without JS.
-    archive, archive_mime = get("/archive/")
+    archive, archive_mime = get("/archive/", indexable=True)
     archive_html = archive.decode("utf-8")
     verify_adsense_markup(archive_html, loader_expected=False)
     for required in ('id="archive-results"', 'data-archive-more hidden',
@@ -1417,7 +1444,6 @@ def check():
     if len(issue_items) != min(len(articles),40):
         raise RuntimeError("Live edition picker should include latest 40 at most")
 
-    sitemap,mime=get("/sitemap.xml")
     root=ET.fromstring(sitemap)
     ns={"s":"http://www.sitemaps.org/schemas/sitemap/0.9"}
     siteurls={url.findtext("s:loc",namespaces=ns) for url in root.findall("s:url",ns)}
@@ -1438,7 +1464,7 @@ def check():
     substantial={day: [a for a in articles
                        if (a.get("published_at") or a["source"]["published_at"])[:10]==day]
                  for day,count in issue_days.items() if count>=3}
-    index_data, index_mime = get("/issues/")
+    index_data, index_mime = get("/issues/", indexable=True)
     index_markup=index_data.decode("utf-8")
     if ("text/html" not in index_mime or 'class="issue-index-list"' not in index_markup or
         '<link rel="canonical" href="'+SITE+'/issues/"' not in index_markup):
@@ -1452,7 +1478,7 @@ def check():
         if 'href="/issues/'+day+'/"' not in index_markup:
             raise RuntimeError("Daily issue not linked from archive: "+day)
     for day in sorted(substantial,reverse=True)[:3]:
-        page, page_mime=get("/issues/"+day+"/")
+        page, page_mime=get("/issues/"+day+"/", indexable=True)
         markup=page.decode("utf-8")
         if "text/html" not in page_mime or 'datetime="'+day+'"' not in markup:
             raise RuntimeError("Real publication date missing from issue page: "+day)
@@ -1497,7 +1523,7 @@ def check():
     checked_diagrams=0
     for item in recent:
         slug=item["slug"]
-        data,mime=get("/articles/"+slug+"/")
+        data,mime=get("/articles/"+slug+"/", indexable=True)
         raw_page=data.decode("utf-8")
         page=html.unescape(raw_page)
         verify_adsense_markup(page, loader_expected=True)
