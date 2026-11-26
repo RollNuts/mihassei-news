@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/5142f230244981c9bb3e95373d4b0dc8b3c30e18504a2f473f5517c3df8ac9e1",
+  "receipt_path": "maintenance/native-image-generation-claims/5142f230244981c9bb3e95373d4b0dc8b3c30e18504a2f473f5517c3df8ac9e1.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "5142f230244981c9bb3e95373d4b0dc8b3c30e18504a2f473f5517c3df8ac9e1",
+  "slug": "cheer-dance-four-sided-final-no-front",
+  "article_sha256": "c94884aa6566ad7f74757590e63ec36e6e5ce4ddac8396e6a1d5d68fc55d496a",
+  "logical_run_id": "news-photo-v1:c94884aa6566ad7f74757590e63ec36e6e5ce4ddac8396e6a1d5d68fc55d496a",
+  "prompt_sha256": "f99a3c9f3b4db79077cd201daf214988460fb840ce446993bb11640b28f10185",
+  "reserved_at": "2026-11-26T11:11:22.806Z",
+  "baseline": {
+    "commit_sha": "4784850c311993d5daf7950471cec40938a3f9f6",
+    "tree_sha": "a057d89546594a681f3a1dd68f1a7bcc977c700d",
+    "protected_hashes": {
+      "content/articles.json": "d97dc83372e6154a963b74b2a6bac5369a1c454700b5e3af190c0c48c6ce233c",
+      "assets/generated/manifest.json": "7d4642a97b04c160d471ede99e445fecc9b6983add0abda52c2a7d82becf523e",
+      "content/visual_reviews.json": "0382b449cc3172e02c8af3237a8a3da9c62ff9f90f182504a3907302de93f197"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-generation-claim/5142f230244981c9bb3e95373d4b0dc8b3c30e18504a2f473f5517c3df8ac9e1",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "f1db5f53c4e3b070c60d6efd369b6f104a0b5a617cc8ee3b8bcb7e86a906c1cf",
+    "observed_at": "2026-11-26T11:10:31.654Z",
+    "route": "read_candidate_png through the original file adapter",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "6db721a76d74ca4246f88bbc087e2d91519b8aa8"
+  }
+}
