@@ -119,3 +119,5 @@
 
 - **公開後reviewer画像引継ぎ（11/24夕刊）:** `used-battery-recall-follows-new-owner`／記事SHA `3183643270fb7b911afea0be2f72e4a2d12bcf6f0f23c5d868a3828e4030fdbd`。独立初読合格・本文改稿0。Native試験PNG/JPEG往復確認済み、予約最終応答の正常取得は未確認（catch記録 `{}`、message/stage不明）、生成0・原PNG/JPEGなし。claim `native-image-generation-claim/834e1821a9e388a82ce90e4a4616c842949cace7b42d5336e4983fec8a640267` @ `8b1e3cdb74d26ba1d3699e31e779f1a034268829` は保持し、再予約・生成しない。
 - **同記事の代替:** 未接続バッテリー・外したケーブル・回収通知を読む持ち主の専用SVGと共有PNG（CairoSVG 2.7.1、PNG SHA `a5a27038f8f58b90a1034b616b17310b790d41bbf5e42e72b25123eb65a6fa05`）を実表示・本文照合済み。同PR #1014で公開へ。元plan/checkpointはPR本文。次担当は同reviewer task `6afd025e80a08190b93269882fc89609`、同claim/候補の読取回収のみ。原本不在なら専用SVGを維持。
+
+- **画像回収（11/26・元PR #1031）:** `unknown-alloy-pump-wear-ring-field-test`／記事SHA `edcd77e86524ebafb903977acfc3c20064b1d038954c115e3b57f541ba9be68a`。元planの予約を確定しNative 1回、原PNG `3cd57fec925548a803df842adc69fe82885aade96ccdb600b631c7c148bf78be` とJPEG `deb71c57f70287ae86aac0b0b6ffa06f54494cdeb64541a2ab48e159ce1ef5c6` を候補固定commit `313e2c2cb4110cbe28387e72ddba2b8e6bb3d44d` で全読戻し・実表示照合。新合金の輪を手に開いた海水ポンプの横で比較する技術者と従来輪、肌・軍手・金属・自然光を確認し採用。元SVGと来歴を保持し同写真差分の通常PRで公開、CI・本番と共有画像は未確認。次担当は既存画像回収。
