@@ -6047,5 +6047,142 @@
         "checked_on": "2026-11-26"
       }
     ]
+  },
+  {
+    "slug": "2026-11-26-noon",
+    "day": "2026-11-26",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-26T12:41:31+09:00",
+    "title": "日経平均、後場序盤は1.43%高に縮小　グロース250は1.94%高",
+    "summary": "26日12時33分の日経平均は57,825.73円と前日比1.43%高。朝より上げ幅が縮小した一方、JPXの12時40分更新ではグロース250指数が1.94%高、東証REIT指数は0.38%安だった。",
+    "lead": "26日後場序盤の東京株式市場で、日経平均は12時33分時点に57,825.73円となり、25日終値比814.11円（1.43%）上昇しました。朝の1.80%高から上げ幅は縮小しましたが、JPXの12時40分更新では東証グロース市場250指数が1.94%高となり、主力株だけでなく新興株にも上昇が見られます。",
+    "sections": [
+      {
+        "heading": "日経平均と半導体株指数は朝より上げ幅縮小",
+        "paragraphs": [
+          "日経半導体株指数は12時33分に16,006.28ポイント（25日終値比4.79%高）。朝9時30分の6.12%高から上げ幅が1.33ポイント縮小しました。日経平均も朝9時31分の58,036.42円から210.69円下がりましたが、いずれも前日終値は上回っています。",
+          "JPXの12時40分更新ではTOPIXは3,769.13ポイント、25日終値3,746.20ポイントから22.93ポイント（0.61%）上昇しました。朝9時36分の0.77%高から上げ幅が小さくなっています。"
+        ]
+      },
+      {
+        "heading": "新興株指数は上昇、REIT指数は下落",
+        "paragraphs": [
+          "同じ12時40分更新で東証グロース市場250指数は653.02ポイント（1.94%高）、JPXスタートアップ急成長100指数は1,036.63ポイント（2.57%高）でした。一方、東証REIT指数は1,675.31ポイント（0.38%安）。グロース250とREITの前日比の差は2.32ポイントです。",
+          "グロース250は成長企業が上場する市場の一部を対象とし、REITは不動産投資信託の値動きを示します。TOPIXの上昇と同時に新興株指数がより大きく上昇する一方、不動産投資信託の指数は下落しており、すべての資産に買いが広がったわけではありません。"
+        ]
+      },
+      {
+        "heading": "米国市場は26日休場",
+        "paragraphs": [
+          "日本は26日が通常取引日ですが、NYSEは現地26日が感謝祭で休場し、27日は東部時間13時（日本時間28日3時）に短縮終了します。ここで扱う日本の指数はすべて25日終値との比較であり、26日の引け値ではありません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov26-noon",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "26日12時33分の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-26T12:33:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": 1.43,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": 4.79,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth-reit-nov26-noon",
+        "kind": "bars",
+        "title": "グロース250と東証REITの騰落率",
+        "note": "JPX26日12時40分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T12:40:00+09:00",
+        "values": [
+          {
+            "label": "グロース250",
+            "value": 1.94,
+            "state": "実績"
+          },
+          {
+            "label": "東証REIT",
+            "value": -0.38,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-startup-nov26-noon",
+        "kind": "bars",
+        "title": "TOPIXとスタートアップ急成長100",
+        "note": "JPX26日12時40分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T12:40:00+09:00",
+        "values": [
+          {
+            "label": "TOPIX",
+            "value": 0.61,
+            "state": "実績"
+          },
+          {
+            "label": "急成長100",
+            "value": 2.57,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：26日12時33分公表値",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：現物指数26日12時40分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：2026年休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "NYSE：2026年休場日・取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "26日寄り後の既刊：朝の観測値",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-26-open/",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      }
+    ]
   }
 ]
