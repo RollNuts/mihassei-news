@@ -11,10 +11,12 @@ import json
 from pathlib import Path
 
 try:
+    from .editorial_mix import report_day
     from .market_bulletins import SLOTS as MARKET_SLOTS
     from .photo_editions import load_photo_editions
     from .photo_stories import read_story_document
 except ImportError:
+    from editorial_mix import report_day
     from market_bulletins import SLOTS as MARKET_SLOTS
     from photo_editions import load_photo_editions
     from photo_stories import read_story_document
@@ -70,7 +72,8 @@ def _timeline(rows, identity, now):
 def _news(root, now):
     rows = _read(root, "content/articles.json")
     result = _timeline(rows, "slug", now)
-    yesterday = now.astimezone(JST).date() - timedelta(days=1)
+    today = now.astimezone(JST).date()
+    yesterday = today - timedelta(days=1)
     slots, carryovers, unattributed = [], [], []
     for row in rows:
         published = _stamp(row["published_at"]).astimezone(JST)
@@ -91,6 +94,13 @@ def _news(root, now):
                                     "original": sorted(slots, key=lambda row: row["slot_jst"]),
                                     "published_from_other_dates": carryovers,
                                     "published_without_slot": unattributed}
+    # Advice from this checkout; the publication workflow still validates proposed articles.
+    try:
+        days = (today.isoformat(), (today + timedelta(days=1)).isoformat())
+        result["editorial_guidance"] = {day: report_day(rows, day) for day in days}
+    except (ValueError, TypeError, KeyError, AttributeError, OverflowError) as exc:
+        result["editorial_guidance"] = {}
+        result["editorial_guidance_error"] = str(exc)
     return result
 
 
