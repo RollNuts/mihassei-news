@@ -54,6 +54,19 @@ class InternalLinkTests(unittest.TestCase):
             self.assertTrue(any("Unsafe internal link" in err and "secret" in err
                                 for err in errors))
 
+    def test_indexed_links_point_directly_to_the_canonical_page(self):
+        with tempfile.TemporaryDirectory() as temp:
+            dist = Path(temp)
+            (dist / "archive").mkdir()
+            (dist / "archive/index.html").touch()
+            page = Page()
+            page.links = ["/archive", "/archive/index.html", "http://veripsa.com/archive/", "/archive/?q=news"]
+            errors, checked = check_internal_links(dist, {"/archive/": page})
+            self.assertEqual(checked, 4)
+            self.assertEqual(len(errors), 3)
+            for link in page.links[:3]:
+                self.assertIn(f"Non-canonical internal link: /archive/ -> {link} (use https://veripsa.com/archive/)", errors)
+
     def test_error_messages_mention_origin_for_debugging(self):
         with tempfile.TemporaryDirectory() as temp:
             dist = Path(temp)

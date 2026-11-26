@@ -100,6 +100,7 @@ def check_internal_links(dist: Path, pages: dict[str, Page]) -> tuple[list[str],
     errors: list[str] = []
     checked = 0
     root = dist.resolve()
+    indexed_files = {local_page(root, path): path for path in pages}
     id_cache: dict[Path, set[str]] = {}
 
     for source_path, page in pages.items():
@@ -125,11 +126,14 @@ def check_internal_links(dist: Path, pages: dict[str, Page]) -> tuple[list[str],
             if not resolved.is_file():
                 errors.append("Broken internal link: " + source_path + " -> " + href)
                 continue
+            canonical_path = indexed_files.get(resolved)
+            if canonical_path and (url_path != unquote(canonical_path) or target_url.scheme != "https"):
+                errors.append(f"Non-canonical internal link: {source_path} -> {href} (use {SITE}{canonical_path})")
             if target_url.fragment and resolved.suffix == ".html":
                 if resolved not in id_cache:
                     # Reuse parsed sitemap pages, avoid repeatedly reading HTML.
-                    if url_path in pages:
-                        id_cache[resolved] = pages[url_path].ids
+                    if canonical_path:
+                        id_cache[resolved] = pages[canonical_path].ids
                     else:
                         target_page = Page()
                         target_page.feed(resolved.read_text(encoding="utf-8"))
