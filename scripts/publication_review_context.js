@@ -438,20 +438,29 @@ var PublicationReviewContext = (function () {
         const hits = await get("https://api.github.com/search/issues?q=" + encodeURIComponent(query) + "&per_page=2");
         require(hits.incomplete_results === false && Number.isSafeInteger(hits.total_count)
           && hits.total_count >= 0 && Array.isArray(hits.items) && hits.items.length === Math.min(2, hits.total_count), "Incomplete handoff search");
-        if (hits.total_count === 0) continue;
-        if (hits.total_count > 1) { attention.push({ slug: row.slug, reason: "ambiguous_source_pr" }); continue; }
+        const source = { slug: row.slug, article_sha256: row.article_sha256, status: row.status };
+        if (hits.total_count !== 1) {
+          attention.push({ ...source, reason: hits.total_count ? "ambiguous_source_pr" : "source_pr_not_found" });
+          continue;
+        }
         const number = hits.items[0].number;
         require(Number.isSafeInteger(number) && number > 0, "Invalid handoff PR number");
         const pr = await get(API + "/pulls/" + number);
         if (pr.number !== number || pr.state !== "closed" || pr.merged !== true
             || pr.base?.ref !== "main" || pr.base.repo?.full_name !== REPOSITORY
             || pr.head?.repo?.full_name !== REPOSITORY || !matches(GIT, pr.head.sha)
-            || !["OWNER", "MEMBER", "COLLABORATOR"].includes(pr.author_association)
-            || !/^<!-- photo-recovery(?::[1-9][0-9]*)? -->\r?$/m.test(pr.body || "")
-            || handoff(pr, ["news"]) !== "current_head_claim") continue;
-        const approval = JSON.parse(pr.body.match(/<!-- publication-finalize\s*\n([\s\S]*?)\n-->/)[1]);
-        if (approval.article_sha256[row.slug] === row.article_sha256)
-          selected.push({ slug: row.slug, article_sha256: row.article_sha256, status: row.status, pr: number, head: pr.head.sha });
+            || !["OWNER", "MEMBER", "COLLABORATOR"].includes(pr.author_association)) {
+          attention.push({ ...source, pr: number, reason: "source_pr_mismatch" });
+        } else if (!/^<!-- photo-recovery(?::[1-9][0-9]*)? -->\r?$/m.test(pr.body || "")) {
+          attention.push({ ...source, pr: number, reason: "source_recovery_marker_missing" });
+        } else if (handoff(pr, ["news"]) !== "current_head_claim") {
+          attention.push({ ...source, pr: number, reason: "source_approval_not_current" });
+        } else {
+          const approval = JSON.parse(pr.body.match(/<!-- publication-finalize\s*\n([\s\S]*?)\n-->/)[1]);
+          if (approval.article_sha256[row.slug] === row.article_sha256)
+            selected.push({ ...source, pr: number, head: pr.head.sha });
+          else attention.push({ ...source, pr: number, reason: "source_article_sha_mismatch" });
+        }
       }
       if (selected.length) {
         const listOpen = async () => {
