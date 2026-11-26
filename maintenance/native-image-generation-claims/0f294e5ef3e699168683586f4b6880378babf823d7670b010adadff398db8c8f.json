@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f",
+  "receipt_path": "maintenance/native-image-generation-claims/0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f",
+  "slug": "unknown-alloy-pump-wear-ring-field-test",
+  "article_sha256": "edcd77e86524ebafb903977acfc3c20064b1d038954c115e3b57f541ba9be68a",
+  "logical_run_id": "news-photo-v1:edcd77e86524ebafb903977acfc3c20064b1d038954c115e3b57f541ba9be68a",
+  "prompt_sha256": "44272a613950bb6b16dc22e0b520079407737852b5ffcad8daa844448abf9c42",
+  "reserved_at": "2026-11-26T00:05:51.060Z",
+  "baseline": {
+    "commit_sha": "af112736a3d6acb6ad05f0f1a8fd3fd921808445",
+    "tree_sha": "fb5335b0570dadcceb5a632a23ff955bf987c28a",
+    "protected_hashes": {
+      "content/articles.json": "4793036d0123a9d53a5e5d4770c378f9892468989e03647aa470736f8b1f7590",
+      "assets/generated/manifest.json": "cedbaa0eec0ee4f30bd605bb45573c395cd3d04523acb3a3477e3ac8fe1399c9",
+      "content/visual_reviews.json": "6588ec0f25193526bde25f9879e557aa20b15c57a60d33f325e65482bb9c26b5"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-generation-claim/0f294e5ef3e699168683586f4b6880378babf823d7670b010adadff398db8c8f",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "dc8277d421975791d80d170be547366eab6f644e4c55a7dafb755332b5f1926f",
+    "observed_at": "2026-11-25T23:17:21.900Z",
+    "route": "read_candidate_png through the original file adapter",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "cfedb0e7d77fd13c9570122751b27fc4045b3e30"
+  }
+}
