@@ -87,6 +87,17 @@
 
 - 市況の担当はJSTの日付と枠（例 `2026-11-18-close`）で照合する。前枠をreviewerへ引き継いだ作者は、自枠の既刊・PR・別の進行中作者・明示見送りを確認し、該当がなく新材料があれば自枠1本を進める。共有台帳は最新mainに自枠の新規行だけを追記する。公開後レビュー担当は前枠を片付けた時点で、すでに時刻が来た当日の引け枠を一度照合する。既存PRはその担当へ、未着手なら既存の市況作者へ当日分を一度引き継ぎ、独立初読はレビュー担当が受け持つ。
 - PR保存前に、新規市況の `published_at` と価格等の `observed_at` は、それぞれの実時点を `YYYY-MM-DDTHH:mm:ss+09:00` にそろえる。CodeModeでは各時点のUnixミリ秒を `const jstSeconds = ms => new Date(ms + 9 * 3600000).toISOString().slice(0, 19) + "+09:00"` で変換できる。観測時刻は出典に合わせ、追加する行だけに適用する。
+- 保存前に新規行の図を確認する。checkoutでは追記後の台帳を `python3 -c "from scripts.market_bulletins import load_market_bulletins; load_market_bulletins('.')"` で検証する。CodeModeで直接入稿する場合は、書込みと同じ呼出しで新規行 `row` に次を実行する。3つ以上の指標を伝えるときは図題に合う2値を選び、残りは本文で扱う。
+
+  ```js
+  if (!Array.isArray(row.figures) || ![2, 3].includes(row.figures.length))
+    throw Error(row.slug + ": expected 2 or 3 figures");
+  for (const figure of row.figures) {
+    const count = Array.isArray(figure.values) ? figure.values.length : "non-array";
+    if (count !== 2) throw Error(row.slug + "/" + figure.id + ": expected 2 values, got " + count);
+  }
+  ```
+
 - 市況には実際のJST公開日時と取引所現地の日付を使う。時刻・枠数は[OPERATIONSの担当表](OPERATIONS.md#担当と正本)を参照する。休場日は他市場の直近取引日・企業開示を確認し、その枠で伝える新材料がなければ見送る。
 - JPXの[リアルタイム株価指数値一覧](https://www.jpx.co.jp/markets/indices/realvalues/index.html)で表が空の場合は、同HTMLが指定する公開ファイル `/market/indices/indices_stock_price3.time.txt` → `/market/indices/indices_stock_price3.txt` → 同日時ファイルの順で読む。前後の更新日時が一致し、記事で扱う市場日付とTOPIX（`qcode=151`）が合うことを確認する。取引終了前の値は途中値とし、最新日の値を過去日の終値に流用しない。ファイル更新日時・観測日時・取得確認日時・記事の実公開日時は分けて残す。
 - 日次の図表は観測日・更新時刻・出典を添え、速報値・途中値・休場による前営業日の値は該当する数字の横で示す。一覧、個別記事、連載RSS・市況RSSのリンクとモバイル表示を確認する。

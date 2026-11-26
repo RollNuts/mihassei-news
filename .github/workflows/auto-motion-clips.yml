@@ -220,7 +220,7 @@ jobs:
               echo "Clip-only commit pushed safely. Dispatching exact public release verification."
               # GitHub-token pushes do not launch ordinary push workflows.
               # workflow_dispatch explicitly DOES launch the existing verifier.
-              gh workflow run verify-public-photos.yml --ref main
+              gh workflow run verify-public-photos.yml --ref main -f expected_sha="$(git rev-parse HEAD)"
               exit 0
             fi
             echo "Main advanced; re-read all approved image + clip hashes and retry."

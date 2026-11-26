@@ -105,6 +105,21 @@
         "cut_id": "04",
         "image_sha256": "8ea71ddcffffb899154e2360932a1de78f747159d0403330c5254837cf0f3108"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261126154238492",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-26T15:42:38.492+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "午後の発声練習、乾燥で喉が気になって加湿器をつけた。湯気を眺めてたら出だしを忘れちゃって、みんなに笑われた😂",
+      "source": {
+        "issue_slug": "november-hikari-city-and-pool-013",
+        "cut_id": "05",
+        "image_sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8"
+      }
     }
   ]
 }

@@ -235,6 +235,12 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         if (args.url === root + "/git/trees/" + cloud.commit.tree.sha + "?recursive=1") return cloudResult("tree");
         const commitSha=args.url.split("/git/commits/")[1], commit=commits.get(commitSha);
         if(commit)return ok({content:JSON.stringify({sha:commitSha,tree:{sha:commit.tree},parents:[{sha:commit.parent}]})});
+        const matchPrefix = args.url.split("?")[0].split("/git/matching-refs/heads/")[1];
+        if (matchPrefix) {
+          const refs = Array.from(branches).filter(([name]) => name.startsWith(matchPrefix))
+            .map(([name, sha]) => ({ref:"refs/heads/"+name,object:{type:"commit",sha}}));
+          return ok({content: JSON.stringify(refs)});
+        }
         const branch = args.url.split("?")[0].split("/git/ref/heads/")[1];
         let sha = branch === "main" ? cloud.mainSha : branches.get(branch);
         if (branch === "main" && cloud.error === "main") return apiError("SERVICE_UNAVAILABLE", "Injected main lookup failure");
@@ -1393,9 +1399,16 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       context.stepCounters.reads++;context.refsRead.push(reference);
       demand(reference === context.probeRef || reference === context.originalRef,
         "compact reads must use the actual provided original/probe reference");
-      return {image_url: "data:image/png;base64," + runtime.toBase64(
-        reference === context.probeRef ? pngBytes : context.originalBytes)};
+      const bytes = reference === context.probeRef ? pngBytes : context.originalBytes;
+      if (context.readerReply) return context.readerReply(bytes, reference);
+      return {image_url: "data:image/png;base64," + runtime.toBase64(bytes)};
     }};
+  }
+  function receiverReply(bytes, reference) {
+    const metadata = {status:"read", mime_type:"image/png", width:32, height:32,
+      bytes:bytes.length, sha256:runtime.sha256(bytes), file_id_sha256:runtime.sha256(reference)};
+    return {content:[{type:"text", text:JSON.stringify(metadata)}], isError:false,
+      structuredContent:{...metadata, image_url:"data:image/png;base64," + runtime.toBase64(bytes)}};
   }
   function compactReservationOptions(context) {
     return {compact: true, probeSource: context.probeRef, probeSourceRef: context.probeRef,
@@ -1507,9 +1520,15 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     assert(false, "compact operation finishes within 256 explicit invocations");
   }
   const compact = await compactContext("compact-four-MiB");
+  // The file adapter returns the MCP tool result to code mode. A transport
+  // reading JSON-RPC directly sees the same result nested under 'result'.
+  compact.readerReply = (bytes, reference) => reference === compact.probeRef ? receiverReply(bytes, reference) :
+    {jsonrpc:"2.0", id:1, result:receiverReply(bytes, reference)};
   const namedClaim=claimBranchPrefix+compact.plan.identity;
   const normalContents=compact.mock.github.fetch_file;
   compact.mock.github.fetch_file=async args=>{
+    if(args.ref===compact.branch && compact.mock.branches.has(namedClaim) && !compact.mock.branches.has(compact.branch))
+      throw {code:"OPAQUE_CONTENTS_404"};
     if(args.ref===namedClaim && compact.mock.branches.has(namedClaim))
       return {isError:true,structuredContent:{error_code:"NOT_FOUND",error_data:{message:"No commit found for the ref "+namedClaim}}};
     return normalContents(args);
@@ -1543,7 +1562,8 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   assert(afterCreate.some(call=>call.name==="fetch_file" && call.args.ref===claimCommit &&
     call.args.path===compactReserved.result.generationClaim.receipt_path) &&
     afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/ref/heads/"+namedClaim+"?read_nonce=")) &&
-    afterCreate.every(call=>call.name!=="fetch_file"||call.args.ref!==namedClaim),
+    afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/matching-refs/heads/"+compact.branch+"?read_nonce=")) &&
+    afterCreate.every(call=>call.name!=="fetch_file"||![namedClaim,compact.branch].includes(call.args.ref)),
     "newly created claim survives cached branch-name 404 only with immutable receipt and positive fresh ref readback");
   assert(compactReserved.steps === 9 && compactReserved.result.transportPreflight.branch===namedClaim &&
     !compact.mock.branches.has(preflightBranch), "compact reservation needs nine cold cells and only the article's create-only ref");
@@ -1714,6 +1734,31 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(fourMiBPng)}, observedAt: compactFirstTime,
     transportPreflight: compactReserved.result.transportPreflight, generationClaim: compactReserved.result.generationClaim};
   const compactFirst = await compactCall(compact, "stageReservedStep", compactStageInput);
+  const realReader = compact.readerReply, receiver = receiverReply(pngBytes, compact.originalRef);
+  const writesBeforeCapture = compact.mock.writes().length;
+  for (const [label, reply, message] of [
+    ["bare data URL", receiver.structuredContent.image_url, "full read_candidate_png response"],
+    ["metadata summary", {content:receiver.content}, "full read_candidate_png response"],
+    ["ambiguous envelopes", {result:receiver, structuredContent:receiver.structuredContent}, "Ambiguous PNG"],
+    ["outer error", {error:"private value", result:receiver}, "error or truncated"],
+    ["tool error", {result:{...receiver, isError:true}}, "error or truncated"],
+    ["inner error", {structuredContent:{...receiver.structuredContent, error_code:"ERROR"}}, "error or truncated"],
+    ["truncated result", {result:{...receiver, truncated:true}}, "error or truncated"],
+    ["missing metadata", {structuredContent:{image_url:receiver.structuredContent.image_url}}, "Invalid read_candidate_png"],
+    ["wrong MIME", {...receiver.structuredContent, mime_type:"image/jpeg"}, "Invalid read_candidate_png"],
+    ["wrong size", {...receiver.structuredContent, bytes:1}, "Invalid read_candidate_png"],
+    ["oversize dimension", {...receiver.structuredContent, width:8193}, "Invalid read_candidate_png"],
+    ["wrong SHA", {...receiver.structuredContent, sha256:"0".repeat(64)}, "transfer size or SHA mismatch"],
+    ["wrong dimensions", {...receiver.structuredContent, height:17}, "transfer dimensions mismatch"],
+  ]) {
+    compact.readerReply = () => reply;
+    const error = await failure(() => compactCall(compact, "stageReservedStep", {}, compactFirst.checkpoint),
+      "compact save rejects " + label);
+    assert(error.message.includes(message) && !error.message.includes(pngBase64) &&
+      error.checkpoint.phase === "reservation_verify" && compact.mock.writes().length === writesBeforeCapture,
+      label + " keeps the original checkpoint and stops before writes without printing bytes");
+  }
+  compact.readerReply = realReader;
   const compactCaptured = await compactCall(compact, "stageReservedStep", {compact: true, originalSourceRef: compact.originalRef},
     compactFirst.checkpoint);
   assert(compactCaptured.status === "pending" && !!compactCaptured.checkpoint.sourceSha,
@@ -1781,6 +1826,32 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   await failure(()=>compactCall(compact,"reserveExternalGenerationStep",{},sourceCheck),"split readback verifies each immutable source after the JPEG");
   savedTree.set(firstPart.path,goodPart);
 
+  for(const outcome of ["present", "ambiguous", "truncated", "malformed", "unknown"]) {
+    const ctx=await compactContext("late-candidate-"+outcome);
+    const method="reserveExternalGenerationStep", options=compactReservationOptions(ctx);
+    let checkpoint;
+    do {checkpoint=(await compactCall(ctx,method,options,checkpoint)).checkpoint;}
+    while (checkpoint.phase!=="claim_final");
+    if(outcome==="present"){
+      const saved=await ctx.service.stage(ctx.plan,ctx.input);
+      const result=await compactCall(ctx,method,options,checkpoint);
+      assert(result.status==="pending" && result.phase==="saved_readback" &&
+        result.checkpoint.saved.commitSha===saved.commitSha,
+        "a candidate published just before the claim is recovered at its exact SHA instead of granting generation");
+    }else{
+      const original=ctx.mock.github.fetch;
+      ctx.mock.github.fetch=async args=>{
+        if (!args.url.includes("/git/matching-refs/"))return original(args);
+        if(outcome==="unknown")throw {};
+        const ref={ref:"refs/heads/"+ctx.branch+"-other",object:{type:"commit",sha:baseCommitSha}};
+        const content=JSON.stringify(outcome==="ambiguous"?[ref]:outcome==="malformed"?{}:[]);
+        return {structuredContent:{content,truncated:outcome==="truncated"}};
+      };
+      const error=await failure(()=>compactCall(ctx,method,options,checkpoint),"uncertain final candidate ref search: "+outcome);
+      assert(error.stage==="bounded_claim_final" && error.message.includes("check the candidate ref") &&
+        ctx.mock.branches.has(claimBranchPrefix+ctx.plan.identity),"ambiguous candidate lookup retains its operation and never grants generation");
+    }
+  }
   const stopOnClaim=await compactContext("compact-stop-after-claim");
   const stopCreate=stopOnClaim.mock.github.create_branch;
   stopOnClaim.mock.github.create_branch=async args=>{

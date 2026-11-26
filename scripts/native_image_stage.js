@@ -70,7 +70,10 @@ var NativeImageStage = (function () {
     }
     async function fetchJSON(path){
       if(typeof github.fetch!=="function")throw Error("Missing cloud guard GitHub callback: fetch");
-      const raw=payload(await invoke("fetch",{url:"https://api.github.com/repos/"+repository+path}));
+      const reply=await invoke("fetch",{url:"https://api.github.com/repos/"+repository+path});
+      const raw=payload(reply);
+      if(reply?.truncated||reply?.content_truncated||raw.truncated||raw.content_truncated)
+        throw Error("Incomplete GitHub response: "+path.split("?")[0]);
       return typeof raw.content==="string"?JSON.parse(raw.content):raw;
     }
     async function cloudStatus(){
@@ -341,12 +344,40 @@ var NativeImageStage = (function () {
       // Typed byte arrays in nested metadata become ordinary exact byte arrays.
       return JSON.parse(JSON.stringify({...rest,caBX_sha256:runtime.sha256(caBX_bytes),caBX_base64:runtime.toBase64(caBX_bytes)},(_k,v)=>v instanceof Uint8Array?Array.from(v):v));
     }
+    function transferredPng(reply) {
+      if (reply?.result !== undefined && reply.structuredContent !== undefined)
+        throw Error("Ambiguous PNG byte reader response");
+      const result = reply?.result === undefined ? reply : reply.result;
+      const png = result?.structuredContent === undefined ? result : result.structuredContent;
+      if ([reply, result, png].some(value => value?.isError || value?.error || value?.error_code ||
+          value?.truncated || value?.content_truncated))
+        throw Error("PNG byte reader returned an error or truncated response");
+      if (typeof png?.image_url !== "string" || !png.image_url.startsWith("data:image/png;base64,"))
+        throw Error("readBytes must return the full read_candidate_png response or a PNG {image_url} object");
+      // Existing byte callbacks already return the native {image_url, output_hint?} form.
+      if (png === reply && png.status === undefined && png.mime_type === undefined && png.sha256 === undefined)
+        return png;
+      if (png.status !== "read" || png.mime_type !== "image/png" ||
+          typeof png.sha256 !== "string" || !SHA.test(png.sha256) ||
+          typeof png.file_id_sha256 !== "string" || !SHA.test(png.file_id_sha256) ||
+          ![png.width, png.height].every(side => Number.isInteger(side) && side >= 1 && side <= 8192) ||
+          !Number.isSafeInteger(png.bytes) || png.bytes < 57 ||
+          png.bytes > 8 * 1024 * 1024 || png.image_url.length !== 22 + 4 * Math.ceil(png.bytes / 3))
+        throw Error("Invalid read_candidate_png metadata or PNG data length");
+      const {image_url, status, bytes, sha256, width, height} = png;
+      return {image_url, status, bytes, sha256, width, height};
+    }
     function capture(input){
       const result=input?.imageGenResult;
       if(!result||typeof result!=="object"||typeof result.image_url!=="string"||!result.image_url.startsWith("data:image/png;base64,"))throw Error("Expected actual PNG bytes returned by the configured transfer callback");
       if(typeof input.observedAt!=="string"||!/(Z|[+-]\d\d:\d\d)$/.test(input.observedAt)||!Number.isFinite(Date.parse(input.observedAt)))throw Error("An actual timezone-qualified observation time is required");
       if(result.output_hint!==undefined&&typeof result.output_hint!=="string")throw Error("Invalid actual ImageGen output_hint");
-      const source=runtime.fromBase64(result.image_url),converted=runtime.convert(source),sourceSha=runtime.sha256(source);
+      const source=runtime.fromBase64(result.image_url),sourceSha=runtime.sha256(source);
+      if(result.status==="read"&&(source.length!==result.bytes||sourceSha!==result.sha256))
+        throw Error("Original PNG transfer size or SHA mismatch");
+      const converted=runtime.convert(source);
+      if(result.status==="read"&&(converted.sourceWidth!==result.width||converted.sourceHeight!==result.height))
+        throw Error("Original PNG transfer dimensions mismatch");
       if(converted.source_png_sha256!==sourceSha||converted.sha256!==runtime.sha256(converted.bytes)||converted.sha256!==runtime.sha256(runtime.fromBase64(converted.base64))||converted.width!==1200||converted.height!==675||converted.quality!==84||converted.bytes.length<16000||converted.bytes.length>700*1024)throw Error("Conversion result integrity mismatch");
       if(input.expectedSourcePngSha256!==undefined&&input.expectedSourcePngSha256!==sourceSha)throw Error("Expected source PNG SHA mismatch");
       if(input.expectedJpegSha256!==undefined&&input.expectedJpegSha256!==converted.sha256)throw Error("Expected JPEG SHA mismatch");
@@ -440,7 +471,7 @@ var NativeImageStage = (function () {
         phase="preflight_read";
         // Use the very same callback for this existing image and the eventual
         // tool result. A local path or file ID alone is not a byte transfer.
-        const transferred=await options.readBytes(options.probeSource);
+        const transferred=transferredPng(await options.readBytes(options.probeSource));
         const observedAt=new Date().toISOString();
         const {source,converted,sourceSha}=capture({imageGenResult:transferred,observedAt,
           expectedSourcePngSha256:options.expectedProbeSha256});
@@ -553,9 +584,11 @@ var NativeImageStage = (function () {
       if(created.branch!==claim.branch)throw Error("Claim create response did not confirm the branch; recover only");
       // The pre-creation branch Contents lookup may still return its cached 404.
       // Both callers already verified the protected files at this immutable commit.
-      const receipt=await read(claim.receipt_path,claim.commit_sha);
+      const [receipt,head]=await Promise.all([
+        read(claim.receipt_path,claim.commit_sha),branchHead(claim.branch,true)
+      ]);
       if(hashText(receipt.content)!==claim.receipt_sha256)throw Error("Claim receipt readback mismatch; recover only");
-      if(await branchHead(claim.branch,true)!==claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
+      if(head!==claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
     }
     async function reservePrepared(plan,options,requireGenerator) {
       let phase="candidate_lookup",proof,generationClaim;
@@ -671,7 +704,7 @@ var NativeImageStage = (function () {
         phase="generation";attempt={transportPreflight:proof,generationClaim};generationAttempts.set(plan.identity,attempt);
         attempt.imageGenResult=await options.generate({prompt:plan.prompt,transparent_background:false});
         attempt.observedAt=new Date().toISOString();
-        phase="generated_byte_transfer";const transferred=await options.readBytes(attempt.imageGenResult);
+        phase="generated_byte_transfer";const transferred=transferredPng(await options.readBytes(attempt.imageGenResult));
         attempt.transferredImage=transferred;
         const saved=await stage(plan,{imageGenResult:transferred,observedAt:attempt.observedAt,transportPreflight:proof,generationClaim});
         return {...saved,imageGenResult:attempt.imageGenResult,transportPreflight:proof,generationClaim};
@@ -713,7 +746,7 @@ var NativeImageStage = (function () {
     async function compactCapture(state,reader,preflight=false){
       if(typeof reader!=="function")throw Error("The same original PNG byte reader is required for this step");
       const ref=sourceRef(preflight?state.probeSource:state.input.originalSourceRef);
-      countStep();const image=await reader(ref);
+      countStep();const image=transferredPng(await reader(ref));
       const input=preflight?{observedAt:state.proof.observed_at,expectedSourcePngSha256:state.proof.source_sha256,
         expectedJpegSha256:state.proof.jpeg_sha256}:{...state.input,expectedSourcePngSha256:state.sourceSha,
         expectedJpegSha256:state.jpeg?.hash};
@@ -764,16 +797,26 @@ var NativeImageStage = (function () {
       }
       return state.verifyIndex===all.length;
     }
-    async function lookupSaved(plan,state,expectedSourceSha){
+    async function lookupSaved(plan,state,expectedSourceSha,foundCommit){
       try{
-        const raw=await read(plan.directory+"/receipt.json",plan.branch);
+        const raw=await read(plan.directory+"/receipt.json",foundCommit||plan.branch);
         const r=JSON.parse(raw.content);
         if(state.version===2&&(r.source?.bytes>COMPACT_SOURCE_LIMIT||r.source?.parts?.length>8))
           throw Error("Compact saved readback supports source PNGs up to 4 MiB");
-        state.saved={ref:plan.branch,commitSha:await branchHead(plan.branch),receiptText:raw.content,
+        state.saved={ref:plan.branch,commitSha:foundCommit||await branchHead(plan.branch),receiptText:raw.content,
           receiptSha:hashText(raw.content),source:[],index:0,protectedIndex:0,expectedSourceSha:expectedSourceSha||null};
         state.phase="saved_readback";return true;
-      }catch(error){if(absentRef(error,plan.branch))return false;throw error;}
+      }catch(error){if(!foundCommit&&absentRef(error,plan.branch))return false;throw error;}
+    }
+    async function lookupCandidateAfterClaim(plan,state){
+      // The normal no-candidate result is HTTP 200 with an empty array, not a thrown Contents 404.
+      const refs=await fetchJSON("/git/matching-refs/heads/"+plan.branch+"?read_nonce="+freshNonce());
+      if(!Array.isArray(refs))throw Error("Missing Git ref list for the candidate; recover only");
+      if(!refs.length)return false;
+      const ref=refs[0];
+      if(refs.length!==1||ref?.ref!=="refs/heads/"+plan.branch||ref.object?.type!=="commit"||!GIT.test(ref.object.sha||""))
+        throw Error("Ambiguous Git ref list for the candidate; recover only");
+      return lookupSaved(plan,state,undefined,ref.object.sha);
     }
     async function savedSlice(plan,state){
       const saved=state.saved;
@@ -884,7 +927,7 @@ var NativeImageStage = (function () {
             if(state.probeSource!==undefined&&state.probeSource!==ref)throw Error("Probe source reference changed on retry");
             state.probeSource=ref;
           }
-          await cloudStatus();countStep();const image=await options.readBytes(options.probeSource);
+          await cloudStatus();countStep();const image=transferredPng(await options.readBytes(options.probeSource));
           const observedAt=new Date().toISOString(),captured=capture({imageGenResult:image,observedAt,expectedSourcePngSha256:options.expectedProbeSha256});
           if(captured.source.length>PART_SIZE)throw Error("Use a probe PNG no larger than 512 KiB");
           const ownProbe=state.version===2&&!state.proof;
@@ -991,9 +1034,17 @@ var NativeImageStage = (function () {
         }else if(state.phase==="claim_final"){
           // This entire ownership grant is one cold <=15-call cell. Never resume
           // an uncertain create response into permission to generate.
-          await createVerifiedClaim(state.claim);
-          if(await lookupSaved(plan,state))return;
-          await cloudStatus();
+          let operation="create and confirm the claim";
+          try{
+            await createVerifiedClaim(state.claim);
+            operation="check the candidate ref";
+            if(await lookupCandidateAfterClaim(plan,state))return;
+            operation="verify the final live guard";
+            await cloudStatus();
+          }catch(error){
+            const detail=typeof error==="string"?error:error?.message||error?.error_code||"no connector error detail";
+            throw Error("Could not "+operation+": "+detail);
+          }
           return {status:"reserved",plan,transportPreflight:state.proof,generationClaim:state.claim};
         }else throw Error("Unknown bounded reservation phase");
       });

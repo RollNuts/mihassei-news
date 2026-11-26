@@ -8,9 +8,7 @@
 
 - 記事ごとの動画は、**検証済みMP4が存在する場合だけ**ネイティブHTML `<video>` で表示。動画がない記事は従来の写真／SVGのまま。
 - **記事ページは手動再生・静止画posterあり・音声なし**。タップして見たい読者だけ再生します。
-- トップは**1つのプレイヤーと最大3本の選抜候補**です。新しい検証済み動画を優先し、候補の実際の記事公開日・見出しから明示的に切り替えられます。ループや時刻で視聴中の記事を勝手に変更しません。
-- 次回ページを開くときは、まだ再生していない候補を優先します。すべて再生済みなら最も前に再生した候補を表示します。ブラウザ内に最大12件の動画キーだけを保存し、外部送信はしません。保存が使えなくても最新動画と手動切替は動作します。
-- 画面内にある間だけ無音プレビューを再生し、画面外やタブ非表示では停止します。読者の手動停止、動きを減らす設定、データ節約設定を尊重します。停止中に候補を切り替えても自動再生せず、ブラウザが自動再生を拒否した場合も手動で再生できます。
+- トップには出演者の近況が並びます。選抜されたニュース映像は各記事で再生できます。
 - 記事一覧のカードは静止画のまま。動画がある場合は実際の長さを示す小さなラベルだけを付け、一覧の動画ファイルは読み込みません。
 - OGP／RSSはこれまでの軽いJPEG／PNGを使用。記事URL・canonical・サイトマップも変えません。
 - 実際の動画がある記事だけ `VideoObject` に公開日時・MP4・サムネイル・動画の長さを記録。検索結果での動画表示は保証されません。
@@ -25,7 +23,7 @@
 
 記事を改稿した担当は、本文と3字幕を読み直し、必要な文を直してから現在の記事指紋を記録します。指紋だけの付け替えで古い字幕を有効化しません。新しい動画の生成と現在の12秒形式（`motion_style_version: 3`）の配信には、現在の記事・JPEGに対する実際の目視合格記録と、有効な3字幕の両方が必要です。未検品を合格扱いせず、足りない場合も記事は安全な静止画で公開を続けます。
 
-同じ検証済み字幕からWebVTTも生成し、ネイティブ全画面では字幕トラックを表示します。通常のページ内再生ではHTML字幕だけを表示し、二重に重ねません。候補を切り替えると映像・字幕・記事リンクを一緒に更新します。Picture-in-Pictureでの字幕表示は実機未確認です。
+同じ検証済み字幕からWebVTTも生成し、ネイティブ全画面では字幕トラックを表示します。通常のページ内再生ではHTML字幕だけを表示し、二重に重ねません。Picture-in-Pictureでの字幕表示は実機未確認です。
 
 既存の**4秒・12fps**の検証済みクリップも引き続き配信できます。12秒形式の追加だけで旧動画を失効させず、各動画の長さに合う表示と構造化データを生成します。記事や元画像が変わった場合の整合性検査は、どちらの形式にも適用します。
 
@@ -63,7 +61,7 @@ GitHubのCPU画像生成は、正常に終わった公開用の処理で `--plan
 
 **いつでも停止:** `.github/motion-clips.json` の `"enabled": false` をmainへコミットするか、GitHub Actionsの `Free bounded article motion clips` をDisableしてください。再開は `"enabled": true`。停止中も既存の写真・記事・動画ファイルを削除しません。進行中の処理はmainの再確認とpush競合で停止し、緊急時はGitHub Actionsで実行中のジョブもキャンセルできます。
 
-実行結果は [GitHub Actions](https://github.com/RollNuts/mihassei-news/actions/workflows/auto-motion-clips.yml) と、既存の [公開SEO検証](https://github.com/RollNuts/mihassei-news/actions/workflows/verify-public-photos.yml) で確認。GitHub上の自動生成結果とCloudflare本番への反映は**別々に検証**します。
+実行結果は [GitHub Actions](https://github.com/RollNuts/mihassei-news/actions/workflows/auto-motion-clips.yml) と、既存の [公開SEO検証](https://github.com/RollNuts/mihassei-news/actions/workflows/verify-public-photos.yml) で確認。公開確認runの `Check changed article movies and subtitles at their published URLs` に、今回のMP4を追加・更新した記事のslugと、照合済みの動画・字幕URLが残ります。特定の記事だけ再確認する場合は `python3 scripts/check_live.py --article-clip <slug>` を使います。
 
 ## 放送室の鮮度点検と担当への受け渡し
 

@@ -266,6 +266,44 @@ test("unhandled market and article-image work needs attention, unrelated code/ph
   }
 });
 
+test("existing ordinary editorial handoffs reach attention without exposing the prose or requesting CI", async () => {
+  const brief = "docs/DAILY_EDITORIAL_BRIEF.md", ideas = "docs/EDITORIAL_IDEAS.md";
+  for (const [heading, files, draft] of [
+    ["通常統合の既存引継ぎ", [brief, ideas], false],
+    ["安全な通常統合／既存引継ぎ", [brief, ideas, "content/broadcasts.json", ARTICLES], true],
+  ]) {
+    const w = world(), pr = w.add(10, ARTICLES, []);
+    pr.body = "## " + heading + "\nPR_BODY_SECRET";
+    pr.draft = draft;
+    w.files.set(10, files.map(filename => ({ filename, status: "modified" }))); pr.changed_files = files.length;
+    w.add(11); // The other PR still needs a blinded first read.
+    const result = await w.read();
+    assert.deepEqual(result.selected.map(target => target.pr), [11]);
+    assert.deepEqual(result.attention.map(({ pr, head, draft, reason }) => ({ pr, head, draft, reason })),
+      [{ pr: 10, head: pr.head.sha, draft, reason: "ordinary_editorial_handoff" }]);
+    assert.equal(result.publication_authorized, false);
+    assert(!JSON.stringify(result).includes("PR_BODY_SECRET"));
+    assert(!w.calls.some(call => call.route.startsWith("/actions/")));
+  }
+});
+
+test("ordinary handoff discovery requires its scope and heading, and never skips changed reader text", async () => {
+  for (const state of ["missing_heading", "negated_heading", "unrelated_file", "renamed_file", "changed_reader", "finalizer_claim"]) {
+    const w = world(), pr = w.add(10);
+    const files = [{ filename: "docs/EDITORIAL_IDEAS.md", status: "modified" }];
+    pr.body = state === "missing_heading" ? "通常統合の既存引継ぎ" : "## 通常統合の既存引継ぎ";
+    if (state === "negated_heading") pr.body += "はありません";
+    if (state === "unrelated_file") files.push({ filename: "scripts/build.py", status: "modified" });
+    if (state === "renamed_file") Object.assign(files[0], { previous_filename: "other.md", status: "renamed" });
+    if (state === "changed_reader") files.push({ filename: ARTICLES, status: "modified" });
+    if (state === "finalizer_claim") pr.body += "\n" + marker(pr.head.sha);
+    w.files.set(10, files); pr.changed_files = files.length;
+    const result = await w.read();
+    assert(!result.attention.some(row => row.reason === "ordinary_editorial_handoff"), state);
+    assert.equal(result.selected_count, state === "changed_reader" ? 1 : 0);
+  }
+});
+
 test("an approved creator story carries its exact finalizer title without reading actions or joining first read", async () => {
   for (const state of ["approved", "draft", "stale", "wrong_kind", "mixed_paths"]) {
     const w = world(), pr = w.add(972);

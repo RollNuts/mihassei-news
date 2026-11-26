@@ -255,6 +255,7 @@ test("daily creator reads both story streams, omits the catalog on a recorded JS
   const transport = reader(input);
   const result = await context.read({ ...args, fetchFile: transport.fetchFile });
   assert.equal(result.verification, "story_records_only");
+  assert.equal(result.weekly_stock_status, "not_checked");
   assert.equal(result.today_has_record, true);
   assert.deepEqual(result.today_story_ids, [past.id]);
   assert.equal(result.future_today_record_count, 1);
@@ -285,6 +286,7 @@ test("on a new JST day daily mode returns the same full input without rereading 
   const daily = await context.read({ ...args, fetchFile: transport.fetchFile, skipIfRecorded: true });
   assert.deepEqual(daily, full);
   assert.equal(daily.today_has_record, false);
+  assert.equal(daily.weekly_stock_status, "not_checked");
   assert.equal(transport.calls.length, 3);
   assert.equal(new Set(transport.calls.map(call => call.path)).size, 3);
   assert(transport.calls.every(call => call.ref === REF));

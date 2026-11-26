@@ -65,11 +65,11 @@ try {
 
 `probeSource` is the real file ID/path string, retained unchanged. The capture reads the existing PNG; its upload step reacquires that same file and verifies both PNG and pinned JPEG hashes before writing. Do not loop all steps inside one `functions.exec`, create self-messages/tasks, or retry to evade an account quota. `pending` is progress, not generation permission. Preserve the plan, checkpoint and original references in the existing handoff if the turn/run ends. Stop on error or no progress; retain the error's checkpoint. The API rejects edited/cross-plan/exhausted checkpoints and bounds total progression to 256 steps.
 
-Only the fresh final `status: "reserved"` response permits the immediately following **one** top-level native generation call with the exact original prompt. The final create-only claim, positive ownership/ref/receipt readback, candidate check and live guard occur together within one bounded cell. `saved`, an existing claim, a lost/aborted final reply or a replayed old checkpoint permits recovery only. Never change the logical identity to try again. The claim remains `reserved_generation_unconfirmed`, not evidence that generation happened.
+Only the fresh final `status: "reserved"` response permits the immediately following **one** top-level native generation call with the exact original prompt. The final cell confirms the create-only claim, reads its immutable receipt and fresh ref, checks the candidate through a fresh Git matching-refs lookup, then checks the live guard. An empty ref list clears the candidate check. An existing exact ref resumes readback, and an ambiguous or failed lookup stops the operation. `saved`, an existing claim, a lost/aborted final reply or a replayed old checkpoint permits recovery only. Never change the logical identity to try again. The claim remains `reserved_generation_unconfirmed`, not evidence that generation happened.
 
 #### Resume saving the original
 
-After the native tool returns, record its actual file ID/path and the **first** real observation time once, together with the returned proof/claim. Start a new `stageReservedStep` with `checkpoint` set to `undefined`. Subsequent save cells use the preceding **save** checkpoint and a fresh reader callback:
+After the native tool returns, record its actual file ID/path and the **first** real observation time once, together with the returned proof/claim. Start a new `stageReservedStep` with `checkpoint` set to `undefined`. Bind the same [PNG reader](#file-adapter-to-code-mode-png-bytes) in every save cell, including when resuming from the preceding **save** checkpoint.
 
 ```js
 const input = checkpoint ? {readBytes} : {
@@ -183,20 +183,12 @@ For a local-file or file-ID generator, use an existing PNG in that actual execut
 The existing receiver also exposes the read-only `read_candidate_png` tool. The PNG reader additionally permits the bounded Azure account form `^oaisdmntpr[a-z0-9]{1,14}\.blob\.core\.windows\.net$`; JPEG probe/storage still permit only their existing exact observed Azure accounts. This is an untrusted read-only relay: the prefix does not establish OpenAI ownership, generation provenance or adoption eligibility. Bind `readCandidatePng` below to that tool's **actually exposed** code-mode function, and use an original PNG path recognized by the current run's file adapter. For a code-callable generator its callback must return that actual path; for a top-level generator retain its actual returned path for the later save step. A Library ID or a path from another executor is not a substitute. For an observed blocked file reference, use the [Library recovery procedure](#blocked-photo-file-reference) and retain the individual source inventory. The same callback must read both an existing PNG `probeSource` during the capture step and the eventual generated PNG before the first save step.
 
 ```js
-const readBytes = async actualPngPath => {
-  const received = await readCandidatePng({file: actualPngPath});
-  const png = received?.structuredContent ?? received?.result ?? received;
-  if (received?.isError || received?.error_code || received?.error || png?.isError || png?.error_code || png?.error ||
-      png?.status !== "read" || png.mime_type !== "image/png" ||
-      typeof png.image_url !== "string" || !png.image_url.startsWith("data:image/png;base64,"))
-    throw Error("Original PNG byte transfer failed");
-  if (runtime.sha256(runtime.fromBase64(png.image_url)) !== png.sha256)
-    throw Error("Original PNG transfer SHA mismatch");
-  return {image_url: png.image_url};
-};
+const readBytes = actualPngPath => readCandidatePng({file: actualPngPath});
 ```
 
-Capture the PNG payload only inside code mode (direct or inside a supported wrapper): never `text(received)`, `notify(received)`, or print the data URL/base64 into the conversation. Tool text contains a small metadata summary. This reader preserves the exact PNG bytes, including C2PA chunks; it checks MIME, bounded PNG structure and dimensions, without decoding, converting, verifying CRC/signatures, storing or approving. The existing native helper performs CRC/decode/C2PA parsing and `native_image_stage` retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
+Return the whole tool response. The stager checks the receiver’s reported SHA-256, byte count and dimensions against the original PNG. The receiver puts the bytes in `structuredContent.image_url` and a metadata summary in `content`. Keep both the response and the data URL in code mode. An existing byte adapter can still return a PNG `{image_url}` object. A bare data URL passed as the callback result stops the step. Resume from its checkpoint with the original file reference and the reader above.
+
+The reader preserves the exact PNG bytes, including C2PA chunks. It checks MIME, bounded PNG structure and dimensions. The existing native helper performs CRC/decode/C2PA parsing and retains source parts, actual prompt and current article provenance through the ordinary candidate flow. Receiver limits are 8 MiB, 8192 pixels per side and 32 million pixels total.
 
 ### Offline PNG bootstrap
 
@@ -223,7 +215,7 @@ After staging, `const images = await stager.load(plan)` returns verified `source
 
 For a compact version 2 checkpoint, follow [the reservation example](#resume-a-reservation) for `native_reservation_steps` or [the save example](#resume-saving-the-original) for `native_stage_steps`. Keep the original plan and the metadata in that example in the existing task handoff. A missing source file before upload completes requires recovering that exact original.
 
-For legacy `stage` checkpoints only, `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish tree/commit/branch/readback without original data-URI bytes. Before that boundary, retain the raw native result, real byte-returning callback and first observation time; recover `error.transferredImage ?? await readBytes(error.imageGenResult)` through the corresponding legacy storage method with its original proof/claim. Legacy `store` examples require an executor that actually retains values; current GPT does not retain them across cells. A blob or unreferenced commit is incomplete. Authorization failures, missing files on existing branches, malformed responses and ambiguous lookups never authorize overwriting a branch or generating again.
+For legacy `stage` checkpoints only, `resume(plan, checkpoint)` works in a fresh runtime once `filesComplete` is true: all original PNG parts, JPEG and receipt have returned blob SHAs. It can then finish tree/commit/branch/readback without original data-URI bytes. Before that boundary, retain the raw native result, real byte-returning callback and first observation time. Pass `error.transferredImage` to the legacy storage method with the original proof/claim when available. If the file must be reread, that legacy method expects an `imageGenResult` object containing the actual PNG data URL. Verify the reread bytes against the receiver’s SHA-256 before passing `{image_url: png.image_url}`. Legacy `store` examples require an executor that actually retains values; current GPT does not retain them across cells. A blob or unreferenced commit is incomplete. Authorization failures, missing files on existing branches, malformed responses and ambiguous lookups never authorize overwriting a branch or generating again.
 
 ### Install a reviewed candidate in its existing publication PR
 
@@ -243,6 +235,10 @@ const prepared = await stager.preparePublication({
 `reviewSource` is the original JSON text of the actual accepted decision for that article fingerprint and JPEG SHA, with the observed review time and notes. The helper does not perform visual review or create an acceptance. It rechecks the fixed candidate's bytes and provenance, the current PR's article and head, and returns `prepared_not_published` with the current PR's `baseTreeSha`, `expectedHeadSha`, and three `files` for GitHub `create_tree`: the public JPEG blob, the manifest append, and the review update. Existing manifest and review text, including large integer seeds, is preserved. An existing manifest slug requires its explicit replacement/history procedure; this append-only path must not overwrite it.
 
 Before any GitHub write, run the existing fresh image guard. Use these three files on the returned **current PR tree**, then follow the existing expected-head non-forced update, readback, CI, and publication-finalize procedure. If the head changes, prepare again against the new head. Do not merge the candidate branch or copy its tree into the publication PR: `source.png.partNNN`, `candidate.jpg`, and `receipt.json` remain retrievable at the original candidate commit. A prepared patch is neither saved nor published, and a successful save is not proof of visible delivery.
+
+If the original article PR has merged, continue its plan and fixed candidate. Check for an existing owner before branching from current `main`. [Photo recovery ownership](VISUAL_OPERATIONS.md#画像の採用条件)
+
+When the reviewer has a new handoff to record in `docs/DAILY_EDITORIAL_BRIEF.md`, that update can open the recovery PR. For the pump article, the reviewer recorded the original PR, article and image hashes, fixed candidate commit, visual decision and next owner. The next commit added the three public files to the same PR for news photo finalization. [Recovery PR #1041](https://github.com/RollNuts/mihassei-news/pull/1041) · [Publication handoff](OPERATIONS.md#ci公開待機の引継ぎ)
 
 ## Runtime without Node
 

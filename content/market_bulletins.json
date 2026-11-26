@@ -5742,5 +5742,596 @@
         "checked_on": "2026-11-25"
       }
     ]
+  },
+  {
+    "slug": "2026-11-26-am",
+    "day": "2026-11-26",
+    "slot": "am",
+    "coverage": "investor",
+    "published_at": "2026-11-26T09:04:55+09:00",
+    "title": "米ナスダック0.62%安、アンバレラ19.77%安　メモリー高が顧客に波及",
+    "summary": "25日の米国株はダウ平均が0.33%高、ナスダック総合が0.62%安。半導体企業アンバレラは決算翌日に19.77%下落した。同社はメモリーの値上がりと供給不足が顧客の見通しに影響していると説明した。",
+    "lead": "米国25日の通常取引（日本時間26日6時終了）でナスダック総合は0.62%下落しました。半導体企業アンバレラ（NASDAQ: AMBA）は前日の決算発表後、25日に19.77%安の35.68ドルで取引を終えました。一方、ダウ平均は0.33%上昇しています。",
+    "sections": [
+      {
+        "heading": "ダウ平均は上昇、ナスダックは値上がり銘柄の方が多い",
+        "paragraphs": [
+          "米国24日終値との比較で、ダウ平均は50,182.95ポイント（0.33%高）、S&P500は7,182.78ポイント（0.25%安）、ナスダック総合は23,585.80ポイント（0.62%安）でした。ロイターの25日終値報道と日本時間26日6時31分のみんかぶの市況報道で一致しています。",
+          "ロイターによるとナスダック市場では上昇2,902銘柄、下落2,009銘柄でした。時価総額の大きい銘柄の影響を受ける指数が下落しても、個々の銘柄の過半が下落したとは限りません。"
+        ]
+      },
+      {
+        "heading": "アンバレラ、増収の一方で次の四半期は売上減を見込む",
+        "paragraphs": [
+          "アンバレラが米国24日16時05分に公表した2027年1月期第3四半期（10月31日まで）の売上高は1億1,520万ドルで、前年同期比6.2%増でした。GAAP純損失は1,270万ドル。機器側でAI処理を行う半導体の売上が過去最高となる一方、消費者向けIoTの売上は会社の想定を下回りました。",
+          "同社の24日付会社発表では、第4四半期（2027年1月31日まで）の売上高見通しを7,000万〜7,500万ドルとしています。CEOはメモリー価格の上昇と供給不足が深刻化し、多くの顧客が見通しを引き下げていると説明しました。機器を作る顧客にメモリー調達の制約が及んでいることが、AI半導体の供給企業にも関わる材料です。会社の見通しと株価の変動は区別します。"
+        ]
+      },
+      {
+        "heading": "米PCE物価は前年比3.8%上昇、26日は感謝祭休場",
+        "paragraphs": [
+          "米商務省経済分析局（BEA）が25日8時30分（日本時間22時30分）に発表した10月のPCE物価指数は前年比3.8%高、食品・エネルギーを除くコア指数は3.3%高でした。前月比はいずれも0.3%高。物価変動を除いた実質個人消費支出は前月比でほぼ横ばいでした。",
+          "26日の東京市場は通常取引日で、米国25日の取引終了後に始まります。NYSEは現地26日が感謝祭休場、27日は13時（日本時間28日3時）に短縮終了します。日本の26日の株価は本稿の対象外とし、ここでは米国25日終値のみを扱います。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "us-indices-nov26-am",
+        "kind": "bars",
+        "title": "ダウ平均とナスダック総合の騰落率",
+        "note": "米国25日通常取引終値、24日終値比。",
+        "unit": "%",
+        "source_url": "https://www.reuters.com/business/nasdaq-futures-slide-over-2-fresh-us-tariff-concerns-inflation-data-focus-2026-11-25/",
+        "observed_at": "2026-11-26T06:00:00+09:00",
+        "values": [
+          {
+            "label": "ダウ平均",
+            "value": 0.33,
+            "state": "実績"
+          },
+          {
+            "label": "ナスダック総合",
+            "value": -0.62,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "amba-sales-nov26-am",
+        "kind": "bars",
+        "title": "アンバレラ第3四半期売上高の前年同期比較",
+        "note": "10月31日までの第3四半期実績。アンバレラ24日公表。",
+        "unit": "百万ドル",
+        "source_url": "https://www.sec.gov/Archives/edgar/data/1280263/000119312526475716/d912526dex991.htm",
+        "observed_at": "2026-11-25T06:05:00+09:00",
+        "values": [
+          {
+            "label": "前年同期",
+            "value": 108.5,
+            "state": "実績"
+          },
+          {
+            "label": "今期",
+            "value": 115.2,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "pce-inflation-nov26-am",
+        "kind": "bars",
+        "title": "米10月PCE物価指数の前年比",
+        "note": "BEAが米国25日に公表した10月実績。",
+        "unit": "%",
+        "source_url": "https://bea.gov/news/2026/personal-income-and-outlays-october-2026",
+        "observed_at": "2026-11-25T22:30:00+09:00",
+        "values": [
+          {
+            "label": "総合",
+            "value": 3.8,
+            "state": "実績"
+          },
+          {
+            "label": "コア",
+            "value": 3.3,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [
+      {
+        "code": "AMBA",
+        "name": "アンバレラ",
+        "exchange": "NASDAQ",
+        "currency": "USD",
+        "direction": "急落",
+        "previous_close": 44.47,
+        "close": 35.68,
+        "price_kind": "close",
+        "market_date": "2026-11-25",
+        "previous_market_date": "2026-11-24",
+        "observed_at": "2026-11-26T06:00:00+09:00",
+        "source_url": "https://stockanalysis.com/stocks/amba/history/",
+        "corporate_action_checked": true,
+        "adjustment_note": "Stock Analysisの日別CloseとAdj. Closeが24日44.47ドル、25日35.68ドルで各日一致。みんかぶの25日価格と変動額も一致。独自の分割補正なし。",
+        "context": "24日公表の会社決算では第3四半期の増収と消費者向けIoT売上の想定未達を記載。メモリー高と供給不足による顧客への影響、第4四半期売上見通し7,000万〜7,500万ドルを示した。"
+      }
+    ],
+    "sources": [
+      {
+        "title": "ロイター：米国25日主要指数終値と市場の騰落銘柄数",
+        "url": "https://www.reuters.com/business/nasdaq-futures-slide-over-2-fresh-us-tariff-concerns-inflation-data-focus-2026-11-25/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "みんかぶ：日本時間26日6時31分の米国25日終値",
+        "url": "https://fx.minkabu.jp/news/385448",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "アンバレラ：SEC提出の24日付決算発表（Exhibit 99.1）",
+        "url": "https://www.sec.gov/Archives/edgar/data/1280263/000119312526475716/d912526dex991.htm",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "アンバレラ：24日16時05分の会社配信",
+        "url": "https://www.globenewswire.com/news-release/2026/11/24/3409869/0/en/Ambarella-Inc-Announces-Third-Quarter-Fiscal-Year-2027-Financial-Results.html",
+        "published_on": "2026-11-24",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "Stock Analysis：AMBA 24・25日通常終値と調整後終値",
+        "url": "https://stockanalysis.com/stocks/amba/history/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "BEA：10月個人所得・消費支出、25日公表",
+        "url": "https://bea.gov/news/2026/personal-income-and-outlays-october-2026",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：2026年取引日・休業日",
+        "url": "https://www.jpx.co.jp/english/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "NYSE：2026年休場日・取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-26-open",
+    "day": "2026-11-26",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-26T10:11:03+09:00",
+    "title": "日経平均1.80%高、半導体株指数6.12%高　医薬品・食料品は下落",
+    "summary": "26日朝の日経平均は9時31分に58,036.42円、日経半導体株指数は9時30分に6.12%高。JPXの9時36分更新ではTOPIXが0.77%高となる一方、医薬品と食料品は下落した。",
+    "lead": "26日朝の東京株式市場で日経平均は9時31分時点に58,036.42円となり、25日終値から1,024.80円（1.80%）上昇しました。日経半導体株指数は9時30分に6.12%高。JPXの9時36分更新ではTOPIXが0.77%高でしたが、医薬品や食料品は下落し、前日に大きく売られた分野と買われた分野の明暗が逆転しています。",
+    "sections": [
+      {
+        "heading": "半導体株指数が反発",
+        "paragraphs": [
+          "日経半導体株指数は9時30分に16,209.15ポイント、25日終値15,274.30ポイントから934.85ポイント上昇しました。25日は同指数が9.84%安だったため、26日朝の反発でも24日終値の水準には戻っていません。",
+          "日経平均も25日の2.78%安から反発しましたが、9時31分時点では24日終値58,644.63円を608.21円下回ります。前日に大きく下げた指数ほど反発率が大きくても、下げをすべて取り戻したわけではありません。"
+        ]
+      },
+      {
+        "heading": "非鉄金属と電気機器が上昇、医薬品と食料品は安い",
+        "paragraphs": [
+          "JPXの9時36分更新では非鉄金属が3.78%高、電気機器が2.45%高でした。一方、25日に上昇していた医薬品は1.14%安、食料品は1.33%安。非鉄金属と食料品の騰落率の差は5.11ポイントです。銀行業は0.67%高、保険業は0.24%安でした。",
+          "TOPIXは3,775.13ポイント（25日終値3,746.20ポイント比28.93ポイント高）。東証規模別では大型株が0.92%高、中型株が0.41%高、小型株が0.55%高と、規模別ではいずれも上昇しました。ただし業種によっては下落しており、値上がりが全銘柄に及んだことを意味しません。"
+        ]
+      },
+      {
+        "heading": "米国株は現地26日が休場",
+        "paragraphs": [
+          "26日の日本市場は通常取引日です。NYSEの公式日程によると米国市場は現地26日が感謝祭で休場し、27日は東部時間13時（日本時間28日3時）に通常取引を短縮終了します。今回の日本株の数値は取引途中のもので、米国26日の現物株の値動きではありません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov26-open",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "25日終値比。日経平均は26日9時31分、日経半導体株指数は9時30分の途中値。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-26T09:31:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": 1.8,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": 6.12,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "metals-food-nov26-open",
+        "kind": "bars",
+        "title": "非鉄金属と食料品の騰落率",
+        "note": "JPX26日9時36分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T09:36:00+09:00",
+        "values": [
+          {
+            "label": "非鉄金属",
+            "value": 3.78,
+            "state": "実績"
+          },
+          {
+            "label": "食料品",
+            "value": -1.33,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "large-mid-nov26-open",
+        "kind": "bars",
+        "title": "東証大型株と中型株の騰落率",
+        "note": "JPX26日9時36分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T09:36:00+09:00",
+        "values": [
+          {
+            "label": "大型株",
+            "value": 0.92,
+            "state": "実績"
+          },
+          {
+            "label": "中型株",
+            "value": 0.41,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：26日9時30分・31分公表値",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：現物指数・業種別指数の26日9時36分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：2026年休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "NYSE：2026年取引時間・休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "25日引け後の既刊：日経平均・半導体株指数・業種別指数",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-25-close/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-26-noon",
+    "day": "2026-11-26",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-26T13:07:39+09:00",
+    "title": "日経平均、後場序盤は1.43%高に縮小　グロース250は1.94%高",
+    "summary": "26日12時33分の日経平均は57,825.73円と前日比1.43%高。朝より上げ幅が縮小した一方、JPXの12時40分更新ではグロース250指数が1.94%高、東証REIT指数は0.38%安だった。",
+    "lead": "26日後場序盤の東京株式市場で、日経平均は12時33分時点に57,825.73円となり、25日終値比814.11円（1.43%）上昇しました。朝の1.80%高から上げ幅は縮小しましたが、JPXの12時40分更新では東証グロース市場250指数が1.94%高となり、主力株だけでなく新興株にも上昇が見られます。",
+    "sections": [
+      {
+        "heading": "日経平均と半導体株指数は朝より上げ幅縮小",
+        "paragraphs": [
+          "日経半導体株指数は12時33分に16,006.28ポイント（25日終値比4.79%高）。朝9時30分の6.12%高から上げ幅が1.33ポイント縮小しました。日経平均も朝9時31分の58,036.42円から210.69円下がりましたが、いずれも前日終値は上回っています。",
+          "JPXの12時40分更新ではTOPIXは3,769.13ポイント、25日終値3,746.20ポイントから22.93ポイント（0.61%）上昇しました。朝9時36分の0.77%高から上げ幅が小さくなっています。"
+        ]
+      },
+      {
+        "heading": "新興株指数は上昇、REIT指数は下落",
+        "paragraphs": [
+          "同じ12時40分更新で東証グロース市場250指数は653.02ポイント（1.94%高）、JPXスタートアップ急成長100指数は1,036.63ポイント（2.57%高）でした。一方、東証REIT指数は1,675.31ポイント（0.38%安）。グロース250とREITの前日比の差は2.32ポイントです。",
+          "グロース250は成長企業が上場する市場の一部を対象とし、REITは不動産投資信託の値動きを示します。TOPIXの上昇と同時に新興株指数がより大きく上昇する一方、不動産投資信託の指数は下落しており、すべての資産に買いが広がったわけではありません。"
+        ]
+      },
+      {
+        "heading": "米国市場は26日休場",
+        "paragraphs": [
+          "日本は26日が通常取引日ですが、NYSEは現地26日が感謝祭で休場し、27日は東部時間13時（日本時間28日3時）に短縮終了します。ここで扱う日本の指数はすべて25日終値との比較であり、26日の引け値ではありません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov26-noon",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "26日12時33分の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-26T12:33:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": 1.43,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": 4.79,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth-reit-nov26-noon",
+        "kind": "bars",
+        "title": "グロース250と東証REITの騰落率",
+        "note": "JPX26日12時40分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T12:40:00+09:00",
+        "values": [
+          {
+            "label": "グロース250",
+            "value": 1.94,
+            "state": "実績"
+          },
+          {
+            "label": "東証REIT",
+            "value": -0.38,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-startup-nov26-noon",
+        "kind": "bars",
+        "title": "TOPIXとスタートアップ急成長100",
+        "note": "JPX26日12時40分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T12:40:00+09:00",
+        "values": [
+          {
+            "label": "TOPIX",
+            "value": 0.61,
+            "state": "実績"
+          },
+          {
+            "label": "急成長100",
+            "value": 2.57,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：26日12時33分公表値",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：現物指数26日12時40分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：2026年休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "NYSE：2026年休場日・取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "26日寄り後の既刊：朝の観測値",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-26-open/",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      }
+    ]
+  },
+  {
+    "slug": "2026-11-26-close",
+    "day": "2026-11-26",
+    "slot": "close",
+    "coverage": "investor",
+    "published_at": "2026-11-26T16:15:45+09:00",
+    "title": "日経平均0.86%高、TOPIXは小幅高　半導体株の反発は残る",
+    "summary": "26日の東京市場で日経平均は57,499.16円と前日比0.86%高。JPXの16時14分更新値でTOPIXは0.11%高となり、後場序盤より上げ幅を縮めた。グロース250は1.87%高だった。",
+    "lead": "26日の東京株式市場で、日経平均は57,499.16円と25日終値比487.54円（0.86%）上昇して取引を終えました。JPXの16時14分更新値ではTOPIXが3,750.40ポイント（0.11%高）となり、後場序盤から上げ幅を縮めました。半導体株指数は4.03%高と反発を保ちました。",
+    "sections": [
+      {
+        "heading": "日経平均とTOPIXは後場に上げ幅を縮める",
+        "paragraphs": [
+          "日経平均は12時33分の57,825.73円から326.57円下げて引けました。TOPIXは12時40分の3,769.13ポイント（0.61%高）から18.73ポイント低下。両指数とも前日の終値を上回りましたが、後場序盤の水準は維持できませんでした。",
+          "日経半導体株指数は15時30分の公表値で15,890.59ポイント（4.03%高）。朝の6.12%高、後場序盤の4.79%高より上げ幅は縮小しました。25日の9.84%安を踏まえると、26日の反発だけで前日の下落を取り戻したわけではありません。"
+        ]
+      },
+      {
+        "heading": "新興株指数は上げを維持、REITは下げ幅拡大",
+        "paragraphs": [
+          "JPXの16時14分更新では東証グロース市場250指数が652.60ポイント（1.87%高）、JPXスタートアップ急成長100指数が1,038.87ポイント（2.79%高）でした。TOPIXの小幅高に対し、新興株の指数はより大きな上昇となりました。",
+          "東証REIT指数は1,673.26ポイント（0.50%安）で、12時40分の0.38%安より下げ幅が広がりました。株式でも不動産投資信託でも同じ方向に資金が動いたわけではなく、指数の対象によって26日の結果は異なります。"
+        ]
+      },
+      {
+        "heading": "米国は感謝祭で休場",
+        "paragraphs": [
+          "26日の米国株式市場は感謝祭で休場です。NYSEの公式日程では27日も東部時間13時（日本時間28日3時）で取引を終える短縮日程となります。この記事の日本株指数はいずれも25日終値との比較です。JPXの指数は引け後の16時14分更新の速報値として掲載しています。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov26-close",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "26日大引・半導体株指数15時30分公表値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-26T15:30:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": 0.86,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": 4.03,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "topix-growth-nov26-close",
+        "kind": "bars",
+        "title": "TOPIXとグロース250",
+        "note": "JPX26日16時14分更新の引け後速報値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T16:14:00+09:00",
+        "values": [
+          {
+            "label": "TOPIX",
+            "value": 0.11,
+            "state": "実績"
+          },
+          {
+            "label": "グロース250",
+            "value": 1.87,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "startup-reit-nov26-close",
+        "kind": "bars",
+        "title": "急成長100と東証REIT",
+        "note": "JPX26日16時14分更新の引け後速報値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T16:14:00+09:00",
+        "values": [
+          {
+            "label": "急成長100",
+            "value": 2.79,
+            "state": "実績"
+          },
+          {
+            "label": "東証REIT",
+            "value": -0.5,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：26日大引・半導体株指数15時30分",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：26日16時14分現物指数更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：現物指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：2026年休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "NYSE：2026年休場日・取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "26日後場の既刊：12時台の観測値",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-26-noon/",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "26日寄り後の既刊：朝の観測値",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-26-open/",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "25日引け後の既刊：前日の半導体株指数",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-25-close/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      }
+    ]
   }
 ]

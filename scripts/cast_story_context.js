@@ -63,7 +63,7 @@ var CastStoryContext = (function () {
       if (time <= clock) todayIds.push(id);
       else futureToday++;
     }
-    return { records, daily: { jst_day: day, today_has_record: todayIds.length + futureToday > 0,
+    return { records, daily: { jst_day: day, weekly_stock_status: "not_checked", today_has_record: todayIds.length + futureToday > 0,
       today_story_ids: todayIds.sort(), future_today_record_count: futureToday } };
   }
 

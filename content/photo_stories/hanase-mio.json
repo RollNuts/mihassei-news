@@ -90,6 +90,21 @@
         "cut_id": "01",
         "image_sha256": "64f27c8088537e890d0f069b3e0b8b8d310b00fa16f676dc8a374a6a08ebda98"
       }
+    },
+    {
+      "id": "hanase-mio-post-20261126122319452000",
+      "model_id": "hanase-mio",
+      "published_at": "2026-11-26T12:23:19.452+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼、駅の売店で温かいお茶を買った。手袋を外してふたを開けた途端に電車が来て、結局ひと口も飲まずに乗り込んだ。",
+      "source": {
+        "issue_slug": "november-mio-on-the-move-016",
+        "cut_id": "02",
+        "image_sha256": "1eeba10e1bfd6bfbfed1e6312d15ffb5be34de1d308b019efef930fa63ee7d4d"
+      }
     }
   ]
 }
