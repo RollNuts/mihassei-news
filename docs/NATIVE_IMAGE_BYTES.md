@@ -244,6 +244,10 @@ const prepared = await stager.preparePublication({
 
 Before any GitHub write, run the existing fresh image guard. Use these three files on the returned **current PR tree**, then follow the existing expected-head non-forced update, readback, CI, and publication-finalize procedure. If the head changes, prepare again against the new head. Do not merge the candidate branch or copy its tree into the publication PR: `source.png.partNNN`, `candidate.jpg`, and `receipt.json` remain retrievable at the original candidate commit. A prepared patch is neither saved nor published, and a successful save is not proof of visible delivery.
 
+If the original article PR has merged, continue its plan and fixed candidate. Check for an existing owner before branching from current `main`. [Photo recovery ownership](VISUAL_OPERATIONS.md#画像の採用条件)
+
+When the reviewer has a new handoff to record in `docs/DAILY_EDITORIAL_BRIEF.md`, that update can open the recovery PR. For the pump article, the reviewer recorded the original PR, article and image hashes, fixed candidate commit, visual decision and next owner. The next commit added the three public files to the same PR for news photo finalization. [Recovery PR #1041](https://github.com/RollNuts/mihassei-news/pull/1041) · [Publication handoff](OPERATIONS.md#ci公開待機の引継ぎ)
+
 ## Runtime without Node
 
 Read the helper as UTF-8 from the reviewed repository revision. Load it in a plain JavaScript runtime, including `functions.exec`:
