@@ -1393,9 +1393,16 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       context.stepCounters.reads++;context.refsRead.push(reference);
       demand(reference === context.probeRef || reference === context.originalRef,
         "compact reads must use the actual provided original/probe reference");
-      return {image_url: "data:image/png;base64," + runtime.toBase64(
-        reference === context.probeRef ? pngBytes : context.originalBytes)};
+      const bytes = reference === context.probeRef ? pngBytes : context.originalBytes;
+      if (context.readerReply) return context.readerReply(bytes, reference);
+      return {image_url: "data:image/png;base64," + runtime.toBase64(bytes)};
     }};
+  }
+  function receiverReply(bytes, reference) {
+    const metadata = {status:"read", mime_type:"image/png", width:32, height:32,
+      bytes:bytes.length, sha256:runtime.sha256(bytes), file_id_sha256:runtime.sha256(reference)};
+    return {content:[{type:"text", text:JSON.stringify(metadata)}], isError:false,
+      structuredContent:{...metadata, image_url:"data:image/png;base64," + runtime.toBase64(bytes)}};
   }
   function compactReservationOptions(context) {
     return {compact: true, probeSource: context.probeRef, probeSourceRef: context.probeRef,
@@ -1507,6 +1514,10 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     assert(false, "compact operation finishes within 256 explicit invocations");
   }
   const compact = await compactContext("compact-four-MiB");
+  // The file adapter returns the MCP tool result to code mode. A transport
+  // reading JSON-RPC directly sees the same result nested under 'result'.
+  compact.readerReply = (bytes, reference) => reference === compact.probeRef ? receiverReply(bytes, reference) :
+    {jsonrpc:"2.0", id:1, result:receiverReply(bytes, reference)};
   const namedClaim=claimBranchPrefix+compact.plan.identity;
   const normalContents=compact.mock.github.fetch_file;
   compact.mock.github.fetch_file=async args=>{
@@ -1714,6 +1725,31 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     imageGenResult: {image_url: "data:image/png;base64," + runtime.toBase64(fourMiBPng)}, observedAt: compactFirstTime,
     transportPreflight: compactReserved.result.transportPreflight, generationClaim: compactReserved.result.generationClaim};
   const compactFirst = await compactCall(compact, "stageReservedStep", compactStageInput);
+  const realReader = compact.readerReply, receiver = receiverReply(pngBytes, compact.originalRef);
+  const writesBeforeCapture = compact.mock.writes().length;
+  for (const [label, reply, message] of [
+    ["bare data URL", receiver.structuredContent.image_url, "full read_candidate_png response"],
+    ["metadata summary", {content:receiver.content}, "full read_candidate_png response"],
+    ["ambiguous envelopes", {result:receiver, structuredContent:receiver.structuredContent}, "Ambiguous PNG"],
+    ["outer error", {error:"private value", result:receiver}, "error or truncated"],
+    ["tool error", {result:{...receiver, isError:true}}, "error or truncated"],
+    ["inner error", {structuredContent:{...receiver.structuredContent, error_code:"ERROR"}}, "error or truncated"],
+    ["truncated result", {result:{...receiver, truncated:true}}, "error or truncated"],
+    ["missing metadata", {structuredContent:{image_url:receiver.structuredContent.image_url}}, "Invalid read_candidate_png"],
+    ["wrong MIME", {...receiver.structuredContent, mime_type:"image/jpeg"}, "Invalid read_candidate_png"],
+    ["wrong size", {...receiver.structuredContent, bytes:1}, "Invalid read_candidate_png"],
+    ["oversize dimension", {...receiver.structuredContent, width:8193}, "Invalid read_candidate_png"],
+    ["wrong SHA", {...receiver.structuredContent, sha256:"0".repeat(64)}, "transfer size or SHA mismatch"],
+    ["wrong dimensions", {...receiver.structuredContent, height:17}, "transfer dimensions mismatch"],
+  ]) {
+    compact.readerReply = () => reply;
+    const error = await failure(() => compactCall(compact, "stageReservedStep", {}, compactFirst.checkpoint),
+      "compact save rejects " + label);
+    assert(error.message.includes(message) && !error.message.includes(pngBase64) &&
+      error.checkpoint.phase === "reservation_verify" && compact.mock.writes().length === writesBeforeCapture,
+      label + " keeps the original checkpoint and stops before writes without printing bytes");
+  }
+  compact.readerReply = realReader;
   const compactCaptured = await compactCall(compact, "stageReservedStep", {compact: true, originalSourceRef: compact.originalRef},
     compactFirst.checkpoint);
   assert(compactCaptured.status === "pending" && !!compactCaptured.checkpoint.sourceSha,

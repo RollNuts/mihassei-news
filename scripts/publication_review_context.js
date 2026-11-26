@@ -10,6 +10,8 @@ var PublicationReviewContext = (function () {
   const HASH = /^[0-9a-f]{64}$/, LOGIN = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
   const RUN = /^[A-Za-z0-9][A-Za-z0-9_.:-]{7,199}$/;
   const INPUTS = ["content/articles.json", "content/market_bulletins.json"];
+  const EDITORIAL_HANDOFF_FILES = new Set(["docs/DAILY_EDITORIAL_BRIEF.md", "docs/EDITORIAL_IDEAS.md",
+    "content/broadcasts.json"]);
   const OTHER_MARKET = new Set(["content/market_outlook.json", "content/market_outlooks.json",
     "content/market_figures.json", "content/serials.json"]);
   const PHOTO_INPUT = /^(?:content\/photo_(?:issues|editions|stories)(?:\.json|\/)|maintenance\/photo-)/;
@@ -269,13 +271,6 @@ var PublicationReviewContext = (function () {
       const unsupported = paths.filter(path => OTHER_MARKET.has(path));
       const photo = paths.some(path => PHOTO_INPUT.test(path));
       const images = paths.filter(path => ARTICLE_IMAGE.test(path) && !path.includes("/photo-issue-"));
-      if (!relevant.length && !unsupported.length && (photo || !images.length)) {
-        const story = !pr.draft && changed.length === 1 && changed[0].status === "modified"
-          && /^content\/photo_stories\/[a-z0-9-]+\.json$/.test(paths[0]) && handoff(pr, ["cast_story"]) === "current_head_claim";
-        outside.push({ ...binding, reason: photo ? "photo_or_cast_story" : "outside_first_read_scope",
-          ...(story ? { finalizer_title_prefix: "Publication head " + pr.head.sha } : {}) });
-        continue;
-      }
       require(relevant.every(f => INPUTS.includes(f.filename) && f.status === "modified"
         && !f.previous_filename), "Removed/renamed/unknown publication input");
       const targets = [];
@@ -299,6 +294,24 @@ var PublicationReviewContext = (function () {
         }
       }
       const state = handoff(pr), references = targets.map(({ reader, ...target }) => target);
+      // The existing morning desk and broadcast PRs use prose handoffs. Surface the
+      // section's presence only; its current owner and conditions need a separate read.
+      if (!targets.length && state === "absent" && paths.some(path => EDITORIAL_HANDOFF_FILES.has(path))
+          && changed.every(f => f.status === "modified" && !f.previous_filename
+            && (EDITORIAL_HANDOFF_FILES.has(f.filename) || f.filename === INPUTS[0]))
+          && /^##[ \t]+(?:安全な)?通常統合(?:の|／)既存引き?継ぎ[ \t]*\r?$/m.test(pr.body || "")) {
+        attention.push({ ...binding, draft: pr.draft, reason: "ordinary_editorial_handoff",
+          next_operation: "After first read, check the latest handoff, owner/run, changed files against current main, "
+            + "and required CI under the existing ordinary merge procedure." });
+        continue;
+      }
+      if (!relevant.length && !unsupported.length && (photo || !images.length)) {
+        const story = !pr.draft && changed.length === 1 && changed[0].status === "modified"
+          && /^content\/photo_stories\/[a-z0-9-]+\.json$/.test(paths[0]) && handoff(pr, ["cast_story"]) === "current_head_claim";
+        outside.push({ ...binding, reason: photo ? "photo_or_cast_story" : "outside_first_read_scope",
+          ...(story ? { finalizer_title_prefix: "Publication head " + pr.head.sha } : {}) });
+        continue;
+      }
       if (state === "current_head_claim" && pr.draft === false) {
         const ci = await ciState(pr);
         if (ci.state === "ci_pending") {

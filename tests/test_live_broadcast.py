@@ -5,8 +5,40 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from scripts.check_live import verify_broadcast_delivery
+from scripts.check_live import verify_article_clip_delivery, verify_broadcast_delivery
+
+
+class LiveArticleClipTests(unittest.TestCase):
+    def setUp(self):
+        self.article = {"slug": "older-selected-story"}
+        self.movie = b"verified movie"
+        self.cues = "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\n本文\n"
+        digest = hashlib.sha256(self.movie).hexdigest()
+        self.movie_url = "/clips/older-selected-story.mp4?v=" + digest[:12]
+        self.track_url = "/clips/older-selected-story.vtt?v=" + hashlib.sha256(self.cues.encode()).hexdigest()[:12]
+        self.page = "/articles/older-selected-story/"
+        self.player = ('<video class="article-visual article-video"><source src="' + self.movie_url
+                       + '" type="video/mp4"><track src="' + self.track_url + '"></video>')
+        self.files = {self.page: (self.player.encode(), "text/html"),
+                      self.movie_url: (self.movie, "video/mp4"), self.track_url: (self.cues.encode(), "text/vtt")}
+        for name, result in (("article_clip", {"sha256": digest}), ("broadcast_vtt", self.cues),
+                             ("broadcast_track_url", self.track_url)):
+            stub = patch("scripts.check_live." + name, return_value=result)
+            stub.start()
+            self.addCleanup(stub.stop)
+
+    def test_checks_versioned_bytes_and_requires_the_track_in_its_player(self):
+        verify_article_clip_delivery(self.article, fetch=self.files.__getitem__)
+        for url, response, error in (
+            (self.page, (self.player.replace("<track", "</video><track").encode(), "text/html"), "tracks"),
+            (self.movie_url, (b"outdated", "video/mp4"), "SHA-256"),
+            (self.track_url, (b"WEBVTT\n", "text/vtt"), "editorial cues"),
+            (self.track_url, (self.cues.encode(), "text/html"), "editorial cues"),
+        ):
+            with self.subTest(url=url, error=error), self.assertRaisesRegex(RuntimeError, error):
+                verify_article_clip_delivery(self.article, fetch=(self.files | {url: response}).__getitem__)
 
 
 class LiveBroadcastTests(unittest.TestCase):
