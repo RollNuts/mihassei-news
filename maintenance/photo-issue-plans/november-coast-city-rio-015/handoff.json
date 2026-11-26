@@ -685,6 +685,53 @@
           "reason": "山と湖を背景に白ニットとチェック柄、横長の正面寄り。既刊の雪山遠景や海沿いの写真と明確に異なる。"
         }
       ]
+    },
+    "last_stock_check": {
+      "observed_at": "2026-11-26T00:16:37.833Z",
+      "basis_main_sha": "6b01c1be3936d18d8203d9db6d62c95f486f4b0a",
+      "prior_candidate_commit": "7f72d59ed97c7e16a87552318f518b3a24d66e93",
+      "published_photo_count": 20,
+      "decisions": [
+        {
+          "ordinal": 1,
+          "decision": "hold_near_duplicate",
+          "already_published": false
+        },
+        {
+          "ordinal": 5,
+          "decision": "hold_near_duplicate",
+          "already_published": false
+        },
+        {
+          "ordinal": 6,
+          "decision": "usable_unpublished_stock",
+          "already_published": false
+        },
+        {
+          "ordinal": 12,
+          "decision": "usable_unpublished_stock",
+          "already_published": false
+        }
+      ],
+      "usable_unpublished": 2,
+      "pending_review": 0,
+      "confirmed_transit_pending": 0,
+      "unknown_unreceived": null,
+      "shortfall_next_issue": 8,
+      "shortfall_to_target": 28,
+      "new_generation_calls": 0,
+      "weekly_consumed": null,
+      "weekly_remaining": null,
+      "quota_lookup": "GET git/ref/heads/photo-issue-plan/stock-shioba-rio-2026-11-22 returned NOT_FOUND HTTP 404; branch search empty. Transition baseline incomplete; no reservation.",
+      "transport": "No new independent original reference in the current producer page/handoff; prior BLOCKED_FILE_REFERENCE retained, not repeated. Existing candidate reader is not proof of new-source transport.",
+      "guard": {
+        "state": "active",
+        "public": true,
+        "main_commit_sha": "6b01c1be3936d18d8203d9db6d62c95f486f4b0a",
+        "jpeg_bytes": 58824119,
+        "jpeg_cap_bytes": 1610612736
+      },
+      "next": "Keep 06/12, hold 01/05; prioritize distinct swimwear originals. Verify a new-source byte route and complete weekly baseline, or start exclusive weekly reservation on 2026-11-29 subject to policy and actual preflight. Do not retransfer originals."
     }
   }
 }
