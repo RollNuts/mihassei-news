@@ -1032,7 +1032,7 @@ test("ordinary empty first-read inventory finds only explicit merged photograph 
   const options = { fetchRepository, ref: REF, report };
   let busy = await context.readPhotoHandoffs(options);
   assert.deepEqual(busy.selected.map(row => row.slug), ["evening"]);
-  assert.deepEqual(busy.attention, [{ slug: "morning", pr: 1040, reason: "open_owner" }]);
+  assert.deepEqual(busy.attention, [{ ...rows[1], reason: "source_pr_not_found" }, { slug: "morning", pr: 1040, reason: "open_owner" }]);
   changedPath = "content/articles.json";
   const fetchFile = async ({ ref, path }) => ({ path, sha: GIT(25), encoding: "utf-8",
     content: JSON.stringify([{ slug: "morning", title: "no change" }, { slug: "evening", title: ref }]) });
@@ -1050,7 +1050,26 @@ test("ordinary empty first-read inventory finds only explicit merged photograph 
   open.length = 0;
   prs[0].body = prs[0].body.replace("<!-- photo-recovery:1032 -->", "");
   prs[1].body = prs[1].body.replace(rows[2].article_sha256, sha(9));
-  assert.deepEqual((await context.readPhotoHandoffs({ fetchRepository, ref: REF, report })).selected, []);
+  const gaps = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF });
+  assert.equal(gaps.empty, false); assert.equal(gaps.open_pr_count, 0);
+  assert.equal(gaps.photo_recovery.may_generate, false); assert.equal(gaps.photo_recovery.next_offset, null);
+  assert.deepEqual(gaps.photo_recovery.selected, []);
+  assert.deepEqual(gaps.photo_recovery.attention, [
+    { ...rows[0], pr: 101, reason: "source_recovery_marker_missing" }, { ...rows[1], reason: "source_pr_not_found" },
+    { ...rows[2], pr: 103, reason: "source_article_sha_mismatch" }]);
+  const noSource = await context.read({ fetchRepository, fetchFile: () => assert.fail("No article needed"), ref: REF,
+    photoReport: { checkout_sha: REF, photo_followup: [rows[1], rows[3]] } });
+  assert.equal(noSource.empty, false); assert.equal(noSource.photo_recovery.next_offset, null);
+  assert.deepEqual(noSource.photo_recovery.selected, []);
+  assert.deepEqual(noSource.photo_recovery.attention, [{ ...rows[1], reason: "source_pr_not_found" }]);
+  const pending = { ...rows[0], status: "pending" };
+  prs[0].body = "<!-- photo-recovery -->\n" + prs[0].body;
+  prs[0].head.sha = GIT(66);
+  const inspectPending = () => context.readPhotoHandoffs({ fetchRepository, ref: REF,
+    report: { checkout_sha: REF, photo_followup: [pending] } });
+  assert.deepEqual((await inspectPending()).attention, [{ ...pending, pr: 101, reason: "source_approval_not_current" }]);
+  prs[0].merged = false;
+  assert.deepEqual((await inspectPending()).attention, [{ ...pending, pr: 101, reason: "source_pr_mismatch" }]);
   assert.equal((await context.readPhotoHandoffs({ fetchRepository, ref: GIT(9), report })).status, "unverified");
   assert.equal((await context.readPhotoHandoffs({ fetchRepository: () => { throw Error("offline"); }, ref: REF })).status, "unverified");
 });
