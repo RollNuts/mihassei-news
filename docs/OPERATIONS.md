@@ -197,6 +197,8 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 
 ### 本番確認の代替経路
 
+記事・近況・市況・週刊特集の掲載確認には、まず対象の統合SHAにある既存の `Photograph completion` checkを1回読む（`/commits/<SHA>/check-runs?check_name=Photograph%20completion&per_page=1`）。完了した `github-actions` の当該checkで `head_sha`・`output.text` 内の `checkout_sha`・`verified_targets.served_sha` が統合SHAと一致し、対象slugまたは近況IDが該当欄にあれば、その実行で本番確認済み。写真待ちの件数・採否は別欄を読む。対象や記録が欠ける場合は下記の実run・対象URLを照合する。
+
 タスクの実行環境から本番へ直接接続できない場合は、既存の読み取り専用 `.github/workflows/verify-public-photos.yml` の実行結果をGitHub接続から回収できる。新しい監視タスクを作らず、次の証拠をそろえる。
 
 - 対象main SHAのrunは `https://api.github.com/repos/RollNuts/mihassei-news/actions/runs?head_sha=<完全なSHA>&per_page=20` からeventを限定せず探す。通常pushと、既存finalizerからの `workflow_dispatch` を含め、workflow pathが `.github/workflows/verify-public-photos.yml` であること、head SHA、実際の `check` jobを照合する。`fetch_commit_workflow_runs` はPR実行限定のため、この本番確認には使わない。先頭のrunやskipped実行だけを公開の証拠にしない。

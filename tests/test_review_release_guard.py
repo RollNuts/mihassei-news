@@ -207,6 +207,23 @@ class PhotoTests(unittest.TestCase):
         self.assertEqual(json.loads(output["text"]), {"checkout_sha": A, "photo_followup": [
             {"slug": "rice", "article_sha256": "3" * 64, "status": "missing"}]})
 
+    def test_each_desk_can_read_its_verified_item_only_for_the_exact_served_revision(self):
+        value = report()
+        url = "https://github.com/RollNuts/mihassei-news/actions/runs/123"
+        targets = {"served_sha": A, "news": ["new-article"], "market": ["market-close"],
+                   "stories": ["rena-post-1"], "photo_issues": ["winter-issue"]}
+        value["verified_targets"] = targets
+        def output():
+            return json.loads(g.photo_payload(value, A, url)["output"]["text"])
+
+        self.assertEqual(output()["verified_targets"], targets)
+        value["verified_targets"] = {**targets, "served_sha": B}
+        self.assertNotIn("verified_targets", output())
+        for invalid in (["rena-post-1"] * 2, [""], list(map(str, range(8)))):
+            value["verified_targets"] = {**targets, "stories": invalid}
+            with self.assertRaises(ValueError):
+                output()
+
     def test_check_payload_rejects_foreign_details_url(self):
         with self.assertRaises(ValueError):
             g.photo_payload(report(), A, "https://example.org/123")

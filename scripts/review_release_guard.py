@@ -235,9 +235,22 @@ def photo_payload(report: dict, expected_sha: str, details_url: str) -> dict:
     # Chat can read an Actions check but cannot fetch a binary artifact with its GitHub reader.
     rows = result["photo_followup"]
     if all(isinstance(row.get("article_sha256"), str) and re.fullmatch(r"[0-9a-f]{64}", row["article_sha256"]) for row in rows):
-        compact = json.dumps({"checkout_sha": expected_sha, "photo_followup": [
+        evidence = {"checkout_sha": expected_sha, "photo_followup": [
             {key: row[key] for key in ("slug", "article_sha256", "status")} for row in rows
-        ]}, separators=(",", ":"))
+        ]}
+        compact = json.dumps(evidence, separators=(",", ":"))
+        targets = report.get("verified_targets")
+        if isinstance(targets, dict) and targets.get("served_sha") == expected_sha:
+            limits = {"news": 10, "stories": 7, "market": 1, "photo_issues": 1}
+            for channel, limit in limits.items():
+                ids = targets.get(channel)
+                require(isinstance(ids, list) and len(ids) <= limit
+                        and all(isinstance(val, str) and SLUG.fullmatch(val) for val in ids)
+                        and len(ids) == len(set(ids)), "Invalid verified targets for " + channel)
+            delivery = {"served_sha": expected_sha, **{key: targets[key] for key in limits}}
+            with_targets = json.dumps({**evidence, "verified_targets": delivery}, separators=(",", ":"))
+            if len(with_targets) <= 64_000:
+                compact = with_targets
         if len(compact) <= 64_000:
             output["text"] = compact
     return {"name": "Photograph completion", "head_sha": expected_sha, "status": "completed",
