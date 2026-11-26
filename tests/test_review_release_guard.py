@@ -224,6 +224,48 @@ class PhotoTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 output()
 
+    def test_dated_editorial_guidance_preserves_the_existing_photo_and_delivery_check(self):
+        value = report()
+        row = {"slug": "rice", "status": "pending", "article_sha256": "3" * 64, "next_action": "inspect"}
+        value["photo_followup"] = [row]
+        value["photo_followup_counts"]["pending"] = 1
+        value["verified_targets"] = {"served_sha": A, "news": ["rice"], "market": [], "stories": [], "photo_issues": []}
+        url = "https://github.com/RollNuts/mihassei-news/actions/runs/123"
+        legacy = g.photo_payload(value, A, url)
+        baseline = json.loads(legacy["output"]["text"])
+        self.assertNotIn("editorial_guidance", baseline)
+        self.assertEqual(legacy["conclusion"], "failure")
+
+        guidance = {day: day + ": published=0; tracked=0; normal_target=2; next=quality-first\n題材比較（直近7本）\n- " + "記事" * 3000
+                    for day in ("2026-11-27", "2026-11-28")}
+        value["content_operations"] = {"news": {"status": "observed", "editorial_guidance": guidance},
+                                       "market": {"private": "never copy other channels"}}
+        payload = g.photo_payload(value, A, url)
+        text = payload["output"].pop("text")
+        legacy["output"].pop("text")
+        self.assertEqual(payload, legacy)
+        self.assertEqual(json.loads(text), {**baseline, "editorial_guidance": guidance})
+        self.assertLessEqual(len(text.encode("utf-8")), 64_000)
+
+    def test_oversized_or_invalid_editorial_guidance_does_not_displace_existing_evidence(self):
+        value = report()
+        # This verified item fits by itself. With Japanese text the joint evidence exceeds 64 kB.
+        value["verified_targets"] = {"served_sha": A, "news": ["x" * 1000], "market": [], "stories": [], "photo_issues": []}
+        url = "https://github.com/RollNuts/mihassei-news/actions/runs/123"
+        legacy = g.photo_payload(value, A, url)
+        day = "2026-11-27"
+        line = day + ": published=2; tracked=2; normal_target=2; next=stop\n題材比較（直近7本）\n- "
+        reports = ({day: line + "海" * 21_100}, {day: line + chr(0xD800)}, {day: 5},
+                   {day: day + ": published=0; tracked=0; no comparison"},
+                   {"2026-02-30": line}, {"2026-11-28": line}, [], {},
+                   {day: line, "2026-11-28": line, "2026-11-29": line})
+        for i, guidance in enumerate(reports):
+            with self.subTest(case=i):
+                value["content_operations"] = {"news": {"status": "observed", "editorial_guidance": guidance}}
+                self.assertEqual(g.photo_payload(value, A, url), legacy)
+        value["content_operations"] = {"news": {"status": "unavailable", "editorial_guidance": {day: line}}}
+        self.assertEqual(g.photo_payload(value, A, url), legacy)
+
     def test_check_payload_rejects_foreign_details_url(self):
         with self.assertRaises(ValueError):
             g.photo_payload(report(), A, "https://example.org/123")
