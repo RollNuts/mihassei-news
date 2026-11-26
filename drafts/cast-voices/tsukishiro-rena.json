@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "tsukishiro-rena",
   "name": "月城れな",
-  "created_date": "2026-11-25",
+  "created_date": "2026-11-26",
   "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
   "photo_reference": {
     "issue_slug": "november-city-pause-rena-008",
-    "cut_id": "03",
-    "image_sha256": "17d05de85421219ead92bdf7e1fedff0092729c7e654edd432241ec09626a671"
+    "cut_id": "09",
+    "image_sha256": "db9628382316306997e6cf96d9045eed19792a296a989adf961dc95ada2e2300"
   },
-  "post_text": "コートのポケットから古い切符が出てきた。どこへ行った日か思い出せない。捨てるつもりで机に置いたら、まだそこにある。",
+  "post_text": "帰りに寄った店で、片方だけのイヤリングを見つけた。失くした方ではなく、残った方が売られている。少し気になって、買って帰った。",
   "spoken_line": null,
   "future_idea": null
 }
