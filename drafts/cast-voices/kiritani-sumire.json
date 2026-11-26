@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-25",
+  "created_date": "2026-11-26",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
     "issue_slug": "november-rooftop-pool-sumire-011",
-    "cut_id": "07",
-    "image_sha256": "77e72dd4e8fdc17779632b66bceeaf0d9c740dfd5cb83f66b6717fba1a1940e2"
+    "cut_id": "09",
+    "image_sha256": "8c2153e0b862e3dc4e8b130171c097a336cea845aa08e49c2f972815ea0d4ab8"
   },
-  "post_text": "午後、温水プールの帰りに古い黒のショールを羽織った。茶色の水着に合わせたら意外としっくりきて、冬にも出番が増えそう。",
-  "spoken_line": "冬も出番がありそう。",
-  "future_idea": "2031年、舞台衣装の二次利用契約が広がり、出演者と縫製職人への収益配分が争点になる。"
+  "post_text": "午後、緑の布見本を窓辺に並べてみた。曇りの日の光だと、同じ緑でもずいぶん違う。二枚に絞るつもりが三枚残った。",
+  "spoken_line": "二枚のつもりが三枚。",
+  "future_idea": "舞台衣装の布見本を自然光の変化と一緒に保存する小さな展示。"
 }
