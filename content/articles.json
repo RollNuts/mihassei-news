@@ -1,5 +1,71 @@
 [
   {
+    "slug": "student-town-model-opens-after-school-study-room",
+    "category": "社会",
+    "flash": "高校生の町づくり",
+    "art": "generic",
+    "fiction_company": "野澄町、野澄高校（架空）",
+    "fiction_at": "2031-11-27T07:27:02+09:00",
+    "published_at": "2026-11-27T07:27:02+09:00",
+    "publication_slot": "2026-11-27T07:30:00+09:00",
+    "title": "高校生、先輩が残した町の模型から空き店舗に学習室を開く",
+    "summary": "2031年、野澄高校の生徒が、歴代の生徒の提案と町の建物情報を重ねたデジタル模型を使い、商店街の空き店舗に放課後の学習室を開いた。卒業とともに終わっていた町づくりの授業が、次の学年に実際の運営を引き継ぐ活動に変わった。",
+    "paragraphs": [
+      "野澄高校の生徒4人は26日午後、商店街で閉店していた文具店のシャッターを上げ、窓際に机を並べた。3年前に先輩たちが授業で提案した放課後の学習室が、2031年になって実際に開いた。初日はバスを待つ中高生9人が訪れた。",
+      "同校では地域の課題を考える授業に生成AIを取り入れてきた。かつては提案書を作って発表すれば授業が終わったが、現在は町が公開する建物の立体地図に、過去の提案や調査結果を位置ごとに残せる。AIは新しい調査結果を過去の案と結び付け、前提が変わった箇所を示す。町の人口やバスの時刻表、利用できる公共施設の情報も更新される。",
+      "今年の生徒は先輩の提案を開き、放課後の居場所が不足している地区を調べた。元の案では新しい施設を建てることになっていたが、昨年閉店した文具店がバス停のすぐ近くにあった。新築より安く、バスに乗り遅れずに過ごせる場所を作れると考えた生徒は、店の持ち主に貸してもらえないか尋ねた。",
+      "持ち主は週3日の利用を認め、商店街の組合が光熱費を負担することになった。町は利用前に建物を点検し、学校の教員と地元の有志が交代で見守る。生徒はAIが示した利用人数をそのまま信じず、バス停で待つ人に聞き取りを行った。机は6席から始め、混雑時は近くの公共施設を案内する。",
+      "初日、大学進学で町を離れていた提案者の一人が学習室を訪れた。机の配置を見た後、当時の案にはなかったバスの時刻表を壁に貼るのを手伝った。生徒たちは開室時間と利用者数を模型に記録し、来年度の生徒が運営を続けるか判断できるようにする。帰り際、先輩は後輩に「発表の続きをしてくれたんだね」と声をかけた。"
+    ],
+    "source": {
+      "kind": "大学公式発表",
+      "publisher": "近畿大学",
+      "published_at": "2026-11-19T00:00:00+09:00",
+      "url": "https://www.kindai.ac.jp/news-pr/news-release/2026/11/052345.html",
+      "topic": "近畿大学は2026年11月19日、川俣高校と連携した生成AI活用の地域課題探究学習について、11月26日に地域提案の成果発表会を予定していると発表した。独自の支援AIで生徒自身の思考を深める取り組み。発表会の実施結果は未確認。2031年の町の共有模型、野澄町・野澄高校と学習室の開設は創作。"
+    },
+    "scene_prompt": "Natural horizontal 16:9 documentary photograph inside a small reopened former Japanese stationery shop, four fictional high school students arranging ordinary study desks with an adult local volunteer, street visible through the shop window, afternoon light, modest everyday clothing, no readable text, no logos, no identifiable real persons.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "教育",
+      "地域",
+      "生成AI"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "探究学習",
+      "まちづくり"
+    ],
+    "x_tickers": [],
+    "reader_interest": "general_society",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "dialogue",
+    "editorial_signature": {
+      "present": "2026年に生成AIを使って大学生と高校生が地域課題を調べ、未来の地域提案を作る授業が行われている",
+      "target": "歴代の生徒の地域提案と現況を立体地図で引き継ぐ探究学習",
+      "action": "高校生が先輩の学習室案を現況の空き店舗に合わせ直し、店主や地域と開室する",
+      "outcome": "実際の学習室に中高生が訪れ、次年度へ運営の記録を残す"
+    },
+    "reader_clarity": {
+      "who": "野澄高校の生徒",
+      "action": "先輩の提案と現在の建物情報を重ねて空き店舗に学習室を開く",
+      "oddity": "卒業で終わっていた地域提案が学年を越えて実際の運営につながる"
+    },
+    "behavior_basis": {
+      "motive": "放課後のバス待ち時間に中高生が過ごせる学習場所を作りたい",
+      "ordinary_alternative": "先輩の案通り新施設を建てる",
+      "why_not": "バス停近くの空き店舗なら新築より安く利用できる",
+      "evidence_quote": "新築より安く、バスに乗り遅れずに過ごせる場所を作れると考えた生徒は、店の持ち主に貸してもらえないか尋ねた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に大学が高校生の地域課題探究を生成AIと統計資料で支援している",
+      "continuation_force": "地域データの更新と位置にひも付く提案の蓄積が進み、AIによる新旧資料の照合を翌年度も利用できる",
+      "future_result": "3年前の提案を現在の空き店舗に合わせて実行し、学習室に実際の利用者が訪れる"
+    }
+  },
+  {
     "slug": "cheer-dance-four-sided-final-no-front",
     "category": "スポーツ",
     "flash": "チアダンス、正面のない新部門",

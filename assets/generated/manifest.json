@@ -11377,6 +11377,174 @@
     }
   }
 }
+  ,
+    "student-town-model-opens-after-school-study-room": {
+  "article_sha256": "6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+  "bytes": 199275,
+  "generated_at": "2026-11-26T23:07:28.581Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "ae815039-2b3c-46ba-ab16-563106a05a20",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:ae815039-2b3c-46ba-ab16-563106a05a20",
+  "generation_prompt": "Natural horizontal 16:9 documentary photograph inside a small reopened former Japanese stationery shop, four fictional high school students arranging ordinary study desks with an adult local volunteer, street visible through the shop window, afternoon light, modest everyday clothing, no readable text, no logos, no identifiable real persons.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "96e51dc03cf377c6a497941701ae4d67fa36dc4c568e4659e0801012b61e8846",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:bb026201-d603-4319-a2de-cdc598cdcc26",
+    "instanceID": "xmp:iid:ae815039-2b3c-46ba-ab16-563106a05a20",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          34,
+          66,
+          236,
+          116,
+          155,
+          126,
+          61,
+          238,
+          237,
+          14,
+          205,
+          228,
+          1,
+          7,
+          234,
+          157,
+          39,
+          80,
+          236,
+          100,
+          198,
+          248,
+          165,
+          33,
+          76,
+          167,
+          148,
+          37,
+          250,
+          65,
+          91,
+          50
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-26T23:07:25.265507156Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-26T23:07:25.265513307Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-26T23:07:25.263687027Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "65abfc58576861653f6a22aca8390afa35158cdc5d7e87b821520373252846a6",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/38baa7428501/generated_images as /workspace/scratch/38baa7428501/generated_images/exec-cf615dee-776b-47e0-b312-4389bcff385a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-26T23:07:28.581Z",
+    "bytes": 2366905,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "cb2029e8ff05c6f288f1e446133f02819a1ffa1c30195cf82910e7ab376c3985",
+    "candidate_branch": "native-image-candidate/student-town-model-opens-after-school-study-room/6eab3e26544122bf-9dadd42a7a0c",
+    "candidate_commit": "e1dc5cab90254b7988993b756608fa70b4e7e825",
+    "receipt_path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/receipt.json",
+    "receipt_sha256": "ed8423272fc34b6e9cda318d089fe2640689fc195d382000cc8512af9f80ef45",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part000",
+        "bytes": 524288,
+        "sha256": "9f2a8e93f7d833b6e06e7b20d62a05209766133a756ad31128b7b47b3c963b1f",
+        "blob_sha": "eb9fb4ca9d1cd23d0a1d22029eb0743c9a2fab64"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part001",
+        "bytes": 524288,
+        "sha256": "820067a0efa3be250d92c2ada9acac8054c1dd3baf34935dbaf2e89bdd37ace3",
+        "blob_sha": "933eeaf752d13ef9995ebae965ef05c167d472fa"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part002",
+        "bytes": 524288,
+        "sha256": "2fc0ba0213e850350450b42683b696364fb348151a6ad6003698dc83d795ff56",
+        "blob_sha": "636f54b290f2520233f2013f64bf7f876eef74d6"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part003",
+        "bytes": 524288,
+        "sha256": "7d7dc8ea255a3b309fb84eb7be05fba51b2fb5bcfdc0afad2748d383d750ce71",
+        "blob_sha": "1fd6418bf8e967cf2ad95f50a29e26b07dbc6c30"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part004",
+        "bytes": 269753,
+        "sha256": "863e729bce5147731f3684870788f2a9e761d06d7d1c9b71c8cc2cb3ec3c19d8",
+        "blob_sha": "4de735f5e68e12d9c3b45c18860efade8f9577ac"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "adb23fee28a493209ac6b53562702598f659f35b",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "24a99a6e5c8d20973dea799153ee05ccca451ab007ac1eb9ecc8151d6ef46af3",
+      "observed_at": "2026-11-26T23:06:11.963Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/473b0d748e5ce55def211ddbb28100d86ae03255d0171fb4f5f4fd8fbdc17e93",
+      "receipt_path": "maintenance/native-image-generation-claims/473b0d748e5ce55def211ddbb28100d86ae03255d0171fb4f5f4fd8fbdc17e93.json",
+      "receipt_sha256": "b5596b6eb909cca2054a89e78a8a69bf63c1881c462feba9bf0594a41d13470f",
+      "commit_sha": "b8d8f6d6f2df767573cf0438722d058410818942"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {
