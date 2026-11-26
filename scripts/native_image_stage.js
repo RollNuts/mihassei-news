@@ -70,7 +70,10 @@ var NativeImageStage = (function () {
     }
     async function fetchJSON(path){
       if(typeof github.fetch!=="function")throw Error("Missing cloud guard GitHub callback: fetch");
-      const raw=payload(await invoke("fetch",{url:"https://api.github.com/repos/"+repository+path}));
+      const reply=await invoke("fetch",{url:"https://api.github.com/repos/"+repository+path});
+      const raw=payload(reply);
+      if(reply?.truncated||reply?.content_truncated||raw.truncated||raw.content_truncated)
+        throw Error("Incomplete GitHub response: "+path.split("?")[0]);
       return typeof raw.content==="string"?JSON.parse(raw.content):raw;
     }
     async function cloudStatus(){
@@ -581,9 +584,11 @@ var NativeImageStage = (function () {
       if(created.branch!==claim.branch)throw Error("Claim create response did not confirm the branch; recover only");
       // The pre-creation branch Contents lookup may still return its cached 404.
       // Both callers already verified the protected files at this immutable commit.
-      const receipt=await read(claim.receipt_path,claim.commit_sha);
+      const [receipt,head]=await Promise.all([
+        read(claim.receipt_path,claim.commit_sha),branchHead(claim.branch,true)
+      ]);
       if(hashText(receipt.content)!==claim.receipt_sha256)throw Error("Claim receipt readback mismatch; recover only");
-      if(await branchHead(claim.branch,true)!==claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
+      if(head!==claim.commit_sha)throw Error("Claim branch SHA mismatch; recover only");
     }
     async function reservePrepared(plan,options,requireGenerator) {
       let phase="candidate_lookup",proof,generationClaim;
@@ -792,16 +797,26 @@ var NativeImageStage = (function () {
       }
       return state.verifyIndex===all.length;
     }
-    async function lookupSaved(plan,state,expectedSourceSha){
+    async function lookupSaved(plan,state,expectedSourceSha,foundCommit){
       try{
-        const raw=await read(plan.directory+"/receipt.json",plan.branch);
+        const raw=await read(plan.directory+"/receipt.json",foundCommit||plan.branch);
         const r=JSON.parse(raw.content);
         if(state.version===2&&(r.source?.bytes>COMPACT_SOURCE_LIMIT||r.source?.parts?.length>8))
           throw Error("Compact saved readback supports source PNGs up to 4 MiB");
-        state.saved={ref:plan.branch,commitSha:await branchHead(plan.branch),receiptText:raw.content,
+        state.saved={ref:plan.branch,commitSha:foundCommit||await branchHead(plan.branch),receiptText:raw.content,
           receiptSha:hashText(raw.content),source:[],index:0,protectedIndex:0,expectedSourceSha:expectedSourceSha||null};
         state.phase="saved_readback";return true;
-      }catch(error){if(absentRef(error,plan.branch))return false;throw error;}
+      }catch(error){if(!foundCommit&&absentRef(error,plan.branch))return false;throw error;}
+    }
+    async function lookupCandidateAfterClaim(plan,state){
+      // The normal no-candidate result is HTTP 200 with an empty array, not a thrown Contents 404.
+      const refs=await fetchJSON("/git/matching-refs/heads/"+plan.branch+"?read_nonce="+freshNonce());
+      if(!Array.isArray(refs))throw Error("Missing Git ref list for the candidate; recover only");
+      if(!refs.length)return false;
+      const ref=refs[0];
+      if(refs.length!==1||ref?.ref!=="refs/heads/"+plan.branch||ref.object?.type!=="commit"||!GIT.test(ref.object.sha||""))
+        throw Error("Ambiguous Git ref list for the candidate; recover only");
+      return lookupSaved(plan,state,undefined,ref.object.sha);
     }
     async function savedSlice(plan,state){
       const saved=state.saved;
@@ -1019,9 +1034,17 @@ var NativeImageStage = (function () {
         }else if(state.phase==="claim_final"){
           // This entire ownership grant is one cold <=15-call cell. Never resume
           // an uncertain create response into permission to generate.
-          await createVerifiedClaim(state.claim);
-          if(await lookupSaved(plan,state))return;
-          await cloudStatus();
+          let operation="create and confirm the claim";
+          try{
+            await createVerifiedClaim(state.claim);
+            operation="check the candidate ref";
+            if(await lookupCandidateAfterClaim(plan,state))return;
+            operation="verify the final live guard";
+            await cloudStatus();
+          }catch(error){
+            const detail=typeof error==="string"?error:error?.message||error?.error_code||"no connector error detail";
+            throw Error("Could not "+operation+": "+detail);
+          }
           return {status:"reserved",plan,transportPreflight:state.proof,generationClaim:state.claim};
         }else throw Error("Unknown bounded reservation phase");
       });

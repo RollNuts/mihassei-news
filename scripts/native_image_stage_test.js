@@ -235,6 +235,12 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
         if (args.url === root + "/git/trees/" + cloud.commit.tree.sha + "?recursive=1") return cloudResult("tree");
         const commitSha=args.url.split("/git/commits/")[1], commit=commits.get(commitSha);
         if(commit)return ok({content:JSON.stringify({sha:commitSha,tree:{sha:commit.tree},parents:[{sha:commit.parent}]})});
+        const matchPrefix = args.url.split("?")[0].split("/git/matching-refs/heads/")[1];
+        if (matchPrefix) {
+          const refs = Array.from(branches).filter(([name]) => name.startsWith(matchPrefix))
+            .map(([name, sha]) => ({ref:"refs/heads/"+name,object:{type:"commit",sha}}));
+          return ok({content: JSON.stringify(refs)});
+        }
         const branch = args.url.split("?")[0].split("/git/ref/heads/")[1];
         let sha = branch === "main" ? cloud.mainSha : branches.get(branch);
         if (branch === "main" && cloud.error === "main") return apiError("SERVICE_UNAVAILABLE", "Injected main lookup failure");
@@ -1521,6 +1527,8 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const namedClaim=claimBranchPrefix+compact.plan.identity;
   const normalContents=compact.mock.github.fetch_file;
   compact.mock.github.fetch_file=async args=>{
+    if(args.ref===compact.branch && compact.mock.branches.has(namedClaim) && !compact.mock.branches.has(compact.branch))
+      throw {code:"OPAQUE_CONTENTS_404"};
     if(args.ref===namedClaim && compact.mock.branches.has(namedClaim))
       return {isError:true,structuredContent:{error_code:"NOT_FOUND",error_data:{message:"No commit found for the ref "+namedClaim}}};
     return normalContents(args);
@@ -1554,7 +1562,8 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   assert(afterCreate.some(call=>call.name==="fetch_file" && call.args.ref===claimCommit &&
     call.args.path===compactReserved.result.generationClaim.receipt_path) &&
     afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/ref/heads/"+namedClaim+"?read_nonce=")) &&
-    afterCreate.every(call=>call.name!=="fetch_file"||call.args.ref!==namedClaim),
+    afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/matching-refs/heads/"+compact.branch+"?read_nonce=")) &&
+    afterCreate.every(call=>call.name!=="fetch_file"||![namedClaim,compact.branch].includes(call.args.ref)),
     "newly created claim survives cached branch-name 404 only with immutable receipt and positive fresh ref readback");
   assert(compactReserved.steps === 9 && compactReserved.result.transportPreflight.branch===namedClaim &&
     !compact.mock.branches.has(preflightBranch), "compact reservation needs nine cold cells and only the article's create-only ref");
@@ -1817,6 +1826,32 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   await failure(()=>compactCall(compact,"reserveExternalGenerationStep",{},sourceCheck),"split readback verifies each immutable source after the JPEG");
   savedTree.set(firstPart.path,goodPart);
 
+  for(const outcome of ["present", "ambiguous", "truncated", "malformed", "unknown"]) {
+    const ctx=await compactContext("late-candidate-"+outcome);
+    const method="reserveExternalGenerationStep", options=compactReservationOptions(ctx);
+    let checkpoint;
+    do {checkpoint=(await compactCall(ctx,method,options,checkpoint)).checkpoint;}
+    while (checkpoint.phase!=="claim_final");
+    if(outcome==="present"){
+      const saved=await ctx.service.stage(ctx.plan,ctx.input);
+      const result=await compactCall(ctx,method,options,checkpoint);
+      assert(result.status==="pending" && result.phase==="saved_readback" &&
+        result.checkpoint.saved.commitSha===saved.commitSha,
+        "a candidate published just before the claim is recovered at its exact SHA instead of granting generation");
+    }else{
+      const original=ctx.mock.github.fetch;
+      ctx.mock.github.fetch=async args=>{
+        if (!args.url.includes("/git/matching-refs/"))return original(args);
+        if(outcome==="unknown")throw {};
+        const ref={ref:"refs/heads/"+ctx.branch+"-other",object:{type:"commit",sha:baseCommitSha}};
+        const content=JSON.stringify(outcome==="ambiguous"?[ref]:outcome==="malformed"?{}:[]);
+        return {structuredContent:{content,truncated:outcome==="truncated"}};
+      };
+      const error=await failure(()=>compactCall(ctx,method,options,checkpoint),"uncertain final candidate ref search: "+outcome);
+      assert(error.stage==="bounded_claim_final" && error.message.includes("check the candidate ref") &&
+        ctx.mock.branches.has(claimBranchPrefix+ctx.plan.identity),"ambiguous candidate lookup retains its operation and never grants generation");
+    }
+  }
   const stopOnClaim=await compactContext("compact-stop-after-claim");
   const stopCreate=stopOnClaim.mock.github.create_branch;
   stopOnClaim.mock.github.create_branch=async args=>{
