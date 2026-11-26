@@ -14,7 +14,7 @@
   },
   "producer_handoff": {
     "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/0ceca247dc55f020f0b8202f4bac0b6afd081660/maintenance/photo-issue-plans/november-mio-on-the-move-016/weekly-generation-coverage-20261122.json",
-    "weekly_quota_next_step": "今週の実消費台帳は復旧しbaseline0・attempts0。今回CodeModeに内蔵生成原本PNGを返す実callbackは露出なし。file-only原本参照も確立しておらず、checkOriginalTransportの入力routeを実証できないため予約・生成なし。次回の実行環境で生成の実返却形式・対応保存経路を確認し、既存checkOriginalTransport成功後だけ週予約へ進む。",
+    "weekly_quota_next_step": "2026-11-26 JST: 最新mainの既存検品記録と本人既刊30枚を再照合、予備4枚に掲載済みSHA重複なし。週台帳のbaseline0・attempts0を固定commitで読取。今回の実行で138-byte公式offline probeを一時作成し、既存PhotoOriginalHandoff.checkOriginalTransport({route:\"file\"})を実行したが status=blocked / operation=readCandidatePng/upload / reason=Transport callback failed。fixtureは削除済み。CodeModeに内蔵生成原本PNGの実callbackも露出せず、原本経路は未実証。予約・生成・既存原本再転送は0。次の既存枠で対応経路または新たな実参照が利用可能になった場合にのみ同helperで検証し、成功後に既存週台帳の1枚予約へ進む。既存のstock_review・source_handoffは不変。",
     "stock_checked_at": "2026-11-25T03:07:34.598Z",
     "stock_main_commit": "a9642d28a3ccf2965ddbad1bfe3262cbdc1bfdb8",
     "stock_source_handoff_commit": "108dd3cfd7df0e446615cec8ef413d3ca4d10c05",
