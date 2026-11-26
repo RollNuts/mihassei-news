@@ -5910,5 +5910,142 @@
         "checked_on": "2026-11-26"
       }
     ]
+  },
+  {
+    "slug": "2026-11-26-open",
+    "day": "2026-11-26",
+    "slot": "open",
+    "coverage": "investor",
+    "published_at": "2026-11-26T10:11:03+09:00",
+    "title": "日経平均1.80%高、半導体株指数6.12%高　医薬品・食料品は下落",
+    "summary": "26日朝の日経平均は9時31分に58,036.42円、日経半導体株指数は9時30分に6.12%高。JPXの9時36分更新ではTOPIXが0.77%高となる一方、医薬品と食料品は下落した。",
+    "lead": "26日朝の東京株式市場で日経平均は9時31分時点に58,036.42円となり、25日終値から1,024.80円（1.80%）上昇しました。日経半導体株指数は9時30分に6.12%高。JPXの9時36分更新ではTOPIXが0.77%高でしたが、医薬品や食料品は下落し、前日に大きく売られた分野と買われた分野の明暗が逆転しています。",
+    "sections": [
+      {
+        "heading": "半導体株指数が反発",
+        "paragraphs": [
+          "日経半導体株指数は9時30分に16,209.15ポイント、25日終値15,274.30ポイントから934.85ポイント上昇しました。25日は同指数が9.84%安だったため、26日朝の反発でも24日終値の水準には戻っていません。",
+          "日経平均も25日の2.78%安から反発しましたが、9時31分時点では24日終値58,644.63円を608.21円下回ります。前日に大きく下げた指数ほど反発率が大きくても、下げをすべて取り戻したわけではありません。"
+        ]
+      },
+      {
+        "heading": "非鉄金属と電気機器が上昇、医薬品と食料品は安い",
+        "paragraphs": [
+          "JPXの9時36分更新では非鉄金属が3.78%高、電気機器が2.45%高でした。一方、25日に上昇していた医薬品は1.14%安、食料品は1.33%安。非鉄金属と食料品の騰落率の差は5.11ポイントです。銀行業は0.67%高、保険業は0.24%安でした。",
+          "TOPIXは3,775.13ポイント（25日終値3,746.20ポイント比28.93ポイント高）。東証規模別では大型株が0.92%高、中型株が0.41%高、小型株が0.55%高と、規模別ではいずれも上昇しました。ただし業種によっては下落しており、値上がりが全銘柄に及んだことを意味しません。"
+        ]
+      },
+      {
+        "heading": "米国株は現地26日が休場",
+        "paragraphs": [
+          "26日の日本市場は通常取引日です。NYSEの公式日程によると米国市場は現地26日が感謝祭で休場し、27日は東部時間13時（日本時間28日3時）に通常取引を短縮終了します。今回の日本株の数値は取引途中のもので、米国26日の現物株の値動きではありません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov26-open",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "25日終値比。日経平均は26日9時31分、日経半導体株指数は9時30分の途中値。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-26T09:31:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": 1.8,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": 6.12,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "metals-food-nov26-open",
+        "kind": "bars",
+        "title": "非鉄金属と食料品の騰落率",
+        "note": "JPX26日9時36分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T09:36:00+09:00",
+        "values": [
+          {
+            "label": "非鉄金属",
+            "value": 3.78,
+            "state": "実績"
+          },
+          {
+            "label": "食料品",
+            "value": -1.33,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "large-mid-nov26-open",
+        "kind": "bars",
+        "title": "東証大型株と中型株の騰落率",
+        "note": "JPX26日9時36分更新の途中値、25日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-26T09:36:00+09:00",
+        "values": [
+          {
+            "label": "大型株",
+            "value": 0.92,
+            "state": "実績"
+          },
+          {
+            "label": "中型株",
+            "value": 0.41,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：26日9時30分・31分公表値",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：現物指数・業種別指数の26日9時36分更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "JPX：2026年休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "NYSE：2026年取引時間・休場日",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-26",
+        "checked_on": "2026-11-26"
+      },
+      {
+        "title": "25日引け後の既刊：日経平均・半導体株指数・業種別指数",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-25-close/",
+        "published_on": "2026-11-25",
+        "checked_on": "2026-11-26"
+      }
+    ]
   }
 ]
