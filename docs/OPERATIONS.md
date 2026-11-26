@@ -197,9 +197,12 @@ text(await C.read({fetchFile, ref: mainSha, modelId, now: new Date().toISOString
 
 ### 本番確認の代替経路
 
+記事・近況・市況・週刊特集の掲載確認には、まず対象の統合SHAにある既存の `Photograph completion` checkを1回読む（`/commits/<SHA>/check-runs?check_name=Photograph%20completion&per_page=1`）。完了した `github-actions` の当該checkで `head_sha`・`output.text` 内の `checkout_sha`・`verified_targets.served_sha` が統合SHAと一致し、対象slugまたは近況IDが該当欄にあれば、その実行で本番確認済み。写真待ちの件数・採否は別欄を読む。対象や記録が欠ける場合は下記の実run・対象URLを照合する。
+
 タスクの実行環境から本番へ直接接続できない場合は、既存の読み取り専用 `.github/workflows/verify-public-photos.yml` の実行結果をGitHub接続から回収できる。新しい監視タスクを作らず、次の証拠をそろえる。
 
 - 対象main SHAのrunは `https://api.github.com/repos/RollNuts/mihassei-news/actions/runs?head_sha=<完全なSHA>&per_page=20` からeventを限定せず探す。通常pushと、既存finalizerからの `workflow_dispatch` を含め、workflow pathが `.github/workflows/verify-public-photos.yml` であること、head SHA、実際の `check` jobを照合する。`fetch_commit_workflow_runs` はPR実行限定のため、この本番確認には使わない。先頭のrunやskipped実行だけを公開の証拠にしない。
+- 本番revisionの待機が期限に達したときは、受取時に `GET /repos/RollNuts/mihassei-news/commits/<対象mainの完全SHA>/check-runs?check_name=Workers%20Builds%3A%20mihassei-news&filter=latest` を1回照合する。Cloudflareのビルド結果はActionsの待機終了後に届くことがある。`head_sha`・check名 `Workers Builds: mihassei-news`・`app.slug=cloudflare-workers-and-pages` が一致する公式結果で、失敗時は `details_url` の本番ビルドを既存のサイト日次担当が調べる。結果未着・実行中ならその状態を残し、成功時は下記の本番revisionと対象URLの配信を確認する。
 - jobの実stepが成功し、ログの本番revisionが対象SHAと一致することを確認する。docs-only祖先を許容した結果なら、その差分証明も残す。run全体のsuccessやPRのCI成功だけで完了にしない。
 - 対象slugの `Public article OK`、変更した画像・図の検証結果、必要な共有画像の対象を確認する。現行 `check_live.py` の本文確認は最新10記事、`check_share_cards.py` は選抜したカードの確認であり、対象外まで検証済みにしない。ログに含まれない対象や変更素材は、直接の取得・対象を指定した検証・次担当での確認を未完として残す。
 - 結果は「Actionsで実配信検証済み」と「今回のブラウザ目視」を分けて記録する。取得不能・実行中・対象外を0件や本番障害へ読み替えない。取得不能なら失敗した取得操作を残し、実行中なら同じrunの完了を確認する。対象外は対象を指定した検証へ引き継ぐ。

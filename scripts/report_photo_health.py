@@ -199,6 +199,9 @@ def main(argv: list[str] | None = None) -> int:
         "articles": os.environ.get("PHOTO_ARTICLE_CHECK") or "not_run",
         "share_cards": os.environ.get("PHOTO_SHARE_CARD_CHECK") or "not_run",
     })
+    targets = os.environ.get("VERIFIED_PUBLIC_TARGETS")
+    if targets and all(value == "success" for value in report["live_checks"].values()):
+        report["verified_targets"] = json.loads(targets)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     rendered = summary(report)
     if os.environ.get("GITHUB_STEP_SUMMARY"):

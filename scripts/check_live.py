@@ -1135,7 +1135,7 @@ def verify_pageview_contract(payload: dict, article_slug: str) -> None:
 
 def check():
     # A docs-only descendant need not rebuild, but all public-byte checks remain.
-    verify_public_revision()
+    served_sha = verify_public_revision()
     issues = published_issues(load_photo_issues(ROOT), root=ROOT)
     checked_photo_cuts = verify_latest_photo_issue_delivery(issues)
     if issues:
@@ -1802,6 +1802,16 @@ def check():
         raise RuntimeError("Future verdict counters missing or invalid")
     print(f"OK: {len(articles)} indexed article URLs; {len(recent)} recent pages; {checked_photos} cached images; {checked_diagrams} verified article diagrams; real SEO dates; whole-archive recent-PV recommendations; separate site/article PV with coverage; free channel attribution; free hosting.")
 
+    # This subset was compared with the public pages in this pass.
+    return {
+        "served_sha": served_sha,
+        "news": [item["slug"] for item in recent],
+        "stories": [post["id"] for post in latest_model_stories(cast_posts)[:checked_cast_posts]],
+        "market": [dispatches[-1]["slug"]] if dispatches else [],
+        "photo_issues": [issues[0]["slug"]] if issues else [],
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--article-clip", metavar="SLUG", help="Verify one published movie and its subtitles")
@@ -1816,7 +1826,10 @@ def main():
     last=None
     for i in range(15):
         try:
-            check()
+            targets = check()
+            if os.environ.get("GITHUB_OUTPUT"):
+                with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+                    print("verified_targets=" + json.dumps(targets, separators=(",", ":")), file=output)
             return
         except (ValueError,AssertionError,RuntimeError,ET.ParseError,urllib.error.URLError,TimeoutError) as exc:
             last=exc

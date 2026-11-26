@@ -69,6 +69,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const jpegPath = prefix + "candidate.jpg";
   const preflightBranch = "native-image-preflight/transport";
   const preflightPrefix = "maintenance/native-image-preflight/";
+  const readyBranch = p => p.branch+"-ready-"+p.identity;
   const claimBranchPrefix = "native-image-generation-claim/";
   const claimPrefix = "maintenance/native-image-generation-claims/";
 
@@ -1484,7 +1485,8 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
     } finally {
       const calls = context.mock.calls.slice(beforeCalls), toolCalls = calls.length + context.stepCounters.reads - beforeReads;
       const mutations = calls.filter(call => call.name.startsWith("create_") || call.name === "update_ref").length;
-      assert(toolCalls+imports <= 16 && mutations <= 2,
+      const newReservation=retained?.separateStart && ["ready_publish","ready_verify","ready_transport","claim_final"].includes(retained.phase);
+      assert(toolCalls+imports <= (newReservation?15:16) && mutations <= 2,
         "compact "+method+"/"+(retained?.phase||"lookup")+" cold cell used "+imports+" imports + "+toolCalls+" calls, "+mutations+" mutations");
       if (result && result.phase!=="preflight_verify_commit" &&
         ["preflight_verify_commit", "preflight_verify_branch"].includes(checkpoint?.phase)) {
@@ -1559,14 +1561,14 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   const claimCommit=compactReserved.result.generationClaim.commit_sha;
   const afterCreate=compact.mock.calls.slice(compact.mock.calls.findLastIndex(call=>
     call.name==="create_branch" && call.args.branch_name===namedClaim)+1);
-  assert(afterCreate.some(call=>call.name==="fetch_file" && call.args.ref===claimCommit &&
+  assert(compact.mock.calls.slice(0,compact.mock.calls.length-afterCreate.length-1).some(call=>call.name==="fetch_file" && call.args.ref===claimCommit &&
     call.args.path===compactReserved.result.generationClaim.receipt_path) &&
     afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/ref/heads/"+namedClaim+"?read_nonce=")) &&
     afterCreate.some(call=>call.name==="fetch" && call.args.url.includes("/git/matching-refs/heads/"+compact.branch+"?read_nonce=")) &&
     afterCreate.every(call=>call.name!=="fetch_file"||![namedClaim,compact.branch].includes(call.args.ref)),
     "newly created claim survives cached branch-name 404 only with immutable receipt and positive fresh ref readback");
-  assert(compactReserved.steps === 9 && compactReserved.result.transportPreflight.branch===namedClaim &&
-    !compact.mock.branches.has(preflightBranch), "compact reservation needs nine cold cells and only the article's create-only ref");
+  assert(compactReserved.steps === 11 && compactReserved.result.transportPreflight.branch===namedClaim &&
+    !compact.mock.branches.has(preflightBranch), "compact reservation uses eleven bounded cells and its own create-only preparation and claim");
   assert(compactReserved.result.status === "reserved" && compact.mock.calls.some(call =>
     call.name === "fetch" && call.args.url.endsWith("/git/trees/" + nextMainTree + "?recursive=1")) &&
     compact.mock.calls.at(-1).args.url.endsWith("/actions/workflows/free-cpu-scenes.yml"),
@@ -1607,7 +1609,7 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   }));
   const work=concurrent.mock.calls.slice(firstCalls);
   assert(!work.some(({args})=>args.ref===preflightBranch||args.branch_name===preflightBranch||args.url?.includes(preflightBranch)) &&
-    concurrent.mock.branches.size===2 && new Set(claims.map(r=>r.transportPreflight.commit_sha)).size===2 &&
+    concurrent.mock.branches.size===4 && plans.every(p=>concurrent.mock.branches.has(readyBranch(p))) && new Set(claims.map(r=>r.transportPreflight.commit_sha)).size===2 &&
     claims.every(({plan,generationClaim:claim,transportPreflight:proof})=>{
       const receipt=JSON.parse(concurrent.mock.readText(claim.branch,proof.receipt_path));
       return claim.branch===claimBranchPrefix+plan.identity && proof.branch===claim.branch && receipt.candidate_identity===plan.identity &&
@@ -1826,18 +1828,28 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
   await failure(()=>compactCall(compact,"reserveExternalGenerationStep",{},sourceCheck),"split readback verifies each immutable source after the JPEG");
   savedTree.set(firstPart.path,goodPart);
 
-  for(const outcome of ["present", "ambiguous", "truncated", "malformed", "unknown"]) {
+  for(const outcome of ["present", "during", "ambiguous", "truncated", "malformed", "unknown"]) {
     const ctx=await compactContext("late-candidate-"+outcome);
     const method="reserveExternalGenerationStep", options=compactReservationOptions(ctx);
     let checkpoint;
     do {checkpoint=(await compactCall(ctx,method,options,checkpoint)).checkpoint;}
     while (checkpoint.phase!=="claim_final");
-    if(outcome==="present"){
+    if(outcome==="present"||outcome==="during"){
       const saved=await ctx.service.stage(ctx.plan,ctx.input);
+      if(outcome==="during"){
+        ctx.mock.branches.delete(ctx.branch);
+        const create=ctx.mock.github.create_branch;
+        ctx.mock.github.create_branch=async args=>{
+          const response=await create(args);
+          if(args.branch_name===claimBranchPrefix+ctx.plan.identity)ctx.mock.branches.set(ctx.branch,saved.commitSha);
+          return response;
+        };
+      }
       const result=await compactCall(ctx,method,options,checkpoint);
       assert(result.status==="pending" && result.phase==="saved_readback" &&
-        result.checkpoint.saved.commitSha===saved.commitSha,
-        "a candidate published just before the claim is recovered at its exact SHA instead of granting generation");
+        result.checkpoint.saved.commitSha===saved.commitSha &&
+        ctx.mock.branches.has(claimBranchPrefix+ctx.plan.identity)===(outcome==="during"),
+        "a candidate published before or during the claim is recovered at its exact SHA instead of granting generation");
     }else{
       const original=ctx.mock.github.fetch;
       ctx.mock.github.fetch=async args=>{
@@ -1849,9 +1861,62 @@ var NativeImageStageTests = async function (stageAPI, runtime, coldSources) {
       };
       const error=await failure(()=>compactCall(ctx,method,options,checkpoint),"uncertain final candidate ref search: "+outcome);
       assert(error.stage==="bounded_claim_final" && error.message.includes("check the candidate ref") &&
-        ctx.mock.branches.has(claimBranchPrefix+ctx.plan.identity),"ambiguous candidate lookup retains its operation and never grants generation");
+        !ctx.mock.branches.has(claimBranchPrefix+ctx.plan.identity) && ctx.mock.branches.has(readyBranch(ctx.plan)),"uncertain candidate lookup preserves a recoverable preparation");
     }
   }
+  const recoverable=await compactContext("lost-preparation");
+  const preparation=readyBranch(recoverable.plan), started=claimBranchPrefix+recoverable.plan.identity;
+  const method="reserveExternalGenerationStep", options=()=>compactReservationOptions(recoverable);
+  const issue=()=>compactDrive(recoverable,method,options());
+  const createReady=recoverable.mock.github.create_branch;
+  recoverable.mock.github.create_branch=async args=>{
+    const reply=await createReady(args);
+    if(args.branch_name===preparation)throw Error("lost preparation response");
+    return reply;
+  };
+  const lostReady=await failure(issue,"a lost preparation response issues no permission");
+  assert(lostReady.stage==="bounded_ready_publish" && recoverable.mock.branches.has(preparation)
+    && !recoverable.mock.branches.has(started),"the unconsumed reservation survives on its own ref");
+  recoverable.mock.github.create_branch=createReady;
+  const preparedSha=recoverable.mock.branches.get(preparation),startWrites=recoverable.mock.writes().length;
+  const recovered=(await compactCall(recoverable,method,options())).checkpoint;
+  assert(recovered.phase==="ready_transport" && recovered.claim.commit_sha===preparedSha,"a fresh executor finds the exact prepared commit");
+  const differentBase=await failure(()=>recoverable.service.reserveExternalGenerationStep(
+    {...recoverable.plan,baseCommitSha:"e".repeat(40)},compactInput(recoverable,options())),
+    "a newly pinned main cannot replace the original plan with the same identity");
+  assert(differentBase.message.includes(recoverable.plan.baseCommitSha),"recovery returns the original article commit to its owner");
+  const oldPath=recoverable.probeRef;
+  recoverable.probeRef="/synthetic-existing/next-run-fixture.png";
+  const resume=()=>compactCall(recoverable,method,options(),recovered);
+  const originalProbeReply=recoverable.readerReply;
+  recoverable.readerReply=()=>({image_url:"data:image/png;base64,"+runtime.toBase64(fourMiBPng)});
+  await failure(resume,"a different fixture result cannot satisfy the retained PNG/JPEG hashes");
+  recoverable.readerReply=originalProbeReply;
+  await failure(()=>compactCall(recoverable,method,{...options(),route:"other adapter"},recovered),
+    "a different adapter cannot reuse the prepared transport");
+  recoverable.mock.cloud.workflow.state="disabled_manually";
+  const beforeReads=recoverable.stepCounters.reads;
+  await failure(resume,"a stopped workflow cannot rerun the preparation transfer");
+  assert(beforeReads===recoverable.stepCounters.reads,"the live stop check precedes the file read");
+  recoverable.mock.cloud.workflow.state="active";
+  const readyVerify=(await resume()).checkpoint;
+  assert(readyVerify.phase==="ready_verify" && recoverable.refsRead.at(-1)===recoverable.probeRef &&
+    JSON.parse(recoverable.mock.readText(preparedSha,readyVerify.proof.receipt_path)).probe_source_ref===oldPath,
+    "a new temporary path to the same verified probe works without relabeling the immutable receipt");
+  const beforeStart=(await compactCall(recoverable,method,options(),readyVerify)).checkpoint;
+  assert(beforeStart.phase==="claim_final" && recoverable.mock.writes().length===startWrites,
+    "prepared recovery revalidates its protected data with no new uploads");
+  recoverable.mock.branches.set(preparation,baseCommitSha);
+  await failure(()=>compactCall(recoverable,method,options(),beforeStart),"a changed ready SHA blocks activation");
+  recoverable.mock.branches.set(preparation,preparedSha);
+  assert(!recoverable.mock.branches.has(started),"a changed ready SHA leaves the exclusive start unconsumed");
+  const finalReader=()=>stageAPI.create({runtime:recoverable.measuredRuntime,github:recoverable.mock.github,repository})
+    .reserveExternalGenerationStep(recoverable.plan,compactInput(recoverable,options()),restored(beforeStart));
+  const raced=await Promise.allSettled([finalReader(),finalReader()]);
+  assert(raced.filter(v=>v.status==="fulfilled"&&v.value.status==="reserved").length===1
+    && raced.filter(v=>v.status==="rejected").length===1 && recoverable.mock.branches.get(started)===preparedSha,
+    "two executors racing the same prepared plan obtain exactly one confirmed start");
+  await failure(issue,"a fresh executor seeing the consumed preparation remains recovery-only");
   const stopOnClaim=await compactContext("compact-stop-after-claim");
   const stopCreate=stopOnClaim.mock.github.create_branch;
   stopOnClaim.mock.github.create_branch=async args=>{

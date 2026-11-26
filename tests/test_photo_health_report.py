@@ -34,15 +34,19 @@ class PhotoHealthReportTests(unittest.TestCase):
 
     def test_successful_delivery_keeps_missing_photo_visible_without_failing(self):
         artifact, markdown = self.root / "health.json", self.root / "summary.md"
+        targets = {"served_sha": "a" * 40, "news": ["photo-waiting"], "market": [],
+                   "stories": ["example-post-1"], "photo_issues": []}
         with patch.dict(os.environ, {
             "GITHUB_STEP_SUMMARY": str(markdown), "PHOTO_REVISION_CHECK": "success",
             "PHOTO_ARTICLE_CHECK": "success", "PHOTO_SHARE_CARD_CHECK": "success",
+            "VERIFIED_PUBLIC_TARGETS": json.dumps(targets),
         }), patch("scripts.report_photo_health.subprocess.check_output", return_value="a" * 40), \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(main(["--root", str(self.root), "--output", str(artifact)]), 0)
         report = json.loads(artifact.read_text(encoding="utf-8"))
         self.assertEqual(report["checkout_sha"], "a" * 40)
         self.assertEqual(report["live_checks"]["articles"], "success")
+        self.assertEqual(report["verified_targets"], targets)
         self.assertEqual(report["counts"]["missing"], 2)
         self.assertEqual(report["publication_counts"]["generic_fallback"], 2)
         self.assertEqual(report["photo_followup_counts"], {"pending": 0, "missing": 1, "rejected": 0})
