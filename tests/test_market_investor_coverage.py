@@ -79,6 +79,16 @@ class UnsafeMarkup(HTMLParser):
 
 
 class InvestorCoverageTests(unittest.TestCase):
+    def test_three_figures_are_allowed_but_a_three_value_chart_identifies_the_offending_figure(self):
+        item = report()
+        chart = copy.deepcopy(item['figures'][-1])
+        chart['id'] = 'third-comparison'
+        item['figures'].append(chart)
+        self.assertEqual(len(load(item)['figures']), 3)
+        chart['values'].append({'label': '別指標', 'value': 99.5, 'state': '実績'})
+        with self.assertRaisesRegex(ValueError, r'2026-11-17-am/third-comparison: .*\(got 3\)'):
+            load(item)
+
     def test_signed_sector_returns_extend_to_either_side_of_zero(self):
         for quantities in ((4.07, -0.03), (-2.0, -1.0), (0, -1.0), (0, 0)):
             item = report()
