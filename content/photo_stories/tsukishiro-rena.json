@@ -120,6 +120,21 @@
         "cut_id": "09",
         "image_sha256": "db9628382316306997e6cf96d9045eed19792a296a989adf961dc95ada2e2300"
       }
+    },
+    {
+      "id": "tsukishiro-rena-post-20261127204641280000",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-27T20:46:41.280+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "帰り道、ショーウィンドウに映った自分の歩幅が妙に小さかった。寒さのせいにして、角の店で温かい紅茶を買った。",
+      "source": {
+        "issue_slug": "november-sea-and-city-rena-003",
+        "cut_id": "03",
+        "image_sha256": "6d33243fdb7bc4c5c3194d94ecae5a4aff6752f3dc961b5ba696d63a44b90f91"
+      }
     }
   ]
 }
