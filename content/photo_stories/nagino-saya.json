@@ -135,6 +135,21 @@
         "cut_id": "03",
         "image_sha256": "4f84c197aadeab21c42fb7009b8a7f49dbd0bc8eb9ba225e8551bec44bd7538a"
       }
+    },
+    {
+      "id": "nagino-saya-post-20261128071952980000",
+      "model_id": "nagino-saya",
+      "published_at": "2026-11-28T07:19:52.980+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、髪を結ぶリボンを選んでいたら、窓の外で鳥が鳴き始めました。つい耳を澄ませて、片方だけ結んだままです。",
+      "source": {
+        "issue_slug": "november-water-and-quiet-hours-saya-010",
+        "cut_id": "04",
+        "image_sha256": "5ddab8a484480db05be04167d56fa5fb59358637c8484b3b908aee3932910053"
+      }
     }
   ]
 }
