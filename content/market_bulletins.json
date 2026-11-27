@@ -6470,5 +6470,142 @@
         "checked_on": "2026-11-27"
       }
     ]
+  },
+  {
+    "slug": "2026-11-27-noon",
+    "day": "2026-11-27",
+    "slot": "noon",
+    "coverage": "investor",
+    "published_at": "2026-11-27T13:11:53+09:00",
+    "title": "日経平均は前引け1.17%高、半導体株が反発　非鉄金属も4.55%高",
+    "summary": "27日の前引けで日経平均は58,172.04円（前日比1.17%高）、日経半導体株指数は3.20%高。JPXの12時08分更新ではTOPIXが1.56%高、非鉄金属が4.55%高だった。",
+    "lead": "27日の東京株式市場で、日経平均は前引けに58,172.04円と26日終値比672.88円（1.17%）上昇しました。朝は小幅安だった日経半導体株指数も11時30分には3.20%高に転じています。JPXの12時08分更新では非鉄金属や機械も上昇し、半導体以外の業種にも上昇が広がりました。",
+    "sections": [
+      {
+        "heading": "半導体株指数が前場にプラスへ転じる",
+        "paragraphs": [
+          "日経半導体株指数は11時30分に16,398.91ポイント（前日比508.32ポイント、3.20%高）でした。朝9時39分の0.27%安からプラスに転じ、日経平均も同時刻の0.09%高から前引けの1.17%高へ上げ幅を広げました。いずれも26日の終値との比較です。"
+        ]
+      },
+      {
+        "heading": "非鉄金属と機械も上昇",
+        "paragraphs": [
+          "JPXの12時08分更新ではTOPIXが3,809.02ポイント（1.56%高）、非鉄金属が4.55%高、機械が3.03%高、電気機器が2.25%高でした。半導体株指数だけでなく、素材や設備を扱う業種も上昇しています。ただし業種別指数だけから共通の上昇要因を断定することはできません。",
+          "一方、陸運業は0.59%安でした。非鉄金属との騰落率の差は5.14ポイントで、TOPIXの上昇がすべての業種に及んでいるわけではありません。"
+        ]
+      },
+      {
+        "heading": "新興株は上げ幅拡大、REITはマイナス",
+        "paragraphs": [
+          "グロース250は674.08ポイント（3.29%高）と朝9時28分の1.99%高から上げ幅を広げました。東証REIT指数は1,661.42ポイント（0.71%安）で、朝の1.00%安から下げ幅は縮小したものの前日終値を下回っています。",
+          "JPXの12時08分は昼休み中の配信更新時刻です。日経の11時30分前引け値とは区別し、後場の約定や27日大引けの結果としては扱っていません。"
+        ]
+      }
+    ],
+    "figures": [
+      {
+        "id": "nikkei-semiconductor-nov27-noon",
+        "kind": "bars",
+        "title": "日経平均と日経半導体株指数",
+        "note": "27日11時30分前引け、26日終値比。",
+        "unit": "%",
+        "source_url": "https://indexes.nikkei.co.jp/nkave",
+        "observed_at": "2026-11-27T11:30:00+09:00",
+        "values": [
+          {
+            "label": "日経平均",
+            "value": 1.17,
+            "state": "実績"
+          },
+          {
+            "label": "日経半導体株",
+            "value": 3.2,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "nonferrous-land-nov27-noon",
+        "kind": "bars",
+        "title": "非鉄金属と陸運業",
+        "note": "JPX27日12時08分更新（昼休み中）、26日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-27T12:08:00+09:00",
+        "values": [
+          {
+            "label": "非鉄金属",
+            "value": 4.55,
+            "state": "実績"
+          },
+          {
+            "label": "陸運業",
+            "value": -0.59,
+            "state": "実績"
+          }
+        ]
+      },
+      {
+        "id": "growth-reit-nov27-noon",
+        "kind": "bars",
+        "title": "グロース250と東証REIT",
+        "note": "JPX27日12時08分更新（昼休み中）、26日終値比。",
+        "unit": "%",
+        "source_url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "observed_at": "2026-11-27T12:08:00+09:00",
+        "values": [
+          {
+            "label": "グロース250",
+            "value": 3.29,
+            "state": "実績"
+          },
+          {
+            "label": "東証REIT",
+            "value": -0.71,
+            "state": "実績"
+          }
+        ]
+      }
+    ],
+    "conditions": [],
+    "picks": [],
+    "sources": [
+      {
+        "title": "日経平均プロフィル：27日前引け",
+        "url": "https://indexes.nikkei.co.jp/nkave",
+        "published_on": "2026-11-27",
+        "checked_on": "2026-11-27"
+      },
+      {
+        "title": "JPX：27日12時08分現物指数更新値",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.txt",
+        "published_on": "2026-11-27",
+        "checked_on": "2026-11-27"
+      },
+      {
+        "title": "JPX：現物指数ファイル更新時刻",
+        "url": "https://www.jpx.co.jp/market/indices/indices_stock_price3.time.txt",
+        "published_on": "2026-11-27",
+        "checked_on": "2026-11-27"
+      },
+      {
+        "title": "27日寄り後の既刊：朝の観測値",
+        "url": "https://veripsa.com/serials/market-lab/briefings/2026-11-27-open/",
+        "published_on": "2026-11-27",
+        "checked_on": "2026-11-27"
+      },
+      {
+        "title": "JPX：2026年休業日一覧",
+        "url": "https://www.jpx.co.jp/corporate/about-jpx/calendar/index.html",
+        "published_on": "2026-11-27",
+        "checked_on": "2026-11-27"
+      },
+      {
+        "title": "NYSE：2026年休場日・取引時間",
+        "url": "https://www.nyse.com/trade/hours-calendars",
+        "published_on": "2026-11-27",
+        "checked_on": "2026-11-27"
+      }
+    ]
   }
 ]
