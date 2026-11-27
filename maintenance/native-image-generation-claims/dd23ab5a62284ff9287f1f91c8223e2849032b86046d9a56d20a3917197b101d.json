@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "protocol": "ready_then_claim",
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d",
+  "receipt_path": "maintenance/native-image-generation-claims/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d",
+  "slug": "travel-wardrobe-return-in-next-city",
+  "article_sha256": "f2178e3b36651f989ebe10ddb0a5d2b435c8a310a2a67cba31ce713762abebd2",
+  "logical_run_id": "news-photo-v1:f2178e3b36651f989ebe10ddb0a5d2b435c8a310a2a67cba31ce713762abebd2",
+  "prompt_sha256": "c2f46c0b96d93b6018b96e4388dca5d4420b80f39f6a20f49084e680e085b92a",
+  "reserved_at": "2026-11-27T11:10:36.724Z",
+  "baseline": {
+    "commit_sha": "be0e17fd6e090d774e777d92299108c6e05ed905",
+    "tree_sha": "c851ccf1469982041a8fe9f97a018dea8a325256",
+    "protected_hashes": {
+      "content/articles.json": "8e4448b079a41b9d14f9df390eb7a524bb439a60cdf2131c70b7890372224c66",
+      "assets/generated/manifest.json": "ceba25d6ecdd1d9bf9bdd6a38c17dba4d43c23b1e9eab5f19a84f9b08e5199f7",
+      "content/visual_reviews.json": "a9d791b29a298921e3bf4d3e063991965ea9847c36f229530bd90ae29bcac7f0"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-generation-claim/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "f5f9c4312c84ca9d05844ab8344ef869b84032f5c7f5c883ce8ed836379c4f1f",
+    "observed_at": "2026-11-27T11:09:30.175Z",
+    "route": "read_candidate_png through the original file adapter",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "6ea631f20601de6da80c7fc25dee4a33f1016c82"
+  }
+}
