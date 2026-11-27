@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "nagino-saya",
   "name": "凪野さや",
-  "created_date": "2026-11-27",
+  "created_date": "2026-11-28",
   "source_chat_url": "https://chatgpt.com/c/6af854c9-0598-83ee-8958-b762ea028909",
   "photo_reference": {
     "issue_slug": "november-water-and-quiet-hours-saya-010",
-    "cut_id": "03",
-    "image_sha256": "4f84c197aadeab21c42fb7009b8a7f49dbd0bc8eb9ba225e8551bec44bd7538a"
+    "cut_id": "04",
+    "image_sha256": "5ddab8a484480db05be04167d56fa5fb59358637c8484b3b908aee3932910053"
   },
-  "post_text": "朝のプールで、手ですくった水を落とさない競争をしてみました。三歩目でほとんどこぼれて、もう一回だけ、とお願いしました。",
-  "spoken_line": "もう一回だけ。",
+  "post_text": "朝、髪を結ぶリボンを選んでいたら、窓の外で鳥が鳴き始めました。つい耳を澄ませて、片方だけ結んだままです。",
+  "spoken_line": null,
   "future_idea": null
 }
