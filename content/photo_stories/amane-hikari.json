@@ -120,6 +120,21 @@
         "cut_id": "05",
         "image_sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261127154843149",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-27T15:48:43.149+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "振付の確認動画を見返したら、私だけ最後のポーズで笑いすぎてた。次は真顔で決めようって言ったそばから、また笑っちゃった😂",
+      "source": {
+        "issue_slug": "november-hikari-city-and-pool-013",
+        "cut_id": "06",
+        "image_sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361"
+      }
     }
   ]
 }
