@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "amane-hikari",
   "name": "天音ひかり",
-  "created_date": "2026-11-26",
+  "created_date": "2026-11-27",
   "source_chat_url": "https://chatgpt.com/c/6af86796-53b4-83ee-98e4-6e5509d8ced6",
   "photo_reference": {
     "issue_slug": "november-hikari-city-and-pool-013",
-    "cut_id": "05",
-    "image_sha256": "8607882879e36cea445980717ff386f33a89c3e72a2e6d6c78a2684abac262d8"
+    "cut_id": "06",
+    "image_sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361"
   },
-  "post_text": "午後の発声練習、乾燥で喉が気になって加湿器をつけた。湯気を眺めてたら出だしを忘れちゃって、みんなに笑われた😂",
-  "spoken_line": "あっ、私の番！",
+  "post_text": "振付の確認動画を見返したら、私だけ最後のポーズで笑いすぎてた。次は真顔で決めようって言ったそばから、また笑っちゃった😂",
+  "spoken_line": "次は真顔で！",
   "future_idea": null
 }
