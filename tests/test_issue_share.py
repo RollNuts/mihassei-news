@@ -73,9 +73,14 @@ class IssueShareTests(unittest.TestCase):
 
     def test_home_promotes_latest_dated_share_not_fake_today(self):
         markup = home(self.articles)
+        day, items = next(iter(daily_issues(self.articles, minimum=1).items()))
         self.assertIn('class="daily-issue-share"', markup)
-        self.assertIn('utm_campaign%3Ddaily_edition', markup)
-        self.assertIn(self.day, markup)
+        match = re.search(r'<a class="daily-issue-share" href="([^"]+)"', markup)
+        shared = parse_qs(urlparse(html.unescape(match.group(1))).query)
+        target = urlparse(shared["url"][0])
+        self.assertIn(day, target.path + target.fragment)
+        self.assertEqual(parse_qs(target.query)["utm_campaign"], ["daily_edition"])
+        self.assertIn(f"今号の記事は{len(items)}本。", shared["text"][0])
         self.assertIn("号の見出しをXで紹介", markup)
 
     def test_mobile_share_actions_are_styled(self):

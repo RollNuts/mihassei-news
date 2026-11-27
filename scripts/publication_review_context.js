@@ -307,7 +307,8 @@ var PublicationReviewContext = (function () {
           && /^##[ \t]+(?:安全な)?通常統合(?:の|／)既存引き?継ぎ[ \t]*\r?$/m.test(pr.body || "")) {
         attention.push({ ...binding, draft: pr.draft, reason: "ordinary_editorial_handoff",
           next_operation: "After first read, check the latest handoff, owner/run, changed files against current main, "
-            + "and required CI under the existing ordinary merge procedure." });
+            + "then call readValidationStatus for this PR/head. Once ownership, required CI and current main "
+            + "have been checked, continue the ordinary merge in the same run." });
         continue;
       }
       if (!relevant.length && !unsupported.length && (photo || !images.length)) {
@@ -603,6 +604,7 @@ var PublicationReviewContext = (function () {
       "Wait for the public revision or a proven docs-only ancestor",
       "Verify the published revision and live stories without generating traffic",
       "Verify that Twitterbot can fetch each first-party image card"];
+    const discoverCI = validationOnly && ci_run_id === undefined;
     const runs = [], maxLog = 1024 * 1024;
     let snapshot, ciListing, reads = 0, logReads = 0;
     function check(ok, reason) { if (!ok) throw Error(reason); }
@@ -625,11 +627,14 @@ var PublicationReviewContext = (function () {
       check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
         && listing.total_count <= 100, "ci_inventory_incomplete");
       const candidates = listing.workflow_runs.filter(run => run.path === CI_WORKFLOW
-        && run.event === "pull_request" && run.head_sha === head);
+        && run.event === "pull_request" && run.head_sha === head
+        && (!discoverCI || run.head_branch === snapshot.head.ref
+          && run.head_repository?.full_name === REPOSITORY));
+      if (discoverCI && !candidates.length) throw Error("ci_run_not_observed");
       check(candidates.length > 0 && candidates.every(run => positive(run.id))
         && new Set(candidates.map(run => run.id)).size === candidates.length, "ci_inventory_unverified");
       const latest = candidates.reduce((a, b) => a.id > b.id ? a : b);
-      check(latest.id === ci_run_id && positive(latest.run_attempt), "newer_or_unrelated_ci_run");
+      check((discoverCI || latest.id === ci_run_id) && positive(latest.run_attempt), "newer_or_unrelated_ci_run");
       return [latest.id, latest.run_attempt];
     }
     async function run(id, workflow, events, sha, branch, label, allowMain = false) {
@@ -727,7 +732,7 @@ var PublicationReviewContext = (function () {
     }
     try {
       check(typeof fetchRepository === "function" && matches(GIT, ref) && positive(number)
-        && matches(GIT, head) && positive(ci_run_id), "invalid_status_input");
+        && matches(GIT, head) && (positive(ci_run_id) || discoverCI), "invalid_status_input");
       check((await get("/git/ref/heads/main")).object?.sha === ref, "main_changed");
       result.stage = "pr";
       snapshot = await get("/pulls/" + number);
@@ -752,7 +757,7 @@ var PublicationReviewContext = (function () {
       }
       result.stage = "ci";
       ciListing = await latestCI();
-      const ci = await run(ci_run_id, CI_WORKFLOW, ["pull_request"], head, snapshot.head.ref, "ci");
+      const ci = await run(ciListing[0], CI_WORKFLOW, ["pull_request"], head, snapshot.head.ref, "ci");
       check(ci.run_attempt === ciListing[1], "ci_attempt_unbound");
       check(Array.isArray(ci.pull_requests), "ci_pr_binding_unverified");
       const linked = ci.pull_requests.filter(item => item.number === number && item.head?.sha === head
@@ -762,6 +767,7 @@ var PublicationReviewContext = (function () {
       check(linked.length === 1 || (snapshot.merged && ci.pull_requests.length === 0), "ci_pr_binding_unverified");
       if (validationOnly) {
         result.evidence.ci.base_sha = linked[0].base.sha;
+        result.evidence.ci.base_matches_main = linked[0].base.sha === ref;
         if (ACTIVE_RUN.has(ci.status)) return await finish("ci_pending");
         if (ci.status === "completed" && ["failure", "cancelled", "timed_out", "action_required", "startup_failure", "stale"].includes(ci.conclusion))
           return await finish("ci_failed");

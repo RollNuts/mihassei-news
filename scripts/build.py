@@ -152,6 +152,28 @@ TOPIC_INTROS = {
     "ファン文化":"出演者を休ませるライブに集まる人、公式の結末を作り直す視聴者。応援や考察が興行と日常を動かす5年後を描く。",
 }
 
+# Paired readings of published stories on existing topic pages.
+TOPIC_READINGS = {
+    "地域": (
+        "バスを待つ場所と、最後の一本",
+        (
+            ("student-town-model-opens-after-school-study-room", "記事「放課後の学習室」",
+             "先輩が残した案は、学習室を新しく建てることだった。後輩たちはバス停で話を聞き、近くの空き店舗に机を六つ置いた。そこなら下校後に少し勉強しても、帰りのバスに間に合う。"),
+            ("local-council-keeps-last-bus-despite-grant-formula", "記事「夜間バスを残した市議会」",
+             "もう一つの町では、夜勤を終えた人が乗れるバスは一本だけだ。乗客の多い昼に便を増やせば、国の補助は手厚くなる。夜勤者が議場で時刻表を示すと、議会は昼の増便を一部見送り、そのお金で最終便を残した。"),
+        ),
+    ),
+    "ファン文化": (
+        "満席の映画館と、誰も立たないステージ",
+        (
+            ("drama-final-five-minutes-in-cinemas", "記事「最終回の残り5分は映画館で」",
+             "上映二日目、連続ドラマの結末を買った客は、開演時刻を過ぎてもロビーにいる。予告が18分、本編は5分。犯人の名前を聞き逃さないぎりぎりの時間に、席がいっせいに埋まる。"),
+            ("rest-day-concert-sells-out-without-performers", "記事「出演者が休むライブ」",
+             "同じ満席でも、休養ライブの客は誰も登場しないと知って集まった。空の舞台を前に、ツアーでしか会えない仲間に会える。一方の客は見たい瞬間を選んで座り、もう一方の客には、そこに一緒に座ること自体が公演になっている。"),
+        ),
+    ),
+}
+
 
 def curated_categories(articles):
     """Create only substantial category archives, not thin or empty SEO pages."""
@@ -229,11 +251,16 @@ def related_topics(tag, items, articles, limit=6):
     ]
 
 
-def issue_url(day):
+MIN_STANDALONE_ISSUE_ARTICLES = 3
+
+
+def issue_url(day, items=None):
     """Actual publication date in JST, never the fictional year."""
     if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", day):
         raise ValueError("Invalid real issue date")
     datetime.fromisoformat(day)  # validate month/day before creating a route
+    if items is not None and len(items) < MIN_STANDALONE_ISSUE_ARTICLES:
+        return "/issues/#day-" + day
     return "/issues/" + day + "/"
 
 
@@ -242,8 +269,8 @@ def issue_date_label(day):
     return f"{d.year}年{d.month}月{d.day}日"
 
 
-def daily_issues(articles):
-    """Only substantial daily editions, never thin index pages of 1-2 articles."""
+def daily_issues(articles, *, minimum=MIN_STANDALONE_ISSUE_ARTICLES):
+    """Group real editions by date. Only substantial editions get their own page."""
     groups = {}
     for article in articles:
         day = publication_date(article)[:10]
@@ -254,7 +281,7 @@ def daily_issues(articles):
         day: sorted(groups[day], key=lambda a: (
             publication_date(a), a["source"]["published_at"]), reverse=True)
         for day in sorted(groups, reverse=True)
-        if len(groups[day]) >= 3
+        if len(groups[day]) >= minimum
     }
 
 
@@ -462,7 +489,7 @@ def category_meta(a, compact=False):
     if "T" in published:
         real_label += f" {real.hour:02}:{real.minute:02}"
     future_label = (
-        f"紙面 {future.year}/{future.month}/{future.day}"
+        f"創作紙面 {future.year}/{future.month}/{future.day}"
         f" {future.hour:02}:{future.minute:02}"
     )
     page_views = (
@@ -517,7 +544,9 @@ def issue_share_url(day, items):
         headline = item["title"]
         lines.append("・" + headline[:27] + ("…" if len(headline) > 27 else ""))
     lines.append("#未発生新聞")
-    tagged = SITE + issue_url(day) + "?utm_source=x&utm_medium=social&utm_campaign=daily_edition"
+    destination = issue_url(day, items)
+    path, separator, fragment = destination.partition("#")
+    tagged = SITE + path + "?utm_source=x&utm_medium=social&utm_campaign=daily_edition" + separator + fragment
     return "https://x.com/intent/tweet?" + urlencode({"text": "\n".join(lines), "url": tagged})
 
 
@@ -1367,9 +1396,9 @@ def home(articles, serials=None, photo_issues=(), photo_editions=(), photo_stori
         '<nav class="story-tags story-tags--home" aria-label="話題タグから探す">'
         + topic_links + '</nav></section>'
     ) if topic_links else ""
-    issues_for_home = daily_issues(articles)
+    issues_for_home = daily_issues(articles, minimum=1)
     issue_cards = "".join(
-        f'<a class="daily-issue-card" href="{issue_url(day)}">'
+        f'<a class="daily-issue-card" href="{issue_url(day, items)}">'
         f'<time datetime="{day}">{issue_date_label(day)}</time>'
         f'<strong>発行号を読む <span aria-hidden="true">→</span></strong>'
         f'<small>{len(items)}本掲載 · {escape(items[0]["title"])}</small></a>'
@@ -1633,11 +1662,24 @@ def topic_page(tag, items, articles=None):
         intro = TOPIC_INTROS.get(tag, f'{tag}を題材に、今の話題や身近な出来事を5年後の架空ニュースへ広げた記事。')
         eyebrow = "TOPIC"
     title = f"{tag}の創作ニュース・風刺"
+    reading = ""
+    if tag in TOPIC_READINGS:
+        heading, notes = TOPIC_READINGS[tag]
+        stories = {item["slug"]: item for item in items}
+        if all(slug in stories for slug, _, _ in notes):
+            paragraphs = "".join(
+                f'<p>{escape(note)} <a href="{article_url(stories[slug])}">{escape(label)}</a></p>'
+                for slug, label, note in notes
+            )
+            reading = (
+                '<section class="topic-reading" aria-labelledby="topic-reading-title">'
+                f'<h2 id="topic-reading-title">{escape(heading)}</h2>{paragraphs}</section>'
+            )
     content = (
         '<div class="container archive-page">'
         f'<header class="page-intro"><span class="eyebrow">{eyebrow}</span>'
         f'<h1>{escape(title)}</h1><p>{escape(intro)}</p></header>'
-        + related
+        + reading + related
         + '<div class="archive-list">' + "".join(card(a) for a in items) + '</div>'
         '<p style="margin-top:26px"><a class="read-more" href="/topics/">タグ一覧へ戻る</a></p>'
         '</div>'
@@ -1649,17 +1691,27 @@ def topic_page(tag, items, articles=None):
 
 
 def issue_index(issues):
-    """Browse substantial editions, grouped by genuine issue publication dates."""
+    """List every publication date, keeping small editions here in the archive."""
     links = []
     for day, items in issues.items():
-        headline = escape(items[0]["title"])
         kinds = " / ".join(dict.fromkeys(a["category"] for a in items))
+        date = f'<time datetime="{day}">{issue_date_label(day)}</time>号'
+        if len(items) < MIN_STANDALONE_ISSUE_ARTICLES:
+            headlines = "".join(
+                f'<li><a href="{article_url(item)}">{escape(item["title"])}</a></li>' for item in items
+            )
+            links.append(
+                f'<article class="issue-index-entry" id="day-{day}"><div><h2>{date}</h2>'
+                f'<p>{len(items)}本 · {escape(kinds)}</p><ul class="issue-index-headlines">{headlines}</ul>'
+                '</div></article>'
+            )
+            continue
         links.append(
-            '<article class="issue-index-entry">'
+            f'<article class="issue-index-entry" id="day-{day}">'
             '<div><span class="eyebrow">DAILY EDITION / 創作新聞</span>'
-            f'<h2><a href="{issue_url(day)}"><time datetime="{day}">{issue_date_label(day)}</time>号</a></h2>'
+            f'<h2><a href="{issue_url(day)}">{date}</a></h2>'
             f'<p>{len(items)}本 · {escape(kinds)}</p>'
-            f'<p class="issue-index-headline">最新見出し：{headline}</p></div>'
+            f'<p class="issue-index-headline">最新見出し：{escape(items[0]["title"])}</p></div>'
             f'<a class="issue-index-open" href="{issue_url(day)}">この号を読む ↗</a>'
             '</article>'
         )
@@ -1669,11 +1721,11 @@ def issue_index(issues):
         '<h1>発行号</h1>'
         '<p>日付ごとにまとめて読む。</p></header>'
         '<section class="issue-index-list" aria-label="日付ごとの発行号">'
-        + ("".join(links) if links else '<p>まとまった発行号はまだありません。新着記事をご覧ください。</p>')
+        + ("".join(links) if links else '<p>発行号はまだありません。</p>')
         + '</section><p><a class="read-more" href="/archive/">新着記事をすべて読む</a></p></div>'
     )
     return layout("発行号一覧",
-                  "実際の発行日ごとに読む未発生新聞。3本以上の記事がある号をまとめました。すべて創作記事です。",
+                  "未発生新聞の創作ニュースを実際の発行日から探せます。日付別の見出しから掲載記事が読めます。",
                   "/issues/", content, active="issues")
 
 
@@ -1685,11 +1737,11 @@ def issue_page(day, items, issues):
     if index > 0:
         later = days[index - 1]
         neighboring.append(
-            f'<a href="{issue_url(later)}">← 新しい号：{issue_date_label(later)}</a>')
+            f'<a href="{issue_url(later, issues[later])}">← 新しい号：{issue_date_label(later)}</a>')
     if index + 1 < len(days):
         earlier = days[index + 1]
         neighboring.append(
-            f'<a href="{issue_url(earlier)}">前の号：{issue_date_label(earlier)} →</a>')
+            f'<a href="{issue_url(earlier, issues[earlier])}">前の号：{issue_date_label(earlier)}</a>')
     nav = "".join(neighboring)
     kinds = " / ".join(dict.fromkeys(a["category"] for a in items))
     title = issue_date_label(day) + "発行号"
@@ -1723,6 +1775,7 @@ def story(a, articles, issues=None, serials=None):
         for index, p in enumerate(a["paragraphs"])
     )
     src = a["source"]
+    source_day = src["published_at"][:10]
     # Continue through the publication stream instead of always jumping back
     # to the newest other story. The previous behavior could create a two-story
     # loop (newest <-> second newest) and strand readers there.
@@ -1777,9 +1830,8 @@ def story(a, articles, issues=None, serials=None):
         f'{escape(a["category"])}の記事を読む ↗</a>'
     )
     issue_link = (
-        f'<a class="article-issue-link" href="{issue_url(issue_day)}">'
+        f'<a class="article-issue-link" href="{issue_url(issue_day, available_issues.get(issue_day, ()))}">'
         f'{issue_date_label(issue_day)}の発行号を読む ↗</a>'
-        if issue_day in available_issues else ""
     )
     bridge = render_serial_bridge(a, load_serials(BASE) if serials is None else public_serials(serials))
     popular_section = pv_recommendations(articles, a["slug"])
@@ -1849,6 +1901,12 @@ def story(a, articles, issues=None, serials=None):
 <figcaption>{photo_credit(a)}{clip_caption(a)}</figcaption></figure>
 <div class="article-body">{paras}</div>
 <div class="article-endmark">◆</div>
+<aside class="source-context" id="story-source" aria-labelledby="story-source-heading">
+<h2 id="story-source-heading">この創作の着想元</h2>
+<p>{escape(source_reader_copy(src["topic"]))}</p>
+<p><a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">{escape(src["publisher"])} ↗</a>
+ · <time datetime="{source_day}">{issue_date_label(source_day)}</time></p>
+</aside>
 <nav class="reader-next" data-popular-fallback data-reader-next-mode="{escape(next_mode)}" aria-label="次の記事へ進む">
 <span class="reader-next-kicker">次の記事</span>
 <span class="reader-next-meta">{escape(next_meta)}</span>
@@ -1875,15 +1933,6 @@ def story(a, articles, issues=None, serials=None):
 {actions(a)}
 <div class="article-save-inline">{bookmark_button(a)}<a href="/saved/">保存した記事を見る ↗</a></div>
 <p class="bookmark-status" data-bookmark-status role="status" aria-live="polite"></p>
-<details class="source-context" id="story-source" aria-label="着想した実際の話題">
-<summary>着想元を見る</summary>
-<div class="source-context-body">
-<p>{escape(source_reader_copy(src["topic"]))}</p>
-<p class="source-context-disclaimer">着想元は、この記事の出来事を報じたものではありません。</p>
-<a href="{escape(src["url"])}" target="_blank" rel="noopener noreferrer external">
-{escape(src["publisher"])} で着想元を見る ↗</a>
-</div>
-</details>
 {related_section}
 {followup_section}
 {bridge}
@@ -1925,7 +1974,7 @@ def editorial_policy():
 <h2>創作と市場分析</h2>
 <p>ニュース記事はフィクションです。「未来相場観測室」は現実の公開資料に基づく市場分析で、日米の市況と注目株を出典とともに伝えます。投資助言や売買の勧誘ではありません。</p>
 <h2>出典・画像</h2>
-<p>着想元の公開情報や投稿は、本文末尾の「着想元を見る」から確認できます。参照先が記事内の創作内容を裏付けるものではありません。</p>
+<p>記事本文の後に、着想元となった実際の話題と原資料へのリンクを掲載します。</p>
 <p>企画・執筆・合成画像の制作に生成AIを使用しています。実写風の合成画像は「再現イメージ（合成）」と表示し、写真素材には出典・クレジットを添えます。</p>
 <h2>広告</h2>
 <p>広告・アフィリエイトを掲載する場合は「広告」「PR」などを表示し、記事と区別します。協賛者の意向で記事を書き換えません。<a href="/advertise/">広告・協賛のご相談 ↗</a></p>
@@ -2360,7 +2409,8 @@ def build():
     PHOTO_ISSUES_AVAILABLE = bool(photo_issues)
     articles = load()
     serials = load_serials(BASE)
-    issues = daily_issues(articles)
+    all_issues = daily_issues(articles, minimum=1)
+    issues = {day: items for day, items in all_issues.items() if len(items) >= MIN_STANDALONE_ISSUE_ARTICLES}
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT/"assets").mkdir(parents=True)
@@ -2418,9 +2468,9 @@ def build():
     write("saved/index.html",saved_page())
     # Owner-only review helpers remain available as local Python renderers.
     # They are NOT shipped as public website pages: no auth provider or fee.
-    write("issues/index.html",issue_index(issues))
+    write("issues/index.html",issue_index(all_issues))
     for day, items in issues.items():
-        write("issues/"+day+"/index.html",issue_page(day, items, issues))
+        write("issues/"+day+"/index.html",issue_page(day, items, all_issues))
     for category, items in curated_categories(articles).items():
         write("category/"+CATEGORY_PATHS[category]+"/index.html",
               category_page(category, items))

@@ -1,6 +1,26 @@
 {
   "version": 1,
   "stories": {
+    "student-town-model-opens-after-school-study-room": {
+      "article_sha256": "6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+      "cues": [
+        {
+          "at": 0,
+          "label": "閉店した文具店を開く",
+          "text": "高校生4人がシャッターを上げ、机を並べた"
+        },
+        {
+          "at": 4,
+          "label": "3年前の案を実現",
+          "text": "町の模型に残った先輩の案を、空き店舗で実現した"
+        },
+        {
+          "at": 8,
+          "label": "発表の続きを",
+          "text": "提案した先輩も訪れ、バスの時刻表を壁に貼った"
+        }
+      ]
+    },
     "island-club-sound-ball-remote-league": {
       "article_sha256": "e1633ddfc3c579aa6e7f4ffcd3240aa3387919fc333155af54df81d640a2c4a0",
       "cues": [

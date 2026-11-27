@@ -80,6 +80,8 @@
 
 ニュース・市況・本人近況の承認済みPRが未統合なら、同じPR・head・実CIを下記の`readHandoffStatus`へ渡す。本人近況のPR・headは初読一覧の`outside_scope`で確認できる。`finalizer_run_id`を省くと当該CI実行・attemptに対応する失敗runを1回探す。許可を後で記入した場合は`Publication head <head> (PR #<番号>)`の実run IDを渡す。`latest_main_requires_fresh_ci`は、種別・PR・head・CIが一致した失敗ログに基づく。`tested_main`と`current_main`は停止時の値なので、現担当と最新の実行状況を照合して上の手順で復旧する。
 
+朝編集の2文書を引き継いだ担当は、同じ実行で下記の `readValidationStatus` を使う。CI進行中なら返却された実runを待ち、現head・担当・必要CI・最新mainとの整合を再確認できた時点で通常統合する。実行時間の上限に達した場合は次の担当へそのrunを引き継ぐ。
+
 通常統合のPRに対応外ファイルを通すための`publication-finalize`許可を付けない。現headの必要CIと既存統合条件を満たして通常mergeし、返却merge SHAに対応する既存の本番確認へ進む。放送室は既存動画処理の最終commit・MP4・字幕の配信まで追い、統合だけで完了としない。
 
 待機で終了する場合は、同PRの既存引継ぎへ現head・実CI/run参照・未完工程・次操作・次に受け取る既存担当1人のtask IDと受取条件を保存・読み戻す。対応する既存の機械処理へ渡し、機械処理対象外の次操作は上記の既存回収担当から次の通常枠を持つ1人に指定する。受取担当は新規作業より先に同PRを照合する。担当や工程を確定せず「元担当へ返す」「次回確認」だけで同じ未完を持ち越さない。
@@ -111,13 +113,13 @@ text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 
 ### 既存PRの公開状態の確認
 
-独立初読を済ませた後、作者のcheckout不足などで機械検証が未実施として引き継がれたopen PRは、同じhelperの`readValidationStatus`で既存CIを1回照合できる。Draft・未承認でも使えるが、初読入力の`read`とは分ける。`ci_run_id`は同PR・現headの実際の`check.yml`実行から取得する。
+独立初読を済ませた後、作者のcheckout不足などで機械検証が未実施として引き継がれたopen PRは、同じhelperの`readValidationStatus`で既存CIを1回照合できる。Draft・未承認でも使えるが、初読入力の`read`とは分ける。引継ぎに `ci_run_id` があれば渡す。未記録なら省略すると、helperが現headの最新 `check.yml` を取得して同じPRへの紐付けを照合する。
 
 ```js
-text(await R.readValidationStatus({fetchRepository, ref: mainSha, pr, head, ci_run_id}));
+text(await R.readValidationStatus({fetchRepository, ref: mainSha, pr, head}));
 ```
 
-`ci_verified`は、同repo・PR・headの最新run/attemptと実test job、形式確認・Python検証stepの成功が一致した証拠で、作者のローカル検証成功を意味しない。検証した`base_sha`も返し、最新mainとの統合可否は既存公開guardに残す。`ci_pending`・`ci_failed`・取得不能などの`attention`を区別し、取得不能・skipped・古い成功を完了へ置き換えない。初読・画像採否・公開許可は代行せず、同じheadで済んだ機械検証を再起動するためにも使わない。
+`ci_verified`は、同repo・PR・headの最新run/attemptと実test job、形式確認・Python検証stepの成功が一致した証拠で、作者のローカル検証成功を意味しない。検証した `base_sha` と固定mainとの一致を表す `base_matches_main` を返す。版が異なる場合は差分と既存の統合条件を照合する。`ci_pending`・`ci_failed`・取得不能などの`attention`を区別し、取得不能・skipped・古い成功を完了へ置き換えない。初読・画像採否・公開許可は代行せず、同じheadで済んだ機械検証を再起動するためにも使わない。
 
 同headの初読・公開許可を保存済みの`news`・`market` PRは、同じhelperの`readHandoffStatus`でCI・finalizer・本番検証を1回照合する。明示された未完の引継ぎや`publication_unverified`がある時だけ使い、公開済みの過去PRを毎回調べ直さない。コード・放送室など通常統合のPRや、近況・写真特集へこの補助確認を必須化しない。
 

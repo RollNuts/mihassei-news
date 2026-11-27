@@ -96,7 +96,7 @@ class ImageContextTests(unittest.TestCase):
                 self.assertIn(field + ' content="' + encoded_social + '"', story)
             self.assertIn('alt="' + encoded + '"', figure)
             self.assertIn('class="fiction-mark">創作報道', story)
-            self.assertIn('<summary>着想元を見る</summary>', story)
+            self.assertIn('<h2 id="story-source-heading">この創作の着想元</h2>', story)
             self.assertNotIn('href="#story-source"', story)
 
     def test_home_first_image_priority_does_not_preload_every_card(self):

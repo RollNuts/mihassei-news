@@ -46,7 +46,7 @@ class MobileReadingFlowTests(unittest.TestCase):
         bookmark = html.index('<div class="article-save-inline">')
         body = html.index('<div class="article-body">')
         self.assertTrue(image < body < bookmark)
-        self.assertIn('<details class="source-context" id="story-source" aria-label="着想した実際の話題">', html)
+        self.assertIn('<aside class="source-context" id="story-source" aria-labelledby="story-source-heading">', html)
         self.assertLess(html.index('<div class="article-endmark">'), bookmark)
         self.assertEqual(html.count('data-bookmark-slug="' + article["slug"] + '"'), 1)
         self.assertIn('id="story-source"', html)
