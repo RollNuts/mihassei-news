@@ -1145,6 +1145,74 @@ test("editorial guidance carries a proven docs advance, with a final main check"
   assert.deepEqual(await read(), { status: "unavailable" });
 });
 
+function dailySnapshotAdvance() {
+  const w = docsAdvance();
+  Object.assign(w.diff, { ahead_by: 1, total_commits: 1, commits: [{ sha: REF, parents: [{ sha: BASE }] }],
+    files: [{ filename: "analytics/daily/2026-11-26.json", status: "added" }] });
+  const check = w.checked.check_runs[0];
+  check.output.text = JSON.stringify({ ...JSON.parse(check.output.text), editorial_guidance: { [guidanceDay]: guidanceText } });
+  return w;
+}
+
+test("daily readership snapshot preserves the pinned writing input and paginated photograph handoffs", async () => {
+  const w = dailySnapshotAdvance(), opts = { ...w, ref: REF };
+  assert.deepEqual(await context.readEditorialGuidance({ ...opts, day: guidanceDay }),
+    { status: "verified", ref: REF, check_sha: BASE, day: guidanceDay, report: guidanceText });
+  assert.equal(w.calls.length, 4);
+  w.calls.length = 0;
+  const reviewer = await context.read(opts), page = reviewer.photo_recovery;
+  assert.equal(reviewer.empty, false);
+  assert.deepEqual([page.status, page.check_sha, page.may_generate], ["checked", BASE, false]);
+  assert(page.next_offset > 0 && w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: page.next_offset });
+  assert.deepEqual([...page.selected, ...next.selected].map(row => row.pr), [101, 102, 103, 104]);
+  assert.equal(next.next_offset, null);
+  assert(w.calls.length <= 14);
+});
+
+test("daily snapshot pages the default photo lookup within budget when several other PRs are open", async () => {
+  const w = dailySnapshotAdvance();
+  for (const number of [1040, 1063, 1064]) w.open.push({ number, state: "open", draft: false, body: "",
+    head: { sha: GIT(number), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const opts = { ref: REF, fetchRepository: async arg => {
+    if (/\/pulls\/\d+\/files\?/.test(arg.url)) {
+      w.calls.push(arg.url);
+      return [{ filename: "docs/GUIDE.md", status: "modified" }];
+    }
+    return w.fetchRepository(arg);
+  } };
+  const first = await context.readPhotoHandoffs(opts);
+  assert.equal(first.status, "checked"); assert.equal(first.next_offset, 2);
+  assert.equal(first.may_generate, false); assert(w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: first.next_offset });
+  assert.equal(next.status, "checked"); assert.equal(next.next_offset, null);
+  assert.deepEqual([...first.selected, ...next.selected].map(row => row.pr), [101, 102, 103, 104]);
+  assert(w.calls.length <= 14);
+});
+
+test("snapshot carry rejects edits, mixed or unproven changes and a changed main", async () => {
+  for (const change of [
+    w => { w.diff.files[0].status = "modified"; },
+    w => { w.diff.files[0].status = "removed"; },
+    w => { w.diff.files[0].previous_filename = "content/articles.json"; },
+    w => { w.diff.files[0].filename = "analytics/daily/2026-02-30.json"; },
+    w => { w.diff.files[0].filename = "analytics/daily/archive/2026-11-26.json"; },
+    w => { w.diff.files.push({ filename: "content/articles.json", status: "modified" }); },
+    w => { w.diff.files.push({ filename: "analytics/daily/2026-11-25.json", status: "added" }); },
+    w => { w.diff.commits[0].parents.push({ sha: GIT(3) }); },
+    w => { w.diff.total_commits++; },
+    w => { w.main = BASE; }
+  ]) {
+    const w = dailySnapshotAdvance(); change(w);
+    assert.deepEqual(await context.readEditorialGuidance({ ...w, ref: REF, day: guidanceDay }), { status: "unavailable" });
+    const photos = await context.readPhotoHandoffs({ ...w, ref: REF, batchSize: 1 });
+    assert.equal(photos.status, "unverified", change.toString());
+    assert.equal(photos.may_generate, false);
+  }
+});
+
 test("invalid dates, untrusted checks and incomplete daily outputs cannot supply editorial guidance", async () => {
   const w = docsAdvance(), check = guidanceCheck(w, REF);
   const read = (day = guidanceDay, ref = REF) => context.readEditorialGuidance({ ...w, ref, day });
