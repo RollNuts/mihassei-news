@@ -72,22 +72,24 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertIn('type="button" data-reset-filters', html)
         self.assertIn("絞り込みを解除", html)
 
-    def test_body_precedes_save_and_sources_are_opt_in(self):
+    def test_visible_source_belongs_to_story_before_reader_tools(self):
         item = self.articles[0]
         page = story(item, self.articles)
         image = page.index('<figure class="article-hero-figure">')
         body = page.index('<div class="article-body">')
         end = page.index('class="article-endmark"')
         save = page.index('<div class="article-save-inline">')
-        details = page.index('<details class="source-context" id="story-source" aria-label="着想した実際の話題">')
-        self.assertTrue(image < body < end < save < details)
+        source = page.index('<aside class="source-context" id="story-source" aria-labelledby="story-source-heading">')
+        self.assertTrue(image < body < end < source < save)
         self.assertEqual(page.count('data-bookmark-slug="' + item["slug"] + '"'), 1)
-        self.assertEqual(page.count('<details class="source-context"'), 1)
-        self.assertIn('<summary>着想元を見る</summary>', page)
-        self.assertIn(escape_html(item["source"]["url"], quote=True), page)
+        self.assertEqual(page.count('<aside class="source-context"'), 1)
+        self.assertIn('<h2 id="story-source-heading">この創作の着想元</h2>', page)
+        note = page[source:page.index("</aside>", source)]
+        self.assertEqual(note.count(f'href="{escape_html(item["source"]["url"], quote=True)}"'), 1)
+        self.assertIn(escape_html(item["source"]["publisher"]), note)
+        self.assertIn(f'<time datetime="{item["source"]["published_at"][:10]}">', note)
         from scripts.editorial_copy import source_reader_copy
-        self.assertIn(source_reader_copy(item["source"]["topic"]), page)
-        self.assertIn("着想元は、この記事の出来事を報じたものではありません", page)
+        self.assertIn(escape_html(source_reader_copy(item["source"]["topic"])), note)
         self.assertIn('class="fiction-mark">創作報道', page)
         self.assertNotIn('class="story-fiction-context"', page)
 
@@ -101,14 +103,14 @@ class ReaderFlowPolishTests(unittest.TestCase):
         self.assertNotIn('href="/category/', page,
                          "One story is not a substantive category index")
 
-    def test_next_story_is_visible_immediately_after_article_ending(self):
+    def test_next_story_follows_source_before_interactions(self):
         item = self.articles[0]
         html = story(item, self.articles)
         ending = html.index('class="article-endmark"')
         next_story = html.index('class="reader-next"')
         poll = html.index('class="future-poll"')
         source = html.index('class="source-context"')
-        self.assertTrue(ending < next_story < poll < source)
+        self.assertTrue(ending < source < next_story < poll)
         self.assertEqual(html.count('class="reader-next"'), 1)
         self.assertIn('<span class="reader-next-kicker">次の記事</span>', html)
         self.assertRegex(

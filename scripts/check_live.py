@@ -48,6 +48,7 @@ if __package__:
     from .market_figures import render_market_svg
     from .build import (
         editorial_lead, broadcast_track_url, broadcast_vtt, CATEGORIES, CATEGORY_PATHS,
+        daily_issues, MIN_STANDALONE_ISSUE_ARTICLES,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
     )
 else:
@@ -72,6 +73,7 @@ else:
     from market_figures import render_market_svg
     from build import (
         editorial_lead, broadcast_track_url, broadcast_vtt, CATEGORIES, CATEGORY_PATHS,
+        daily_issues, MIN_STANDALONE_ISSUE_ARTICLES,
         article_clip, uses_stock_photo, reviewed_generated_scene, article_tags, social_image,
     )
 
@@ -570,6 +572,20 @@ def _descendants(element):
     for child in element["children"]:
         yield child
         yield from _descendants(child)
+
+
+def verify_small_issue_links(markup, issues):
+    """Check each compact edition's own article links using the fetched issue index."""
+    parser = _RecommendationMarkup()
+    parser.feed(markup)
+    entries = {el["attrs"].get("id"): el for el in parser.elements if el["tag"] == "article"}
+    for day, items in issues.items():
+        if len(items) >= MIN_STANDALONE_ISSUE_ARTICLES:
+            continue
+        row = entries.get("day-" + day)
+        links = [el["attrs"].get("href") for el in _descendants(row) if el["tag"] == "a"] if row else []
+        if links != ["/articles/" + item["slug"] + "/" for item in items]:
+            raise RuntimeError("Issue archive headline links missing or stale for " + day)
 
 
 def verify_cast_story_delivery(markup, stories, issues, *, fetch=None, root=ROOT):
@@ -1457,13 +1473,8 @@ def check():
     # Daily editions must be published from the real article publication day,
     # not the fictional 2031 dateline. Sample only the newest three issue pages
     # to keep the free read-only production verification lightweight.
-    issue_days=Counter(
-        (article.get("published_at") or article["source"]["published_at"])[:10]
-        for article in articles
-    )
-    substantial={day: [a for a in articles
-                       if (a.get("published_at") or a["source"]["published_at"])[:10]==day]
-                 for day,count in issue_days.items() if count>=3}
+    editions = daily_issues(articles, minimum=1)
+    substantial = {day: items for day, items in editions.items() if len(items) >= MIN_STANDALONE_ISSUE_ARTICLES}
     index_data, index_mime = get("/issues/", indexable=True)
     index_markup=index_data.decode("utf-8")
     if ("text/html" not in index_mime or 'class="issue-index-list"' not in index_markup or
@@ -1471,6 +1482,7 @@ def check():
         raise RuntimeError("Issue archive listing is not published")
     if SITE+"/issues/" not in siteurls:
         raise RuntimeError("Daily issue index missing from sitemap")
+    verify_small_issue_links(index_markup, editions)
     for day, items in substantial.items():
         url=SITE+"/issues/"+day+"/"
         if url not in siteurls:
@@ -1559,23 +1571,22 @@ def check():
             raise RuntimeError(slug+": canonical page not linked from structured article")
         if metadata.get("dateModified")!=(item.get("modified_at") or published):
             raise RuntimeError(slug+": real modification timestamp missing or fictional")
-        # Reading flow is headline -> image -> uninterrupted prose -> tools.
-        # Source material is always present in HTML, behind a native details
-        # disclosure instead of another large pre-reading explanation.
+        # Keep the real source visible between the uninterrupted story and reader tools.
         for tag in ('<div class="article-body">',
                     '<div class="article-save-inline">',
-                    '<details class="source-context" id="story-source" aria-label="着想した実際の話題">',
-                    '<summary>着想元を見る</summary>'):
+                    '<aside class="source-context" id="story-source" aria-labelledby="story-source-heading">',
+                    '<h2 id="story-source-heading">この創作の着想元</h2>'):
             if tag not in page:
                 raise RuntimeError(slug+": reading-first layout missing: "+tag)
         positions = [
             page.index('<figure class="article-hero-figure">'),
             page.index('<div class="article-body">'),
+            page.index('<aside class="source-context" id="story-source" aria-labelledby="story-source-heading">'),
+            page.index('<nav class="reader-next"'),
             page.index('<div class="article-save-inline">'),
-            page.index('<details class="source-context" id="story-source" aria-label="着想した実際の話題">'),
         ]
         if positions != sorted(positions) or len(set(positions)) != len(positions):
-            raise RuntimeError(slug+": image, prose, bookmark and source order regressed")
+            raise RuntimeError(slug+": image, prose, source and reader tools out of order")
         checked_diagrams += verify_article_diagram(item, raw_page, root=ROOT)
         if 'href="#story-source"' in page:
             raise RuntimeError(slug+": duplicate source CTA before the article text")

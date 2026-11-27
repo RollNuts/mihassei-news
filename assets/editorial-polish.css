@@ -642,6 +642,9 @@ body{
 .issue-index-entry h2{font-family:var(--serif);font-size:clamp(22px,3vw,31px);margin:4px 0 7px;letter-spacing:-.06em}
 .issue-index-entry p{margin:4px 0;color:var(--muted);font-size:12px;line-height:1.8}
 .issue-index-entry .issue-index-headline{color:var(--ink);font-size:13px}
+.issue-index-entry[id]{scroll-margin-top:5rem}
+.issue-index-headlines{list-style:none;margin:4px 0 0;padding:0}
+.issue-index-headlines a{display:block;padding:6px 0;font-family:var(--serif);font-weight:700;line-height:1.6;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:.2em}
 .issue-index-open{white-space:nowrap;font-size:12px;font-weight:900;border-bottom:1px solid var(--accent);padding-bottom:4px}
 .issue-categories{font-size:12px!important;font-weight:800;color:var(--accent)!important;margin-top:15px!important}
 .issue-navigation{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;margin:38px 0 25px;font-weight:800;font-size:13px}
@@ -1044,7 +1047,6 @@ body [hidden] {
 .story-fiction-context strong{color:#3a4e42}
 .story-fiction-context a{color:#365c48;text-decoration:underline;text-underline-offset:3px}
 .story-fiction-context a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.source-context-disclaimer{border-top:1px solid #dcded4;padding-top:9px;margin-top:11px}
 @media(max-width:660px){
   .concept-primer{padding:3px 0 7px;margin:0 0 12px;gap:0}
   .concept-primer-lead{flex-basis:100%;font-size:12px;line-height:1.55}

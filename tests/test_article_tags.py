@@ -93,6 +93,20 @@ class ArticleTagTests(unittest.TestCase):
         thin = build.topic_page("考察沼", groups["考察沼"], self.articles)
         self.assertNotIn('id="topic-neighbors-title"', thin)
 
+    def test_paired_readings_link_both_published_stories_in_their_topic(self):
+        groups = build.topic_groups(self.articles)
+        for tag, (heading, notes) in build.TOPIC_READINGS.items():
+            with self.subTest(tag=tag):
+                items = groups[tag]
+                page = build.topic_page(tag, items)
+                self.assertIn(heading, page)
+                section = page.split('id="topic-reading-title"', 1)[1].split("</section>", 1)[0]
+                self.assertEqual(section.count("<a "), 2)
+                for slug, _, _ in notes:
+                    self.assertIn(f'href="/articles/{slug}/"', section)
+                remaining = [item for item in items if item["slug"] != notes[0][0]]
+                self.assertNotIn('id="topic-reading-title"', build.topic_page(tag, remaining))
+
     def test_topic_index_explains_satire_axis_without_person_attacks(self):
         page = build.topic_index(self.articles)
         self.assertIn("何を風刺しているか", page)

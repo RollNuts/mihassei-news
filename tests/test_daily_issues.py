@@ -1,6 +1,8 @@
 """Offline regression tests for dated editions, source dates, and link integrity."""
 import unittest
-from scripts.build import daily_issues, issue_url, issue_index, issue_page, story, home
+from urllib.parse import parse_qs, urlsplit
+from scripts.build import daily_issues, issue_url, issue_share_url, issue_index, issue_page, story, home
+from scripts.check_live import verify_small_issue_links
 
 
 class DailyIssueTests(unittest.TestCase):
@@ -62,15 +64,45 @@ class DailyIssueTests(unittest.TestCase):
     def test_index_and_article_return_to_edition(self):
         entries=self.fixture()
         groups=daily_issues(entries)
-        listing=issue_index(groups)
+        listing=issue_index(daily_issues(entries, minimum=1))
         self.assertIn('href="/issues/2026-11-02/"',listing)
         self.assertIn('href="/issues/2026-11-01/"',listing)
         self.assertNotIn('/issues/2026-10-31/',listing)
-        self.assertIn("3本以上",listing)
+        self.assertIn('id="day-2026-10-31"', listing)
+        self.assertIn('href="/articles/fiction-20261031-0/"', listing)
+        self.assertIn('href="/articles/fiction-20261031-1/"', listing)
         full=story(entries[0],entries,groups)
         thin=story(entries[-1],entries,groups)
         self.assertIn('class="article-issue-link" href="/issues/2026-11-02/"',full)
-        self.assertNotIn('class="article-issue-link"',thin)
+        self.assertIn('class="article-issue-link" href="/issues/#day-2026-10-31"',thin)
+
+    def test_small_new_editions_keep_the_same_archive_anchor_as_they_grow(self):
+        day = "2026-11-03"
+        for count in (1, 2, 3):
+            with self.subTest(count=count):
+                entries = [self.sample(day, i) for i in reversed(range(count))] + self.fixture()
+                groups = daily_issues(entries, minimum=1)
+                index = issue_index(groups)
+                link = issue_url(day, groups[day])
+                self.assertEqual(link, "/issues/" + (day + "/" if count == 3 else "#day-" + day))
+                self.assertLess(index.index('id="day-' + day), index.index('id="day-2026-11-02'))
+                self.assertIn('class="daily-issue-card" href="' + link + '"', home(entries))
+                self.assertIn('href="' + link + '"', issue_page("2026-11-02", groups["2026-11-02"], groups))
+                shared = parse_qs(urlsplit(issue_share_url(day, groups[day])).query)
+                target = urlsplit(shared["url"][0])
+                self.assertEqual(target.path, urlsplit(link).path)
+                self.assertEqual(target.fragment, urlsplit(link).fragment)
+                self.assertEqual(parse_qs(target.query)["utm_campaign"], ["daily_edition"])
+                self.assertIn(f"今号の記事は{count}本。", shared["text"][0])
+
+    def test_live_check_detects_missing_or_misplaced_headlines_without_another_request(self):
+        dates = daily_issues(self.fixture(), minimum=1)
+        markup = issue_index(dates)
+        verify_small_issue_links(markup, dates)
+        for broken in (markup.replace('id="day-2026-10-31"', ''),
+                       markup.replace('/articles/fiction-20261031-1/', '/articles/fiction-20261101-1/')):
+            with self.assertRaisesRegex(RuntimeError, "2026-10-31"):
+                verify_small_issue_links(broken, dates)
 
     def test_homepage_promotes_date_editions_not_fake_future_dates(self):
         entries=self.fixture()
