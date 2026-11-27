@@ -64,7 +64,8 @@ class SatirePilotTests(unittest.TestCase):
                     self.assertIn("創作ニュース", markup)
                     self.assertIn(a["title"], markup)
                     self.assertIn('data-future-poll', markup)
-                    self.assertIn('aria-label="着想した実際の話題"', markup)
+                    self.assertIn('aria-labelledby="story-source-heading"', markup)
+                    self.assertIn('<h2 id="story-source-heading">この創作の着想元</h2>', markup)
                     # Live local JPEG art is preferred over the default PNG;
                     # keep both first-party, non-SVG share-card routes valid.
                     import re
