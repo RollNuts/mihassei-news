@@ -1,5 +1,65 @@
 [
   {
+    "slug": "travel-wardrobe-return-in-next-city",
+    "category": "暮らし",
+    "flash": "旅の新しい着替え",
+    "art": "generic",
+    "fiction_company": "綴路衣装店、衣の駅（架空）",
+    "fiction_at": "2031-11-27T20:19:12.815+09:00",
+    "published_at": "2026-11-27T20:19:12.815+09:00",
+    "publication_slot": "2026-11-27T19:30:00+09:00",
+    "title": "旅行者、着替えを持たずに三都市へ　借りた服を次の街で返す旅が始まる",
+    "summary": "2031年、旅行者が宿泊先の近くで服を借り、次の街の衣料品店で返せるサービスが始まった。共通の寸法表示と店をまたぐ返却網により、三都市を巡る女性は荷物を増やさず、街ごとに違う装いを楽しんだ。",
+    "paragraphs": [
+      "旅行者の29歳の女性は27日、海沿いの街に着くと、昨日まで山の街で着ていたコートを駅前の衣料品店に返した。代わりに選んだのは青いジャケットと白いシャツだった。三都市を四日間で巡る旅だが、出発時に持ってきた着替えは下着と靴下だけだ。",
+      "綴路衣装店など三都市の衣料品店と宿泊施設は今月、共同で「衣の駅」を始めた。旅行者は参加店で一日単位で服を借り、別の街の参加店に返せる。店ごとに異なるSやMの表示ではなく、服そのものの肩幅や袖丈、伸びやすさを共通の形式で登録する。客は普段着ている服の寸法を一度入力すれば、次の街で着られる服を移動前に探せる。",
+      "女性は以前、数日間の旅行でも天候や食事の場所に合わせて服を詰め込んでいた。荷物を宿へ送る方法もあるが、着てみたい服を旅先で選べる方が面白いと思い、今回は借りることにした。山の街では厚手のコート、海の街では地元の店が選んだ服を着た。サイズが合わない時は店頭で試着して交換できる。",
+      "返された服はその街の洗濯業者が洗い、状態を確認してから再び貸し出す。借りた街に一着ずつ送り返す必要はない。貸出料の一部を服の所有店に、洗濯や修繕の費用を返却先の店に配分する。ただし、寒い街に厚手の服が不足する時はまとめて移送する必要がある。共同事業者は在庫と移動費を毎月照合し、赤字が続く服は貸出対象から外す。",
+      "海の街の店主は、従来は土産物を眺めるだけだった旅行者が、店内で時間をかけて服を選ぶようになったという。一方、旅先で着たい服が見つからない人は自分の服を持参でき、下着や靴は貸出対象にしていない。女性は夕食へ出かける前、翌日の街で借りたい服を予約した。旅程表には名所と食事の予定に加え、着てみたい服が一着ずつ並んでいた。"
+    ],
+    "source": {
+      "kind": "団体公式発表",
+      "publisher": "一般社団法人シェアリングエコノミー協会",
+      "published_at": "2026-11-17T15:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000134.000022734.html",
+      "topic": "2026年11月17日、同協会は衣類レンタルなど19社21サービスと11自治体が参画するグリーンフライデーの取り組みを発表し、11月25〜27日に持続可能な消費の選択肢を発信するとした。2031年の都市間返却網、共通寸法表示、衣の駅と利用者は創作。"
+    },
+    "scene_prompt": "Natural horizontal 16:9 documentary photograph of a fictional adult Japanese woman traveler in a blue jacket and white shirt holding a folded winter coat toward a shop attendant at a small clothing rental shop near a railway station, a modest backpack beside her, garment racks, daylight, candid natural gestures, no readable text or logos.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "旅行",
+      "衣服の再利用"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "衣服レンタル",
+      "ファッション"
+    ],
+    "x_tickers": [],
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "observational",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "衣類レンタルを含むサービスと自治体が買う以外の消費を共同で提案している",
+      "target": "都市をまたぐ旅行者向けの衣類貸出と返却",
+      "action": "旅行者が各都市の衣料品店で服を選び次の街で返す",
+      "outcome": "四日間三都市の旅で衣類を持ち運ばず街ごとに異なる装いを楽しむ"
+    },
+    "reader_clarity": {
+      "who": "旅行者",
+      "action": "宿泊先近くで借りた服を次の街の店で返す",
+      "oddity": "共通寸法と返却網で旅行の着替えを各地で選べる"
+    },
+    "behavior_basis": {
+      "motive": "旅先の店で服を選ぶ楽しみと荷物を減らすことを両立したい",
+      "ordinary_alternative": "自分の着替えを持参するか宿へ送る",
+      "why_not": "旅先で初めて見つけた服をその場で楽しめる",
+      "evidence_quote": "荷物を宿へ送る方法もあるが、着てみたい服を旅先で選べる方が面白いと思い、今回は借りることにした。"
+    }
+  },
+  {
     "slug": "student-town-model-opens-after-school-study-room",
     "category": "社会",
     "flash": "高校生の町づくり",
