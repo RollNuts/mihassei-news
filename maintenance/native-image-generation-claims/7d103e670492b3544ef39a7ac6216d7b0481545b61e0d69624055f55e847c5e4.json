@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "protocol": "ready_then_claim",
+  "kind": "native_image_generation_claim",
+  "status": "reserved_generation_unconfirmed",
+  "branch": "native-image-generation-claim/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4",
+  "receipt_path": "maintenance/native-image-generation-claims/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4.json",
+  "repository": "RollNuts/mihassei-news",
+  "identity": "7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4",
+  "slug": "family-toy-track-virtual-revival-bridge",
+  "article_sha256": "5890a9faeee453be3774a24c13c19fccc2288b4299752f97d387bdbaa7d71950",
+  "logical_run_id": "news-photo-v1:5890a9faeee453be3774a24c13c19fccc2288b4299752f97d387bdbaa7d71950",
+  "prompt_sha256": "d2e5ee052c7ede552f2adadac231ef7f19b0acc414df1baf25169eb70ebfb2ea",
+  "reserved_at": "2026-11-27T23:04:10.087Z",
+  "baseline": {
+    "commit_sha": "2f4dcb6da54b24d477657372f4b30831392f7003",
+    "tree_sha": "b488376f58ec6326dfb427e854b66b614f32a026",
+    "protected_hashes": {
+      "content/articles.json": "3afb06ddbc813193bf03ed4bbbe86b1f08339a1da047cfa820ac2b83814fa28f",
+      "assets/generated/manifest.json": "660b26043701b67933ec054a0c03611e8cc8839be830501d6425260552bfd744",
+      "content/visual_reviews.json": "8c27087f7e80c8c70de6ac68a716ac286f3b18939e7096733b81c4c441d14dde"
+    }
+  },
+  "transport_preflight": {
+    "kind": "native_image_transport_preflight",
+    "status": "passed",
+    "branch": "native-image-generation-claim/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4",
+    "receipt_path": "maintenance/native-image-preflight/receipt.json",
+    "receipt_sha256": "33d89cfe2e28e68e42c125d916939e596018486eafba4a17e59fc9ff8b8146ad",
+    "observed_at": "2026-11-27T23:03:27.680Z",
+    "route": "read_candidate_png through the original file adapter",
+    "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+    "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+    "commit_sha": "ed7f6456ae43fec5808173568a6f069f74bc07dc"
+  }
+}
