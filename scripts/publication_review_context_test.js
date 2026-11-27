@@ -908,6 +908,36 @@ test("unapproved drafts can reuse exact-head CI evidence after first read withou
   assert.equal((await unarmed.readValidation()).status, "ci_verified");
 });
 
+test("ordinary handoff discovery binds CI without separately looking up a run", async () => {
+  for (const base of [BASE, REF]) {
+    const w = validationWorld();
+    w.pr.draft = false;
+    w.pr.body = "## 通常統合の既存引継ぎ";
+    w.runs.get(101).pull_requests[0].base.sha = base;
+    w.ciInventory.push({ ...w.runs.get(101), id: 202, head_branch: "another-pr-with-the-same-commit" });
+    const result = await w.readValidation({ ci_run_id: undefined });
+    assert.equal(result.status, "ci_verified");
+    assert.equal(result.evidence.ci.run_id, 101);
+    assert.equal(result.evidence.ci.base_matches_main, base === REF);
+    assert.equal(result.publication_authorized, false);
+    assert.equal(w.calls.length, 9);
+  }
+  const absent = validationWorld();
+  absent.ciInventory = [];
+  const missing = await absent.readValidation({ ci_run_id: undefined });
+  assert.equal(missing.status, "attention");
+  assert.equal(missing.reason, "ci_run_not_observed");
+
+  const racing = validationWorld();
+  racing.hook = ({ route, count }) => {
+    if (route === "/actions/runs" && count === 2)
+      return { total_count: 1, workflow_runs: [{ ...racing.runs.get(101), id: 102 }] };
+  };
+  const changed = await racing.readValidation({ ci_run_id: undefined });
+  assert.equal(changed.status, "attention");
+  assert.equal(changed.reason, "ci_changed_during_snapshot");
+});
+
 test("validation distinguishes queued CI and known failed runs without polling, logs or finalization", async () => {
   for (const status of ["queued", "in_progress", "waiting"]) {
     const w = validationWorld(); Object.assign(w.runs.get(101), { status, conclusion: null });
@@ -970,7 +1000,7 @@ test("validation requires the latest attempt and exact open PR, workflow, branch
     const w = validationWorld(); edit(w);
     assert.equal((await w.readValidation()).status, "attention"); assert.deepEqual(w.logCalls, []);
   }
-  assert.equal((await validationWorld().readValidation({ ci_run_id: undefined })).reason, "invalid_status_input");
+  assert.equal((await validationWorld().readValidation({ ci_run_id: 0 })).reason, "invalid_status_input");
 });
 
 test("validation keeps retrieval failures and changing snapshots explicit instead of reusing stale success", async () => {
