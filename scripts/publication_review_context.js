@@ -25,6 +25,11 @@ var PublicationReviewContext = (function () {
   function matches(pattern, value) {
     return typeof value === "string" && !/[\r\n]/.test(value) && pattern.test(value);
   }
+  function calendarDay(day) {
+    if (!matches(/^\d{4}-\d\d-\d\d$/, day) || day.startsWith("0000-")) return false;
+    const time = Date.parse(day + "T00:00:00Z");
+    return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === day;
+  }
   function require(value, message) { if (!value) throw Error(message + "; review scope is unverified"); }
   function text(value, label) {
     require(typeof value === "string" && value.trim(), "Invalid " + label);
@@ -370,7 +375,7 @@ var PublicationReviewContext = (function () {
       && (f.previous_filename === undefined || inside(f.previous_filename))),
       "Incomplete or non-docs photograph-check history");
   }
-  async function priorDocsParent(get, ref) {
+  async function priorHandoffParent(get, ref) {
     // The merge-base and the actual first parent must agree. A net diff can
     // hide a content change later reverted inside a merged branch.
     const diff = await get(API + "/compare/" + ref + "~1..." + ref + "?per_page=8");
@@ -382,6 +387,13 @@ var PublicationReviewContext = (function () {
       && new Set(commits.map(c => c.sha)).size === commits.length
       && commits.at(-1).sha === ref && commits.at(-1).parents?.[0]?.sha === base,
       "Incomplete photograph-check ancestor comparison");
+    // daily-metrics appends one dated snapshot in a direct commit. Neither
+    // report_day nor the photograph inventory consumes audience counters.
+    const file = diff.files?.[0];
+    if (commits.length === 1 && Array.isArray(commits[0].parents) && commits[0].parents.length === 1 && Array.isArray(diff.files)
+      && diff.files.length === 1 && file?.status === "added" && file.previous_filename === undefined
+      && matches(/^analytics\/daily\/\d{4}-\d\d-\d\d\.json$/, file.filename)
+      && calendarDay(file.filename.slice("analytics/daily/".length, -".json".length))) return base;
     docsOnlyFiles(diff.files, 300);
     for (const { sha } of commits.slice(0, -1)) {
       const commit = await get(API + "/commits/" + sha + "?per_page=100");
@@ -395,7 +407,7 @@ var PublicationReviewContext = (function () {
     for (;;) {
       const data = await get(API + "/commits/" + checkRef + "/check-runs?check_name=Photograph%20completion&per_page=1");
       if (data.total_count === 0 && Array.isArray(data.check_runs) && data.check_runs.length === 0) {
-        checkRef = await priorDocsParent(get, checkRef);
+        checkRef = await priorHandoffParent(get, checkRef);
         continue;
       }
       const check = data.check_runs?.[0];
@@ -409,9 +421,7 @@ var PublicationReviewContext = (function () {
   // One day's pre-writing input. Article validation and publication use their own checks.
   async function readEditorialGuidance({ fetchRepository, ref, day } = {}) {
     try {
-      require(typeof fetchRepository === "function" && matches(GIT, ref)
-        && matches(/^\d{4}-\d\d-\d\d$/, day) && !day.startsWith("0000-")
-        && new Date(day + "T00:00:00Z").toISOString().slice(0, 10) === day, "Invalid editorial guidance input");
+      require(typeof fetchRepository === "function" && matches(GIT, ref) && calendarDay(day), "Invalid editorial guidance input");
       let reads = 0;
       async function get(url) {
         require(++reads <= 14, "Editorial guidance read budget reached");
@@ -457,10 +467,19 @@ var PublicationReviewContext = (function () {
       let selected = [];
       const attention = [];
       let cursor = offset;
+      let open;
+      async function listOpen() {
+        const prs = await get(API + OPEN + "&per_page=100");
+        require(Array.isArray(prs) && prs.length < 100, "Open photograph owner inventory incomplete");
+        prs.forEach(identity);
+        return prs;
+      }
       // Keep each read within the connector callback budget, even with a large backlog.
       for (; cursor < rows.length && cursor < offset + batchSize && selected.length < 3; cursor++) {
-        // On a proven docs advance reserve both owner snapshots and the final main check.
-        if (checkRef !== ref && operations + 5 > readBudget) {
+        // After a carried check yields a candidate, reserve one file listing
+        // per open PR as well as the final owner and main checks.
+        if (checkRef !== ref && selected.length && !open) open = await listOpen();
+        if (checkRef !== ref && operations + (open ? 4 + open.length : 5) > readBudget) {
           require(cursor > offset, "Photo read budget reached before checking a handoff");
           break;
         }
@@ -494,13 +513,7 @@ var PublicationReviewContext = (function () {
         }
       }
       if (selected.length) {
-        const listOpen = async () => {
-          const prs = await get(API + OPEN + "&per_page=100");
-          require(Array.isArray(prs) && prs.length < 100, "Open photograph owner inventory incomplete");
-          prs.forEach(identity);
-          return prs;
-        };
-        const open = await listOpen();
+        if (!open) open = await listOpen();
         const occupied = new Set();
         const shared = {
           "content/articles.json": null, "assets/generated/manifest.json": ["images", "rejected"],
