@@ -11545,6 +11545,174 @@
     }
   }
 }
+  ,
+    "travel-wardrobe-return-in-next-city": {
+  "article_sha256": "f2178e3b36651f989ebe10ddb0a5d2b435c8a310a2a67cba31ce713762abebd2",
+  "bytes": 185242,
+  "generated_at": "2026-11-27T11:12:24.093Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "bdd5cf1b-96d3-4ce8-98be-409ee0f6a9ac",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:bdd5cf1b-96d3-4ce8-98be-409ee0f6a9ac",
+  "generation_prompt": "Natural horizontal 16:9 documentary photograph of a fictional adult Japanese woman traveler in a blue jacket and white shirt holding a folded winter coat toward a shop attendant at a small clothing rental shop near a railway station, a modest backpack beside her, garment racks, daylight, candid natural gestures, no readable text or logos.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "38e929164947a6ef225a201ae596ee9b8c0aa5024affa345dd1e3b41507deb53",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:cdffa05b-9322-473f-b109-4986e88616d2",
+    "instanceID": "xmp:iid:bdd5cf1b-96d3-4ce8-98be-409ee0f6a9ac",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          205,
+          35,
+          205,
+          234,
+          199,
+          102,
+          160,
+          184,
+          132,
+          54,
+          162,
+          94,
+          163,
+          190,
+          143,
+          190,
+          192,
+          255,
+          20,
+          67,
+          156,
+          21,
+          203,
+          205,
+          62,
+          155,
+          201,
+          105,
+          204,
+          1,
+          178,
+          240
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-27T11:12:20.698705711Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-27T11:12:20.698707453Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-27T11:12:20.698041963Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "4fe2b1936bc8a6d42aba0030fefe17779101a6f0c2b74d1e8d22684ac2bfc03a",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:f2178e3b36651f989ebe10ddb0a5d2b435c8a310a2a67cba31ce713762abebd2",
+    "actual_output_hint": "/workspace/scratch/52e08f82f256/generated_images/exec-ef69ceee-7fd8-4e87-8642-be6aa38ea21b.png",
+    "observed_at": "2026-11-27T11:12:24.093Z",
+    "bytes": 2316000,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "3b65ee84ab8f87ea4b20d920840e9bb00e7e8025a601f871e0977d5a14bbf565",
+    "candidate_branch": "native-image-candidate/travel-wardrobe-return-in-next-city/f2178e3b36651f98-48647b5a6bbe",
+    "candidate_commit": "e29d19bc6a371e0939fd330f4cd60a0f502d2440",
+    "receipt_path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/receipt.json",
+    "receipt_sha256": "0653653951dc729aa22370cf9faacfdd842774eae5573bd4e1694dec242f08e2",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part000",
+        "bytes": 524288,
+        "sha256": "1805f85546c1246cb6ab021125a11828c22e0909346be83a4e82f8a846ae14a4",
+        "blob_sha": "4ddb419f0cc454c24abd91e2b8548c29fe3bc01c"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part001",
+        "bytes": 524288,
+        "sha256": "aaf1e54e43317df33d32f35e1eb1b7a71211b6719f40dff2a624ff7cdd0d0e6f",
+        "blob_sha": "99cd313a5ddc4ff90f301d674f62ef455c32bd3a"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part002",
+        "bytes": 524288,
+        "sha256": "260986a7b509152e52c7df8aff7b160f75ff51b832a6440cf296b59ad8154682",
+        "blob_sha": "4f0189620db149f00bfd0f37624df9b41ec14304"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part003",
+        "bytes": 524288,
+        "sha256": "845e352b2c06d374e76d906406ae58dcec746e8bd3b00280a4f3e7771fee475e",
+        "blob_sha": "808fbb08f070088639bdde27d20b6c8887ea0c54"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part004",
+        "bytes": 218848,
+        "sha256": "a4338069b82c038a733015c9a652596a952fe2d04d31e1c183f9ddec26da3cf7",
+        "blob_sha": "56fcf86b8f83ea1dc316f2cfba0e3db2930ba1d9"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-generation-claim/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "f5f9c4312c84ca9d05844ab8344ef869b84032f5c7f5c883ce8ed836379c4f1f",
+      "observed_at": "2026-11-27T11:09:30.175Z",
+      "route": "read_candidate_png through the original file adapter",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "6ea631f20601de6da80c7fc25dee4a33f1016c82"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d",
+      "receipt_path": "maintenance/native-image-generation-claims/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d.json",
+      "receipt_sha256": "b5c78a244d6b610399730307ad6baef01095a3f60fef9218548fabef103a6f78",
+      "commit_sha": "fefdef4a44890ad63ddf8414fff2d702befd6c0a"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {

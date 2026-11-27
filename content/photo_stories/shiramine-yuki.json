@@ -120,6 +120,21 @@
         "cut_id": "05",
         "image_sha256": "6a62b6b71b3657ecff3be1746cf45e2ff65ed197c3aaa8ed24b56652bbd6997f"
       }
+    },
+    {
+      "id": "shiramine-yuki-post-20261127181250875",
+      "model_id": "shiramine-yuki",
+      "published_at": "2026-11-27T18:12:50.875+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夕食の前に窓を拭いたら、向こうの灯りが少し鮮明になりました。椅子を窓辺に寄せて、温かいお茶を飲んでいます。",
+      "source": {
+        "issue_slug": "november-a-longer-breath-yuki-005",
+        "cut_id": "06",
+        "image_sha256": "a50c72cc84f197f1921a088597cddba56b2c97dd3e7c1af1eecc7aff2291d8e5"
+      }
     }
   ]
 }
