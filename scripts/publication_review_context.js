@@ -627,7 +627,9 @@ var PublicationReviewContext = (function () {
       check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
         && listing.total_count <= 100, "ci_inventory_incomplete");
       const candidates = listing.workflow_runs.filter(run => run.path === CI_WORKFLOW
-        && run.event === "pull_request" && run.head_sha === head);
+        && run.event === "pull_request" && run.head_sha === head
+        && (!discoverCI || run.head_branch === snapshot.head.ref
+          && run.head_repository?.full_name === REPOSITORY));
       if (discoverCI && !candidates.length) throw Error("ci_run_not_observed");
       check(candidates.length > 0 && candidates.every(run => positive(run.id))
         && new Set(candidates.map(run => run.id)).size === candidates.length, "ci_inventory_unverified");

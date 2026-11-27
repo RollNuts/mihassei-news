@@ -914,6 +914,7 @@ test("ordinary handoff discovery binds CI without separately looking up a run", 
     w.pr.draft = false;
     w.pr.body = "## 通常統合の既存引継ぎ";
     w.runs.get(101).pull_requests[0].base.sha = base;
+    w.ciInventory.push({ ...w.runs.get(101), id: 202, head_branch: "another-pr-with-the-same-commit" });
     const result = await w.readValidation({ ci_run_id: undefined });
     assert.equal(result.status, "ci_verified");
     assert.equal(result.evidence.ci.run_id, 101);
