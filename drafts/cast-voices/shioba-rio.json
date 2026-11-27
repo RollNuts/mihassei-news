@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shioba-rio",
   "name": "汐羽りお",
-  "created_date": "2026-11-26",
+  "created_date": "2026-11-27",
   "source_chat_url": "https://chatgpt.com/c/6af86744-fb88-83e8-991f-4e2e9d3d8a7f",
   "photo_reference": {
     "issue_slug": "november-coast-city-rio-015",
-    "cut_id": "07",
-    "image_sha256": "527e7bb2c55ef19c09a700c53a834cd7d5dbdc54e222722fb2dbe6d4750dedee"
+    "cut_id": "09",
+    "image_sha256": "ce649a006a9b83a5720ff85da192f86a6757b5f81d397b39731de5287951a53a"
   },
-  "post_text": "通勤の電車で小説を一章だけ読むつもりが、続きが気になって駅のベンチでもう一章。今日は少し早めに家を出て正解でした。",
-  "spoken_line": "もう一章だけ。",
+  "post_text": "海沿いの道で、風に飛ばされた落ち葉が靴先にぴたり。歩くたびに一緒についてくるので、信号待ちまで小さな同行者ができました。",
+  "spoken_line": "信号まで、ご一緒に。",
   "future_idea": null
 }
