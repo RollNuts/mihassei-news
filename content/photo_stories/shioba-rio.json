@@ -120,6 +120,21 @@
         "cut_id": "07",
         "image_sha256": "527e7bb2c55ef19c09a700c53a834cd7d5dbdc54e222722fb2dbe6d4750dedee"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261127091139536000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-27T09:11:39.536+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "海沿いの道で、風に飛ばされた落ち葉が靴先にぴたり。歩くたびに一緒についてくるので、信号待ちまで小さな同行者ができました。",
+      "source": {
+        "issue_slug": "november-coast-city-rio-015",
+        "cut_id": "09",
+        "image_sha256": "ce649a006a9b83a5720ff85da192f86a6757b5f81d397b39731de5287951a53a"
+      }
     }
   ]
 }
