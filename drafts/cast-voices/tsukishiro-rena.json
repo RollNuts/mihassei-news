@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "tsukishiro-rena",
   "name": "月城れな",
-  "created_date": "2026-11-26",
+  "created_date": "2026-11-27",
   "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
   "photo_reference": {
-    "issue_slug": "november-city-pause-rena-008",
-    "cut_id": "09",
-    "image_sha256": "db9628382316306997e6cf96d9045eed19792a296a989adf961dc95ada2e2300"
+    "issue_slug": "november-sea-and-city-rena-003",
+    "cut_id": "03",
+    "image_sha256": "6d33243fdb7bc4c5c3194d94ecae5a4aff6752f3dc961b5ba696d63a44b90f91"
   },
-  "post_text": "帰りに寄った店で、片方だけのイヤリングを見つけた。失くした方ではなく、残った方が売られている。少し気になって、買って帰った。",
+  "post_text": "帰り道、ショーウィンドウに映った自分の歩幅が妙に小さかった。寒さのせいにして、角の店で温かい紅茶を買った。",
   "spoken_line": null,
   "future_idea": null
 }
