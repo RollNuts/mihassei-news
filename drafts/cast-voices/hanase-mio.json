@@ -2,15 +2,15 @@
   "schema_version": 1,
   "model_id": "hanase-mio",
   "name": "花瀬みお",
-  "created_date": "2026-11-26",
+  "created_date": "2026-11-27",
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "photo_reference": {
     "issue_slug": "november-mio-on-the-move-016",
-    "cut_id": "02",
-    "image_sha256": "1eeba10e1bfd6bfbfed1e6312d15ffb5be34de1d308b019efef930fa63ee7d4d",
-    "description": "2031年11月、既刊016 cut02。駅のホームで紙の地図を広げる検品済み本人写真。"
+    "cut_id": "03",
+    "image_sha256": "4336b4d6c6e5ad5e4323358657f82f4b6f0e41a8655c09c1db2719396059eb00",
+    "description": "2031年11月、既刊016 cut03。海沿いの道で自転車のハンドルに手を掛ける検品済み本人写真。"
   },
-  "post_text": "昼、駅の売店で温かいお茶を買った。手袋を外してふたを開けた途端に電車が来て、結局ひと口も飲まずに乗り込んだ。",
+  "post_text": "昼、海辺で凧を上げた。走り出すとすぐ落ちるから、風に向かってじっと待ってみた。今度は糸を巻くほうが追いつかない。",
   "spoken_line": null,
   "future_idea": null
 }
