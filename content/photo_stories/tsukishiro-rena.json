@@ -135,6 +135,21 @@
         "cut_id": "03",
         "image_sha256": "6d33243fdb7bc4c5c3194d94ecae5a4aff6752f3dc961b5ba696d63a44b90f91"
       }
+    },
+    {
+      "id": "tsukishiro-rena-post-20261128203736104000",
+      "model_id": "tsukishiro-rena",
+      "published_at": "2026-11-28T20:37:36.104+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "夜の散歩で、街路樹の根元に小さな電飾を見つけた。点灯するまで待ったけれど、どうやら今日は飾り付けだけらしい。",
+      "source": {
+        "issue_slug": "november-sea-and-city-rena-003",
+        "cut_id": "06",
+        "image_sha256": "f727f735b32d61efd56a395f1928a7fe32e8e2d0b7913e04f4f172c52e9c11ef"
+      }
     }
   ]
 }
