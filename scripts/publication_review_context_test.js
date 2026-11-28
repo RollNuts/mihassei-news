@@ -705,6 +705,7 @@ function discoveredDelivery(kind) {
 test("merged news, market, cast and weekly photo delivery are recoverable from the PR and head without run IDs", async () => {
   for (const kind of ["news", "market", "cast_story", "photo_issue"]) {
     const w = discoveredDelivery(kind);
+    if (kind === "photo_issue") w.runs.get(103).display_title = "Verify live article delivery and SEO"; // #997 predates the custom run name.
     const result = await w.discover();
     assert.equal(result.status, "verified", kind + ": " + result.reason);
     assert.equal(result.live_sha, w.pr.merge_commit_sha);

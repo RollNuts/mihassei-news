@@ -926,8 +926,7 @@ var PublicationReviewContext = (function () {
         // The finalizer explicitly dispatched the production check above. Other
         // push or PR checks on the same revision are not evidence of that dispatch.
         verification_run_id = await uniqueVerificationRun("branch=main&head_sha=" + result.merge_sha, "live",
-          value => value.event === "workflow_dispatch" && value.head_branch === "main" && value.head_sha === result.merge_sha
-            && value.display_title === "Manual public verification");
+          value => value.event === "workflow_dispatch" && value.head_branch === "main" && value.head_sha === result.merge_sha);
       }
       check(positive(verification_run_id), "verification_run_id_required");
       const live = await run(verification_run_id, VERIFY, ["push", "workflow_dispatch"], result.merge_sha, "main", "live");
