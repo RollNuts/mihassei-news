@@ -100,7 +100,9 @@
 
 ### 未着手を未完報告だけで持ち越さない
 
-画像が必要な対象では、[Native手順](NATIVE_IMAGE_BYTES.md)の既存PNG事前検証を今回の実行環境で実際に行う。初回の試験PNGは同手順の標準ライブラリだけのbootstrapを使い、未実施をツール故障と扱わない。確定記事の新計画は同手順の`prepareArticle`で実commitから入力を作る。既存plan・候補・claim・checkpointがあれば新しい計画や実行IDへ置き換えず、元の工程を続ける。
+画像回収では先に同じ記事・特集の候補を確認する。GitHubに原本があれば、クラウドから固定コミットの[記事候補](NATIVE_IMAGE_BYTES.md#install-a-reviewed-candidate-in-its-existing-publication-pr)・[週刊写真](IMAGE_CANDIDATE_RECEIVER.md#reading-a-saved-weekly-original)を読み戻し、同じ計画で検品・採否・公開確認まで進める。Macのロック解除や起動を待つ工程はない。
+
+新規生成時は、生成器が[その回に返す形式](NATIVE_IMAGE_BYTES.md#choose-the-actual-return-type-before-generating)に合わせ、同じ受取経路で既存PNGの保存・読戻しを先に試す。作業ファイルで受け取る場合は、そのクラウド実行に割り当てられた共有場所を使う。[週刊の事前確認](NATIVE_IMAGE_BYTES.md#weekly-original-transport)では読取専用の原本と直接返るPNGも扱える。画像を受け取れない場合も、初読に合格した本文と適合する代替画像で記事の公開を続ける。確定記事の新計画は`prepareArticle`で実commitから作り、既存plan・claim・checkpointがあれば元の工程を続ける。
 
 失敗・時間切れの引継ぎは、現記事SHA、元plan/原PNG/候補/claim/checkpointの実参照、試した操作と実エラー、次の具体操作、同じ担当を残す。「PNG検証未完」「能力不足」「次回確認」だけで終了しない。同じ記事SHA・工程を2回続けて進められなければ、再生成せず、実証したツール・認証・保存の故障だけを既存の障害修理担当へ渡す。未着手の場合はその旨を残し、次回はその操作から始める。
 
