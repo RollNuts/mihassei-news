@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "shiramine-yuki",
   "name": "白峰ゆき",
-  "created_date": "2026-11-27",
+  "created_date": "2026-11-28",
   "source_chat_url": "https://chatgpt.com/c/6af86786-cc10-83ee-bf77-00e22698de42",
   "photo_reference": {
     "issue_slug": "november-a-longer-breath-yuki-005",
-    "cut_id": "06",
-    "image_sha256": "a50c72cc84f197f1921a088597cddba56b2c97dd3e7c1af1eecc7aff2291d8e5"
+    "cut_id": "07",
+    "image_sha256": "1be7d67f641d89f2e658c9ba1160c32e8c28bfd1725602a99551d32590646a02"
   },
-  "post_text": "夕食の前に窓を拭いたら、向こうの灯りが少し鮮明になりました。椅子を窓辺に寄せて、温かいお茶を飲んでいます。",
-  "spoken_line": "もう少し、ここでお茶を飲みます。",
-  "future_idea": "2031年、旅先の宿で夜景を楽しめる窓辺の居場所を取材する。"
+  "post_text": "宿に戻って靴を脱いだら、足の裏まで冷えていました。湯たんぽを布で包んで、今夜は早めにベッドに入ろうと思います。",
+  "spoken_line": "今夜は足元を温かくして眠ります。",
+  "future_idea": "2031年、冬の宿で湯たんぽのある夜を過ごす。"
 }
