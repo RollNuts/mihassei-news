@@ -80,9 +80,10 @@ function fixture(start='2026-11-04T00:30:00Z',cryptoImplementation=webcrypto,leg
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
-  const getPublic=async(articles='story-a,story-b',popular=false)=>{
+  const getPublic=async(articles='story-a,story-b',popular=false,day)=>{
     const params=new URLSearchParams({articles,view:'public'});
     if(popular)params.set('popular','1');
+    if(day!==undefined)params.set('day',day);
     const response=await stats.fetch(new Request('https://veripsa.com/api/engagement?'+params));
     return {status:response.status,data:await response.json()};
   };
@@ -409,6 +410,33 @@ test('out-of-order digest completion across midnight retains the earliest counte
   assert.equal(snapshot.today.pageViewsCoverage,'in-progress');
   assert.equal(snapshot.last7Days.pageViews,2);
   assert.equal(snapshot.last7Days.measuredDays,2);
+});
+
+test('compact dated GET returns the archived counters for that JST day only',async t=>{
+  const f=fixture('2026-11-04T03:00:00Z');t.after(()=>f.db.close());
+  await f.post(view(randomUUID(),'story-a'));
+  f.setTime('2026-11-05T03:00:00Z');
+  await f.post(view(randomUUID(),'story-b'));
+  f.setTime('2026-11-07T03:00:00Z');
+  const slugs='story-a,story-b';
+  for(const [date,coverage,a,b] of [
+    ['2026-11-03','unmeasured',null,null],['2026-11-04','partial',1,0],
+    ['2026-11-05','complete',0,1],['2026-11-06','complete',0,0],
+    ['2026-11-07','in-progress',0,0]
+  ]){
+    const compact=(await f.getPublic(slugs,false,date)).data;
+    const archive=(await f.get(slugs,date)).data;
+    assert.equal(compact.day.dateJst,date);
+    assert.equal(compact.day.pageViewsCoverage,coverage);
+    for(const key of Object.keys(compact.day))assert.equal(compact.day[key],archive.day[key]);
+    assert.equal(compact.articles['story-a'].requestedDayPageViews,a);
+    assert.equal(compact.articles['story-b'].requestedDayPageViews,b);
+  }
+  const ordinary=(await f.getPublic()).data;
+  assert.equal('day' in ordinary,false);
+  assert.equal('requestedDayPageViews' in ordinary.articles['story-a'],false);
+  for(const date of ['2026-10-24','2026-11-08','2026-11-00'])
+    assert.equal((await f.getPublic(slugs,false,date)).status,400);
 });
 
 test('seven-day PV excludes the older day and distinguishes partial start coverage',async t=>{

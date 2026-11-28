@@ -429,7 +429,7 @@ export class NewsroomStats extends DurableObject {
       }
     };
   }
-  publicSnapshot(url, day, photoEndDay=null) {
+  publicSnapshot(url, day, photoEndDay=null, requestedDay=null) {
     // Reader-facing pages need only the counters they actually render. This
     // compact shape is also returned by successful visit POSTs so a normal
     // page display does not need an immediate second API request.
@@ -455,6 +455,11 @@ export class NewsroomStats extends DurableObject {
       "predictions:unlikely:"+slug,
       ...dates.map(date=>"day:"+date+":pageViews:"+slug)
     );
+    if(requestedDay!==null){
+      const prefix="day:"+requestedDay+":";
+      keys.push(prefix+"visitors",prefix+"articleReads",prefix+"pageViews",
+        ...articleSet.map(slug=>prefix+"pageViews:"+slug));
+    }
     const values=this.counts(keys);
     const value=key=>values.get(key)??0;
     const publicStartedAt=value("pageViews:startedAt");
@@ -469,6 +474,7 @@ export class NewsroomStats extends DurableObject {
         pageViewsCoverage
       };
     };
+    const selectedDay=requestedDay===null ? null : publicDay(requestedDay);
     const publicArticles=Object.fromEntries(articleSet.map(slug=>[
       slug,{
         likes:value("likes:"+slug),
@@ -476,6 +482,8 @@ export class NewsroomStats extends DurableObject {
         todayReaders:value("day:"+day.date+":reader:"+slug),
         pageViews:publicStartedAt ? value("pageViews:"+slug) : null,
         todayPageViews:publicStartedAt ? value("day:"+day.date+":pageViews:"+slug) : null,
+        ...(selectedDay ? {requestedDayPageViews:selectedDay.pageViewsCoverage==="unmeasured"
+          ? null : value("day:"+requestedDay+":pageViews:"+slug)} : {}),
         last7DaysPageViews:publicStartedAt
           ? dates.reduce((sum,date)=>sum+value("day:"+date+":pageViews:"+slug),0)
           : null,
@@ -552,6 +560,7 @@ export class NewsroomStats extends DurableObject {
       },
       today:publicDay(day.date),
       yesterday:publicDay(previousDate),
+      ...(selectedDay ? {day:selectedDay} : {}),
       ...(popularRows!==null ? {
         // Rank once inside the existing Durable Object instead of making the
         // browser fetch every published article just to discover the top few.
@@ -606,7 +615,7 @@ export class NewsroomStats extends DurableObject {
         selectedHour={date:match[1],hour:match[2],stamp:requestedHour};
       }
       if(url.searchParams.get("view")==="public")
-        return json(this.publicSnapshot(url,day,photoEndDay));
+        return json(this.publicSnapshot(url,day,photoEndDay,requestedDay));
       const articles=(url.searchParams.get("articles")||"").split(",").filter(validContentKey).slice(0,20);
       const startedAt=this.count("pageViews:startedAt");
       const hourlyStartedAt=this.count("hourlyPageViews:startedAt");
