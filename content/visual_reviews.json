@@ -1132,6 +1132,8 @@
 }
   ,
     "family-toy-track-virtual-revival-bridge": {"decision":"accepted","article_sha256":"5890a9faeee453be3774a24c13c19fccc2288b4299752f97d387bdbaa7d71950","image_sha256":"cb1adc8cb014ea411ac88548f4aa65b08d81f920a1b750462b8664452b854f63","reviewed_at":"2026-11-27T23:09:03.703Z","note":"固定候補の原PNGと1200x675 JPEGを実表示。母親と男児が居間の卓上で青い旧線路と新しい坂・赤い橋を組み、橋上と下を別の列車が走る主要場面が明瞭。手前の使い込まれた青い部品で新旧の組合せも伝わる。下の列車色は本文冒頭の赤と異なるが、橋の上下を使う遊びと互換部品という主題を誤認させない。肌・髪・ニット・木目・樹脂の擦れ、窓からの光と影が自然で現場写真として成立。目立つロゴ・読める文字やCG調なし。"}
+  ,
+    "cinema-archive-live-guitar-guest": {"article_sha256":"caabe7cbf0475407834fdad0f1575337f8e64349dae6ff16c794ccc5bdabad4e","decision":"rejected","image_sha256":"be0ff1ca03a514e16336cee39b0718c381ec5b3a839e27bf0f68e52f93b8b483","note":"原PNGと1200×675 JPEGを固定候補commit b2996225781f60c79450c754f45246b3b46565b7から実表示。人物の肌・布・暗所の光は写真として自然だが、演奏者とスクリーンの間に複数列の客席があり、本文の「最前列」と一致しない。ヘッドストックに文字風の線も見える。本文の位置関係を誤認させるため不採用。同条件の再生成をしない。原PNG/JPEGと来歴は候補に保持し、本文に合う専用SVGへ代替。","reviewed_at":"2026-11-28T11:16:53.437Z"}
   },
   "version": 1
 }
