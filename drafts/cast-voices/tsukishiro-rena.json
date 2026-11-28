@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "tsukishiro-rena",
   "name": "月城れな",
-  "created_date": "2026-11-27",
+  "created_date": "2026-11-28",
   "source_chat_url": "https://chatgpt.com/c/6af8675f-49b8-83e8-881e-b31a8ee1f481",
   "photo_reference": {
     "issue_slug": "november-sea-and-city-rena-003",
-    "cut_id": "03",
-    "image_sha256": "6d33243fdb7bc4c5c3194d94ecae5a4aff6752f3dc961b5ba696d63a44b90f91"
+    "cut_id": "06",
+    "image_sha256": "f727f735b32d61efd56a395f1928a7fe32e8e2d0b7913e04f4f172c52e9c11ef"
   },
-  "post_text": "帰り道、ショーウィンドウに映った自分の歩幅が妙に小さかった。寒さのせいにして、角の店で温かい紅茶を買った。",
+  "post_text": "夜の散歩で、街路樹の根元に小さな電飾を見つけた。点灯するまで待ったけれど、どうやら今日は飾り付けだけらしい。",
   "spoken_line": null,
   "future_idea": null
 }
