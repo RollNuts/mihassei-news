@@ -668,6 +668,80 @@ test("trusted-main finalization binds news and market delivery to its actual PR,
   }
 });
 
+// The hosted reviewer only receives the fixed PR/head. Its CI, finalizer and
+// dispatched live check are separate runs, and other workflows share these times.
+function discoveredDelivery(kind) {
+  const w = trustedMainFinalizer(handoffWorld());
+  w.pr.body = marker(w.pr.head.sha, ["cast_story", "photo_issue"].includes(kind)
+    ? { kind, reviewer_run: "chatgpt:author-12345", article_sha256: undefined }
+    : { kind, article_sha256: kind === "news" ? { "new-story": "a".repeat(64) } : {} });
+  w.pr.merged_at = "2026-11-20T00:03:18Z";
+  const [ci, finalizer, live] = [101, 102, 103].map(id => w.runs.get(id));
+  ci.created_at = "2026-11-20T00:00:00Z";
+  Object.assign(finalizer, { display_title: "Publication head " + w.pr.head.sha + " (CI 101/1)",
+    created_at: "2026-11-20T00:02:59Z", run_started_at: "2026-11-20T00:03:00Z" });
+  Object.assign(live, { display_title: "Manual public verification", created_at: "2026-11-20T00:03:19Z" });
+  w.inventory = {
+    finalizer: { total_count: 3, workflow_runs: [finalizer, { ...finalizer, id: 303, display_title: "Another PR" },
+      { ...finalizer, id: 306, path: ".github/workflows/unrelated.yml" }] },
+    live: { total_count: 2, workflow_runs: [live, { ...live, id: 304, event: "push" }] }
+  };
+  w.hook = ({ route, url }) => {
+    if (route !== "/actions/runs" || url.searchParams.get("event") === "pull_request") return;
+    const params = url.searchParams;
+    assert.equal(params.get("per_page"), "100");
+    if (params.has("created")) {
+      assert.equal(params.get("created"), ci.created_at + ".." + w.pr.merged_at);
+      return w.inventory.finalizer;
+    }
+    assert.equal(params.get("branch"), "main");
+    assert.equal(params.get("head_sha"), w.pr.merge_commit_sha);
+    return w.inventory.live;
+  };
+  w.discover = () => w.read({ ci_run_id: undefined, finalizer_run_id: undefined, verification_run_id: undefined });
+  return w;
+}
+
+test("merged news, market, cast and weekly photo delivery are recoverable from the PR and head without run IDs", async () => {
+  for (const kind of ["news", "market", "cast_story", "photo_issue"]) {
+    const w = discoveredDelivery(kind);
+    if (kind === "photo_issue") w.runs.get(103).display_title = "Verify live article delivery and SEO"; // #997 predates the custom run name.
+    const result = await w.discover();
+    assert.equal(result.status, "verified", kind + ": " + result.reason);
+    assert.equal(result.live_sha, w.pr.merge_commit_sha);
+    assert.deepEqual(w.logCalls, [1102, 1103]);
+    assert(w.calls.length <= 22, "bounded GitHub GET inventory");
+    assert.equal(result.review_completed, false); assert.equal(result.publication_authorized, false);
+    assert.equal(result.photo_adoption, "not_assessed");
+  }
+});
+
+test("discovery requires a complete unambiguous inventory and exact PR/merge evidence", async () => {
+  for (const stage of ["finalizer", "live"]) {
+    for (const fault of ["incomplete", "ambiguous", "wrongWorkflow", "unrelated"]) {
+      const w = discoveredDelivery("market"), listing = w.inventory[stage];
+      const candidate = listing.workflow_runs[0];
+      if (fault === "incomplete") listing.total_count++;
+      if (fault === "wrongWorkflow") candidate.path = ".github/workflows/check.yml";
+      if (fault === "ambiguous") {
+        listing.workflow_runs.push({ ...candidate, id: 305 });
+        listing.total_count++;
+      }
+      if (fault === "unrelated" && stage === "finalizer") w.setFinalizerOutcome({ ...w.finalizerOutcome, pr: 999 });
+      if (fault === "unrelated" && stage === "live") candidate.head_sha = GIT(99);
+      const result = await w.discover();
+      assert.equal(result.status, "attention", stage + " " + fault);
+      assert.equal(result.stage, stage); assert.equal(result.live_sha, undefined);
+    }
+  }
+  for (const timing of [{ run_started_at: "2026-11-20T00:03:19Z" }, { updated_at: "2026-11-20T00:03:17Z" }]) {
+    const w = discoveredDelivery("news");
+    Object.assign(w.runs.get(102), timing);
+    assert.equal((await w.discover()).status, "attention");
+    assert.deepEqual(w.logCalls, []);
+  }
+});
+
 test("trusted-main finalization never borrows legacy, partial, unrelated or older-attempt success", async () => {
   for (const field of ["pr", "head", "ci_run_id", "ci_run_attempt"]) {
     for (const remove of [false, true]) {
@@ -741,10 +815,9 @@ test("known active CI, finalizer and live jobs return pending without waiting or
   }
 });
 
-test("missing run IDs, unarmed/draft PRs and a normal code merge stay explicit attention", async () => {
-  for (const [extra, reason] of [[{ ci_run_id: undefined }, "invalid_status_input"],
-    [{ finalizer_run_id: undefined }, "finalizer_run_id_required"],
-    [{ verification_run_id: undefined }, "verification_run_id_required"]]) {
+test("invalid run IDs, unarmed/draft PRs and a normal code merge stay explicit attention", async () => {
+  for (const [extra, reason] of [[{ ci_run_id: 0 }, "invalid_status_input"],
+    [{ finalizer_run_id: 0 }, "finalizer_run_id_required"], [{ verification_run_id: 0 }, "verification_run_id_required"]]) {
     const result = await handoffWorld().read(extra); assert.equal(result.status, "attention"); assert.equal(result.reason, reason);
   }
   for (const edit of [w => { w.pr.body = "Code-only merge with no opt-in"; },
@@ -881,6 +954,65 @@ function validationWorld() {
   return w;
 }
 
+// Representative lines from the CI for the two editions on #1088. The raw job
+// log contains ANSI-colored commands and a skipped count for unrelated suites.
+function editorialEvidenceWorld() {
+  const w = validationWorld(), [article, python] = w.jobs.get(101)[0].steps;
+  Object.assign(article, { started_at: "2026-11-28T10:34:59Z", completed_at: "2026-11-28T10:35:00Z" });
+  Object.assign(python, { started_at: "2026-11-28T10:35:02Z", completed_at: "2026-11-28T10:42:38Z" });
+  const cases = ["all_existing_reader_copy_can_omit_disclaimer_without_source_edits", "cleanup_is_narrow_and_idempotent",
+    "internal_notes_are_not_evidence_but_source_uncertainty_is", "media_contract_stays_tied_to_original_canonical_source",
+    "real_xr_experience_and_source_dates_survive_display_cleanup", "rendered_stories_and_shares_do_not_expose_legacy_qualifiers",
+    "stage_year_cleanup_preserves_meaningful_dates"];
+  const lines = [
+    '10:34:59.5548718Z ##[group]Run python3 -c "from scripts.build import load; load()"',
+    '10:34:59.5549254Z \x1b[36;1mpython3 -c "from scripts.build import load; load()"\x1b[0m',
+    "10:34:59.5550615Z \x1b[36;1mpython3 scripts/editorial_mix.py --check\x1b[0m",
+    "10:35:00.0231359Z 2026-11-28: published=2; tracked=2; normal_target=2; normal_remaining=0; quality_advice_scope=next scheduled edition; trend=0, social_life=2, original_satire=0",
+    "10:35:02.1067974Z Python test scope: full discovery",
+    ...cases.map(name => "10:36:20.1638211Z test_" + name + " (test_editorial_reader_copy.EditorialReaderCopyTests.test_" + name + ") ... ok"),
+    "10:42:38.7945510Z Ran 1558 tests in 455.741s",
+    "10:42:38.7945740Z OK (skipped=4)",
+  ];
+  w.logs.set(1101, lines.map(line => "2026-11-28T" + line).join("\n"));
+  w.readEditorial = () => w.readValidation({ editorial_day: "2026-11-28", fetchJobLogs: w.fetchJobLogs });
+  return w;
+}
+
+test("requested editorial checks bind the actual day and reader tests to the exact successful CI job", async () => {
+  const w = editorialEvidenceWorld(), ordinary = await w.readValidation({ fetchJobLogs: w.fetchJobLogs });
+  assert.equal(ordinary.status, "ci_verified"); assert.equal(ordinary.evidence.ci.editorial_checks, undefined);
+  assert.deepEqual(w.logCalls, []);
+  const result = await w.readEditorial();
+  assert.equal(result.status, "ci_verified", result.reason);
+  assert.deepEqual(result.evidence.ci.editorial_checks, {
+    day_jst: "2026-11-28", published: 2, tracked: 2, article_load: true, reader_copy_tests: 7,
+  });
+  assert.deepEqual(w.logCalls, [1101]);
+  assert.equal(result.review_completed, false); assert.equal(result.publication_authorized, false);
+  assert(!JSON.stringify(result).includes("EDITORIAL_LOG_SECRET"));
+});
+
+test("requested editorial evidence cannot be borrowed from a different day, step or unsuccessful suite", async () => {
+  for (const change of [
+    log => log.replaceAll("from scripts.build import load; load()", "from scripts.build import load"),
+    log => log.replace("editorial_mix.py --check", "editorial_mix.py"),
+    log => log.replace("2026-11-28: published=", "2026-11-27: published="),
+    log => log.replace("10:35:00.0231359Z", "10:35:12.0231359Z"),
+    log => log.replaceAll("10:36:20.1638211Z", "10:45:00.1638211Z"),
+    log => log.replaceAll("test_editorial_reader_copy.EditorialReaderCopyTests", "test_other.EditorialReaderCopyTests"),
+    log => log.replace("... ok", "... FAIL"),
+    log => log.replace("Ran 1558 tests in", "Unrecognized: 1558 tests in"),
+    log => log.replace("OK (skipped=4)", "FAILED (failures=1)"),
+  ]) {
+    const w = editorialEvidenceWorld();
+    w.logs.set(1101, change(w.logs.get(1101)) + "\n2026-11-28T10:42:38.9000000Z EDITORIAL_LOG_SECRET");
+    const result = await w.readEditorial();
+    assert.equal(result.status, "attention", String(change)); assert.equal(result.evidence.ci?.editorial_checks, undefined);
+    assert(!JSON.stringify(result).includes("EDITORIAL_LOG_SECRET"));
+  }
+});
+
 test("unapproved drafts can reuse exact-head CI evidence after first read without author text or approval", async () => {
   const w = validationWorld(), before = JSON.stringify([w.pr, [...w.runs], [...w.jobs]]);
   w.wrap = value => ({ structuredContent: { content: JSON.stringify(value) } });
@@ -906,6 +1038,36 @@ test("unapproved drafts can reuse exact-head CI evidence after first read withou
   const unarmed = validationWorld(); unarmed.pr.draft = false;
   assert.equal((await unarmed.read()).reason, "current_head_handoff_required", "validation never arms publication");
   assert.equal((await unarmed.readValidation()).status, "ci_verified");
+});
+
+test("ordinary handoff discovery binds CI without separately looking up a run", async () => {
+  for (const base of [BASE, REF]) {
+    const w = validationWorld();
+    w.pr.draft = false;
+    w.pr.body = "## 通常統合の既存引継ぎ";
+    w.runs.get(101).pull_requests[0].base.sha = base;
+    w.ciInventory.push({ ...w.runs.get(101), id: 202, head_branch: "another-pr-with-the-same-commit" });
+    const result = await w.readValidation({ ci_run_id: undefined });
+    assert.equal(result.status, "ci_verified");
+    assert.equal(result.evidence.ci.run_id, 101);
+    assert.equal(result.evidence.ci.base_matches_main, base === REF);
+    assert.equal(result.publication_authorized, false);
+    assert.equal(w.calls.length, 9);
+  }
+  const absent = validationWorld();
+  absent.ciInventory = [];
+  const missing = await absent.readValidation({ ci_run_id: undefined });
+  assert.equal(missing.status, "attention");
+  assert.equal(missing.reason, "ci_run_not_observed");
+
+  const racing = validationWorld();
+  racing.hook = ({ route, count }) => {
+    if (route === "/actions/runs" && count === 2)
+      return { total_count: 1, workflow_runs: [{ ...racing.runs.get(101), id: 102 }] };
+  };
+  const changed = await racing.readValidation({ ci_run_id: undefined });
+  assert.equal(changed.status, "attention");
+  assert.equal(changed.reason, "ci_changed_during_snapshot");
 });
 
 test("validation distinguishes queued CI and known failed runs without polling, logs or finalization", async () => {
@@ -970,7 +1132,7 @@ test("validation requires the latest attempt and exact open PR, workflow, branch
     const w = validationWorld(); edit(w);
     assert.equal((await w.readValidation()).status, "attention"); assert.deepEqual(w.logCalls, []);
   }
-  assert.equal((await validationWorld().readValidation({ ci_run_id: undefined })).reason, "invalid_status_input");
+  assert.equal((await validationWorld().readValidation({ ci_run_id: 0 })).reason, "invalid_status_input");
 });
 
 test("validation keeps retrieval failures and changing snapshots explicit instead of reusing stale success", async () => {
@@ -1113,6 +1275,44 @@ function docsAdvance() {
   return fixture;
 }
 
+test("missing photo rows expose only validated original checkpoint pointers without extra GitHub reads", async () => {
+  const w = docsAdvance(), row = w.rows[0], id = "a".repeat(64);
+  const source = { version: 2, kind: "native_reservation_steps", phase: "claim_final", identity: id,
+    plan: { repository: REPO, slug: row.slug, articleSha256: row.article_sha256, identity: id,
+      prompt: "PRIVATE ORIGINAL PROMPT", branch: "native-image-candidate/morning/" + row.article_sha256.slice(0,16) + "-123456789abc" },
+    claim: { kind: "native_image_generation_claim", status: "reserved_generation_unconfirmed",
+      branch: "native-image-generation-claim/" + id, commit_sha: GIT(4), receipt_sha256: "c".repeat(64),
+      receipt_path: "maintenance/native-image-generation-claims/" + id + ".json" } };
+  const fixture = extra => "\n```json\n" + JSON.stringify(extra) + "\n```\n";
+  async function lookup(extra, entry = row) {
+    w.calls.length = 0;
+    const result = await context.readPhotoHandoffs({ ref: REF, report: { checkout_sha: REF, photo_followup: [entry] },
+      fetchRepository: async args => {
+        const value = await w.fetchRepository(args);
+        return value.number ? { ...value, updated_at: "2026-11-28T01:00:00Z", body: value.body + extra } : value;
+      } });
+    assert.equal(result.status, "checked"); assert.equal(result.selected[0].pr, 101);
+    assert.equal(result.may_generate, false);
+    return result.selected[0].original_lookup;
+  }
+  await lookup("");
+  const baseline = [...w.calls];
+  const expected = { candidate_branch: source.plan.branch, claim_branch: source.claim.branch, claim_commit: GIT(4),
+    next_operation: "check_existing_candidate_ref", source_pr_updated_at: "2026-11-28T01:00:00Z" };
+  assert.deepEqual(await lookup(fixture(source)), expected);
+  assert.deepEqual(w.calls, baseline);
+  assert.deepEqual(await lookup(fixture({checkpoint:{ ...source, phase:"preflight_commit" }})
+    + fixture({plan:source.plan, checkpoint:source})), expected);
+  assert.equal(await lookup(fixture(source), { ...row, status: "pending" }), undefined);
+  assert.equal(await lookup("claim_final reserved_generation_unconfirmed " + source.claim.branch), undefined);
+  assert.equal(await lookup(fixture({...source,plan:{...source.plan,articleSha256:"e".repeat(64)}})), undefined);
+  assert.equal(await lookup(fixture({plan:{...source.plan,identity:"f".repeat(64)}, checkpoint:source})), undefined);
+  assert.equal(await lookup(fixture({...source,plan:{...source.plan,branch:source.plan.branch+"-ready-"+id}})), undefined);
+  assert.equal(await lookup(fixture(source)+fixture({...source,claim:{...source.claim,commit_sha:GIT(13)}})), undefined);
+  assert.equal(await lookup(fixture(source)+fixture({...source,phase:"capture",identity:"d".repeat(64),
+    plan:{...source.plan,identity:"d".repeat(64)}})), undefined);
+});
+
 const guidanceDay = "2026-11-27";
 const guidanceText = guidanceDay + ": published=1; tracked=1; desk_next=スポーツ; next=quality-first"
   + "\n題材比較（指定JST日までの直近7本・公開順）：見出し・summary"
@@ -1143,6 +1343,107 @@ test("editorial guidance carries a proven docs advance, with a final main check"
   w.main = REF;
   w.intermediate.files[0].filename = "content/articles.json";
   assert.deepEqual(await read(), { status: "unavailable" });
+});
+
+function dailySnapshotAdvance() {
+  const w = docsAdvance();
+  Object.assign(w.diff, { ahead_by: 1, total_commits: 1, commits: [{ sha: REF, parents: [{ sha: BASE }] }],
+    files: [{ filename: "analytics/daily/2026-11-26.json", status: "added" }] });
+  const check = w.checked.check_runs[0];
+  check.output.text = JSON.stringify({ ...JSON.parse(check.output.text), editorial_guidance: { [guidanceDay]: guidanceText } });
+  return w;
+}
+
+test("daily readership snapshot preserves the pinned writing input and paginated photograph handoffs", async () => {
+  const w = dailySnapshotAdvance(), opts = { ...w, ref: REF };
+  assert.deepEqual(await context.readEditorialGuidance({ ...opts, day: guidanceDay }),
+    { status: "verified", ref: REF, check_sha: BASE, day: guidanceDay, report: guidanceText });
+  assert.equal(w.calls.length, 4);
+  w.calls.length = 0;
+  const reviewer = await context.read(opts), page = reviewer.photo_recovery;
+  assert.equal(reviewer.empty, false);
+  assert.deepEqual([page.status, page.check_sha, page.may_generate], ["checked", BASE, false]);
+  assert(page.next_offset > 0 && w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: page.next_offset });
+  assert.deepEqual([...page.selected, ...next.selected].map(row => row.pr), [101, 102, 103, 104]);
+  assert.equal(next.next_offset, null);
+  assert(w.calls.length <= 14);
+});
+
+test("daily snapshot pages the default photo lookup within budget when several other PRs are open", async () => {
+  const w = dailySnapshotAdvance();
+  for (const number of [1040, 1063, 1064]) w.open.push({ number, state: "open", draft: false, body: "",
+    head: { sha: GIT(number), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const opts = { ref: REF, fetchRepository: async arg => {
+    if (/\/pulls\/\d+\/files\?/.test(arg.url)) {
+      w.calls.push(arg.url);
+      return [{ filename: "docs/GUIDE.md", status: "modified" }];
+    }
+    return w.fetchRepository(arg);
+  } };
+  const first = await context.readPhotoHandoffs(opts);
+  assert.equal(first.status, "checked"); assert.equal(first.next_offset, 2);
+  assert.equal(first.may_generate, false); assert(w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: first.next_offset });
+  assert.equal(next.status, "checked"); assert.equal(next.next_offset, null);
+  assert.deepEqual([...first.selected, ...next.selected].map(row => row.pr), [101, 102, 103, 104]);
+  assert(w.calls.length <= 14);
+});
+
+test("current photo inventory paginates with a shared article edit and another open PR", async () => {
+  const w = docsAdvance(), check = w.checked.check_runs[0];
+  check.head_sha = REF;
+  check.output.text = JSON.stringify({ checkout_sha: REF, photo_followup: w.rows });
+  w.missing = w.checked;
+  for (const number of [1037, 1079]) w.open.push({ number, state: "open", draft: false, body: "",
+    head: { sha: GIT(number), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const opts = { ref: REF, fetchRepository: async arg => {
+    const route = new URL(arg.url).pathname.replace("/repos/" + REPO, "");
+    if (route.startsWith("/compare/")) {
+      w.calls.push(route); return { merge_base_commit: { sha: BASE } };
+    }
+    if (/^\/pulls\/\d+\/files$/.test(route)) {
+      w.calls.push(route);
+      return [{ filename: route.includes("/1037/") ? "content/articles.json" : "docs/OPERATIONS.md", status: "modified" }];
+    }
+    return w.fetchRepository(arg);
+  }, fetchFile: async ({ path, ref }) => {
+    w.calls.push(path);
+    return { path, sha: GIT(25), encoding: "utf-8", content: JSON.stringify([{ slug: "evening", title: ref }]) };
+  } };
+  const first = await context.readPhotoHandoffs(opts);
+  assert.equal(first.status, "checked"); assert.equal(first.next_offset, 2);
+  assert.deepEqual(first.selected.map(row => row.pr), [101]);
+  assert.deepEqual(first.attention, [{ slug: "evening", reason: "open_owner", pr: 1037 }]);
+  assert.equal(first.may_generate, false); assert(w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: first.next_offset });
+  assert.equal(next.status, "checked"); assert.equal(next.next_offset, null);
+  assert.deepEqual(next.selected.map(row => row.pr), [103, 104]);
+  assert.equal(next.may_generate, false); assert(w.calls.length <= 14);
+});
+
+test("snapshot carry rejects edits, mixed or unproven changes and a changed main", async () => {
+  for (const change of [
+    w => { w.diff.files[0].status = "modified"; },
+    w => { w.diff.files[0].status = "removed"; },
+    w => { w.diff.files[0].previous_filename = "content/articles.json"; },
+    w => { w.diff.files[0].filename = "analytics/daily/2026-02-30.json"; },
+    w => { w.diff.files[0].filename = "analytics/daily/archive/2026-11-26.json"; },
+    w => { w.diff.files.push({ filename: "content/articles.json", status: "modified" }); },
+    w => { w.diff.files.push({ filename: "analytics/daily/2026-11-25.json", status: "added" }); },
+    w => { w.diff.commits[0].parents.push({ sha: GIT(3) }); },
+    w => { w.diff.total_commits++; },
+    w => { w.main = BASE; }
+  ]) {
+    const w = dailySnapshotAdvance(); change(w);
+    assert.deepEqual(await context.readEditorialGuidance({ ...w, ref: REF, day: guidanceDay }), { status: "unavailable" });
+    const photos = await context.readPhotoHandoffs({ ...w, ref: REF, batchSize: 1 });
+    assert.equal(photos.status, "unverified", change.toString());
+    assert.equal(photos.may_generate, false);
+  }
 });
 
 test("invalid dates, untrusted checks and incomplete daily outputs cannot supply editorial guidance", async () => {

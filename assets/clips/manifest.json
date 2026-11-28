@@ -260,6 +260,19 @@
       "fps": 24,
       "duration_ms": 12000,
       "created_at": "2026-11-25T13:42:48.817584+00:00"
+    },
+    "student-town-model-opens-after-school-study-room": {
+      "origin": "verified-still-motion",
+      "motion_style_version": 3,
+      "article_sha256": "6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+      "image_sha256": "96e51dc03cf377c6a497941701ae4d67fa36dc4c568e4659e0801012b61e8846",
+      "sha256": "397e1e984271b9719bf88dd9de56defd1283a89a650698c081df89ae9bb3580f",
+      "bytes": 150771,
+      "width": 640,
+      "height": 360,
+      "fps": 24,
+      "duration_ms": 12000,
+      "created_at": "2026-11-28T01:31:41.108768+00:00"
     }
   }
 }

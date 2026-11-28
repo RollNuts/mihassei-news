@@ -31,6 +31,27 @@ class EditorialReaderCopyTests(unittest.TestCase):
         variants = "調査で節約志向を確認。実際に買い足した家庭がいたとの調査結果ではない。家族の行動は創作。"
         self.assertEqual(source_reader_copy(variants), "調査で節約志向を確認。")
 
+    def test_real_xr_experience_and_source_dates_survive_display_cleanup(self):
+        article = next(a for a in self.articles if a["slug"] == "xr-town-letter-changes-next-visitors-story")
+        page = build.story(article, self.articles)
+        note = page.split('id="story-source"', 1)[1].split("</aside>", 1)[0]
+        self.assertIn("VRゴーグルを着けて約20分間", note)
+        self.assertIn("1回最大4人", note)
+        self.assertIn('<time datetime="2026-09-28">2026年9月28日</time>', note)
+        self.assertNotIn("登場人物・会話・結果", note)
+        factual = "本紙以外の3紙が共同創作の展示を紹介。2031年に開館する予定と発表した。"
+        self.assertEqual(source_reader_copy(factual), factual)
+
+    def test_internal_notes_are_not_evidence_but_source_uncertainty_is(self):
+        note = ("発表会の実施結果は未確認。"
+                "改稿時にページの更新日を再確認し、出典日付を訂正。"
+                "時刻の記載がなく00:00は日付代表値。"
+                "現実の主催者に架空の将来行動を帰属させない。"
+                "実在する店舗が架空サービスを運営したことにはしない。"
+                "原案段階であり制度成立・施行は確認されていない。")
+        self.assertEqual(source_reader_copy(note),
+                         "発表会の実施結果は未確認。原案段階であり制度成立・施行は確認されていない。")
+
     def test_all_existing_reader_copy_can_omit_disclaimer_without_source_edits(self):
         original = (ROOT / "content/articles.json").read_bytes()
         originals = json.loads(original)
@@ -40,12 +61,13 @@ class EditorialReaderCopyTests(unittest.TestCase):
                     text = (article["source"].get("topic", "")
                             if field == "source" else article[field])
                     visible = (source_reader_copy(text) if field == "source" else reader_copy(text))
-                    self.assertNotIn("架空の", visible)
                     if field == "source":
                         self.assertTrue(visible, article["slug"])
-                        self.assertNotIn("本紙", visible)
-                        self.assertNotIn("創作", visible)
-                        self.assertNotIn("2031年", visible)
+                        self.assertNotIn("本紙独自の設定", visible)
+                        self.assertNotIn("本紙の創作", visible)
+                        self.assertNotIn("日付代表値", visible)
+                    else:
+                        self.assertNotIn("架空の", visible)
                 for paragraph in article["paragraphs"]:
                     visible = reader_copy(paragraph)
                     self.assertNotIn("架空の", visible)
@@ -117,7 +139,7 @@ class EditorialReaderCopyTests(unittest.TestCase):
                 page = build.story(article, self.articles)
                 body = page.split('<div class="article-body">', 1)[1].split("</div>", 1)[0]
                 self.assertNotIn("架空の", body)
-                self.assertIn("着想元を見る", page)
+                self.assertIn("この創作の着想元", page)
                 self.assertIn('class="dek"', page)
                 self.assertNotIn("架空の", build.share_url(article))
                 self.assertNotIn("本紙独自の創作", page)

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from urllib.error import HTTPError, URLError
 from unittest.mock import patch
 
 from scripts import review_release_guard as g
@@ -47,6 +48,50 @@ def report():
             "photo_followup": [], "photo_followup_counts": {k: 0 for k in ("pending", "missing", "rejected")},
             "attention": [], "publication_counts": {"generated_jpeg": 2, "editorial_svg": 1, "stock_photo": 0, "generic_fallback": 0},
             "counts": {"accepted": 2, "pending": 0, "missing": 1, "rejected": 0}}
+
+
+class GitHubReadTests(unittest.TestCase):
+    def test_one_transient_failure_retries_the_same_get_and_closes_the_error(self):
+        api = g.GitHub()
+        for status in (502, 503, 504):
+            error_body = io.BytesIO(b"Bad Gateway")
+            error = HTTPError("https://api.github.com/", status, "temporary", {}, error_body)
+            with (self.subTest(status=status), patch.object(g.time, "sleep") as sleep,
+                  patch.object(api.opener, "open", side_effect=[error, io.BytesIO(b'{"number":1037}')]) as opened):
+                self.assertEqual(api.get("/pulls/1037"), {"number": 1037})
+                self.assertTrue(error_body.closed)
+                self.assertEqual(opened.call_count, 2)
+                self.assertEqual(opened.call_args_list[0], opened.call_args_list[1])
+                request = opened.call_args.args[0]
+                self.assertEqual(request.get_method(), "GET")
+                self.assertEqual(request.full_url, "https://api.github.com/repos/RollNuts/mihassei-news/pulls/1037")
+                sleep.assert_called_once_with(1)
+
+    def test_permanent_and_unknown_failures_stop_and_repeated_outage_fails_closed(self):
+        api = g.GitHub()
+        for codes in ((301,), (401,), (403,), (404,), (429,), (500,), (None,), (503, 504), (502, 403)):
+            errors = [HTTPError("https://api.github.com/", code, "failure", {}, io.BytesIO()) if code
+                      else URLError("unavailable") for code in codes]
+            with (self.subTest(codes=codes), patch.object(g.time, "sleep") as sleep,
+                  patch.object(api.opener, "open", side_effect=errors) as opened,
+                  self.assertRaises(URLError) as raised):
+                api.get("/pulls/1037")
+            self.assertIs(raised.exception, errors[-1])
+            self.assertEqual(opened.call_count, len(codes))
+            self.assertEqual(sleep.call_count, len(codes) - 1)
+            for error in errors:
+                if isinstance(error, HTTPError):
+                    error.close()
+
+    def test_retry_keeps_the_response_size_and_json_validation(self):
+        api = g.GitHub()
+        for data, message in ((b" " * (6 * 1024 * 1024 + 1), "exceeded bound"), (b"{", "Expecting")):
+            error = HTTPError("https://api.github.com/", 502, "temporary", {}, io.BytesIO())
+            with (self.subTest(message=message), patch.object(g.time, "sleep"),
+                  patch.object(api.opener, "open", side_effect=[error, io.BytesIO(data)]) as opened,
+                  self.assertRaisesRegex(ValueError, message)):
+                api.get("/pulls/1037")
+            self.assertEqual(opened.call_count, 2)
 
 
 class OwnershipTests(unittest.TestCase):

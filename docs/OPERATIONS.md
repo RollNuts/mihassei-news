@@ -48,6 +48,8 @@
 
 障害修理の担当範囲は上表を正本とし、Codexの利用再開を復旧の前提にしない。既存のサイト日次改善が実障害を回収し、通常の未公開PR・CI待機・写真待ちは元の編集GPTが引き続き担当する。初読未合格なら具体的な指摘を保持し、修正担当と独立再読担当を分ける。担当変更はPR本文の既存引継ぎ欄を現head・記事SHA・現在段階・次担当と操作へ更新し、コメントだけに残して本文の担当を古いままにしない。変更担当は同時に1人とし、受け渡し後の重複書込み・再生成・受領確認の往復を増やさない。
 
+週刊写真で本人枠の原本保存試験が同じ工程・実エラーで続けて止まった場合は、週刊編集が本人の候補引継ぎに試した参照の種類・実行結果・修理担当の次操作を記録し、[週刊の引継ぎ](DAILY_EDITORIAL_BRIEF.md#weekly-stock-handoff)の本人欄でサイト日次改善へ渡す。サイト日次改善は明示された候補を引き取り、変更した経路と確認できた範囲を同じ候補へ返す。本人枠での保存・読戻しの結果で復旧を判断する。修理待ちの間も週刊編集は[写真ストックと制作量](EDITORIAL_LOOP.md#写真ストックと制作量)に沿って後続の受領済み素材を検品できる。
+
 定期タスクの予定時刻はAutomationsを正とし、文書やプロンプトへ同じ時刻表を重ねて保守しない。時刻変更が必要な場合だけAutomationsとこの表を同時に更新する。
 
 ### 入力の再利用と利用上限
@@ -80,6 +82,16 @@
 
 ニュース・市況・本人近況の承認済みPRが未統合なら、同じPR・head・実CIを下記の`readHandoffStatus`へ渡す。本人近況のPR・headは初読一覧の`outside_scope`で確認できる。`finalizer_run_id`を省くと当該CI実行・attemptに対応する失敗runを1回探す。許可を後で記入した場合は`Publication head <head> (PR #<番号>)`の実run IDを渡す。`latest_main_requires_fresh_ci`は、種別・PR・head・CIが一致した失敗ログに基づく。`tested_main`と`current_main`は停止時の値なので、現担当と最新の実行状況を照合して上の手順で復旧する。
 
+朝編集の `docs/DAILY_EDITORIAL_BRIEF.md`・`docs/EDITORIAL_IDEAS.md` のみを更新したPRでは、編集担当が候補・引継ぎ・最新mainを確認した後、同PR本文の既存引継ぎ欄に次の許可を1つだけ保存・読み戻す。下書きなら同じ担当がreadyへ変更する。
+
+```text
+<!-- ordinary-editorial-merge
+{"version":1,"approved_head":"<確認したheadの完全SHA>","authorized_by":"<保存したGitHubのlogin>","editor_run":"<担当の実run ID>","merge_after_ci":true}
+-->
+```
+
+既存の公開検証workflowが、GitHub記録上の本文編集者、同一headの最新CI、検査したmainが現mainと一致すること、差分が対象2文書内の通常ファイルの変更だけであることを確認して通常mergeする。統合後は本番revisionが一致するか、その祖先から文書差分だけかを確認する。許可後にheadかmainが動いた場合は、同PRへ最新mainを取り込み、現headで確認して許可を更新する。写真・動画選抜・記事本文などを含む通常統合は、既存担当が下記の `readValidationStatus` と現main差分を確認し、CI成功後にGitHubの `merge_pull_request` へ `expected_head_sha` と `merge_method: merge` を渡す。
+
 通常統合のPRに対応外ファイルを通すための`publication-finalize`許可を付けない。現headの必要CIと既存統合条件を満たして通常mergeし、返却merge SHAに対応する既存の本番確認へ進む。放送室は既存動画処理の最終commit・MP4・字幕の配信まで追い、統合だけで完了としない。
 
 待機で終了する場合は、同PRの既存引継ぎへ現head・実CI/run参照・未完工程・次操作・次に受け取る既存担当1人のtask IDと受取条件を保存・読み戻す。対応する既存の機械処理へ渡し、機械処理対象外の次操作は上記の既存回収担当から次の通常枠を持つ1人に指定する。受取担当は新規作業より先に同PRを照合する。担当や工程を確定せず「元担当へ返す」「次回確認」だけで同じ未完を持ち越さない。
@@ -88,7 +100,9 @@
 
 ### 未着手を未完報告だけで持ち越さない
 
-画像が必要な対象では、[Native手順](NATIVE_IMAGE_BYTES.md)の既存PNG事前検証を今回の実行環境で実際に行う。初回の試験PNGは同手順の標準ライブラリだけのbootstrapを使い、未実施をツール故障と扱わない。確定記事の新計画は同手順の`prepareArticle`で実commitから入力を作る。既存plan・候補・claim・checkpointがあれば新しい計画や実行IDへ置き換えず、元の工程を続ける。
+画像回収では先に同じ記事・特集の候補を確認する。GitHubに原本があれば、クラウドから固定コミットの[記事候補](NATIVE_IMAGE_BYTES.md#install-a-reviewed-candidate-in-its-existing-publication-pr)・[週刊写真](IMAGE_CANDIDATE_RECEIVER.md#reading-a-saved-weekly-original)を読み戻し、同じ計画で検品・採否・公開確認まで進める。Macのロック解除や起動を待つ工程はない。
+
+新規生成時は、生成器が[その回に返す形式](NATIVE_IMAGE_BYTES.md#choose-the-actual-return-type-before-generating)に合わせ、同じ受取経路で既存PNGの保存・読戻しを先に試す。作業ファイルで受け取る場合は、そのクラウド実行に割り当てられた共有場所を使う。[週刊の事前確認](NATIVE_IMAGE_BYTES.md#weekly-original-transport)では読取専用の原本と直接返るPNGも扱える。画像を受け取れない場合も、初読に合格した本文と適合する代替画像で記事の公開を続ける。確定記事の新計画は`prepareArticle`で実commitから作り、既存plan・claim・checkpointがあれば元の工程を続ける。
 
 失敗・時間切れの引継ぎは、現記事SHA、元plan/原PNG/候補/claim/checkpointの実参照、試した操作と実エラー、次の具体操作、同じ担当を残す。「PNG検証未完」「能力不足」「次回確認」だけで終了しない。同じ記事SHA・工程を2回続けて進められなければ、再生成せず、実証したツール・認証・保存の故障だけを既存の障害修理担当へ渡す。未着手の場合はその旨を残し、次回はその操作から始める。
 
@@ -111,25 +125,26 @@ text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 
 ### 既存PRの公開状態の確認
 
-独立初読を済ませた後、作者のcheckout不足などで機械検証が未実施として引き継がれたopen PRは、同じhelperの`readValidationStatus`で既存CIを1回照合できる。Draft・未承認でも使えるが、初読入力の`read`とは分ける。`ci_run_id`は同PR・現headの実際の`check.yml`実行から取得する。
+独立初読を済ませた後、作者のcheckout不足などで機械検証が未実施として引き継がれたopen PRは、同じhelperの`readValidationStatus`で既存CIを1回照合できる。Draft・未承認でも使えるが、初読入力の`read`とは分ける。引継ぎに `ci_run_id` があれば渡す。未記録なら省略すると、helperが現headの最新 `check.yml` を取得して同じPRへの紐付けを照合する。
 
 ```js
-text(await R.readValidationStatus({fetchRepository, ref: mainSha, pr, head, ci_run_id}));
+text(await R.readValidationStatus({fetchRepository, ref: mainSha, pr, head}));
 ```
 
-`ci_verified`は、同repo・PR・headの最新run/attemptと実test job、形式確認・Python検証stepの成功が一致した証拠で、作者のローカル検証成功を意味しない。検証した`base_sha`も返し、最新mainとの統合可否は既存公開guardに残す。`ci_pending`・`ci_failed`・取得不能などの`attention`を区別し、取得不能・skipped・古い成功を完了へ置き換えない。初読・画像採否・公開許可は代行せず、同じheadで済んだ機械検証を再起動するためにも使わない。
+記事読込み・予定日JSTの配分・公開文テストが未確認の場合だけ、同じ呼出しに `editorial_day: "YYYY-MM-DD"` と `fetchJobLogs`（GitHubの `fetch_workflow_job_logs`）を渡す。`evidence.ci.editorial_checks` は該当stepの実出力から日付・本数・成功した公開文テスト数を返す。現head・対象日が一致すればその結果を引き継ぐ。
+
+`ci_verified`は、同repo・PR・headの最新run/attemptと実test job、形式確認・Python検証stepの成功が一致した証拠で、作者のローカル検証成功を意味しない。検証した `base_sha` と固定mainとの一致を表す `base_matches_main` を返す。版が異なる場合は差分と既存の統合条件を照合する。`ci_pending`・`ci_failed`・取得不能などの`attention`を区別し、取得不能・skipped・古い成功を完了へ置き換えない。初読・画像採否・公開許可は代行せず、同じheadで済んだ機械検証を再起動するためにも使わない。
 
 同headの初読・公開許可を保存済みの`news`・`market` PRは、同じhelperの`readHandoffStatus`でCI・finalizer・本番検証を1回照合する。明示された未完の引継ぎや`publication_unverified`がある時だけ使い、公開済みの過去PRを毎回調べ直さない。コード・放送室など通常統合のPRや、近況・写真特集へこの補助確認を必須化しない。
 
 ```js
 text(await R.readHandoffStatus({
   fetchRepository, fetchJobLogs, ref: mainSha,
-  pr, head, ci_run_id,
-  finalizer_run_id, verification_run_id,
+  pr, head,
 }));
 ```
 
-`fetchRepository`は前節と同じGitHubの`fetch({url})`、`fetchJobLogs`は`fetch_workflow_job_logs`へ束縛する。`ref`と`head`は実取得した完全SHA、各run IDは対象PRの既存CI・引継ぎ・実workflowから取得した値を使い、推測しない。CIが進行中なら`finalizer_run_id`は省略できるが、CI成功後は実finalizerが必要で、統合後の配信確認には実`verification_run_id`も必要。IDを特定できなければ`attention`のまま現担当へ残す。
+`fetchRepository`は前節と同じGitHubの`fetch({url})`、`fetchJobLogs`は`fetch_workflow_job_logs`へ束縛する。`ref`と`head`は実取得した完全SHAを渡す。統合済みのニュース・市況・本人近況・週刊写真特集は、前の担当が終了してもPR番号とheadからGitHub上のCI・統合・本番照合の各runを取得できる。候補が複数ある場合や一覧が不完全な場合は、そのPRの引継ぎに記録された実run ID（`ci_run_id`・`finalizer_run_id`・`verification_run_id`）を指定する。証拠が揃わなければ`attention`として引き継ぐ。
 
 helperはGitHubの生応答と完了ログをCodeMode内で処理し、対象PR/head、実CI・最新attemptのjobs、統合結果、merge SHAと本番revisionの対応を小さな状態と実run/job参照にまとめる。`ci_pending`・`finalizer_pending`・`verification_pending`は待機段階、`attention`は失敗または未確認の具体段階を示す。`verified`はこの引継ぎの配信検証に限り、写真の新しい目視採否や定期タスクの復旧を意味しない。`photo_adoption: not_assessed`を保持し、写真の採否・完了は既存の別確認へ残す。未取得・古いattempt・skipped・無関係な成功を公開完了へ置き換えない。1回のsnapshotから待機・書込み・再起動・自動承認は行わず、必要な確認と現担当の次操作だけを既存結果に残す。
 

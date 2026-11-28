@@ -120,6 +120,36 @@
         "cut_id": "09",
         "image_sha256": "8c2153e0b862e3dc4e8b130171c097a336cea845aa08e49c2f972815ea0d4ab8"
       }
+    },
+    {
+      "id": "kiritani-sumire-post-20261127142426021000",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-27T14:24:26.021+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "衣装合わせの帰りに、古い街並みの店先で小さな手鏡を見つけた。持ち手が少し欠けていて、そこも含めて気に入った。",
+      "source": {
+        "issue_slug": "november-rooftop-pool-sumire-011",
+        "cut_id": "04",
+        "image_sha256": "731eea9b9b4f8c202594318a7d7277350da33ff3d93d537df53b986604f43f98"
+      }
+    },
+    {
+      "id": "kiritani-sumire-post-20261128142745674000",
+      "model_id": "kiritani-sumire",
+      "published_at": "2026-11-28T14:27:45.674+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "昼過ぎに冬物のコートを出した。去年買った銀のブローチを留めてみたら、まだ新鮮に見える。今年は買い足さずに済むかも。",
+      "source": {
+        "issue_slug": "november-favorite-colors-sumire-007",
+        "cut_id": "02",
+        "image_sha256": "ed2c8b6a28d7abb57353e9af91809f3b00532d17bb36461b2f8b83d9ad0c0fb8"
+      }
     }
   ]
 }

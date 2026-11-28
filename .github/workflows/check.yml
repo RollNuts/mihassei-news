@@ -80,7 +80,6 @@ jobs:
           node --test scripts/generated_manifest_patch_test.js
           node --test scripts/native_image_publication_test.js
       - name: Verify native image bytes and retry-safe candidate staging
-        # Only an explicitly recognized scope can omit the engine and real-browser checks.
         if: steps.python_checks.outputs.run_native_image_engine_tests != 'false'
         run: node scripts/native_image_ci_test.js
       - name: Validate read-only public health checker
@@ -111,7 +110,7 @@ jobs:
       - name: Verify cached and late image failures recover without broken layouts
         run: node --test tests/image-fallback.test.cjs
       - name: Verify photograph recovery in the runner's real Chrome
-        if: steps.python_checks.outputs.run_native_image_engine_tests != 'false'
+        if: steps.python_checks.outputs.run_image_fallback_browser != 'false'
         run: |
           google-chrome --product-version
           python3 -m pip install --no-cache-dir playwright==1.65.2

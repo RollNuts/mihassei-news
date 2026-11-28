@@ -25,6 +25,11 @@ var PublicationReviewContext = (function () {
   function matches(pattern, value) {
     return typeof value === "string" && !/[\r\n]/.test(value) && pattern.test(value);
   }
+  function calendarDay(day) {
+    if (!matches(/^\d{4}-\d\d-\d\d$/, day) || day.startsWith("0000-")) return false;
+    const time = Date.parse(day + "T00:00:00Z");
+    return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === day;
+  }
   function require(value, message) { if (!value) throw Error(message + "; review scope is unverified"); }
   function text(value, label) {
     require(typeof value === "string" && value.trim(), "Invalid " + label);
@@ -149,7 +154,7 @@ var PublicationReviewContext = (function () {
         || !matches(LOGIN, claim.authorized_by)
         || !["author_run", "reviewer_run"].every(key => matches(RUN, claim[key])))
       return "invalid";
-    if (claim.kind !== "cast_story" && (claim.author_run === claim.reviewer_run || !object(claim.article_sha256)
+    if (["news", "market"].includes(claim.kind) && (claim.author_run === claim.reviewer_run || !object(claim.article_sha256)
         || claim.kind === "news" && !Object.keys(claim.article_sha256).length
         || !Object.entries(claim.article_sha256).every(([slug, hash]) =>
           matches(SLUG, slug) && matches(HASH, hash))))
@@ -302,7 +307,8 @@ var PublicationReviewContext = (function () {
           && /^##[ \t]+(?:安全な)?通常統合(?:の|／)既存引き?継ぎ[ \t]*\r?$/m.test(pr.body || "")) {
         attention.push({ ...binding, draft: pr.draft, reason: "ordinary_editorial_handoff",
           next_operation: "After first read, check the latest handoff, owner/run, changed files against current main, "
-            + "and required CI under the existing ordinary merge procedure." });
+            + "then call readValidationStatus for this PR/head. Once ownership, required CI and current main "
+            + "have been checked, continue the ordinary merge in the same run." });
         continue;
       }
       if (!relevant.length && !unsupported.length && (photo || !images.length)) {
@@ -370,7 +376,7 @@ var PublicationReviewContext = (function () {
       && (f.previous_filename === undefined || inside(f.previous_filename))),
       "Incomplete or non-docs photograph-check history");
   }
-  async function priorDocsParent(get, ref) {
+  async function priorHandoffParent(get, ref) {
     // The merge-base and the actual first parent must agree. A net diff can
     // hide a content change later reverted inside a merged branch.
     const diff = await get(API + "/compare/" + ref + "~1..." + ref + "?per_page=8");
@@ -382,6 +388,13 @@ var PublicationReviewContext = (function () {
       && new Set(commits.map(c => c.sha)).size === commits.length
       && commits.at(-1).sha === ref && commits.at(-1).parents?.[0]?.sha === base,
       "Incomplete photograph-check ancestor comparison");
+    // daily-metrics appends one dated snapshot in a direct commit. Neither
+    // report_day nor the photograph inventory consumes audience counters.
+    const file = diff.files?.[0];
+    if (commits.length === 1 && Array.isArray(commits[0].parents) && commits[0].parents.length === 1 && Array.isArray(diff.files)
+      && diff.files.length === 1 && file?.status === "added" && file.previous_filename === undefined
+      && matches(/^analytics\/daily\/\d{4}-\d\d-\d\d\.json$/, file.filename)
+      && calendarDay(file.filename.slice("analytics/daily/".length, -".json".length))) return base;
     docsOnlyFiles(diff.files, 300);
     for (const { sha } of commits.slice(0, -1)) {
       const commit = await get(API + "/commits/" + sha + "?per_page=100");
@@ -395,7 +408,7 @@ var PublicationReviewContext = (function () {
     for (;;) {
       const data = await get(API + "/commits/" + checkRef + "/check-runs?check_name=Photograph%20completion&per_page=1");
       if (data.total_count === 0 && Array.isArray(data.check_runs) && data.check_runs.length === 0) {
-        checkRef = await priorDocsParent(get, checkRef);
+        checkRef = await priorHandoffParent(get, checkRef);
         continue;
       }
       const check = data.check_runs?.[0];
@@ -409,9 +422,7 @@ var PublicationReviewContext = (function () {
   // One day's pre-writing input. Article validation and publication use their own checks.
   async function readEditorialGuidance({ fetchRepository, ref, day } = {}) {
     try {
-      require(typeof fetchRepository === "function" && matches(GIT, ref)
-        && matches(/^\d{4}-\d\d-\d\d$/, day) && !day.startsWith("0000-")
-        && new Date(day + "T00:00:00Z").toISOString().slice(0, 10) === day, "Invalid editorial guidance input");
+      require(typeof fetchRepository === "function" && matches(GIT, ref) && calendarDay(day), "Invalid editorial guidance input");
       let reads = 0;
       async function get(url) {
         require(++reads <= 14, "Editorial guidance read budget reached");
@@ -432,6 +443,38 @@ var PublicationReviewContext = (function () {
     } catch (_) {
       return { status: "unavailable" };
     }
+  }
+  // The source PR is already in memory. Extract read pointers, never its prompt or a generation grant.
+  function originalPhotoLookup(pr, row) {
+    if (row.status !== "missing") return null;
+    let identity, lookup;
+    const prefix = "native-image-candidate/" + row.slug + "/" + row.article_sha256.slice(0, 16) + "-";
+    for (const match of pr.body.matchAll(/^```json[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*\r?$/gm)) {
+      let record;
+      try { record = JSON.parse(match[1]); } catch (_) { continue; }
+      const step = record?.checkpoint ?? record, plan = step?.plan;
+      if (step?.kind !== "native_reservation_steps" || plan?.slug !== row.slug
+          || plan.articleSha256 !== row.article_sha256) continue;
+      if (step !== record && record.plan && ["repository", "slug", "articleSha256", "identity", "branch"]
+          .some(key => record.plan[key] !== plan[key])) return null;
+      if (step.version !== 2 || plan.repository !== REPOSITORY || !matches(HASH, plan.identity)
+          || step.identity !== plan.identity || (identity && identity !== plan.identity)) return null;
+      identity = plan.identity;
+      if (step.phase !== "claim_final") continue;
+      const claim = step.claim;
+      if (typeof plan.branch !== "string" || !plan.branch.startsWith(prefix)
+          || !matches(/^[0-9a-f]{12}$/, plan.branch.slice(prefix.length))
+          || claim?.kind !== "native_image_generation_claim" || claim.status !== "reserved_generation_unconfirmed"
+          || claim.branch !== "native-image-generation-claim/" + identity
+          || !matches(GIT, claim.commit_sha) || !matches(HASH, claim.receipt_sha256)
+          || claim.receipt_path !== "maintenance/native-image-generation-claims/" + identity + ".json"
+          || (lookup && (lookup.candidate_branch !== plan.branch || lookup.claim_commit !== claim.commit_sha))) return null;
+      lookup = { candidate_branch: plan.branch, claim_branch: claim.branch, claim_commit: claim.commit_sha,
+        next_operation: "check_existing_candidate_ref" };
+    }
+    if (lookup && matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/, pr.updated_at))
+      lookup.source_pr_updated_at = pr.updated_at;
+    return lookup;
   }
   // A merged news PR can still own its missing photograph. A source pointer
   // does not grant generation, adoption, or permission to write.
@@ -457,10 +500,35 @@ var PublicationReviewContext = (function () {
       let selected = [];
       const attention = [];
       let cursor = offset;
-      // Keep each read within the connector callback budget, even with a large backlog.
+      const shared = {
+        "content/articles.json": null, "assets/generated/manifest.json": ["images", "rejected"],
+        "content/visual_reviews.json": ["reviews"], "content/approved_photos.json": ["approved"] };
+      let open, ownerFiles, comparisonReads = 0;
+      async function listOpen() {
+        const prs = await get(API + OPEN + "&per_page=100");
+        require(Array.isArray(prs) && prs.length < 100, "Open photograph owner inventory incomplete");
+        prs.forEach(identity);
+        return prs;
+      }
+      async function loadOwnerFiles() {
+        if (ownerFiles) return;
+        open = await listOpen();
+        ownerFiles = [];
+        for (const pr of open) {
+          const changes = await get(API + "/pulls/" + pr.number + "/files?per_page=100");
+          require(Array.isArray(changes) && changes.length < 100 && changes.every(f => typeof f.filename === "string"),
+            "Incomplete open PR files");
+          const paths = new Set(changes.flatMap(f => [f.filename, f.previous_filename].filter(Boolean)));
+          const common = Object.keys(shared).filter(path => paths.has(path));
+          if (common.length) comparisonReads += 1 + 2 * common.length; // merge base, then before/after per catalog
+          ownerFiles.push({ pr, paths, common });
+        }
+      }
       for (; cursor < rows.length && cursor < offset + batchSize && selected.length < 3; cursor++) {
-        // On a proven docs advance reserve both owner snapshots and the final main check.
-        if (checkRef !== ref && operations + 5 > readBudget) {
+        if (selected.length) await loadOwnerFiles();
+        // Budget the next search + PR, any outstanding owner comparisons, and final identity reads.
+        const finishReads = ownerFiles ? comparisonReads + 2 : (checkRef !== ref ? 3 : 1);
+        if (operations + 2 + finishReads > readBudget) {
           require(cursor > offset, "Photo read budget reached before checking a handoff");
           break;
         }
@@ -488,23 +556,15 @@ var PublicationReviewContext = (function () {
           attention.push({ ...source, pr: number, reason: "source_approval_not_current" });
         } else {
           const approval = JSON.parse(pr.body.match(/<!-- publication-finalize\s*\n([\s\S]*?)\n-->/)[1]);
-          if (approval.article_sha256[row.slug] === row.article_sha256)
-            selected.push({ ...source, pr: number, head: pr.head.sha });
-          else attention.push({ ...source, pr: number, reason: "source_article_sha_mismatch" });
+          if (approval.article_sha256[row.slug] === row.article_sha256) {
+            const original = originalPhotoLookup(pr, row);
+            selected.push({ ...source, pr: number, head: pr.head.sha, ...(original && { original_lookup: original }) });
+          } else attention.push({ ...source, pr: number, reason: "source_article_sha_mismatch" });
         }
       }
       if (selected.length) {
-        const listOpen = async () => {
-          const prs = await get(API + OPEN + "&per_page=100");
-          require(Array.isArray(prs) && prs.length < 100, "Open photograph owner inventory incomplete");
-          prs.forEach(identity);
-          return prs;
-        };
-        const open = await listOpen();
+        await loadOwnerFiles();
         const occupied = new Set();
-        const shared = {
-          "content/articles.json": null, "assets/generated/manifest.json": ["images", "rejected"],
-          "content/visual_reviews.json": ["reviews"], "content/approved_photos.json": ["approved"] };
         async function recordMap(path, revision) {
           require(typeof fetchFile === "function", "Use fetchFile to verify the open owner's article data");
           countRead();
@@ -517,11 +577,7 @@ var PublicationReviewContext = (function () {
           require(shared[path].every(field => object(data[field])), "Invalid open photograph records");
           return slug => shared[path].map(field => data[field][slug] ?? null);
         }
-        for (const pr of open) {
-          const changes = await get(API + "/pulls/" + pr.number + "/files?per_page=100");
-          require(Array.isArray(changes) && changes.length < 100 && changes.every(f => typeof f.filename === "string"),
-            "Incomplete open PR files");
-          const paths = new Set(changes.flatMap(f => [f.filename, f.previous_filename].filter(Boolean)));
+        for (const { pr, paths, common } of ownerFiles) {
           const mark = row => { if (!occupied.has(row.slug)) attention.push({
             slug: row.slug, reason: "open_owner", pr: pr.number }); occupied.add(row.slug); };
           const declared = new Set([...(pr.body || "").matchAll(/^[ *-]*(?:対象\s*slug|slug)\s*[:：]\s*`?([a-z0-9-]+)`?[ *]*$/gmi)].map(m => m[1]));
@@ -531,7 +587,6 @@ var PublicationReviewContext = (function () {
             if (declared.has(row.slug) || [...paths].some(path => path.includes("/" + row.slug + ".")
                 || path.includes("/" + row.slug + "/"))) mark(row);
           }
-          const common = Object.keys(shared).filter(path => paths.has(path));
           if (!common.length || occupied.size === selected.length) continue;
           const base = (await get(API + "/compare/" + pr.base.sha + "..." + pr.head.sha + "?per_page=1")).merge_base_commit?.sha;
           require(matches(GIT, base), "Open PR merge base unavailable");
@@ -576,7 +631,7 @@ var PublicationReviewContext = (function () {
     return readStatus(options, true);
   }
   async function readStatus({ fetchRepository, fetchJobLogs, ref, pr: number, head,
-    ci_run_id, finalizer_run_id, verification_run_id } = {}, validationOnly = false) {
+    ci_run_id, finalizer_run_id, verification_run_id, editorial_day } = {}, validationOnly = false) {
     const positive = value => Number.isSafeInteger(value) && value > 0;
     const result = { schema_version: 1, verification: validationOnly ? "ci_validation_only" : "handoff_status_only",
       publication_authorized: false, review_completed: false, photo_adoption: "not_assessed",
@@ -590,6 +645,8 @@ var PublicationReviewContext = (function () {
       "Wait for the public revision or a proven docs-only ancestor",
       "Verify the published revision and live stories without generating traffic",
       "Verify that Twitterbot can fetch each first-party image card"];
+    const discoverCI = ci_run_id === undefined;
+    const discoverFinalizer = finalizer_run_id === undefined;
     const runs = [], maxLog = 1024 * 1024;
     let snapshot, ciListing, reads = 0, logReads = 0;
     function check(ok, reason) { if (!ok) throw Error(reason); }
@@ -603,7 +660,7 @@ var PublicationReviewContext = (function () {
     }
     const prIdentity = value => [value.number, value.state, value.draft, value.merged,
       value.head?.sha, value.head?.ref, value.head?.repo?.full_name, value.base?.ref,
-      value.base?.repo?.full_name, value.merge_commit_sha, value.body];
+      value.base?.repo?.full_name, value.merge_commit_sha, value.merged_at, value.body];
     const runIdentity = value => [value.id, value.path, value.event, value.head_sha,
       value.head_branch, value.repository?.full_name, value.head_repository?.full_name,
       value.run_attempt, value.status, value.conclusion, value.updated_at];
@@ -612,11 +669,14 @@ var PublicationReviewContext = (function () {
       check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
         && listing.total_count <= 100, "ci_inventory_incomplete");
       const candidates = listing.workflow_runs.filter(run => run.path === CI_WORKFLOW
-        && run.event === "pull_request" && run.head_sha === head);
+        && run.event === "pull_request" && run.head_sha === head
+        && (!discoverCI || run.head_branch === snapshot.head.ref
+          && run.head_repository?.full_name === REPOSITORY));
+      if (discoverCI && !candidates.length) throw Error("ci_run_not_observed");
       check(candidates.length > 0 && candidates.every(run => positive(run.id))
         && new Set(candidates.map(run => run.id)).size === candidates.length, "ci_inventory_unverified");
       const latest = candidates.reduce((a, b) => a.id > b.id ? a : b);
-      check(latest.id === ci_run_id && positive(latest.run_attempt), "newer_or_unrelated_ci_run");
+      check((discoverCI || latest.id === ci_run_id) && positive(latest.run_attempt), "newer_or_unrelated_ci_run");
       return [latest.id, latest.run_attempt];
     }
     async function run(id, workflow, events, sha, branch, label, allowMain = false) {
@@ -638,6 +698,16 @@ var PublicationReviewContext = (function () {
         status: value.status, conclusion: value.conclusion,
         url: "https://github.com/" + REPOSITORY + "/actions/runs/" + id };
       return value;
+    }
+    async function uniqueVerificationRun(query, label, matchesRun) {
+      const listing = await get("/actions/runs?" + query + "&per_page=100");
+      check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
+        && listing.total_count <= 100, label + "_inventory_incomplete");
+      const candidates = listing.workflow_runs.filter(value => value.path === VERIFY
+        && value.repository?.full_name === REPOSITORY && value.head_repository?.full_name === REPOSITORY
+        && positive(value.id) && matchesRun(value));
+      check(candidates.length === 1, label + "_run_not_unique");
+      return candidates[0].id;
     }
     async function job(value, name, label) {
       // The dedicated connector jobs wrapper omits head/attempt and total_count.
@@ -694,6 +764,26 @@ var PublicationReviewContext = (function () {
       const start = Date.parse(execution.started_at), end = Date.parse(execution.completed_at) + 1000;
       return lines.filter(line => line.ms >= start && line.ms < end);
     }
+    function editorialChecks(lines, articleStep, pythonStep, day) {
+      const article = within(lines, articleStep).map(line => line.text.replace(/\x1b\[[\d;]*m/g, ""));
+      check(article.includes('python3 -c "from scripts.build import load; load()"')
+        && (article.includes("python3 scripts/editorial_mix.py --check")
+          || article.includes("python3 scripts/editorial_mix.py --check --day " + day)), "editorial_commands_unverified");
+      const reports = article.map(line => /^(\d{4}-\d{2}-\d{2}): published=(\d+); tracked=(\d+);/.exec(line)).filter(Boolean);
+      check(reports.length === 1 && reports[0][1] === day, "editorial_day_unverified");
+      const published = Number(reports[0][2]), tracked = Number(reports[0][3]);
+      check(Number.isSafeInteger(published) && Number.isSafeInteger(tracked) && tracked <= published, "editorial_counts_unverified");
+
+      const python = within(lines, pythonStep).map(line => line.text);
+      const start = python.indexOf("Python test scope: full discovery");
+      const end = python.findIndex((line, i) => i > start && /^Ran [1-9]\d* tests? in [\d.]+s$/.test(line));
+      check(start >= 0 && end > start && /^OK(?: \(skipped=\d+\))?$/.test(python.slice(end + 1).find(line => line.trim())),
+        "full_python_suite_unverified");
+      const cases = python.slice(start + 1, end).filter(line => line.includes("(test_editorial_reader_copy."));
+      const names = cases.map(line => /^(test_\w+) \(test_editorial_reader_copy\.EditorialReaderCopyTests\.\1\) \.\.\. ok$/.exec(line)?.[1]);
+      check(names.length > 0 && names.every(Boolean) && new Set(names).size === names.length, "reader_copy_tests_unverified");
+      return { day_jst: day, published, tracked, article_load: true, reader_copy_tests: names.length };
+    }
     async function finish(status, stage) {
       // A stability recheck, with no sleep or retry, prevents old attempts/logs
       // from becoming a success if this handoff changes during the snapshot.
@@ -714,7 +804,8 @@ var PublicationReviewContext = (function () {
     }
     try {
       check(typeof fetchRepository === "function" && matches(GIT, ref) && positive(number)
-        && matches(GIT, head) && positive(ci_run_id), "invalid_status_input");
+        && matches(GIT, head) && (positive(ci_run_id) || discoverCI)
+        && (editorial_day === undefined || validationOnly && calendarDay(editorial_day)), "invalid_status_input");
       check((await get("/git/ref/heads/main")).object?.sha === ref, "main_changed");
       result.stage = "pr";
       snapshot = await get("/pulls/" + number);
@@ -726,7 +817,10 @@ var PublicationReviewContext = (function () {
           : snapshot.draft === false && ((snapshot.state === "open" && snapshot.merged === false)
             || (snapshot.state === "closed" && snapshot.merged === true))), "pr_head_or_state_unbound");
       const story = !validationOnly && !snapshot.merged && handoff(snapshot, ["cast_story"]) === "current_head_claim";
-      if (!validationOnly) check(story || handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
+      if (!validationOnly) {
+        const kinds = snapshot.merged ? ["news", "market", "cast_story", "photo_issue"] : ["news", "market"];
+        check(story || handoff(snapshot, kinds) === "current_head_claim", "current_head_handoff_required");
+      }
       if (snapshot.merged) {
         check(matches(GIT, snapshot.merge_commit_sha), "merge_sha_unverified");
         const commit = await get("/git/commits/" + snapshot.merge_commit_sha);
@@ -739,7 +833,7 @@ var PublicationReviewContext = (function () {
       }
       result.stage = "ci";
       ciListing = await latestCI();
-      const ci = await run(ci_run_id, CI_WORKFLOW, ["pull_request"], head, snapshot.head.ref, "ci");
+      const ci = await run(ciListing[0], CI_WORKFLOW, ["pull_request"], head, snapshot.head.ref, "ci");
       check(ci.run_attempt === ciListing[1], "ci_attempt_unbound");
       check(Array.isArray(ci.pull_requests), "ci_pr_binding_unverified");
       const linked = ci.pull_requests.filter(item => item.number === number && item.head?.sha === head
@@ -749,6 +843,7 @@ var PublicationReviewContext = (function () {
       check(linked.length === 1 || (snapshot.merged && ci.pull_requests.length === 0), "ci_pr_binding_unverified");
       if (validationOnly) {
         result.evidence.ci.base_sha = linked[0].base.sha;
+        result.evidence.ci.base_matches_main = linked[0].base.sha === ref;
         if (ACTIVE_RUN.has(ci.status)) return await finish("ci_pending");
         if (ci.status === "completed" && ["failure", "cancelled", "timed_out", "action_required", "startup_failure", "stale"].includes(ci.conclusion))
           return await finish("ci_failed");
@@ -760,14 +855,27 @@ var PublicationReviewContext = (function () {
       if (validationOnly) {
         const names = ["Validate article fields, editorial lanes and exact duplicate guards",
           "Run Python checks with a fresh full site build"];
-        result.evidence.ci.validated_steps = names.map(name => {
-          const value = step(ciJob, name);
-          return { name, status: value.status, conclusion: value.conclusion, completed_at: value.completed_at };
-        });
-        return await finish("ci_verified");
+        const steps = names.map(name => step(ciJob, name));
+        result.evidence.ci.validated_steps = steps.map(({ name, status, conclusion, completed_at }) =>
+          ({ name, status, conclusion, completed_at }));
+        const editorial = editorial_day === undefined ? null : editorialChecks(await log(ciJob), steps[0], steps[1], editorial_day);
+        await finish("ci_verified");
+        if (editorial) result.evidence.ci.editorial_checks = editorial;
+        return result;
       }
       result.stage = "finalizer";
       const failureScope = story ? "story" : "publication";
+      if (snapshot.merged && finalizer_run_id === undefined) {
+        const mergedAt = Date.parse(snapshot.merged_at);
+        check(Number.isFinite(mergedAt) && Date.parse(ci.created_at) <= mergedAt, "merge_time_unverified");
+        const ciTitle = "Publication head " + head + " (CI " + ci.id + "/" + ci.run_attempt + ")";
+        const prTitle = "Publication head " + head + " (PR #" + number + ")";
+        finalizer_run_id = await uniqueVerificationRun("created=" + encodeURIComponent(ci.created_at + ".." + snapshot.merged_at),
+          "finalizer", value => Date.parse(value.run_started_at) <= mergedAt && Date.parse(value.updated_at) >= mergedAt
+            && (value.event === "workflow_run" && value.head_branch === "main" && value.display_title === ciTitle
+              || value.event === "pull_request_target" && value.display_title === prTitle
+                && (value.head_branch === "main" || value.head_branch === snapshot.head.ref && value.head_sha === head)));
+      }
       if (!snapshot.merged && finalizer_run_id === undefined) {
         // workflow_run belongs to main. The title locates its candidate; only the
         // trusted step output below can bind the failure to this PR and CI.
@@ -814,7 +922,7 @@ var PublicationReviewContext = (function () {
         check(outcome.status === "verification_dispatched" && snapshot.merged
           && outcome.merge_sha === result.merge_sha, "finalizer_merge_unverified");
         const binding = ["pr", "head", "ci_run_id", "ci_run_attempt"];
-        if (mainFinalizer || binding.some(key => Object.hasOwn(outcome, key))) {
+        if (discoverFinalizer || mainFinalizer || binding.some(key => Object.hasOwn(outcome, key))) {
           check(outcome.pr === number && outcome.head === head && outcome.ci_run_id === ci.id
             && outcome.ci_run_attempt === ci.run_attempt, "finalizer_handoff_binding_unverified");
         }
@@ -837,6 +945,12 @@ var PublicationReviewContext = (function () {
         return result;
       }
       result.stage = "live";
+      if (verification_run_id === undefined) {
+        // The finalizer explicitly dispatched the production check above. Other
+        // push or PR checks on the same revision are not evidence of that dispatch.
+        verification_run_id = await uniqueVerificationRun("branch=main&head_sha=" + result.merge_sha, "live",
+          value => value.event === "workflow_dispatch" && value.head_branch === "main" && value.head_sha === result.merge_sha);
+      }
       check(positive(verification_run_id), "verification_run_id_required");
       const live = await run(verification_run_id, VERIFY, ["push", "workflow_dispatch"], result.merge_sha, "main", "live");
       const liveJob = await job(live, "check", "live");

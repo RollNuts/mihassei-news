@@ -32,6 +32,7 @@ VERIFY = "/actions/workflows/verify-public-photos.yml/dispatches"
 MARKER = re.compile(r"<!-- publication-finalize\s*\n(.*?)\n-->", re.S)
 RUN = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{7,199}")
 LOGIN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})")
+ORDINARY_MARKER = re.compile(r"<!-- ordinary-editorial-merge\s*\n(.*?)\n-->", re.S)
 LEGACY_STORIES = "content/photo_stories.json"
 STORY_FILES = STORY_RECORD_PATHS | {LEGACY_STORIES}
 DATA = STORY_RECORD_PATHS | frozenset({
@@ -105,7 +106,44 @@ def approval(pr):
     return obj
 
 
+def handoff(pr):
+    body = pr.get("body") or ""
+    if "<!-- ordinary-editorial-merge" not in body:
+        return approval(pr) if MARKER.search(body) else None
+    require("<!-- publication-finalize" not in body and body.count("<!-- ordinary-editorial-merge") == 1,
+            "Only one ordinary editorial handoff is permitted")
+    block = ORDINARY_MARKER.search(body)
+    require(block, "Malformed ordinary editorial handoff")
+    obj = json.loads(block[1])
+    require(isinstance(obj, dict) and set(obj) == {"version", "approved_head", "authorized_by", "editor_run", "merge_after_ci"}
+            and type(obj["version"]) is int and obj["version"] == 1 and obj["merge_after_ci"] is True
+            and isinstance(obj["authorized_by"], str) and LOGIN.fullmatch(obj["authorized_by"])
+            and isinstance(obj["editor_run"], str) and RUN.fullmatch(obj["editor_run"]),
+            "Invalid ordinary editorial approval")
+    sha(obj["approved_head"])
+    return {**obj, "kind": "ordinary_editorial"}
+
+
 class GitHub(ReadGitHub):
+    def verify_body_editor(self, pr, login):
+        # On workflow_run GitHub sends the CI author, not the PR-body editor.
+        # Read the authenticated actor and the exact body together.
+        query = ('query($number:Int!){repository(owner:"RollNuts",name:"mihassei-news"){'
+                 'pullRequest(number:$number){body headRefOid author{login} editor{login} lastEditedAt}}}')
+        request = urllib.request.Request("https://api.github.com/graphql",
+            data=json.dumps({"query": query, "variables": {"number": pr["number"]}}).encode(),
+            headers={"Authorization": "Bearer " + os.environ["GH_TOKEN"], "Content-Type": "application/json",
+                     "User-Agent": "Veripsa-exact-head-finalizer"})
+        with self.opener.open(request, timeout=20) as response:
+            raw = response.read(512 * 1024 + 1)
+        require(len(raw) <= 512 * 1024, "PR attribution response exceeded bound")
+        result = json.loads(raw)
+        require(not result.get("errors"), "GitHub could not establish the PR-body editor")
+        snapshot = result["data"]["repository"]["pullRequest"]
+        actor = snapshot["editor"] if snapshot["lastEditedAt"] is not None else snapshot["author"]
+        require(actor and actor["login"] == login and snapshot["headRefOid"] == pr["head"]["sha"]
+                and snapshot["body"] == pr["body"], "Current PR-body editor did not authorize the exact handoff")
+
     def get(self, path):
         if path != "":
             return super().get(path)
@@ -268,6 +306,43 @@ def validate_merge(api, pr, run, root):
     return current
 
 
+def validate_editorial_docs(api, pr, run, root):
+    current = sha(api.get("/git/ref/heads/main")["object"]["sha"])
+    tested = sha(next(p for p in run["pull_requests"] if p["number"] == pr["number"])["base"]["sha"])
+    head = sha(pr["head"]["sha"])
+    require(current == tested, "Editorial main changed since CI; refresh this PR and approve its new head")
+    git(root, "fetch", "--no-tags", "https://github.com/" + REPO + ".git", current, head)
+    git(root, "merge-base", "--is-ancestor", current, head)
+    verify_editorial_paths(root, current, head)
+    return current
+
+
+def verify_editorial_paths(root, base, tip):
+    changes = git(root, "diff", "--raw", "--no-renames", base, tip).splitlines()
+    require(0 < len(changes) <= len(EDITORIAL_DOCS), "Expected only editorial documents")
+    for change in changes:
+        metadata, path = change.split("\t")
+        require(path in EDITORIAL_DOCS and metadata.startswith(":100644 100644 ") and metadata.endswith(" M"),
+                "Ordinary editorial merge requires modified regular editorial documents")
+
+
+def verify_editorial_revision(root, revision, base, head):
+    try:
+        from .check_live import public_revision_matches
+        from .wait_for_live_revision import wait_for_live_revision
+    except ImportError:
+        from check_live import public_revision_matches
+        from wait_for_live_revision import wait_for_live_revision
+    revision = sha(revision)
+    git(root, "fetch", "--no-tags", "https://github.com/" + REPO + ".git", revision)
+    require(git(root, "show", "-s", "--format=%P", revision).split() == [base, head],
+            "Actual editorial merge parents differ from the checked main and head")
+    verify_editorial_paths(root, base, revision)
+    actual = wait_for_live_revision(revision, max_wait_seconds=150, log=lambda line: print(line, file=sys.stderr),
+        equivalent_revision=lambda expected, live: public_revision_matches(expected, live, root=root))
+    return {"status": "verified", "merge_sha": revision, "public_revision": actual}
+
+
 def dispatch(api, revision, *, previous_main=None):
     revision = sha(revision)
     current = sha(api.get("/git/ref/heads/main")["object"]["sha"])
@@ -312,7 +387,7 @@ class PublicationBlocked(ValueError):
 
 def same_approved_open_pr(pr, expected_head, attestation):
     return (pr.get("state") == "open" and pr.get("draft") is False
-            and pr["head"]["sha"] == expected_head and approval(pr) == attestation
+            and pr["head"]["sha"] == expected_head and handoff(pr) == attestation
             and pr["head"]["repo"]["full_name"] == REPO
             and pr["base"]["repo"]["full_name"] == REPO and pr["base"]["ref"] == "main")
 
@@ -330,7 +405,17 @@ def await_mergeability(api, number, pr, expected_head, attestation):
     return pr
 
 
-def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, validate=validate_merge, root=ROOT):
+def latest_validation_id(api, head):
+    listing = api.get("/actions/workflows/check.yml/runs?event=pull_request&head_sha=" + head + "&per_page=20")
+    candidates = listing.get("workflow_runs")
+    require(isinstance(candidates, list), "CI run inventory unavailable")
+    candidates = [r for r in candidates if r.get("head_sha") == head
+                  and r.get("event") == "pull_request" and r.get("path") == WORKFLOW]
+    require(all(type(r.get("id")) is int and r["id"] > 0 for r in candidates), "Invalid CI run inventory")
+    return max((r["id"] for r in candidates), default=None)
+
+
+def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, validate=None, root=ROOT):
     require(type(number) is int and number > 0
             and (run_id is None or type(run_id) is int and run_id > 0), "Invalid PR/run")
     expected_head = sha(expected_head)
@@ -338,9 +423,12 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     require(repo.get("full_name") == REPO and repo.get("private") is False
             and repo.get("visibility") == "public", "Only the fixed public repository is permitted")
     pr = api.get(f"/pulls/{number}")
-    if not MARKER.search(pr.get("body") or ""):
+    attestation = handoff(pr)
+    if attestation is None:
         return {"status": "not_armed", "pr": number}
-    attestation = approval(pr)
+    docs_only = attestation["kind"] == "ordinary_editorial"
+    if validate is None:
+        validate = validate_editorial_docs if docs_only else validate_merge
     require(pr["head"]["sha"] == expected_head == attestation["approved_head"], "Approved head changed")
     require(pr["head"]["repo"]["full_name"] == REPO and pr["base"]["repo"]["full_name"] == REPO
             and pr["base"]["ref"] == "main", "Only a same-repository PR to main is permitted")
@@ -349,26 +437,22 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
     if pr.get("merged") is True:
         # Recovery dispatch has not checked CI in this invocation. Keep its
         # legacy result unbound rather than attesting the supplied run/attempt.
+        if docs_only:
+            return {"status": "already_merged", "pr": number, "merge_sha": sha(pr["merge_commit_sha"])}
         return dispatch(api, pr["merge_commit_sha"])
+    merge_states = {"clean"} if docs_only else {"clean", "unstable"}
     pr = await_mergeability(api, number, pr, expected_head, attestation)
     # An optional failed finalizer can itself leave a conflict-free PR unstable.
     # Exact primary CI and the fresh source/merge guards still precede every PUT.
     if not (same_approved_open_pr(pr, expected_head, attestation)
-            and pr.get("mergeable") is True and pr.get("mergeable_state") in {"clean", "unstable"}):
+            and pr.get("mergeable") is True and pr.get("mergeable_state") in merge_states):
         raise PublicationBlocked(pr, expected_head, "preflight", "PR is not safely mergeable")
-    if run_id is None:
-        # An editor can arm the existing PR body after CI has already finished.
-        # No connector workflow-dispatch capability or second waiting task needed.
-        listing = api.get("/actions/workflows/check.yml/runs?event=pull_request&head_sha="
-                          + expected_head + "&per_page=20")
-        candidates = listing.get("workflow_runs")
-        require(isinstance(candidates, list), "CI run inventory unavailable")
-        candidates = [r for r in candidates if r.get("head_sha") == expected_head
-                      and r.get("event") == "pull_request" and r.get("path") == WORKFLOW]
-        if not candidates:
+    if run_id is None or docs_only:
+        latest_id = latest_validation_id(api, expected_head)
+        if latest_id is None:
             return {"status": "ci_pending", "pr": number, "head": expected_head}
-        require(all(type(r.get("id")) is int and r["id"] > 0 for r in candidates), "Invalid CI run inventory")
-        run_id = max(candidates, key=lambda r: r["id"])["id"]
+        require(run_id is None or run_id == latest_id, "A newer CI run exists for this editorial head")
+        run_id = latest_id
     run = api.get(f"/actions/runs/{run_id}")
     if run.get("status") in {"queued", "in_progress", "waiting", "pending", "requested"}:
         return {"status": "ci_pending", "pr": number, "head": expected_head}
@@ -392,9 +476,13 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
             and type(tests[0].get("run_attempt")) is int
             and tests[0]["run_attempt"] == run["run_attempt"], "Validation job is unverified for the exact CI attempt")
     files = api.pages(f"/pulls/{number}/files")
-    require(files and all(f.get("status") in {"added", "modified"}
-                         and allowed_for(attestation["kind"], f.get("filename")) for f in files),
-            "Unsupported PR paths, publication kind or removals")
+    if docs_only:
+        require(files and all(f.get("status") == "modified" and f.get("filename") in EDITORIAL_DOCS for f in files),
+                "Unsupported ordinary editorial files")
+    else:
+        require(files and all(f.get("status") in {"added", "modified"}
+                             and allowed_for(attestation["kind"], f.get("filename")) for f in files),
+                "Unsupported PR paths, publication kind or removals")
     if attestation["kind"] == "cast_story":
         require(len(files) == 1 and files[0]["status"] == "modified", "Expected one modified story source")
     images = image_affecting(attestation["kind"], files)
@@ -408,7 +496,7 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
         require(owner(api, number, expected_head).get("status") == "clear", "Another PR owns this publication")
         fresh = await_mergeability(api, number, api.get(f"/pulls/{number}"), expected_head, attestation)
         if not (same_approved_open_pr(fresh, expected_head, attestation)
-                and fresh.get("mergeable") is True and fresh.get("mergeable_state") in {"clean", "unstable"}):
+                and fresh.get("mergeable") is True and fresh.get("mergeable_state") in merge_states):
             raise PublicationBlocked(fresh, expected_head, "premerge", "PR or main changed during finalization")
         if api.get("/git/ref/heads/main")["object"]["sha"] == current:
             break
@@ -419,13 +507,19 @@ def finalize(api, number, expected_head, run_id=None, *, owner=owner_check, vali
             and latest.get("status") == "completed" and latest.get("conclusion") == "success"
             and latest.get("head_sha") == expected_head
             and latest.get("run_attempt") == run.get("run_attempt"), "CI was restarted during finalization")
+    if docs_only:
+        api.verify_body_editor(fresh, attestation["authorized_by"])
+        require(latest_validation_id(api, expected_head) == run_id, "New validation started during editorial approval")
+        require(api.get("/git/ref/heads/main")["object"]["sha"] == current, "Main advanced before editorial merge")
     if images:
         live_image_guard(api)
     result = api.request("PUT", f"/pulls/{number}/merge", {"sha": expected_head, "merge_method": "merge"})
     require(isinstance(result, dict) and result.get("merged") is True, "Merge was not confirmed")
     # workflow_run uses trusted-main metadata, not the reviewed PR head. Bind
     # the completed operation to exactly the PR and CI attempt checked above.
-    return {**dispatch(api, result["sha"], previous_main=current), "pr": number, "head": expected_head,
+    verification = (verify_editorial_revision(root, result["sha"], current, expected_head) if docs_only
+                    else dispatch(api, result["sha"], previous_main=current))
+    return {**verification, "pr": number, "head": expected_head,
             "ci_run_id": run_id, "ci_run_attempt": run["run_attempt"]}
 
 

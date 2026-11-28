@@ -260,17 +260,20 @@ var PhotoOriginalHandoff = (() => {
         await readFixture();
         return {status:"verified", route, sha256:probe.sha256, blob:probe.blob, bytes:probe.bytes};
       } catch (error) {
-        // Do not echo unknown connector payloads or file references into a task log.
-        const detail = String(error?.message ?? "");
-        const blockedFile = operation === "read_candidate_png" && (error?.code === "BLOCKED_FILE_REFERENCE" ||
-          error?.error_code === "BLOCKED_FILE_REFERENCE" ||
-          /^BLOCKED_FILE_REFERENCE(?:$|:)/.test(typeof error === "string" ? error : detail));
-        const message = blockedFile ? "Photo transport tool failed (BLOCKED_FILE_REFERENCE)" :
-          detail.startsWith("Cloud image operations stopped:") ? "Cloud image operations stopped" : detail;
-        const safe = /^(?:Missing original PNG route|Missing file handle or readCandidatePng|No materialized probe file|Offline probe needs its file and a commit SHA|Unexpected probe file|Probe bytes changed|Unconfirmed probe blob|Cloud image operations stopped|Photo transport tool failed(?: [(][a-zA-Z0-9_-]{1,48}[)])?|Unexpected original PNG response|Original PNG changed|Invalid Git blob response)$/;
-        return {status:"blocked", route:["inline_png","file"].includes(route) ? route : null, operation,
-          reason:safe.test(message) ? message : "Transport callback failed", ...(Number.isInteger(error?.status) ? {http_status:error.status} : {})};
+        return transportFailure(error, route, operation);
       }
+    }
+    function transportFailure(error, route, operation) {
+      // Do not echo unknown connector payloads or file references into a task log.
+      const detail = String(error?.message ?? "");
+      const blockedFile = operation === "read_candidate_png" && (error?.code === "BLOCKED_FILE_REFERENCE" ||
+        error?.error_code === "BLOCKED_FILE_REFERENCE" ||
+        /^BLOCKED_FILE_REFERENCE(?:$|:)/.test(typeof error === "string" ? error : detail));
+      const message = blockedFile ? "Photo transport tool failed (BLOCKED_FILE_REFERENCE)" :
+        detail.startsWith("Cloud image operations stopped:") ? "Cloud image operations stopped" : detail;
+      const safe = /^(?:Wrong producer chat|Original receipt changed|Invalid immutable original reference|Missing original in receipt|Saved original PNG changed|Saved PNG (?:dimensions|part|part blob) changed|Missing original PNG route|Missing file handle or readCandidatePng|No materialized probe file|Offline probe needs its file and a commit SHA|Unexpected probe file|Probe bytes changed|Unconfirmed probe blob|Cloud image operations stopped|Photo transport tool failed(?: [(][a-zA-Z0-9_-]{1,48}[)])?|Unexpected original PNG response|Original PNG changed|Invalid Git blob response)$/;
+      return {status:"blocked", route:["inline_png","file"].includes(route) ? route : null, operation,
+        reason:safe.test(message) ? message : "Transport callback failed", ...(Number.isInteger(error?.status) ? {http_status:error.status} : {})};
     }
     function validate(packet, partial = false) {
       const {issue, model_id, source_chat_url, delivery_turn, assets} = packet;
@@ -416,10 +419,11 @@ var PhotoOriginalHandoff = (() => {
         runtime.sha256(chunk) === asset.parts[index].sha256, "Saved PNG part changed");
       return chunk;
     }
-    async function fetchPart(asset, index, commit, dir) {
+    async function fetchPart(asset, index, commit, dir, verifyBlob = false) {
       const part = await git("fetch_file", {ref:commit,
         path:partPath(dir, asset.source_sha256, index), encoding:"base64"});
       requireThat(part.encoding === "base64" && typeof part.content === "string", "Missing saved PNG part");
+      if (verifyBlob) requireThat(part.sha === asset.parts[index].blob, "Saved PNG part blob changed");
       return checkedPart(asset, index, part.content);
     }
     function inspectOriginal(asset, bytes) {
@@ -447,6 +451,43 @@ var PhotoOriginalHandoff = (() => {
       validate(record);
       requireThat(record.issue === issue && record.status === "originals_only_unreviewed" && record.version === 1, "Invalid original receipt");
       return record;
+    }
+    async function checkReceivedOriginalTransport(ref = {}) {
+      let operation = "select_route";
+      const reportOperation = stage => { operation = stage; };
+      try {
+        requireThat(typeof ref.file === "string" && /^\/(?!\/)/.test(ref.file) && !/[\\\x00-\x1f\x7f]/.test(ref.file) &&
+          !ref.file.split("/").some(part => part === "." || part === "..") && typeof readCandidatePng === "function",
+          "Missing file handle or readCandidatePng");
+        operation = "cloud_status";
+        await guard();
+        operation = "verify_receipt";
+        requireThat([ref.commit, ref.receipt_sha256, ref.source_sha256].every(value => typeof value === "string"),
+          "Invalid immutable original reference");
+        const record = await originalRecord(ref);
+        requireThat(matchesProducer(record, ref), "Wrong producer chat");
+        const asset = completeAsset(record, ref.source_sha256);
+        operation = "verify_producer";
+        await checkProducer(record);
+        const png = await readPngFile(ref.file, asset.source_sha256, reportOperation);
+        requireThat(png.bytes === asset.source_bytes && png.width === asset.width && png.height === asset.height,
+          "Original PNG changed");
+        const bytes = inspectOriginal(asset, runtime.fromBase64(png.image_url));
+        requireThat(bytes.length === asset.source_bytes, "Original PNG changed");
+        const first = bytes.subarray(0, PART);
+        const readFirst = () => fetchPart(asset, 0, ref.commit, directory(ref.issue), true);
+        operation = "verify_existing_part";
+        const saved = await readFirst();
+        requireThat(first.length === saved.length && first.every((value, i) => value === saved[i]), "Saved PNG part changed");
+        const blob = gitId(await write("create_blob", {content:runtime.toBase64(first), encoding:"base64"}, reportOperation), "blob");
+        requireThat(blob === asset.parts[0].blob, "Unconfirmed probe blob");
+        operation = "fetch_file_readback";
+        await readFirst();
+        return {status:"verified", route:"file", receipt_commit:ref.commit, sha256:asset.source_sha256,
+          bytes:bytes.length, part_bytes:first.length, blob};
+      } catch (error) {
+        return transportFailure(error, "file", operation);
+      }
     }
     async function readOriginal(ref) {
       return readParts(await originalRecord(ref), ref.commit, directory(ref.issue), ref.source_sha256);
@@ -1529,7 +1570,7 @@ var PhotoOriginalHandoff = (() => {
       requireThat((ack.sha ?? ack.commit_sha ?? ack.object?.sha) === prepared.commit, "Unconfirmed stock release ref");
       return {status:"submitted_pending_branch_readback",commit:prepared.commit};
     }
-    return {upload, uploadDataUrl, checkOriginalTransport, saveTransferStep, prepare, publish, readOriginal, prepareSuppliedCut, openReviewedSelection, openUnassignedStock,
+    return {upload, uploadDataUrl, checkOriginalTransport, checkReceivedOriginalTransport, saveTransferStep, prepare, publish, readOriginal, prepareSuppliedCut, openReviewedSelection, openUnassignedStock,
       startReviewedPacket, continueReviewedPacket, readReviewedRelease, prepareReviewedTree,
       planNumberedStockCut, readStockCut, readStagedStockCut, checkStockSiblings, prepareStockCutTree, commitStockCutTree, publishStockCut,
       uploadNumberedOriginal, prepareNumberedOriginal, submitNumberedOriginal, confirmNumberedOriginal, publishNumberedOriginal,

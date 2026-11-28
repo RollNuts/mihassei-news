@@ -1,6 +1,198 @@
 [
   {
+    "slug": "cinema-archive-live-guitar-guest",
+    "category": "エンタメ",
+    "flash": "映画館で共演",
+    "art": "generic",
+    "fiction_company": "弦影シネマ（架空）",
+    "fiction_at": "2031-11-28T20:11:19+09:00",
+    "published_at": "2026-11-28T20:11:19+09:00",
+    "publication_slot": "2026-11-28T19:30:00+09:00",
+    "title": "映画館で30年前のバンドと共演　観客のギターが一曲だけ生演奏に",
+    "summary": "2031年、弦影シネマが過去のライブ映像に観客の生演奏を重ねる上映を始めた。楽器別の録音から一曲のギター音を外し、映画館で弾く観客の音に置き換える。30年前に客席から見ていた男性が、今度は演奏に加わった。",
+    "paragraphs": [
+      "大スクリーンに映る歌手が息を吸うと、客席の最前列でギターを構えた男性が弦を鳴らした。28日、弦影シネマが上映したのは30年前のバンドのライブ映像だ。歌もドラムも当時の録音だが、この一曲で劇場のスピーカーから流れるギターは、63歳の男性が今弾いている音だった。",
+      "同社は楽器ごとの録音が残っている公演を選び、権利者の許可を得て共演用の上映版を作った。元のギターの音だけを外し、観客の楽器を映画館の音響設備につなぐ。昔のライブは同じ曲でも演奏の速さが少しずつ変わるため、録音を解析して次に弾く箇所を手元の画面に示す。映像や歌声の速さは変えない。演奏に遅れたり音を間違えたりしたときも、そのまま劇場に響く。",
+      "男性は当時の公演を実際に見たファンで、家でも同じ曲を弾いてきた。通常の上映なら好きな演奏をそのまま聴けるが、今回は昔のバンドと自分の音が重なる瞬間を一度味わいたいと、演奏席に申し込んだ。上映前に係員と音量を調整し、本人が途中で弾けなくなった場合には元のギター音を戻せるようにした。",
+      "劇場は機材の準備や権利料を賄うため、演奏席を普通の鑑賞席より高く設定した。曲ごとに演奏者は一人とし、生演奏の入る回であることをチケット販売時に知らせる。当時の演奏を聴きたい客には原音のままの上映も続ける。共演版はその場だけの演奏で、元の記録映像を書き換えて売ることはない。",
+      "曲の終わり、男性はスクリーンのドラマーが最後の一打を放つのに合わせて弦を止めた。画面の中では30年前の観客が立ち上がって拍手していた。その音に、今の映画館からも拍手が重なった。男性はギターを抱えたまま、二つの客席に向かって頭を下げた。"
+    ],
+    "source": {
+      "kind": "企業公式発表",
+      "publisher": "株式会社東急レクリエーション",
+      "published_at": "2026-11-13T12:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000777.000001956.html",
+      "topic": "2026年11月13日、東急レクリエーションは1996年のライブ映像を高画質化し、楽器等を別々に収録したマルチトラックテープから劇場用5.1ch音源に再編集した上映を11月28・29日に行うと発表した。2031年の観客共演上映、劇場、人物、料金方式は創作。"
+    },
+    "scene_prompt": "Natural horizontal 16:9 documentary photograph inside a small Japanese cinema, a Japanese man in his early sixties seated in the front row with an unbranded electric guitar connected by a cable to a small audio interface, his hands playing naturally, softly lit audience behind him, a large cinema screen in the background showing a fictional vintage band performing under warm stage lights, no real musician likenesses, no readable text or logos, realistic low-light photography.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "映画館",
+      "ライブ",
+      "音楽"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "映画館",
+      "ライブ"
+    ],
+    "x_tickers": [],
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "過去のライブ映像を高画質化し楽器別の原録音から劇場向けの音を再編集して上映する企画がある",
+      "target": "過去のライブ上映で観客が楽器の演奏者になる興行",
+      "action": "映画館が権利者の許可を得て一曲のギター音を外し観客の実演奏を上映音に入れる",
+      "outcome": "30年前に見たライブで観客だった男性がギターを演奏し当時と現在の拍手が重なる"
+    },
+    "reader_clarity": {
+      "who": "観客",
+      "action": "映画館で上映中の古いライブ映像に合わせてギターを弾き一曲の録音音を置き換える",
+      "oddity": "過去の公演を鑑賞するだけでなく当時の歌やドラムと現在の観客の実演奏が同じ劇場で響く"
+    },
+    "behavior_basis": {
+      "motive": "昔好きだったバンドと一緒に演奏する体験をしたい",
+      "ordinary_alternative": "原音を聴く通常上映や自宅で録音に合わせて弾く",
+      "why_not": "劇場で過去のギター音を抜いた音響と自分の演奏を重ね他の観客にも聴いてもらえる",
+      "evidence_quote": "通常の上映なら好きな演奏をそのまま聴けるが、今回は昔のバンドと自分の音が重なる瞬間を一度味わいたいと、演奏席に申し込んだ。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に過去のライブ音源をマルチトラックテープから再編集して高音質で映画館上映する企画が発表された",
+      "continuation_force": "原録音の再編集と演奏解析が普及し、権利者との共演利用契約と小規模な実演音響の整備によって旧作の新しい興行を作れる",
+      "future_result": "映画館で観客が過去のライブのギターを一曲だけ生演奏し原音上映とは別の共演体験を販売する"
+    }
+  },
+  {
+    "slug": "family-toy-track-virtual-revival-bridge",
+    "category": "暮らし",
+    "flash": "親子の遊び",
+    "art": "generic",
+    "fiction_company": "星函玩具（架空）",
+    "fiction_at": "2031-11-28T08:10:09.405+09:00",
+    "published_at": "2026-11-28T08:10:09.405+09:00",
+    "publication_slot": "2026-11-28T07:30:00+09:00",
+    "title": "親子が考えた立体交差、復刻玩具の新部品に　昔の線路を越えて遊ぶ",
+    "summary": "2031年、玩具メーカーの星函玩具が、かつて平面に敷いて遊んだ線路玩具を復刻した。親子が仮想空間で作った立体交差を参考に、昔の線路にも接続できる坂道と橋を新たに製品化。親の持っていた玩具と子どもの新しい部品で一緒に遊べるようになった。",
+    "paragraphs": [
+      "母親が子どもの頃に遊んだ青い線路を、息子が走らせる赤い列車が橋の下でくぐり抜けた。28日、星函玩具が発売した復刻版の線路玩具に、親子で考案した立体交差を作れる部品が加わった。母親が押し入れから取り出した古い線路にも、その部品を取り付けられる。",
+      "同社は復刻版の企画にあたり、昔の製品の寸法を基に仮想空間で線路を組み立てられる遊び場を開いた。来場者は当時の曲がり線路や直線を自由に並べ、画面上で列車を走らせる。母親と息子が試したのは、二つの列車を同じ場所ですれ違わせる遊びだった。平面では線路が交わってしまうため、息子は仮の坂道を置いて一方を高くし、母親は部屋の広さに収まるように橋への進入路を曲げた。",
+      "メーカーには似た立体交差の提案が複数届いた。担当者は投稿の利用に同意した参加者の配置を調べ、実物で再現できる部品の寸法を検討した。昔の線路との接続部は変えず、橋と緩い坂道を新たに作った。画面上では走れても実物の列車は急坂で止まることがあるため、試作品で走行や強度を確かめ、対象年齢に応じた安全性の検査も行った。",
+      "当時の形をそのまま復刻する方が開発費は少なく済むが、メーカーは古い玩具を持つ家庭にも新しい部品だけを買ってもらえると考えた。親子で違う遊び方を試せる点も魅力になる。新部品は単品でも購入できる一方、昔の線路に破損や変形がある場合は交換が必要だ。投稿しなくても製品は購入でき、採用された提案者には協力料が支払われた。",
+      "発売日に橋と坂道を購入した親子は、家に残っていた直線をつないで、二つの列車を走らせた。息子が橋の下に駅を作りたいと言うと、母親は箱の底から昔の駅の部品を探し出した。二人は次の休日には祖父母の家に残っている線路も持ち寄ることにした。"
+    ],
+    "source": {
+      "kind": "企業公式発表",
+      "publisher": "株式会社V",
+      "published_at": "2026-11-27T13:05:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000205.000049339.html",
+      "topic": "2026年11月27日、株式会社VはトイザらスのVRChat内クリスマス特設ワールドを11月30日から12月25日まで公開予定と発表。過去と2026年の玩具カタログ展示、ミニゲームなどを案内した。2031年の復刻線路、仮想での組立提案と部品製造、親子は創作。"
+    },
+    "scene_prompt": "Natural horizontal 16:9 documentary photograph in a Japanese family living room, adult mother and school-age son kneeling by a low wooden table, assembling a colorful unbranded toy railway with two little toy trains on intersecting tracks at different heights, one crossing a low bridge and the other below, older blue plastic track pieces beside a new bridge ramp, warm morning daylight, candid hands, no logos or readable text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "玩具",
+      "親子"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "玩具",
+      "復刻"
+    ],
+    "x_tickers": [],
+    "reader_interest": "family_home",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "仮想空間で昔の玩具カタログを展示し、現物の玩具と結び付ける企画が発表されている",
+      "target": "親子の遊び方から変わる復刻線路玩具",
+      "action": "親子が仮想の線路で立体交差を考案しメーカーが実物の新部品を設計する",
+      "outcome": "昔の線路と新しい橋をつないで親子が二つの列車を一緒に走らせる"
+    },
+    "reader_clarity": {
+      "who": "親子",
+      "action": "画面で線路の立体交差を考案し新しい橋を古い線路につなぐ",
+      "oddity": "復刻版が昔の形を再現するだけでなく親子が考えた遊び方を新しい実物部品に反映する"
+    },
+    "behavior_basis": {
+      "motive": "親の持っていた玩具を生かしながら今の子どもと別の遊び方を楽しみたい",
+      "ordinary_alternative": "昔の玩具をそのまま復刻するか、新しい線路一式を買う",
+      "why_not": "古い線路を持つ家庭にも新しい遊び方と追加部品の選択肢を作れる",
+      "evidence_quote": "当時の形をそのまま復刻する方が開発費は少なく済むが、メーカーは古い玩具を持つ家庭にも新しい部品だけを買ってもらえると考えた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に仮想空間で過去の玩具カタログを展示しミニゲームや店舗企画と接続する発表がある",
+      "continuation_force": "玩具メーカーが仮想空間の遊びを製品設計につなげ、旧製品との互換性や実物の検査を積み重ねることで復刻と新規需要の両立を狙う",
+      "future_result": "画面で親子が試した立体交差を実物の部品にして旧製品と組み合わせて遊べる"
+    }
+  },
+  {
+    "slug": "travel-wardrobe-return-in-next-city",
+    "category": "暮らし",
+    "flash": "旅の新しい着替え",
+    "art": "generic",
+    "fiction_company": "綴路衣装店、衣の駅（架空）",
+    "fiction_at": "2031-11-27T20:19:12.815+09:00",
+    "published_at": "2026-11-27T20:19:12.815+09:00",
+    "publication_slot": "2026-11-27T19:30:00+09:00",
+    "title": "旅行者、着替えを持たずに三都市へ　借りた服を次の街で返す旅が始まる",
+    "summary": "2031年、旅行者が宿泊先の近くで服を借り、次の街の衣料品店で返せるサービスが始まった。共通の寸法表示と店をまたぐ返却網により、三都市を巡る女性は荷物を増やさず、街ごとに違う装いを楽しんだ。",
+    "paragraphs": [
+      "旅行者の29歳の女性は27日、海沿いの街に着くと、昨日まで山の街で着ていたコートを駅前の衣料品店に返した。代わりに選んだのは青いジャケットと白いシャツだった。三都市を四日間で巡る旅だが、出発時に持ってきた着替えは下着と靴下だけだ。",
+      "綴路衣装店など三都市の衣料品店と宿泊施設は今月、共同で「衣の駅」を始めた。旅行者は参加店で一日単位で服を借り、別の街の参加店に返せる。店ごとに異なるSやMの表示ではなく、服そのものの肩幅や袖丈、伸びやすさを共通の形式で登録する。客は普段着ている服の寸法を一度入力すれば、次の街で着られる服を移動前に探せる。",
+      "女性は以前、数日間の旅行でも天候や食事の場所に合わせて服を詰め込んでいた。荷物を宿へ送る方法もあるが、着てみたい服を旅先で選べる方が面白いと思い、今回は借りることにした。山の街では厚手のコート、海の街では地元の店が選んだ服を着た。サイズが合わない時は店頭で試着して交換できる。",
+      "返された服はその街の洗濯業者が洗い、状態を確認してから再び貸し出す。借りた街に一着ずつ送り返す必要はない。貸出料の一部を服の所有店に、洗濯や修繕の費用を返却先の店に配分する。ただし、寒い街に厚手の服が不足する時はまとめて移送する必要がある。共同事業者は在庫と移動費を毎月照合し、赤字が続く服は貸出対象から外す。",
+      "海の街の店主は、従来は土産物を眺めるだけだった旅行者が、店内で時間をかけて服を選ぶようになったという。一方、旅先で着たい服が見つからない人は自分の服を持参でき、下着や靴は貸出対象にしていない。女性は夕食へ出かける前、翌日の街で借りたい服を予約した。旅程表には名所と食事の予定に加え、着てみたい服が一着ずつ並んでいた。"
+    ],
+    "source": {
+      "kind": "団体公式発表",
+      "publisher": "一般社団法人シェアリングエコノミー協会",
+      "published_at": "2026-11-17T15:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000134.000022734.html",
+      "topic": "2026年11月17日、同協会は衣類レンタルなど19社21サービスと11自治体が参画するグリーンフライデーの取り組みを発表し、11月25〜27日に持続可能な消費の選択肢を発信するとした。2031年の都市間返却網、共通寸法表示、衣の駅と利用者は創作。"
+    },
+    "scene_prompt": "Natural horizontal 16:9 documentary photograph of a fictional adult Japanese woman traveler in a blue jacket and white shirt holding a folded winter coat toward a shop attendant at a small clothing rental shop near a railway station, a modest backpack beside her, garment racks, daylight, candid natural gestures, no readable text or logos.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "旅行",
+      "衣服の再利用"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "衣服レンタル",
+      "ファッション"
+    ],
+    "x_tickers": [],
+    "reader_interest": "food_travel_shopping",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "observational",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "衣類レンタルを含むサービスと自治体が買う以外の消費を共同で提案している",
+      "target": "都市をまたぐ旅行者向けの衣類貸出と返却",
+      "action": "旅行者が各都市の衣料品店で服を選び次の街で返す",
+      "outcome": "四日間三都市の旅で衣類を持ち運ばず街ごとに異なる装いを楽しむ"
+    },
+    "reader_clarity": {
+      "who": "旅行者",
+      "action": "宿泊先近くで借りた服を次の街の店で返す",
+      "oddity": "共通寸法と返却網で旅行の着替えを各地で選べる"
+    },
+    "behavior_basis": {
+      "motive": "旅先の店で服を選ぶ楽しみと荷物を減らすことを両立したい",
+      "ordinary_alternative": "自分の着替えを持参するか宿へ送る",
+      "why_not": "旅先で初めて見つけた服をその場で楽しめる",
+      "evidence_quote": "荷物を宿へ送る方法もあるが、着てみたい服を旅先で選べる方が面白いと思い、今回は借りることにした。"
+    }
+  },
+  {
     "slug": "student-town-model-opens-after-school-study-room",
+    "broadcast_feature": true,
     "category": "社会",
     "flash": "高校生の町づくり",
     "art": "generic",
@@ -7707,4 +7899,3 @@
     ]
   }
 ]
-

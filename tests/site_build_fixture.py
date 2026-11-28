@@ -55,6 +55,12 @@ def ensure_site_build() -> None:
         _built = True
 
 
+def built_text(relative_path: str) -> str:
+    """Read UTF-8 output from this process's successful clean site build."""
+    ensure_site_build()
+    return (ROOT / "dist" / relative_path).read_text(encoding="utf-8")
+
+
 def changed_files(base, event):
     """A complete PR/push diff, or None when narrowing cannot be proved safe."""
     if (event not in ("pull_request", "push") or not isinstance(base, str)
@@ -95,11 +101,29 @@ def modified_paths_only(changes, event, allowed_paths):
                     for status, path in changes))
 
 
-def native_image_engine_tests_required(changes, event):
-    """Only recognized editorial document edits can also skip native/browser checks on main."""
+def image_fallback_browser_required(changes, event):
+    """Keep real Chrome on every news change, including newly published photos."""
     if modified_paths_only(changes, event, EDITORIAL_DOC_PATHS):
         return False
     return event != "pull_request" or not (market_data_only(changes) or photo_story_data_only(changes))
+
+
+def native_image_engine_tests_required(changes, event):
+    """The synthetic encoder/staging suite has no article or approved-photo inputs."""
+    if not image_fallback_browser_required(changes, event):
+        return False
+    if event != "pull_request" or not changes:
+        return True
+    draft = {("M", "content/articles.json")}
+    files = set(changes)
+    if files == draft:
+        return False
+    photo_records = draft | {("M", "content/visual_reviews.json"), ("M", "assets/generated/manifest.json")}
+    new_media = files - photo_records
+    if not photo_records <= files or len(new_media) != 1:
+        return True
+    status, path = new_media.pop()
+    return status != "A" or not re.fullmatch(r"assets/generated/[a-z0-9]+(?:-[a-z0-9]+)*\.jpg", path)
 
 
 def python_test_command(changes, event=None):
@@ -151,6 +175,8 @@ def main(argv=None):
         required = native_image_engine_tests_required(changes, args.event)
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
             output.write("run_native_image_engine_tests=" + str(required).lower() + "\n")
+            browser = image_fallback_browser_required(changes, args.event)
+            output.write("run_image_fallback_browser=" + str(browser).lower() + "\n")
     # A test/build failure is returned unchanged, never retried as a lighter suite.
     # Child tests may call main() for other scopes; only this parent owns the
     # workflow output, while all unrelated test/build environment is retained.

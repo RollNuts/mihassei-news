@@ -65,6 +65,16 @@ function page(options={}){
   return {fields,dialog,link,synth,spoken,timers,windowEvents,open,timeline};
 }
 
+test('modified clicks keep the native route to the dated post',()=>{
+  const p=page();
+  for(const modifiers of [{metaKey:true},{ctrlKey:true},{shiftKey:true},{altKey:true},{button:1}]){
+    p.link.listeners.click({...modifiers,preventDefault(){assert.fail("modified click intercepted");}});
+    assert.equal(p.dialog.open,false);
+  }
+  assert.equal(p.open(),true);
+  assert.equal(p.dialog.open,true);
+});
+
 const motionFixture=(id='saya-motion')=>({...fixture(id),motion:{
   url:'/photo/story-clips/'+id+'.mp4?v=a3408b617dab',width:640,height:360,durationSeconds:12}});
 

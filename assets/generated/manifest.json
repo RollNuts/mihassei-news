@@ -11377,6 +11377,510 @@
     }
   }
 }
+  ,
+    "student-town-model-opens-after-school-study-room": {
+  "article_sha256": "6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+  "bytes": 199275,
+  "generated_at": "2026-11-26T23:07:28.581Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "ae815039-2b3c-46ba-ab16-563106a05a20",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:ae815039-2b3c-46ba-ab16-563106a05a20",
+  "generation_prompt": "Natural horizontal 16:9 documentary photograph inside a small reopened former Japanese stationery shop, four fictional high school students arranging ordinary study desks with an adult local volunteer, street visible through the shop window, afternoon light, modest everyday clothing, no readable text, no logos, no identifiable real persons.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "96e51dc03cf377c6a497941701ae4d67fa36dc4c568e4659e0801012b61e8846",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:bb026201-d603-4319-a2de-cdc598cdcc26",
+    "instanceID": "xmp:iid:ae815039-2b3c-46ba-ab16-563106a05a20",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          34,
+          66,
+          236,
+          116,
+          155,
+          126,
+          61,
+          238,
+          237,
+          14,
+          205,
+          228,
+          1,
+          7,
+          234,
+          157,
+          39,
+          80,
+          236,
+          100,
+          198,
+          248,
+          165,
+          33,
+          76,
+          167,
+          148,
+          37,
+          250,
+          65,
+          91,
+          50
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-26T23:07:25.265507156Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-26T23:07:25.265513307Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-26T23:07:25.263687027Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "65abfc58576861653f6a22aca8390afa35158cdc5d7e87b821520373252846a6",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:6eab3e26544122bfd65a9576ceb49926467b6a97a354c7a6345603fd70f9df03",
+    "actual_output_hint": "Generated images are saved to /workspace/scratch/38baa7428501/generated_images as /workspace/scratch/38baa7428501/generated_images/exec-cf615dee-776b-47e0-b312-4389bcff385a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "observed_at": "2026-11-26T23:07:28.581Z",
+    "bytes": 2366905,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "cb2029e8ff05c6f288f1e446133f02819a1ffa1c30195cf82910e7ab376c3985",
+    "candidate_branch": "native-image-candidate/student-town-model-opens-after-school-study-room/6eab3e26544122bf-9dadd42a7a0c",
+    "candidate_commit": "e1dc5cab90254b7988993b756608fa70b4e7e825",
+    "receipt_path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/receipt.json",
+    "receipt_sha256": "ed8423272fc34b6e9cda318d089fe2640689fc195d382000cc8512af9f80ef45",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part000",
+        "bytes": 524288,
+        "sha256": "9f2a8e93f7d833b6e06e7b20d62a05209766133a756ad31128b7b47b3c963b1f",
+        "blob_sha": "eb9fb4ca9d1cd23d0a1d22029eb0743c9a2fab64"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part001",
+        "bytes": 524288,
+        "sha256": "820067a0efa3be250d92c2ada9acac8054c1dd3baf34935dbaf2e89bdd37ace3",
+        "blob_sha": "933eeaf752d13ef9995ebae965ef05c167d472fa"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part002",
+        "bytes": 524288,
+        "sha256": "2fc0ba0213e850350450b42683b696364fb348151a6ad6003698dc83d795ff56",
+        "blob_sha": "636f54b290f2520233f2013f64bf7f876eef74d6"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part003",
+        "bytes": 524288,
+        "sha256": "7d7dc8ea255a3b309fb84eb7be05fba51b2fb5bcfdc0afad2748d383d750ce71",
+        "blob_sha": "1fd6418bf8e967cf2ad95f50a29e26b07dbc6c30"
+      },
+      {
+        "path": "maintenance/native-image-candidates/student-town-model-opens-after-school-study-room/source.png.part004",
+        "bytes": 269753,
+        "sha256": "863e729bce5147731f3684870788f2a9e761d06d7d1c9b71c8cc2cb3ec3c19d8",
+        "blob_sha": "4de735f5e68e12d9c3b45c18860efade8f9577ac"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-preflight/transport",
+      "commit_sha": "adb23fee28a493209ac6b53562702598f659f35b",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "24a99a6e5c8d20973dea799153ee05ccca451ab007ac1eb9ecc8151d6ef46af3",
+      "observed_at": "2026-11-26T23:06:11.963Z",
+      "route": "PNG data URL in this code runtime to GitHub candidate storage",
+      "source_sha256": "c3737d66d45f9ab85beff0f6ca264ffa0311886d052e5737b98f65308aa1b4bb",
+      "jpeg_sha256": "b7531b4a9b9ca6ee0fae078fc74a47e26294c88eed370d20caa235d62d686f98"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/473b0d748e5ce55def211ddbb28100d86ae03255d0171fb4f5f4fd8fbdc17e93",
+      "receipt_path": "maintenance/native-image-generation-claims/473b0d748e5ce55def211ddbb28100d86ae03255d0171fb4f5f4fd8fbdc17e93.json",
+      "receipt_sha256": "b5596b6eb909cca2054a89e78a8a69bf63c1881c462feba9bf0594a41d13470f",
+      "commit_sha": "b8d8f6d6f2df767573cf0438722d058410818942"
+    }
+  }
+}
+  ,
+    "travel-wardrobe-return-in-next-city": {
+  "article_sha256": "f2178e3b36651f989ebe10ddb0a5d2b435c8a310a2a67cba31ce713762abebd2",
+  "bytes": 185242,
+  "generated_at": "2026-11-27T11:12:24.093Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "bdd5cf1b-96d3-4ce8-98be-409ee0f6a9ac",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:bdd5cf1b-96d3-4ce8-98be-409ee0f6a9ac",
+  "generation_prompt": "Natural horizontal 16:9 documentary photograph of a fictional adult Japanese woman traveler in a blue jacket and white shirt holding a folded winter coat toward a shop attendant at a small clothing rental shop near a railway station, a modest backpack beside her, garment racks, daylight, candid natural gestures, no readable text or logos.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "38e929164947a6ef225a201ae596ee9b8c0aa5024affa345dd1e3b41507deb53",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:cdffa05b-9322-473f-b109-4986e88616d2",
+    "instanceID": "xmp:iid:bdd5cf1b-96d3-4ce8-98be-409ee0f6a9ac",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          205,
+          35,
+          205,
+          234,
+          199,
+          102,
+          160,
+          184,
+          132,
+          54,
+          162,
+          94,
+          163,
+          190,
+          143,
+          190,
+          192,
+          255,
+          20,
+          67,
+          156,
+          21,
+          203,
+          205,
+          62,
+          155,
+          201,
+          105,
+          204,
+          1,
+          178,
+          240
+        ]
+      },
+      "org.contentauth.c2pa_rs": "0.79.2",
+      "specVersion": "2.2.0"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-27T11:12:20.698705711Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-27T11:12:20.698707453Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-27T11:12:20.698041963Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "4fe2b1936bc8a6d42aba0030fefe17779101a6f0c2b74d1e8d22684ac2bfc03a",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:f2178e3b36651f989ebe10ddb0a5d2b435c8a310a2a67cba31ce713762abebd2",
+    "actual_output_hint": "/workspace/scratch/52e08f82f256/generated_images/exec-ef69ceee-7fd8-4e87-8642-be6aa38ea21b.png",
+    "observed_at": "2026-11-27T11:12:24.093Z",
+    "bytes": 2316000,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "3b65ee84ab8f87ea4b20d920840e9bb00e7e8025a601f871e0977d5a14bbf565",
+    "candidate_branch": "native-image-candidate/travel-wardrobe-return-in-next-city/f2178e3b36651f98-48647b5a6bbe",
+    "candidate_commit": "e29d19bc6a371e0939fd330f4cd60a0f502d2440",
+    "receipt_path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/receipt.json",
+    "receipt_sha256": "0653653951dc729aa22370cf9faacfdd842774eae5573bd4e1694dec242f08e2",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part000",
+        "bytes": 524288,
+        "sha256": "1805f85546c1246cb6ab021125a11828c22e0909346be83a4e82f8a846ae14a4",
+        "blob_sha": "4ddb419f0cc454c24abd91e2b8548c29fe3bc01c"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part001",
+        "bytes": 524288,
+        "sha256": "aaf1e54e43317df33d32f35e1eb1b7a71211b6719f40dff2a624ff7cdd0d0e6f",
+        "blob_sha": "99cd313a5ddc4ff90f301d674f62ef455c32bd3a"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part002",
+        "bytes": 524288,
+        "sha256": "260986a7b509152e52c7df8aff7b160f75ff51b832a6440cf296b59ad8154682",
+        "blob_sha": "4f0189620db149f00bfd0f37624df9b41ec14304"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part003",
+        "bytes": 524288,
+        "sha256": "845e352b2c06d374e76d906406ae58dcec746e8bd3b00280a4f3e7771fee475e",
+        "blob_sha": "808fbb08f070088639bdde27d20b6c8887ea0c54"
+      },
+      {
+        "path": "maintenance/native-image-candidates/travel-wardrobe-return-in-next-city/source.png.part004",
+        "bytes": 218848,
+        "sha256": "a4338069b82c038a733015c9a652596a952fe2d04d31e1c183f9ddec26da3cf7",
+        "blob_sha": "56fcf86b8f83ea1dc316f2cfba0e3db2930ba1d9"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-generation-claim/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "f5f9c4312c84ca9d05844ab8344ef869b84032f5c7f5c883ce8ed836379c4f1f",
+      "observed_at": "2026-11-27T11:09:30.175Z",
+      "route": "read_candidate_png through the original file adapter",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "6ea631f20601de6da80c7fc25dee4a33f1016c82"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d",
+      "receipt_path": "maintenance/native-image-generation-claims/dd23ab5a62284ff9287f1f91c8223e2849032b86046d9a56d20a3917197b101d.json",
+      "receipt_sha256": "b5c78a244d6b610399730307ad6baef01095a3f60fef9218548fabef103a6f78",
+      "commit_sha": "fefdef4a44890ad63ddf8414fff2d702befd6c0a"
+    }
+  }
+}
+  ,
+    "family-toy-track-virtual-revival-bridge": {
+  "article_sha256": "5890a9faeee453be3774a24c13c19fccc2288b4299752f97d387bdbaa7d71950",
+  "bytes": 228007,
+  "generated_at": "2026-11-27T23:05:24.540Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "9652c1e0-bc91-4e34-9558-6ceb3fb72a0f",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:9652c1e0-bc91-4e34-9558-6ceb3fb72a0f",
+  "generation_prompt": "Natural horizontal 16:9 documentary photograph in a Japanese family living room, adult mother and school-age son kneeling by a low wooden table, assembling a colorful unbranded toy railway with two little toy trains on intersecting tracks at different heights, one crossing a low bridge and the other below, older blue plastic track pieces beside a new bridge ramp, warm morning daylight, candid hands, no logos or readable text.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "cb1adc8cb014ea411ac88548f4aa65b08d81f920a1b750462b8664452b854f63",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:e2226f15-0f01-450e-968c-63be18eff77d",
+    "instanceID": "xmp:iid:9652c1e0-bc91-4e34-9558-6ceb3fb72a0f",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          93,
+          75,
+          238,
+          31,
+          67,
+          165,
+          93,
+          179,
+          92,
+          73,
+          83,
+          48,
+          243,
+          5,
+          154,
+          191,
+          235,
+          15,
+          107,
+          198,
+          9,
+          251,
+          239,
+          141,
+          210,
+          211,
+          80,
+          69,
+          201,
+          108,
+          57,
+          102
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-27T23:05:21.362279105Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-27T23:05:21.362280717Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-27T23:05:21.361896135Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "8b469908604c97840725799205af03ca6650211ae3a160515afcb9660c2d311c",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:5890a9faeee453be3774a24c13c19fccc2288b4299752f97d387bdbaa7d71950",
+    "actual_output_hint": "/workspace/scratch/a71c6121575c/generated_images/exec-c0d631da-aa94-4a2c-89cc-731afda7334f.png",
+    "observed_at": "2026-11-27T23:05:24.540Z",
+    "bytes": 2590342,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "b81859606dc221559300b084a6fb6aa236357bc1432d2b015636ee71f17951d6",
+    "candidate_branch": "native-image-candidate/family-toy-track-virtual-revival-bridge/5890a9faeee453be-aefd89da0f07",
+    "candidate_commit": "82ed95df5aad9d9c69811c88baab5ac0d28e76ac",
+    "receipt_path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/receipt.json",
+    "receipt_sha256": "eb7f334f5b2b3aa08ede8ee2793770f1c4d2543d2c8c7c113cbd0d2af61fa940",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part000",
+        "bytes": 524288,
+        "sha256": "da7310b7774a04d28ba02162f974c70cfd22b9d960123f4b961d78504fda1b87",
+        "blob_sha": "fdb3bc1ef8241d08d32e213ff39d6038f5b80f90"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part001",
+        "bytes": 524288,
+        "sha256": "e0c0d9f9d19c3f5d779e078250cd9a99b27848fcc2361bb6c766cf5ba933ea19",
+        "blob_sha": "0d83655a832bf36136bd56615d3f06b5876c5494"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part002",
+        "bytes": 524288,
+        "sha256": "6f608674f0dedee08ebfc1ba1f5463b527d90950a6f1879cc3f8345da376bcf0",
+        "blob_sha": "8ec7ecf66c9eb02b9d471aba7b60a62da1fc9f6e"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part003",
+        "bytes": 524288,
+        "sha256": "3c5c2db25bc5f773326b9c6e7e9ebc1863130efc8beb0102b99bbeae640927c6",
+        "blob_sha": "e8d2cc9d4181e41cbecae92fa403a4cb5aeeefc5"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part004",
+        "bytes": 493190,
+        "sha256": "aab9a6fb3b9ea4a1e7e4317f4587b09ffe03a03938215fef0e3f292730042983",
+        "blob_sha": "4557cff943008bde111865b86e24507f516f504c"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-generation-claim/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "33d89cfe2e28e68e42c125d916939e596018486eafba4a17e59fc9ff8b8146ad",
+      "observed_at": "2026-11-27T23:03:27.680Z",
+      "route": "read_candidate_png through the original file adapter",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "ed7f6456ae43fec5808173568a6f069f74bc07dc"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4",
+      "receipt_path": "maintenance/native-image-generation-claims/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4.json",
+      "receipt_sha256": "4ee1147b62e4ec89c7056bff8ebe7a429df56fd1bbc6f8041de77360b9253a1f",
+      "commit_sha": "4e52b63b5aba53cc51764b4b9f4d14bcc9278cd6"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {

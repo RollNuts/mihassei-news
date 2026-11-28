@@ -10,6 +10,8 @@ import json
 import os
 from pathlib import Path
 import re
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -78,8 +80,16 @@ class GitHub:
         if os.environ.get("GH_TOKEN"):
             headers["Authorization"] = "Bearer " + os.environ["GH_TOKEN"]
         request = urllib.request.Request("https://api.github.com/repos/" + REPO + path, headers=headers)
-        with self.opener.open(request, timeout=20) as response:
-            raw = response.read(6 * 1024 * 1024 + 1)
+        for attempt in range(2):
+            try:
+                with self.opener.open(request, timeout=20) as response:
+                    raw = response.read(6 * 1024 * 1024 + 1)
+                break
+            except urllib.error.HTTPError as exc:
+                if attempt or exc.code not in (502, 503, 504):
+                    raise
+                exc.close()
+                time.sleep(1)
         require(len(raw) <= 6 * 1024 * 1024, "API response exceeded bound")
         return json.loads(raw)
 

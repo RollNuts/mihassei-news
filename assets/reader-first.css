@@ -158,8 +158,6 @@ body{background:var(--paper);line-height:1.72;letter-spacing:0}
 .article-body{max-width:70ch;margin-inline:auto;line-height:1.93;letter-spacing:.01em}
 .article-body p{margin-bottom:1.35em}
 .source-context{border:1px solid var(--line);background:#f5f3ed;border-radius:4px}
-.source-context h2{font-size:18px}
-.source-context-disclaimer{font-size:11px}
 .topic-related{margin-top:55px}
 .footer{padding:31px 0 18px}
 :where(.lead h1 a,.brief-card h3 a,.story-card h3 a,.section-head a,.footer-nav a):focus-visible{
@@ -441,50 +439,15 @@ details.category-feed-subscriptions{
   border-bottom:0;
 }
 .article-page .bookmark-status{margin:5px 0 14px}
-/* The source and the fiction/real-world distinction remain in crawlable HTML.
-   Native disclosure removes an extra full-size callout for casual readers. */
-details.source-context{
-  display:block;
-  margin:26px 0 20px;
-  padding:0 17px;
-  border:1px solid var(--line);
-  border-radius:5px;
-  background:#f5f3ed;
+.article-page .source-context{
+  margin:20px 0;
+  padding:14px 17px;
+  overflow-wrap:anywhere;
 }
-details.source-context>summary{
-  display:flex;
-  align-items:center;
-  min-height:48px;
-  cursor:pointer;
-  list-style:none;
-  font-size:13px;
-  font-weight:800;
-  color:var(--ink);
-}
-details.source-context>summary::-webkit-details-marker{display:none}
-details.source-context>summary::after{
-  content:"＋";
-  margin-left:auto;
-  font-size:16px;
-  font-weight:500;
-  color:var(--accent);
-}
-details.source-context[open]>summary::after{content:"−"}
-details.source-context>summary:focus-visible{
-  outline:3px solid var(--accent);
-  outline-offset:3px;
-}
-.source-context-body{
-  border-top:1px solid var(--line);
-  padding:1px 1px 16px;
-}
-.source-context-body p{font-size:12px;line-height:1.76}
-.source-context-body a{font-size:12px}
+.article-page .source-context h2{font-size:15px}
 @media(max-width:660px){
   .article-hero-figure+.article-body{margin-top:16px}
   .article-page .article-save-inline{margin:17px 0 4px;padding-top:10px}
-  details.source-context{margin:20px 0 16px;padding:0 13px}
-  details.source-context>summary{min-height:48px}
 }
 
 /* Tiny first-party video clips are opt-in, never autoplay and never part of
@@ -546,6 +509,10 @@ details.source-context>summary:focus-visible{
 .tag-filter-panel>summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .tag-filters{display:flex;flex-wrap:wrap;gap:7px;padding:0 0 13px}
 .topic-index-section{margin:18px 0 26px}
+.topic-reading{max-width:44rem;margin:1.5rem 0 2rem}
+.topic-reading h2{font-family:var(--serif);font-size:1.25rem;line-height:1.5}
+.topic-reading p{margin:.75rem 0;line-height:1.85}
+.topic-reading a{text-decoration:underline;text-underline-offset:.2em}
 .topic-index-section>p{margin:4px 0 12px;color:var(--muted);font-size:13px}
 .topic-index-link{
   display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:6px 10px;
