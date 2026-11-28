@@ -2,14 +2,14 @@
   "schema_version": 1,
   "model_id": "kiritani-sumire",
   "name": "桐谷すみれ",
-  "created_date": "2026-11-27",
+  "created_date": "2026-11-28",
   "source_chat_url": "https://chatgpt.com/c/6af867a7-8a9c-83ee-b05d-abb1eadd9f5d",
   "photo_reference": {
-    "issue_slug": "november-rooftop-pool-sumire-011",
-    "cut_id": "04",
-    "image_sha256": "731eea9b9b4f8c202594318a7d7277350da33ff3d93d537df53b986604f43f98"
+    "issue_slug": "november-favorite-colors-sumire-007",
+    "cut_id": "02",
+    "image_sha256": "ed2c8b6a28d7abb57353e9af91809f3b00532d17bb36461b2f8b83d9ad0c0fb8"
   },
-  "post_text": "衣装合わせの帰りに、古い街並みの店先で小さな手鏡を見つけた。持ち手が少し欠けていて、そこも含めて気に入った。",
-  "spoken_line": "欠けたところも好き。",
-  "future_idea": "古い小物の手触りを残した衣装小物展。"
+  "post_text": "昼過ぎに冬物のコートを出した。去年買った銀のブローチを留めてみたら、まだ新鮮に見える。今年は買い足さずに済むかも。",
+  "spoken_line": "まだ新鮮に見える。",
+  "future_idea": "冬のコートと手持ちの小物を組み合わせる企画。"
 }
