@@ -645,7 +645,8 @@ var PublicationReviewContext = (function () {
       "Wait for the public revision or a proven docs-only ancestor",
       "Verify the published revision and live stories without generating traffic",
       "Verify that Twitterbot can fetch each first-party image card"];
-    const discoverCI = validationOnly && ci_run_id === undefined;
+    const discoverCI = ci_run_id === undefined;
+    const discoverFinalizer = finalizer_run_id === undefined;
     const runs = [], maxLog = 1024 * 1024;
     let snapshot, ciListing, reads = 0, logReads = 0;
     function check(ok, reason) { if (!ok) throw Error(reason); }
@@ -659,7 +660,7 @@ var PublicationReviewContext = (function () {
     }
     const prIdentity = value => [value.number, value.state, value.draft, value.merged,
       value.head?.sha, value.head?.ref, value.head?.repo?.full_name, value.base?.ref,
-      value.base?.repo?.full_name, value.merge_commit_sha, value.body];
+      value.base?.repo?.full_name, value.merge_commit_sha, value.merged_at, value.body];
     const runIdentity = value => [value.id, value.path, value.event, value.head_sha,
       value.head_branch, value.repository?.full_name, value.head_repository?.full_name,
       value.run_attempt, value.status, value.conclusion, value.updated_at];
@@ -697,6 +698,16 @@ var PublicationReviewContext = (function () {
         status: value.status, conclusion: value.conclusion,
         url: "https://github.com/" + REPOSITORY + "/actions/runs/" + id };
       return value;
+    }
+    async function uniqueVerificationRun(query, label, matchesRun) {
+      const listing = await get("/actions/runs?" + query + "&per_page=100");
+      check(Array.isArray(listing.workflow_runs) && listing.total_count === listing.workflow_runs.length
+        && listing.total_count <= 100, label + "_inventory_incomplete");
+      const candidates = listing.workflow_runs.filter(value => value.path === VERIFY
+        && value.repository?.full_name === REPOSITORY && value.head_repository?.full_name === REPOSITORY
+        && positive(value.id) && matchesRun(value));
+      check(candidates.length === 1, label + "_run_not_unique");
+      return candidates[0].id;
     }
     async function job(value, name, label) {
       // The dedicated connector jobs wrapper omits head/attempt and total_count.
@@ -784,7 +795,7 @@ var PublicationReviewContext = (function () {
         && (validationOnly ? typeof snapshot.draft === "boolean" && snapshot.state === "open" && snapshot.merged === false
           : snapshot.draft === false && ((snapshot.state === "open" && snapshot.merged === false)
             || (snapshot.state === "closed" && snapshot.merged === true))), "pr_head_or_state_unbound");
-      const story = !validationOnly && !snapshot.merged && handoff(snapshot, ["cast_story"]) === "current_head_claim";
+      const story = !validationOnly && handoff(snapshot, ["cast_story"]) === "current_head_claim";
       if (!validationOnly) check(story || handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
       if (snapshot.merged) {
         check(matches(GIT, snapshot.merge_commit_sha), "merge_sha_unverified");
@@ -828,6 +839,17 @@ var PublicationReviewContext = (function () {
       }
       result.stage = "finalizer";
       const failureScope = story ? "story" : "publication";
+      if (snapshot.merged && finalizer_run_id === undefined) {
+        const mergedAt = Date.parse(snapshot.merged_at);
+        check(Number.isFinite(mergedAt) && Date.parse(ci.created_at) <= mergedAt, "merge_time_unverified");
+        const ciTitle = "Publication head " + head + " (CI " + ci.id + "/" + ci.run_attempt + ")";
+        const prTitle = "Publication head " + head + " (PR #" + number + ")";
+        finalizer_run_id = await uniqueVerificationRun("created=" + encodeURIComponent(ci.created_at + ".." + snapshot.merged_at),
+          "finalizer", value => Date.parse(value.run_started_at) <= mergedAt && Date.parse(value.updated_at) >= mergedAt
+            && (value.event === "workflow_run" && value.head_branch === "main" && value.display_title === ciTitle
+              || value.event === "pull_request_target" && value.display_title === prTitle
+                && (value.head_branch === "main" || value.head_branch === snapshot.head.ref && value.head_sha === head)));
+      }
       if (!snapshot.merged && finalizer_run_id === undefined) {
         // workflow_run belongs to main. The title locates its candidate; only the
         // trusted step output below can bind the failure to this PR and CI.
@@ -846,7 +868,7 @@ var PublicationReviewContext = (function () {
         head, snapshot.head.ref, "finalizer", true);
       const mainFinalizer = finalizer.head_branch === "main";
       const failed = !snapshot.merged && finalizer.status === "completed" && finalizer.conclusion === "failure";
-      if (story) check(failed, "story_finalizer_failure_unconfirmed");
+      if (story && !snapshot.merged) check(failed, "story_finalizer_failure_unconfirmed");
       const finalizerJob = await job(finalizer, "finalize", "finalizer");
       if (ACTIVE_RUN.has(finalizer.status) && (ACTIVE_RUN.has(finalizerJob.status) || finalizerJob.conclusion === "success")) {
         check(!mainFinalizer, "finalizer_handoff_not_yet_bound");
@@ -874,7 +896,7 @@ var PublicationReviewContext = (function () {
         check(outcome.status === "verification_dispatched" && snapshot.merged
           && outcome.merge_sha === result.merge_sha, "finalizer_merge_unverified");
         const binding = ["pr", "head", "ci_run_id", "ci_run_attempt"];
-        if (mainFinalizer || binding.some(key => Object.hasOwn(outcome, key))) {
+        if (discoverFinalizer || mainFinalizer || binding.some(key => Object.hasOwn(outcome, key))) {
           check(outcome.pr === number && outcome.head === head && outcome.ci_run_id === ci.id
             && outcome.ci_run_attempt === ci.run_attempt, "finalizer_handoff_binding_unverified");
         }
@@ -897,6 +919,13 @@ var PublicationReviewContext = (function () {
         return result;
       }
       result.stage = "live";
+      if (verification_run_id === undefined) {
+        // The finalizer explicitly dispatched the production check above. Other
+        // push or PR checks on the same revision are not evidence of that dispatch.
+        verification_run_id = await uniqueVerificationRun("branch=main&head_sha=" + result.merge_sha, "live",
+          value => value.event === "workflow_dispatch" && value.head_branch === "main" && value.head_sha === result.merge_sha
+            && value.display_title === "Manual public verification");
+      }
       check(positive(verification_run_id), "verification_run_id_required");
       const live = await run(verification_run_id, VERIFY, ["push", "workflow_dispatch"], result.merge_sha, "main", "live");
       const liveJob = await job(live, "check", "live");
