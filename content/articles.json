@@ -1,5 +1,71 @@
 [
   {
+    "slug": "cinema-archive-live-guitar-guest",
+    "category": "エンタメ",
+    "flash": "映画館で共演",
+    "art": "generic",
+    "fiction_company": "弦影シネマ（架空）",
+    "fiction_at": "2031-11-28T19:32:14+09:00",
+    "published_at": "2026-11-28T19:32:14+09:00",
+    "publication_slot": "2026-11-28T19:30:00+09:00",
+    "title": "映画館で30年前のバンドと共演　観客のギターが一曲だけ生演奏に",
+    "summary": "2031年、弦影シネマが過去のライブ映像に観客の生演奏を重ねる上映を始めた。楽器別の録音から一曲のギター音を外し、映画館で弾く観客の音に置き換える。30年前に客席から見ていた男性が、今度は演奏に加わった。",
+    "paragraphs": [
+      "大スクリーンに映る歌手が息を吸うと、客席の最前列でギターを構えた男性が弦を鳴らした。28日、弦影シネマが上映したのは30年前のバンドのライブ映像だ。歌もドラムも当時の録音だが、この一曲で劇場のスピーカーから流れるギターは、63歳の男性が今弾いている音だった。",
+      "同社は楽器ごとの録音が残っている公演を選び、権利者の許可を得て共演用の上映版を作った。元のギターの音だけを外し、観客の楽器を映画館の音響設備につなぐ。昔のライブは同じ曲でも演奏の速さが少しずつ変わるため、録音を解析して次に弾く箇所を手元の画面に示す。映像や歌声の速さは変えない。演奏に遅れたり音を間違えたりしたときも、そのまま劇場に響く。",
+      "男性は当時の公演を実際に見たファンで、家でも同じ曲を弾いてきた。通常の上映なら好きな演奏をそのまま聴けるが、今回は昔のバンドと自分の音が重なる瞬間を一度味わいたいと、演奏席に申し込んだ。上映前に係員と音量を調整し、本人が途中で弾けなくなった場合には元のギター音を戻せるようにした。",
+      "劇場は機材の準備や権利料を賄うため、演奏席を普通の鑑賞席より高く設定した。曲ごとに演奏者は一人とし、生演奏の入る回であることをチケット販売時に知らせる。当時の演奏を聴きたい客には原音のままの上映も続ける。共演版はその場だけの演奏で、元の記録映像を書き換えて売ることはない。",
+      "曲の終わり、男性はスクリーンのドラマーが最後の一打を放つのに合わせて弦を止めた。画面の中では30年前の観客が立ち上がって拍手していた。その音に、今の映画館からも拍手が重なった。男性はギターを抱えたまま、二つの客席に向かって頭を下げた。"
+    ],
+    "source": {
+      "kind": "企業公式発表",
+      "publisher": "株式会社東急レクリエーション",
+      "published_at": "2026-11-13T12:00:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000777.000001956.html",
+      "topic": "2026年11月13日、東急レクリエーションは1996年のライブ映像を高画質化し、楽器等を別々に収録したマルチトラックテープから劇場用5.1ch音源に再編集した上映を11月28・29日に行うと発表した。2031年の観客共演上映、劇場、人物、料金方式は創作。"
+    },
+    "scene_prompt": "Natural horizontal 16:9 documentary photograph inside a small Japanese cinema, a Japanese man in his early sixties seated in the front row with an unbranded electric guitar connected by a cable to a small audio interface, his hands playing naturally, softly lit audience behind him, a large cinema screen in the background showing a fictional vintage band performing under warm stage lights, no real musician likenesses, no readable text or logos, realistic low-light photography.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "映画館",
+      "ライブ",
+      "音楽"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "映画館",
+      "ライブ"
+    ],
+    "x_tickers": [],
+    "reader_interest": "fandom_entertainment",
+    "editorial_lane": "social_life",
+    "editorial_form": "feature",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "visible_result",
+    "editorial_signature": {
+      "present": "過去のライブ映像を高画質化し楽器別の原録音から劇場向けの音を再編集して上映する企画がある",
+      "target": "過去のライブ上映で観客が楽器の演奏者になる興行",
+      "action": "映画館が権利者の許可を得て一曲のギター音を外し観客の実演奏を上映音に入れる",
+      "outcome": "30年前に見たライブで観客だった男性がギターを演奏し当時と現在の拍手が重なる"
+    },
+    "reader_clarity": {
+      "who": "観客",
+      "action": "映画館で上映中の古いライブ映像に合わせてギターを弾き一曲の録音音を置き換える",
+      "oddity": "過去の公演を鑑賞するだけでなく当時の歌やドラムと現在の観客の実演奏が同じ劇場で響く"
+    },
+    "behavior_basis": {
+      "motive": "昔好きだったバンドと一緒に演奏する体験をしたい",
+      "ordinary_alternative": "原音を聴く通常上映や自宅で録音に合わせて弾く",
+      "why_not": "劇場で過去のギター音を抜いた音響と自分の演奏を重ね他の観客にも聴いてもらえる",
+      "evidence_quote": "通常の上映なら好きな演奏をそのまま聴けるが、今回は昔のバンドと自分の音が重なる瞬間を一度味わいたいと、演奏席に申し込んだ。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に過去のライブ音源をマルチトラックテープから再編集して高音質で映画館上映する企画が発表された",
+      "continuation_force": "原録音の再編集と演奏解析が普及し、権利者との共演利用契約と小規模な実演音響の整備によって旧作の新しい興行を作れる",
+      "future_result": "映画館で観客が過去のライブのギターを一曲だけ生演奏し原音上映とは別の共演体験を販売する"
+    }
+  },
+  {
     "slug": "family-toy-track-virtual-revival-bridge",
     "category": "暮らし",
     "flash": "親子の遊び",
