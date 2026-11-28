@@ -124,6 +124,89 @@ class FinalizationTests(unittest.TestCase):
         return f.finalize(api, 819, H, None if kwargs.get("body_edit") else 123, validate=kwargs.get("validate", validate),
                           owner=kwargs.get("owner", owner))
 
+    def editorial_api(self):
+        api = API()
+        api.pr["body"] = "<!-- ordinary-editorial-merge\n" + json.dumps({
+            "version": 1, "approved_head": H, "authorized_by": "RollNuts",
+            "editor_run": "editor-run-123", "merge_after_ci": True}) + "\n-->"
+        api.files = [{"filename": path, "status": "modified"} for path in f.EDITORIAL_DOCS]
+        return api
+
+    def test_ordinary_docs_require_separate_actor_bound_receipt_then_verify_without_another_workflow(self):
+        api = self.editorial_api()
+        api.verify_body_editor = lambda pr, login: self.assertEqual((pr, login), (api.pr, "RollNuts"))
+        with self.assertRaises(ValueError):
+            f.approval(api.pr)  # The publication marker/kinds are unchanged.
+        with patch.object(f, "verify_editorial_revision", return_value={
+                "status": "verified", "merge_sha": M, "public_revision": B}) as verify:
+            self.assertEqual(self.go(api)["public_revision"], B)
+            self.assertEqual(self.go(api)["status"], "already_merged")
+        verify.assert_called_once_with(f.ROOT, M, B, H)
+        self.assertEqual(api.writes, [("PUT", "/pulls/819/merge", {"sha": H, "merge_method": "merge"})])
+
+    def test_docs_decline_changed_or_mixed_receipts_non_editorial_files_and_non_latest_ci(self):
+        for change in (lambda a: a.pr.update(body=a.pr["body"] + body(handoff())),
+                       lambda a: a.pr.update(body=a.pr["body"].replace(H, B)),
+                       lambda a: a.pr.update(body=a.pr["body"].replace("true", "false")),
+                       lambda a: a.files.append({"filename": "content/broadcasts.json", "status": "modified"}),
+                       lambda a: a.files[0].update(status="renamed"),
+                       lambda a: a.files[0].update(status="removed"),
+                       lambda a: a.pr.update(draft=True),
+                       lambda a: a.pr.update(mergeable_state="unstable"),
+                       lambda a: setattr(a, "run_inventory", [a.run, {**a.run, "id": 124}])):
+            api = self.editorial_api(); change(api)
+            with self.assertRaises(ValueError):
+                self.go(api)
+            self.assertEqual(api.writes, [])
+        api = self.editorial_api(); api.verify_body_editor = lambda *_: f.require(False, "body editor changed")
+        with self.assertRaisesRegex(ValueError, "body editor changed"):
+            self.go(api)
+        self.assertEqual(api.writes, [])
+        api = self.editorial_api(); api.run["status"] = "queued"
+        self.assertEqual(self.go(api)["status"], "ci_pending")
+        self.assertEqual(api.writes, [])
+
+    def test_merged_editorial_receipt_checks_real_parents_and_tree(self):
+        for parents, delta, message in (
+                (H + " " + B, "", "parents differ"),
+                (B + " " + H, ":100644 100644 123abcd 456efab M\tcontent/articles.json", "regular editorial")):
+            with patch.object(f, "git", side_effect=["", parents, delta]), self.assertRaisesRegex(ValueError, message):
+                f.verify_editorial_revision(f.ROOT, M, B, H)
+
+    def test_editorial_git_tree_allows_only_normal_modified_docs_on_tested_main(self):
+        api = self.editorial_api()
+        doc = sorted(f.EDITORIAL_DOCS)[0]
+        def validate(raw, current=B):
+            api.main = current
+            with patch.object(f, "git", side_effect=["", "", raw]) as git:
+                result = f.validate_editorial_docs(api, api.pr, api.run, f.ROOT)
+                git.assert_any_call(f.ROOT, "merge-base", "--is-ancestor", current, H)
+            return result
+        self.assertEqual(validate(f":100644 100644 123abcd 456efab M\t{doc}"), B)
+        for mode, status, path in (("120000", "M", doc), ("100755", "M", doc),
+                                   ("100644", "D", doc), ("100644", "M", "docs/OPERATIONS.md")):
+            with self.assertRaisesRegex(ValueError, "regular editorial"):
+                validate(f":100644 {mode} 123abcd 456efab {status}\t{path}")
+        with self.assertRaisesRegex(ValueError, "main changed"):
+            validate("", current=M)
+
+    def test_authenticated_body_probe_rejects_other_editor_stale_body_and_partial_response(self):
+        pr = self.editorial_api().pr
+        client = f.GitHub()
+        good = {"author": {"login": "RollNuts"}, "lastEditedAt": "2026-11-28T00:00:00Z",
+                "editor": {"login": "RollNuts"}, "headRefOid": H, "body": pr["body"]}
+        with patch.dict(os.environ, {"GH_TOKEN": "test-token"}):
+            for changes, ok in (({}, True), ({"editor": None, "lastEditedAt": None}, True),
+                                ({"editor": None}, False), ({"editor": {"login": "someone-else"}}, False),
+                                ({"body": "changed"}, False), ({"headRefOid": B}, False)):
+                data = json.dumps({"data": {"repository": {"pullRequest": {**good, **changes}}}}).encode()
+                with patch.object(client.opener, "open", return_value=io.BytesIO(data)):
+                    if ok:
+                        client.verify_body_editor(pr, "RollNuts")
+                    else:
+                        with self.assertRaisesRegex(ValueError, "Current PR-body editor"):
+                            client.verify_body_editor(pr, "RollNuts")
+
     def test_success_merges_only_reviewed_head_then_dispatches_exact_returned_sha(self):
         api = API()
         self.assertEqual(self.go(api), {"status": "verification_dispatched", "merge_sha": M,
