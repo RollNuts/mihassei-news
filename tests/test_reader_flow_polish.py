@@ -8,13 +8,15 @@ from html import escape as escape_html
 import unittest
 
 from scripts.build import CATEGORIES, archive, load, story
+from scripts.publication_inputs import publication_json_snapshot
+from tests.site_build_fixture import built_text
 
 
 class ReaderFlowPolishTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.articles = load()
-        cls.archive_html = archive(cls.articles)
+        cls.archive_html = built_text("archive/index.html")
 
     def test_archive_does_not_offer_empty_categories_or_one_choice_decade(self):
         html = self.archive_html
@@ -33,7 +35,8 @@ class ReaderFlowPolishTests(unittest.TestCase):
         # The filter becomes available again automatically if content spans decades.
         multi = copy.deepcopy(self.articles)
         multi[0]["fiction_at"] = "2041-11-03T08:20:00+09:00"
-        multi_html = archive(multi)
+        with publication_json_snapshot():
+            multi_html = archive(multi)
         self.assertRegex(
             multi_html,
             r'<select class="decade-select" data-decade-filter[^>]*>',
