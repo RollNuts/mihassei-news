@@ -954,6 +954,65 @@ function validationWorld() {
   return w;
 }
 
+// Representative lines from the CI for the two editions on #1088. The raw job
+// log contains ANSI-colored commands and a skipped count for unrelated suites.
+function editorialEvidenceWorld() {
+  const w = validationWorld(), [article, python] = w.jobs.get(101)[0].steps;
+  Object.assign(article, { started_at: "2026-11-28T10:34:59Z", completed_at: "2026-11-28T10:35:00Z" });
+  Object.assign(python, { started_at: "2026-11-28T10:35:02Z", completed_at: "2026-11-28T10:42:38Z" });
+  const cases = ["all_existing_reader_copy_can_omit_disclaimer_without_source_edits", "cleanup_is_narrow_and_idempotent",
+    "internal_notes_are_not_evidence_but_source_uncertainty_is", "media_contract_stays_tied_to_original_canonical_source",
+    "real_xr_experience_and_source_dates_survive_display_cleanup", "rendered_stories_and_shares_do_not_expose_legacy_qualifiers",
+    "stage_year_cleanup_preserves_meaningful_dates"];
+  const lines = [
+    '10:34:59.5548718Z ##[group]Run python3 -c "from scripts.build import load; load()"',
+    '10:34:59.5549254Z \x1b[36;1mpython3 -c "from scripts.build import load; load()"\x1b[0m',
+    "10:34:59.5550615Z \x1b[36;1mpython3 scripts/editorial_mix.py --check\x1b[0m",
+    "10:35:00.0231359Z 2026-11-28: published=2; tracked=2; normal_target=2; normal_remaining=0; quality_advice_scope=next scheduled edition; trend=0, social_life=2, original_satire=0",
+    "10:35:02.1067974Z Python test scope: full discovery",
+    ...cases.map(name => "10:36:20.1638211Z test_" + name + " (test_editorial_reader_copy.EditorialReaderCopyTests.test_" + name + ") ... ok"),
+    "10:42:38.7945510Z Ran 1558 tests in 455.741s",
+    "10:42:38.7945740Z OK (skipped=4)",
+  ];
+  w.logs.set(1101, lines.map(line => "2026-11-28T" + line).join("\n"));
+  w.readEditorial = () => w.readValidation({ editorial_day: "2026-11-28", fetchJobLogs: w.fetchJobLogs });
+  return w;
+}
+
+test("requested editorial checks bind the actual day and reader tests to the exact successful CI job", async () => {
+  const w = editorialEvidenceWorld(), ordinary = await w.readValidation({ fetchJobLogs: w.fetchJobLogs });
+  assert.equal(ordinary.status, "ci_verified"); assert.equal(ordinary.evidence.ci.editorial_checks, undefined);
+  assert.deepEqual(w.logCalls, []);
+  const result = await w.readEditorial();
+  assert.equal(result.status, "ci_verified", result.reason);
+  assert.deepEqual(result.evidence.ci.editorial_checks, {
+    day_jst: "2026-11-28", published: 2, tracked: 2, article_load: true, reader_copy_tests: 7,
+  });
+  assert.deepEqual(w.logCalls, [1101]);
+  assert.equal(result.review_completed, false); assert.equal(result.publication_authorized, false);
+  assert(!JSON.stringify(result).includes("EDITORIAL_LOG_SECRET"));
+});
+
+test("requested editorial evidence cannot be borrowed from a different day, step or unsuccessful suite", async () => {
+  for (const change of [
+    log => log.replaceAll("from scripts.build import load; load()", "from scripts.build import load"),
+    log => log.replace("editorial_mix.py --check", "editorial_mix.py"),
+    log => log.replace("2026-11-28: published=", "2026-11-27: published="),
+    log => log.replace("10:35:00.0231359Z", "10:35:12.0231359Z"),
+    log => log.replaceAll("10:36:20.1638211Z", "10:45:00.1638211Z"),
+    log => log.replaceAll("test_editorial_reader_copy.EditorialReaderCopyTests", "test_other.EditorialReaderCopyTests"),
+    log => log.replace("... ok", "... FAIL"),
+    log => log.replace("Ran 1558 tests in", "Unrecognized: 1558 tests in"),
+    log => log.replace("OK (skipped=4)", "FAILED (failures=1)"),
+  ]) {
+    const w = editorialEvidenceWorld();
+    w.logs.set(1101, change(w.logs.get(1101)) + "\n2026-11-28T10:42:38.9000000Z EDITORIAL_LOG_SECRET");
+    const result = await w.readEditorial();
+    assert.equal(result.status, "attention", String(change)); assert.equal(result.evidence.ci?.editorial_checks, undefined);
+    assert(!JSON.stringify(result).includes("EDITORIAL_LOG_SECRET"));
+  }
+});
+
 test("unapproved drafts can reuse exact-head CI evidence after first read without author text or approval", async () => {
   const w = validationWorld(), before = JSON.stringify([w.pr, [...w.runs], [...w.jobs]]);
   w.wrap = value => ({ structuredContent: { content: JSON.stringify(value) } });

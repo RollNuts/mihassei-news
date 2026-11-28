@@ -631,7 +631,7 @@ var PublicationReviewContext = (function () {
     return readStatus(options, true);
   }
   async function readStatus({ fetchRepository, fetchJobLogs, ref, pr: number, head,
-    ci_run_id, finalizer_run_id, verification_run_id } = {}, validationOnly = false) {
+    ci_run_id, finalizer_run_id, verification_run_id, editorial_day } = {}, validationOnly = false) {
     const positive = value => Number.isSafeInteger(value) && value > 0;
     const result = { schema_version: 1, verification: validationOnly ? "ci_validation_only" : "handoff_status_only",
       publication_authorized: false, review_completed: false, photo_adoption: "not_assessed",
@@ -764,6 +764,26 @@ var PublicationReviewContext = (function () {
       const start = Date.parse(execution.started_at), end = Date.parse(execution.completed_at) + 1000;
       return lines.filter(line => line.ms >= start && line.ms < end);
     }
+    function editorialChecks(lines, articleStep, pythonStep, day) {
+      const article = within(lines, articleStep).map(line => line.text.replace(/\x1b\[[\d;]*m/g, ""));
+      check(article.includes('python3 -c "from scripts.build import load; load()"')
+        && (article.includes("python3 scripts/editorial_mix.py --check")
+          || article.includes("python3 scripts/editorial_mix.py --check --day " + day)), "editorial_commands_unverified");
+      const reports = article.map(line => /^(\d{4}-\d{2}-\d{2}): published=(\d+); tracked=(\d+);/.exec(line)).filter(Boolean);
+      check(reports.length === 1 && reports[0][1] === day, "editorial_day_unverified");
+      const published = Number(reports[0][2]), tracked = Number(reports[0][3]);
+      check(Number.isSafeInteger(published) && Number.isSafeInteger(tracked) && tracked <= published, "editorial_counts_unverified");
+
+      const python = within(lines, pythonStep).map(line => line.text);
+      const start = python.indexOf("Python test scope: full discovery");
+      const end = python.findIndex((line, i) => i > start && /^Ran [1-9]\d* tests? in [\d.]+s$/.test(line));
+      check(start >= 0 && end > start && /^OK(?: \(skipped=\d+\))?$/.test(python.slice(end + 1).find(line => line.trim())),
+        "full_python_suite_unverified");
+      const cases = python.slice(start + 1, end).filter(line => line.includes("(test_editorial_reader_copy."));
+      const names = cases.map(line => /^(test_\w+) \(test_editorial_reader_copy\.EditorialReaderCopyTests\.\1\) \.\.\. ok$/.exec(line)?.[1]);
+      check(names.length > 0 && names.every(Boolean) && new Set(names).size === names.length, "reader_copy_tests_unverified");
+      return { day_jst: day, published, tracked, article_load: true, reader_copy_tests: names.length };
+    }
     async function finish(status, stage) {
       // A stability recheck, with no sleep or retry, prevents old attempts/logs
       // from becoming a success if this handoff changes during the snapshot.
@@ -784,7 +804,8 @@ var PublicationReviewContext = (function () {
     }
     try {
       check(typeof fetchRepository === "function" && matches(GIT, ref) && positive(number)
-        && matches(GIT, head) && (positive(ci_run_id) || discoverCI), "invalid_status_input");
+        && matches(GIT, head) && (positive(ci_run_id) || discoverCI)
+        && (editorial_day === undefined || validationOnly && calendarDay(editorial_day)), "invalid_status_input");
       check((await get("/git/ref/heads/main")).object?.sha === ref, "main_changed");
       result.stage = "pr";
       snapshot = await get("/pulls/" + number);
@@ -834,11 +855,13 @@ var PublicationReviewContext = (function () {
       if (validationOnly) {
         const names = ["Validate article fields, editorial lanes and exact duplicate guards",
           "Run Python checks with a fresh full site build"];
-        result.evidence.ci.validated_steps = names.map(name => {
-          const value = step(ciJob, name);
-          return { name, status: value.status, conclusion: value.conclusion, completed_at: value.completed_at };
-        });
-        return await finish("ci_verified");
+        const steps = names.map(name => step(ciJob, name));
+        result.evidence.ci.validated_steps = steps.map(({ name, status, conclusion, completed_at }) =>
+          ({ name, status, conclusion, completed_at }));
+        const editorial = editorial_day === undefined ? null : editorialChecks(await log(ciJob), steps[0], steps[1], editorial_day);
+        await finish("ci_verified");
+        if (editorial) result.evidence.ci.editorial_checks = editorial;
+        return result;
       }
       result.stage = "finalizer";
       const failureScope = story ? "story" : "publication";
