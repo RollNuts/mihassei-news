@@ -135,6 +135,21 @@
         "cut_id": "06",
         "image_sha256": "f8fb9f7cea22b7cffa03fefbdb28e91e7c51c1b9cb60dc5b8cc5223537945361"
       }
+    },
+    {
+      "id": "amane-hikari-post-20261128155015352",
+      "model_id": "amane-hikari",
+      "published_at": "2026-11-28T15:50:15.352+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "休憩中に手袋を編んでる子に教わった。五目だけのつもりが夢中になって、呼ばれるまでおやつの袋も開けてなかった！",
+      "source": {
+        "issue_slug": "november-hikari-city-and-pool-013",
+        "cut_id": "07",
+        "image_sha256": "d443565bf3fe3ceaa7c599d3b604961cf85effbe7f04de30769e50ed995f3bc6"
+      }
     }
   ]
 }
