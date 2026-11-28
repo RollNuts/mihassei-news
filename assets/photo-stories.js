@@ -131,7 +131,9 @@
       availability();
     }
     for(const link of root.querySelectorAll("[data-story-open]")){
+      link.setAttribute("aria-haspopup","dialog");
       link.addEventListener("click",event=>{
+        if(event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button>0)return;
         const group=stories.filter(story=>story.modelId===link.dataset.storyOpen);
         if(!group.length)return;
         event.preventDefault();
