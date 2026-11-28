@@ -672,7 +672,7 @@ test("trusted-main finalization binds news and market delivery to its actual PR,
 // dispatched live check are separate runs, and other workflows share these times.
 function discoveredDelivery(kind) {
   const w = trustedMainFinalizer(handoffWorld());
-  w.pr.body = marker(w.pr.head.sha, kind === "cast_story"
+  w.pr.body = marker(w.pr.head.sha, ["cast_story", "photo_issue"].includes(kind)
     ? { kind, reviewer_run: "chatgpt:author-12345", article_sha256: undefined }
     : { kind, article_sha256: kind === "news" ? { "new-story": "a".repeat(64) } : {} });
   w.pr.merged_at = "2026-11-20T00:03:18Z";
@@ -702,8 +702,8 @@ function discoveredDelivery(kind) {
   return w;
 }
 
-test("merged news, market and cast delivery are recoverable from the PR and head without run IDs", async () => {
-  for (const kind of ["news", "market", "cast_story"]) {
+test("merged news, market, cast and weekly photo delivery are recoverable from the PR and head without run IDs", async () => {
+  for (const kind of ["news", "market", "cast_story", "photo_issue"]) {
     const w = discoveredDelivery(kind);
     const result = await w.discover();
     assert.equal(result.status, "verified", kind + ": " + result.reason);

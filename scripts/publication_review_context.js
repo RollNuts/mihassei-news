@@ -154,7 +154,7 @@ var PublicationReviewContext = (function () {
         || !matches(LOGIN, claim.authorized_by)
         || !["author_run", "reviewer_run"].every(key => matches(RUN, claim[key])))
       return "invalid";
-    if (claim.kind !== "cast_story" && (claim.author_run === claim.reviewer_run || !object(claim.article_sha256)
+    if (["news", "market"].includes(claim.kind) && (claim.author_run === claim.reviewer_run || !object(claim.article_sha256)
         || claim.kind === "news" && !Object.keys(claim.article_sha256).length
         || !Object.entries(claim.article_sha256).every(([slug, hash]) =>
           matches(SLUG, slug) && matches(HASH, hash))))
@@ -795,8 +795,11 @@ var PublicationReviewContext = (function () {
         && (validationOnly ? typeof snapshot.draft === "boolean" && snapshot.state === "open" && snapshot.merged === false
           : snapshot.draft === false && ((snapshot.state === "open" && snapshot.merged === false)
             || (snapshot.state === "closed" && snapshot.merged === true))), "pr_head_or_state_unbound");
-      const story = !validationOnly && handoff(snapshot, ["cast_story"]) === "current_head_claim";
-      if (!validationOnly) check(story || handoff(snapshot) === "current_head_claim", "current_head_handoff_required");
+      const story = !validationOnly && !snapshot.merged && handoff(snapshot, ["cast_story"]) === "current_head_claim";
+      if (!validationOnly) {
+        const kinds = snapshot.merged ? ["news", "market", "cast_story", "photo_issue"] : ["news", "market"];
+        check(story || handoff(snapshot, kinds) === "current_head_claim", "current_head_handoff_required");
+      }
       if (snapshot.merged) {
         check(matches(GIT, snapshot.merge_commit_sha), "merge_sha_unverified");
         const commit = await get("/git/commits/" + snapshot.merge_commit_sha);
@@ -868,7 +871,7 @@ var PublicationReviewContext = (function () {
         head, snapshot.head.ref, "finalizer", true);
       const mainFinalizer = finalizer.head_branch === "main";
       const failed = !snapshot.merged && finalizer.status === "completed" && finalizer.conclusion === "failure";
-      if (story && !snapshot.merged) check(failed, "story_finalizer_failure_unconfirmed");
+      if (story) check(failed, "story_finalizer_failure_unconfirmed");
       const finalizerJob = await job(finalizer, "finalize", "finalizer");
       if (ACTIVE_RUN.has(finalizer.status) && (ACTIVE_RUN.has(finalizerJob.status) || finalizerJob.conclusion === "success")) {
         check(!mainFinalizer, "finalizer_handoff_not_yet_bound");

@@ -142,7 +142,7 @@ text(await R.readHandoffStatus({
 }));
 ```
 
-`fetchRepository`は前節と同じGitHubの`fetch({url})`、`fetchJobLogs`は`fetch_workflow_job_logs`へ束縛する。`ref`と`head`は実取得した完全SHA、統合済みのニュース・市況・本人近況は、前の担当が終了してもPR番号とheadからGitHub上のCI・統合・本番照合の各runを取得できる。候補が複数ある場合や一覧が不完全な場合は、そのPRの引継ぎに記録された実run ID（`ci_run_id`・`finalizer_run_id`・`verification_run_id`）を指定する。証拠が揃わなければ`attention`として引き継ぐ。
+`fetchRepository`は前節と同じGitHubの`fetch({url})`、`fetchJobLogs`は`fetch_workflow_job_logs`へ束縛する。`ref`と`head`は実取得した完全SHAを渡す。統合済みのニュース・市況・本人近況・週刊写真特集は、前の担当が終了してもPR番号とheadからGitHub上のCI・統合・本番照合の各runを取得できる。候補が複数ある場合や一覧が不完全な場合は、そのPRの引継ぎに記録された実run ID（`ci_run_id`・`finalizer_run_id`・`verification_run_id`）を指定する。証拠が揃わなければ`attention`として引き継ぐ。
 
 helperはGitHubの生応答と完了ログをCodeMode内で処理し、対象PR/head、実CI・最新attemptのjobs、統合結果、merge SHAと本番revisionの対応を小さな状態と実run/job参照にまとめる。`ci_pending`・`finalizer_pending`・`verification_pending`は待機段階、`attention`は失敗または未確認の具体段階を示す。`verified`はこの引継ぎの配信検証に限り、写真の新しい目視採否や定期タスクの復旧を意味しない。`photo_adoption: not_assessed`を保持し、写真の採否・完了は既存の別確認へ残す。未取得・古いattempt・skipped・無関係な成功を公開完了へ置き換えない。1回のsnapshotから待機・書込み・再起動・自動承認は行わず、必要な確認と現担当の次操作だけを既存結果に残す。
 
