@@ -2,15 +2,15 @@
   "schema_version": 1,
   "model_id": "hanase-mio",
   "name": "花瀬みお",
-  "created_date": "2026-11-27",
+  "created_date": "2026-11-28",
   "source_chat_url": "https://chatgpt.com/c/6af8677a-48b8-83ee-9bda-5703c13629aa",
   "photo_reference": {
     "issue_slug": "november-mio-on-the-move-016",
-    "cut_id": "03",
-    "image_sha256": "4336b4d6c6e5ad5e4323358657f82f4b6f0e41a8655c09c1db2719396059eb00",
-    "description": "2031年11月、既刊016 cut03。海沿いの道で自転車のハンドルに手を掛ける検品済み本人写真。"
+    "cut_id": "04",
+    "image_sha256": "58a1712b67f184b41121fc494d626e0ad08d2b0b24114c8eb254d6f1fbe7612e",
+    "description": "2031年11月、既刊016 cut04。桟橋で目の前の船へ一歩踏み出す検品済み本人写真。"
   },
-  "post_text": "昼、海辺で凧を上げた。走り出すとすぐ落ちるから、風に向かってじっと待ってみた。今度は糸を巻くほうが追いつかない。",
+  "post_text": "昼、干し柿作りを体験した。ひもを結ぶのに手間取って、二つ目からは椅子に座って作業。ずらっと並べたら、食べられる日が待ち遠しくなった。",
   "spoken_line": null,
   "future_idea": null
 }
