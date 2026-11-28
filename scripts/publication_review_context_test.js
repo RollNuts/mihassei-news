@@ -668,6 +668,80 @@ test("trusted-main finalization binds news and market delivery to its actual PR,
   }
 });
 
+// The hosted reviewer only receives the fixed PR/head. Its CI, finalizer and
+// dispatched live check are separate runs, and other workflows share these times.
+function discoveredDelivery(kind) {
+  const w = trustedMainFinalizer(handoffWorld());
+  w.pr.body = marker(w.pr.head.sha, ["cast_story", "photo_issue"].includes(kind)
+    ? { kind, reviewer_run: "chatgpt:author-12345", article_sha256: undefined }
+    : { kind, article_sha256: kind === "news" ? { "new-story": "a".repeat(64) } : {} });
+  w.pr.merged_at = "2026-11-20T00:03:18Z";
+  const [ci, finalizer, live] = [101, 102, 103].map(id => w.runs.get(id));
+  ci.created_at = "2026-11-20T00:00:00Z";
+  Object.assign(finalizer, { display_title: "Publication head " + w.pr.head.sha + " (CI 101/1)",
+    created_at: "2026-11-20T00:02:59Z", run_started_at: "2026-11-20T00:03:00Z" });
+  Object.assign(live, { display_title: "Manual public verification", created_at: "2026-11-20T00:03:19Z" });
+  w.inventory = {
+    finalizer: { total_count: 3, workflow_runs: [finalizer, { ...finalizer, id: 303, display_title: "Another PR" },
+      { ...finalizer, id: 306, path: ".github/workflows/unrelated.yml" }] },
+    live: { total_count: 2, workflow_runs: [live, { ...live, id: 304, event: "push" }] }
+  };
+  w.hook = ({ route, url }) => {
+    if (route !== "/actions/runs" || url.searchParams.get("event") === "pull_request") return;
+    const params = url.searchParams;
+    assert.equal(params.get("per_page"), "100");
+    if (params.has("created")) {
+      assert.equal(params.get("created"), ci.created_at + ".." + w.pr.merged_at);
+      return w.inventory.finalizer;
+    }
+    assert.equal(params.get("branch"), "main");
+    assert.equal(params.get("head_sha"), w.pr.merge_commit_sha);
+    return w.inventory.live;
+  };
+  w.discover = () => w.read({ ci_run_id: undefined, finalizer_run_id: undefined, verification_run_id: undefined });
+  return w;
+}
+
+test("merged news, market, cast and weekly photo delivery are recoverable from the PR and head without run IDs", async () => {
+  for (const kind of ["news", "market", "cast_story", "photo_issue"]) {
+    const w = discoveredDelivery(kind);
+    if (kind === "photo_issue") w.runs.get(103).display_title = "Verify live article delivery and SEO"; // #997 predates the custom run name.
+    const result = await w.discover();
+    assert.equal(result.status, "verified", kind + ": " + result.reason);
+    assert.equal(result.live_sha, w.pr.merge_commit_sha);
+    assert.deepEqual(w.logCalls, [1102, 1103]);
+    assert(w.calls.length <= 22, "bounded GitHub GET inventory");
+    assert.equal(result.review_completed, false); assert.equal(result.publication_authorized, false);
+    assert.equal(result.photo_adoption, "not_assessed");
+  }
+});
+
+test("discovery requires a complete unambiguous inventory and exact PR/merge evidence", async () => {
+  for (const stage of ["finalizer", "live"]) {
+    for (const fault of ["incomplete", "ambiguous", "wrongWorkflow", "unrelated"]) {
+      const w = discoveredDelivery("market"), listing = w.inventory[stage];
+      const candidate = listing.workflow_runs[0];
+      if (fault === "incomplete") listing.total_count++;
+      if (fault === "wrongWorkflow") candidate.path = ".github/workflows/check.yml";
+      if (fault === "ambiguous") {
+        listing.workflow_runs.push({ ...candidate, id: 305 });
+        listing.total_count++;
+      }
+      if (fault === "unrelated" && stage === "finalizer") w.setFinalizerOutcome({ ...w.finalizerOutcome, pr: 999 });
+      if (fault === "unrelated" && stage === "live") candidate.head_sha = GIT(99);
+      const result = await w.discover();
+      assert.equal(result.status, "attention", stage + " " + fault);
+      assert.equal(result.stage, stage); assert.equal(result.live_sha, undefined);
+    }
+  }
+  for (const timing of [{ run_started_at: "2026-11-20T00:03:19Z" }, { updated_at: "2026-11-20T00:03:17Z" }]) {
+    const w = discoveredDelivery("news");
+    Object.assign(w.runs.get(102), timing);
+    assert.equal((await w.discover()).status, "attention");
+    assert.deepEqual(w.logCalls, []);
+  }
+});
+
 test("trusted-main finalization never borrows legacy, partial, unrelated or older-attempt success", async () => {
   for (const field of ["pr", "head", "ci_run_id", "ci_run_attempt"]) {
     for (const remove of [false, true]) {
@@ -741,10 +815,9 @@ test("known active CI, finalizer and live jobs return pending without waiting or
   }
 });
 
-test("missing run IDs, unarmed/draft PRs and a normal code merge stay explicit attention", async () => {
-  for (const [extra, reason] of [[{ ci_run_id: undefined }, "invalid_status_input"],
-    [{ finalizer_run_id: undefined }, "finalizer_run_id_required"],
-    [{ verification_run_id: undefined }, "verification_run_id_required"]]) {
+test("invalid run IDs, unarmed/draft PRs and a normal code merge stay explicit attention", async () => {
+  for (const [extra, reason] of [[{ ci_run_id: 0 }, "invalid_status_input"],
+    [{ finalizer_run_id: 0 }, "finalizer_run_id_required"], [{ verification_run_id: 0 }, "verification_run_id_required"]]) {
     const result = await handoffWorld().read(extra); assert.equal(result.status, "attention"); assert.equal(result.reason, reason);
   }
   for (const edit of [w => { w.pr.body = "Code-only merge with no opt-in"; },
