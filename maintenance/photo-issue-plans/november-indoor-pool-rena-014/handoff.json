@@ -484,7 +484,18 @@
         }
       ],
       "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/1ac6e092f6e338eb7dbe958722ccd1933603b900/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
-      "weekly_quota_next_step": "当週の台帳 photo-issue-plan/stock-tsukishiro-rena-2026-11-22 のgeneration-attempts.jsonから通常の予約を再開する。予約前に最新の確認済みmain（https://github.com/RollNuts/mihassei-news/blob/main/docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport）に従い、本人枠で実際に使える原本経路を checkOriginalTransport で検証する。生成ツールと返却形式も別途確認して1枚を予約する。",
+      "weekly_quota_next_step": "原本保存試験の修理は transport_repair へ引き継ぐ。本人は変更済みの正規経路を同じ制作枠で検証し、成功後に実行日の週台帳と生成ツールの返却形式を確認して1枚を予約する。",
+      "transport_repair": {
+        "status": "requested",
+        "owner": "Veripsa サイト日次改善",
+        "candidate_commit_at_review": "5177013ee37824dbc8aa12245c6e5b57a06759b6",
+        "producer_dates_jst": ["2026-11-26", "2026-11-27"],
+        "operation": "checkOriginalTransport / read_candidate_png",
+        "observed_error": "BLOCKED_FILE_REFERENCE",
+        "evidence": "両日とも本人枠で138バイトの検証PNGを作り、SHA照合に成功。readerへの受渡しで停止し、生成予約・新規生成は各0件。",
+        "editor_checked_on_jst": "2026-11-28",
+        "next_operation": "修理担当は本人枠の生成ツールが返す原本の形式と、その形式を正規に受け渡せる参照・readerを特定し、検証できた経路または不足する機能をこの候補へ返す。本人は受け取った変更点があるときに同じ枠で原本保存・遠隔読戻しを確認する。"
+      },
       "editorial_screening_20261125": {
         "status": "observations_only_no_adoption_guard_timeout",
         "observed_at": "2026-11-24T21:00:53.309Z",
