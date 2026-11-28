@@ -218,8 +218,8 @@ def render_story_strip(stories=None, *, root=ROOT):
     for story in stories:
         latest.setdefault(story["modelId"], story)
     circles = "".join(
-        f'<li><a class="photo-story-open" href="{_h(story["sourceUrl"])}" '
-        f'data-story-open="{_h(model_id)}" aria-haspopup="dialog" '
+        f'<li><a class="photo-story-open" href="{_h(story["profileUrl"])}#post-{_h(story["id"])}" '
+        f'data-story-open="{_h(model_id)}" '
         f'aria-label="{_h(story["name"])}、{_h(story["dateLabel"])}投稿のストーリーズを開く">'
         f'<span class="photo-story-circle"><img src="{_h(story["image"])}" alt="" '
         'width="80" height="80" loading="lazy" decoding="async"></span>'
@@ -231,10 +231,9 @@ def render_story_strip(stories=None, *, root=ROOT):
     for char, escaped in (("&", "\\u0026"), ("<", "\\u003c"), (">", "\\u003e"),
                           ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):
         payload = payload.replace(char, escaped)
-    fallback = "".join(f'<p>{_h(story["name"])}：{_h(story["text"])}</p>' for story in stories)
     return ('<section class="photo-stories" data-photo-stories aria-label="ストーリーズ">'
             '<h2>ストーリーズ</h2><p class="photo-story-label">創作投稿・端末の合成音声</p>'
-            f'<ul class="photo-stories-list">{circles}</ul><noscript>{fallback}</noscript>'
+            f'<ul class="photo-stories-list">{circles}</ul>'
             f'<script type="application/json" data-photo-story-data>{payload}</script>'
             '<dialog class="photo-story-dialog" data-story-dialog aria-label="ストーリーズ">'
             '<div class="photo-story-dialog-top"><h3 data-story-name></h3>'

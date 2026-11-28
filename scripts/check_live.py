@@ -708,12 +708,12 @@ def verify_cast_story_delivery(markup, stories, issues, *, fetch=None, root=ROOT
         pictures = [child for child in circle_elements if child["tag"] == "img"]
         times = [child for child in circle_elements if child["tag"] == "time"]
         names = with_class(circle_elements, "photo-story-name")
-        if (circle["tag"] != "a" or circle["attrs"].get("href") != post["sourceUrl"]
+        if (circle["tag"] != "a" or circle["attrs"].get("href") != post["profileUrl"] + "#post-" + post["id"]
                 or len(pictures) != 1 or pictures[0]["attrs"].get("src") != post["image"]
                 or pictures[0]["attrs"].get("srcset") or len(times) != 1
                 or times[0]["attrs"].get("datetime") != post["publishedAt"]
                 or ["".join(name["text"]) for name in names] != [post["name"]]):
-            raise RuntimeError("Cast circle " + post["modelId"] + ": latest source mismatch")
+            raise RuntimeError("Cast circle " + post["modelId"] + ": latest post link or preview mismatch")
 
     fetch = fetch or get
     accepted = {photo_image_url(issue, cut): image

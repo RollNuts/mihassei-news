@@ -6,6 +6,7 @@ from urllib.parse import parse_qs, urlparse
 from xml.etree import ElementTree as ET
 
 from scripts import build
+from tests.site_build_fixture import built_text
 from scripts.editorial_copy import reader_copy
 from scripts.social_text import X_TEXT_LIMIT, article_hashtags, x_share_lead, x_weighted_length
 
@@ -35,7 +36,7 @@ class ArticleTagTests(unittest.TestCase):
             self.assertFalse(set(satire_tags) & build.PERSON_ATTACKING_SATIRE_TAGS)
 
     def test_archive_exposes_shareable_tag_filters_and_search_data(self):
-        page = build.archive(self.articles)
+        page = built_text("archive/index.html")
         self.assertIn('data-tag-panel', page)
         self.assertIn('data-tag-filter="AI"', page)
         self.assertIn('data-tag-filter="タイパ"', page)

@@ -11713,6 +11713,174 @@
     }
   }
 }
+  ,
+    "family-toy-track-virtual-revival-bridge": {
+  "article_sha256": "5890a9faeee453be3774a24c13c19fccc2288b4299752f97d387bdbaa7d71950",
+  "bytes": 228007,
+  "generated_at": "2026-11-27T23:05:24.540Z",
+  "generated_at_source": "First observation of the actual native tool result in the fixed candidate receipt; not a backend completion time.",
+  "generation_id": "9652c1e0-bc91-4e34-9558-6ceb3fb72a0f",
+  "generation_id_source": "Actual C2PA claim instanceID embedded in the original PNG; asset-instance identifier, not an exposed backend generation/job ID.",
+  "generation_receipt": "xmp:iid:9652c1e0-bc91-4e34-9558-6ceb3fb72a0f",
+  "generation_prompt": "Natural horizontal 16:9 documentary photograph in a Japanese family living room, adult mother and school-age son kneeling by a low wooden table, assembling a colorful unbranded toy railway with two little toy trains on intersecting tracks at different heights, one crossing a low bridge and the other below, older blue plastic track pieces beside a new bridge ramp, warm morning daylight, candid hands, no logos or readable text.",
+  "generation_prompt_source": "Exact generation prompt preserved in the fixed candidate receipt.",
+  "model": "ChatGPT ImageGen",
+  "origin": "chatgpt-imagegen",
+  "prompt_version": 3,
+  "sha256": "cb1adc8cb014ea411ac88548f4aa65b08d81f920a1b750462b8664452b854f63",
+  "source_c2pa": {
+    "manifest_uri": "urn:c2pa:e2226f15-0f01-450e-968c-63be18eff77d",
+    "instanceID": "xmp:iid:9652c1e0-bc91-4e34-9558-6ceb3fb72a0f",
+    "claim_generator": null,
+    "claim_generator_info": {
+      "name": "OpenAI Media Service API",
+      "icon": {
+        "url": "self#jumbf=c2pa.assertions/c2pa.icon",
+        "hash": [
+          93,
+          75,
+          238,
+          31,
+          67,
+          165,
+          93,
+          179,
+          92,
+          73,
+          83,
+          48,
+          243,
+          5,
+          154,
+          191,
+          235,
+          15,
+          107,
+          198,
+          9,
+          251,
+          239,
+          141,
+          210,
+          211,
+          80,
+          69,
+          201,
+          108,
+          57,
+          102
+        ]
+      },
+      "specVersion": "2.2.0",
+      "org.contentauth.c2pa_rs": "0.79.2"
+    },
+    "actions": [
+      {
+        "label": "c2pa.actions.v2",
+        "value": {
+          "actions": [
+            {
+              "action": "c2pa.created",
+              "when": "2026-11-27T23:05:21.362279105Z",
+              "softwareAgent": {
+                "name": "ChatGPT",
+                "version": "gpt-image"
+              },
+              "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+            },
+            {
+              "action": "c2pa.converted",
+              "when": "2026-11-27T23:05:21.362280717Z"
+            },
+            {
+              "action": "c2pa.watermarked.unbound",
+              "when": "2026-11-27T23:05:21.361896135Z"
+            }
+          ],
+          "allActionsIncluded": false
+        }
+      }
+    ],
+    "signature_validation": "not_performed",
+    "content_binding_validation": "not_performed"
+  },
+  "source_png_sha256": "8b469908604c97840725799205af03ca6650211ae3a160515afcb9660c2d311c",
+  "transform": {
+    "helper": "scripts/native_image_bytes.js",
+    "resize": "center-cover-bilinear",
+    "alpha_background": "white",
+    "width": 1200,
+    "height": 675,
+    "jpeg_quality": 84
+  },
+  "source_capture": {
+    "kind": "native_tool_result",
+    "method": "Original PNG parts, JPEG, receipt and generation reservation read back from fixed commits.",
+    "logical_run_id": "news-photo-v1:5890a9faeee453be3774a24c13c19fccc2288b4299752f97d387bdbaa7d71950",
+    "actual_output_hint": "/workspace/scratch/a71c6121575c/generated_images/exec-c0d631da-aa94-4a2c-89cc-731afda7334f.png",
+    "observed_at": "2026-11-27T23:05:24.540Z",
+    "bytes": 2590342,
+    "width": 1672,
+    "height": 941,
+    "caBX_sha256": "b81859606dc221559300b084a6fb6aa236357bc1432d2b015636ee71f17951d6",
+    "candidate_branch": "native-image-candidate/family-toy-track-virtual-revival-bridge/5890a9faeee453be-aefd89da0f07",
+    "candidate_commit": "82ed95df5aad9d9c69811c88baab5ac0d28e76ac",
+    "receipt_path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/receipt.json",
+    "receipt_sha256": "eb7f334f5b2b3aa08ede8ee2793770f1c4d2543d2c8c7c113cbd0d2af61fa940",
+    "original_png_parts": [
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part000",
+        "bytes": 524288,
+        "sha256": "da7310b7774a04d28ba02162f974c70cfd22b9d960123f4b961d78504fda1b87",
+        "blob_sha": "fdb3bc1ef8241d08d32e213ff39d6038f5b80f90"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part001",
+        "bytes": 524288,
+        "sha256": "e0c0d9f9d19c3f5d779e078250cd9a99b27848fcc2361bb6c766cf5ba933ea19",
+        "blob_sha": "0d83655a832bf36136bd56615d3f06b5876c5494"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part002",
+        "bytes": 524288,
+        "sha256": "6f608674f0dedee08ebfc1ba1f5463b527d90950a6f1879cc3f8345da376bcf0",
+        "blob_sha": "8ec7ecf66c9eb02b9d471aba7b60a62da1fc9f6e"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part003",
+        "bytes": 524288,
+        "sha256": "3c5c2db25bc5f773326b9c6e7e9ebc1863130efc8beb0102b99bbeae640927c6",
+        "blob_sha": "e8d2cc9d4181e41cbecae92fa403a4cb5aeeefc5"
+      },
+      {
+        "path": "maintenance/native-image-candidates/family-toy-track-virtual-revival-bridge/source.png.part004",
+        "bytes": 493190,
+        "sha256": "aab9a6fb3b9ea4a1e7e4317f4587b09ffe03a03938215fef0e3f292730042983",
+        "blob_sha": "4557cff943008bde111865b86e24507f516f504c"
+      }
+    ],
+    "transport_preflight": {
+      "kind": "native_image_transport_preflight",
+      "status": "passed",
+      "branch": "native-image-generation-claim/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4",
+      "receipt_path": "maintenance/native-image-preflight/receipt.json",
+      "receipt_sha256": "33d89cfe2e28e68e42c125d916939e596018486eafba4a17e59fc9ff8b8146ad",
+      "observed_at": "2026-11-27T23:03:27.680Z",
+      "route": "read_candidate_png through the original file adapter",
+      "source_sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+      "jpeg_sha256": "974a39a8a8e509df3b2324fab77f42a85738a897e1ee5644244ba5c1ca545b33",
+      "commit_sha": "ed7f6456ae43fec5808173568a6f069f74bc07dc"
+    },
+    "generation_claim": {
+      "kind": "native_image_generation_claim",
+      "status": "reserved_generation_unconfirmed",
+      "branch": "native-image-generation-claim/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4",
+      "receipt_path": "maintenance/native-image-generation-claims/7d103e670492b3544ef39a7ac6216d7b0481545b61e0d69624055f55e847c5e4.json",
+      "receipt_sha256": "4ee1147b62e4ec89c7056bff8ebe7a429df56fd1bbc6f8041de77360b9253a1f",
+      "commit_sha": "4e52b63b5aba53cc51764b4b9f4d14bcc9278cd6"
+    }
+  }
+}
   },
   "rejected": {
     "ai-royalties-retirees-operators-left-out": {

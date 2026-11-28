@@ -345,8 +345,9 @@ class PhotoStoryTests(unittest.TestCase):
         entries = json.loads(strip_payload)
         self.assertEqual(sum(post["modelId"] == own_id for post in entries), 3)
         self.assertEqual(len(entries), 4)  # The other person's latest post remains available.
-        noscript = strip.split('<noscript>', 1)[1].split('</noscript>', 1)[0]
-        self.assertNotIn(own[-1]["text"], noscript)
+        self.assertNotIn("<noscript>", strip)
+        self.assertIn(f'href="{own[0]["profileUrl"]}#post-{own[0]["id"]}"', strip)
+        self.assertIn(f'id="post-{own[0]["id"]}"', profile)
 
     def test_each_dated_post_links_to_its_own_profile_anchor_and_keeps_original_context(self):
         result = self.mixed_history()
@@ -499,7 +500,7 @@ class PhotoStoryTests(unittest.TestCase):
         self.assertEqual(links[0]["data-story-open"], "nagino-saya")
         self.assertIn("創作投稿・端末の合成音声", page)
         self.assertIn("\\u0026", page)
-        self.assertIn("&amp;", page)
+        self.assertIn("&amp;", stories.render_model_stories("nagino-saya", result))
         self.assertNotIn("<audio", page)
         self.assertNotIn("autoplay", page)
         dialog_video = next(attrs for tag, attrs in parser.tags if tag == "video")

@@ -1,5 +1,70 @@
 [
   {
+    "slug": "family-toy-track-virtual-revival-bridge",
+    "category": "暮らし",
+    "flash": "親子の遊び",
+    "art": "generic",
+    "fiction_company": "星函玩具（架空）",
+    "fiction_at": "2031-11-28T08:10:09.405+09:00",
+    "published_at": "2026-11-28T08:10:09.405+09:00",
+    "publication_slot": "2026-11-28T07:30:00+09:00",
+    "title": "親子が考えた立体交差、復刻玩具の新部品に　昔の線路を越えて遊ぶ",
+    "summary": "2031年、玩具メーカーの星函玩具が、かつて平面に敷いて遊んだ線路玩具を復刻した。親子が仮想空間で作った立体交差を参考に、昔の線路にも接続できる坂道と橋を新たに製品化。親の持っていた玩具と子どもの新しい部品で一緒に遊べるようになった。",
+    "paragraphs": [
+      "母親が子どもの頃に遊んだ青い線路を、息子が走らせる赤い列車が橋の下でくぐり抜けた。28日、星函玩具が発売した復刻版の線路玩具に、親子で考案した立体交差を作れる部品が加わった。母親が押し入れから取り出した古い線路にも、その部品を取り付けられる。",
+      "同社は復刻版の企画にあたり、昔の製品の寸法を基に仮想空間で線路を組み立てられる遊び場を開いた。来場者は当時の曲がり線路や直線を自由に並べ、画面上で列車を走らせる。母親と息子が試したのは、二つの列車を同じ場所ですれ違わせる遊びだった。平面では線路が交わってしまうため、息子は仮の坂道を置いて一方を高くし、母親は部屋の広さに収まるように橋への進入路を曲げた。",
+      "メーカーには似た立体交差の提案が複数届いた。担当者は投稿の利用に同意した参加者の配置を調べ、実物で再現できる部品の寸法を検討した。昔の線路との接続部は変えず、橋と緩い坂道を新たに作った。画面上では走れても実物の列車は急坂で止まることがあるため、試作品で走行や強度を確かめ、対象年齢に応じた安全性の検査も行った。",
+      "当時の形をそのまま復刻する方が開発費は少なく済むが、メーカーは古い玩具を持つ家庭にも新しい部品だけを買ってもらえると考えた。親子で違う遊び方を試せる点も魅力になる。新部品は単品でも購入できる一方、昔の線路に破損や変形がある場合は交換が必要だ。投稿しなくても製品は購入でき、採用された提案者には協力料が支払われた。",
+      "発売日に橋と坂道を購入した親子は、家に残っていた直線をつないで、二つの列車を走らせた。息子が橋の下に駅を作りたいと言うと、母親は箱の底から昔の駅の部品を探し出した。二人は次の休日には祖父母の家に残っている線路も持ち寄ることにした。"
+    ],
+    "source": {
+      "kind": "企業公式発表",
+      "publisher": "株式会社V",
+      "published_at": "2026-11-27T13:05:00+09:00",
+      "url": "https://prtimes.jp/main/html/rd/p/000000205.000049339.html",
+      "topic": "2026年11月27日、株式会社VはトイザらスのVRChat内クリスマス特設ワールドを11月30日から12月25日まで公開予定と発表。過去と2026年の玩具カタログ展示、ミニゲームなどを案内した。2031年の復刻線路、仮想での組立提案と部品製造、親子は創作。"
+    },
+    "scene_prompt": "Natural horizontal 16:9 documentary photograph in a Japanese family living room, adult mother and school-age son kneeling by a low wooden table, assembling a colorful unbranded toy railway with two little toy trains on intersecting tracks at different heights, one crossing a low bridge and the other below, older blue plastic track pieces beside a new bridge ramp, warm morning daylight, candid hands, no logos or readable text.",
+    "visual_strategy": "cpu-photo",
+    "tags": [
+      "玩具",
+      "親子"
+    ],
+    "satire_tags": [],
+    "x_tags": [
+      "玩具",
+      "復刻"
+    ],
+    "x_tickers": [],
+    "reader_interest": "family_home",
+    "editorial_lane": "social_life",
+    "editorial_form": "product_launch",
+    "editorial_tone": "plausible_future",
+    "editorial_payoff": "action",
+    "editorial_signature": {
+      "present": "仮想空間で昔の玩具カタログを展示し、現物の玩具と結び付ける企画が発表されている",
+      "target": "親子の遊び方から変わる復刻線路玩具",
+      "action": "親子が仮想の線路で立体交差を考案しメーカーが実物の新部品を設計する",
+      "outcome": "昔の線路と新しい橋をつないで親子が二つの列車を一緒に走らせる"
+    },
+    "reader_clarity": {
+      "who": "親子",
+      "action": "画面で線路の立体交差を考案し新しい橋を古い線路につなぐ",
+      "oddity": "復刻版が昔の形を再現するだけでなく親子が考えた遊び方を新しい実物部品に反映する"
+    },
+    "behavior_basis": {
+      "motive": "親の持っていた玩具を生かしながら今の子どもと別の遊び方を楽しみたい",
+      "ordinary_alternative": "昔の玩具をそのまま復刻するか、新しい線路一式を買う",
+      "why_not": "古い線路を持つ家庭にも新しい遊び方と追加部品の選択肢を作れる",
+      "evidence_quote": "当時の形をそのまま復刻する方が開発費は少なく済むが、メーカーは古い玩具を持つ家庭にも新しい部品だけを買ってもらえると考えた。"
+    },
+    "plausibility_basis": {
+      "present_signal": "2026年に仮想空間で過去の玩具カタログを展示しミニゲームや店舗企画と接続する発表がある",
+      "continuation_force": "玩具メーカーが仮想空間の遊びを製品設計につなげ、旧製品との互換性や実物の検査を積み重ねることで復刻と新規需要の両立を狙う",
+      "future_result": "画面で親子が試した立体交差を実物の部品にして旧製品と組み合わせて遊べる"
+    }
+  },
+  {
     "slug": "travel-wardrobe-return-in-next-city",
     "category": "暮らし",
     "flash": "旅の新しい着替え",
