@@ -131,6 +131,8 @@ text(await R.read({fetchFile, fetchRepository, ref: mainSha, limit: 3}));
 text(await R.readValidationStatus({fetchRepository, ref: mainSha, pr, head}));
 ```
 
+記事読込み・予定日JSTの配分・公開文テストが未確認の場合だけ、同じ呼出しに `editorial_day: "YYYY-MM-DD"` と `fetchJobLogs`（GitHubの `fetch_workflow_job_logs`）を渡す。`evidence.ci.editorial_checks` は該当stepの実出力から日付・本数・成功した公開文テスト数を返す。現head・対象日が一致すればその結果を引き継ぐ。
+
 `ci_verified`は、同repo・PR・headの最新run/attemptと実test job、形式確認・Python検証stepの成功が一致した証拠で、作者のローカル検証成功を意味しない。検証した `base_sha` と固定mainとの一致を表す `base_matches_main` を返す。版が異なる場合は差分と既存の統合条件を照合する。`ci_pending`・`ci_failed`・取得不能などの`attention`を区別し、取得不能・skipped・古い成功を完了へ置き換えない。初読・画像採否・公開許可は代行せず、同じheadで済んだ機械検証を再起動するためにも使わない。
 
 同headの初読・公開許可を保存済みの`news`・`market` PRは、同じhelperの`readHandoffStatus`でCI・finalizer・本番検証を1回照合する。明示された未完の引継ぎや`publication_unverified`がある時だけ使い、公開済みの過去PRを毎回調べ直さない。コード・放送室など通常統合のPRや、近況・写真特集へこの補助確認を必須化しない。
