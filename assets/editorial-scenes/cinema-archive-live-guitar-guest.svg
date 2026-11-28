@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-label="創作イラスト：映画館の最前列でギターを弾く男性とスクリーンの過去のバンド" data-visual-topic="movie" data-article-sha256="caabe7cbf0475407834fdad0f1575337f8e64349dae6ff16c794ccc5bdabad4e">
+<title>過去のライブと一曲だけ共演</title><desc>大きなスクリーンに映るバンドの歌手とドラマー。その下の最前列で白髪交じりの男性がギターを弾き、ケーブルが音響機器へつながる。後方の客席で観客が見守る。</desc>
+<rect width="1200" height="675" fill="#252733"/><path d="M0 0h80v440H0zM1120 0h80v440h-80z" fill="#763d49"/>
+<rect x="165" y="38" width="870" height="317" rx="8" fill="#101823"/><rect x="181" y="54" width="838" height="285" fill="#777d84"/>
+<path d="M240 60l120 270H181zM940 60L800 330h219z" fill="#ad8f77" opacity=".45"/>
+<path d="M181 305h838v34H181z" fill="#414857"/>
+<g stroke="#eee2cd" stroke-width="9" fill="none"><path d="M410 178v130M385 195h50M590 185v125M565 207h50"/></g>
+<g fill="#e1b895"><circle cx="410" cy="135" r="25"/><circle cx="720" cy="165" r="23"/></g>
+<path d="M387 155q22-18 47 0l15 86h-75z" fill="#42374c"/><path d="M383 126q25-37 53 0l-2 14q-26-12-51 0z" fill="#34333e"/>
+<path d="M428 176l-20 16-10-23" fill="none" stroke="#e1b895" stroke-width="12" stroke-linecap="round"/>
+<rect x="394" y="159" width="18" height="8" rx="4" fill="#303943"/>
+<g fill="#374856" stroke="#e7d4b1" stroke-width="5"><ellipse cx="720" cy="264" rx="52" ry="42"/><ellipse cx="668" cy="222" rx="28" ry="17"/><ellipse cx="775" cy="222" rx="28" ry="17"/></g>
+<path d="M700 189l-26 23M741 187l33 23" stroke="#e1b895" stroke-width="12" stroke-linecap="round"/>
+<path d="M646 187h-42M793 181h42M625 186v91M812 181v96" stroke="#dfcda6" stroke-width="6"/>
+<path d="M0 381h1200v294H0z" fill="#393944"/>
+<g fill="#704552"><rect x="420" y="411" width="140" height="152" rx="28"/><rect x="705" y="411" width="140" height="152" rx="28"/></g>
+<g transform="translate(598 393)">
+<path d="M-52 53q52-25 104 0l22 98H-74z" fill="#648186"/><circle cy="16" r="35" fill="#d8ad8b"/>
+<path d="M-35 13q-6-49 36-40 39 1 35 41l-16-15-28 4-11-6z" fill="#aeb3ad"/>
+<path d="M-55 135l-20 67M40 143l22 58" stroke="#303c4c" stroke-width="27" stroke-linecap="round"/>
+<path d="M-64 202h40M45 202h39" stroke="#202833" stroke-width="15" stroke-linecap="round"/>
+<g transform="rotate(-24 30 105)"><ellipse cx="0" cy="112" rx="48" ry="35" fill="#c88f56" stroke="#e3bb80" stroke-width="4"/><rect x="25" y="100" width="116" height="20" rx="4" fill="#5c4a43"/><path d="M137 101l31-5v27l-31-4z" fill="#b68c60"/><path d="M-30 108h185M-30 113h185" stroke="#ebd9be" stroke-width="1.5"/><rect x="-18" y="97" width="6" height="28" fill="#584a43"/></g>
+<path d="M-49 67l-8 40 47 14M45 63l35 14 35-25" stroke="#d8ad8b" stroke-width="15" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+</g>
+<rect x="825" y="476" width="86" height="55" rx="7" fill="#172c3d" stroke="#849599" stroke-width="3"/><circle cx="887" cy="500" r="9" fill="#a2b5b0"/><circle cx="844" cy="501" r="4" fill="#b8d897"/>
+<path d="M593 525q86 82 210 20l30-34" fill="none" stroke="#bdb29c" stroke-width="5"/>
+<g fill="#1d2b39"><circle cx="184" cy="538" r="31"/><path d="M133 584q51-40 102 0v91H133z"/><circle cx="347" cy="570" r="31"/><path d="M296 614q51-40 102 0v61H296z"/><circle cx="954" cy="551" r="31"/><path d="M903 597q51-40 102 0v78H903z"/><circle cx="1100" cy="590" r="31"/><path d="M1049 634q51-40 102 0v41h-102z"/></g>
+<path d="M105 658h150M277 668h140M879 668h150" stroke="#8b535c" stroke-width="32" stroke-linecap="round"/>
+</svg>

@@ -11883,6 +11883,13 @@
 }
   },
   "rejected": {
+    "cinema-archive-live-guitar-guest": {
+  "article_sha256": "caabe7cbf0475407834fdad0f1575337f8e64349dae6ff16c794ccc5bdabad4e",
+  "reason": "原PNGと1200×675 JPEGを固定候補commit b2996225781f60c79450c754f45246b3b46565b7から実表示。人物の肌・布・暗所の光は写真として自然だが、演奏者とスクリーンの間に複数列の客席があり、本文の「最前列」と一致しない。ヘッドストックに文字風の線も見える。本文の位置関係を誤認させるため不採用。同条件の再生成をしない。原PNG/JPEGと来歴は候補に保持し、本文に合う専用SVGへ代替。",
+  "rejected_candidate_sha256": "be0ff1ca03a514e16336cee39b0718c381ec5b3a839e27bf0f68e52f93b8b483",
+  "reviewed_at": "2026-11-28T11:16:53.437Z",
+  "review_run": "47e9e50f-3268-8332-b6e5-06274174a659"
+},
     "ai-royalties-retirees-operators-left-out": {
       "article_sha256": "d17433633f69b92eb6b6eb831927f584269e968b905dc637eacfe258d22c2b5f",
       "artifact_id": 14151613554,
