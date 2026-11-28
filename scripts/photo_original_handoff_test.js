@@ -877,7 +877,7 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
   assert.equal(state.writes.length,writes);
 });
 
-const {readFileSync} = require("node:fs");
+const {readFileSync, mkdtempSync, readdirSync, rmSync} = require("node:fs");
 const {resolve} = require("node:path");
 const checkout = resolve(__dirname, "..");
 const readLocal = path => readFileSync(resolve(checkout, path));
@@ -892,6 +892,26 @@ function readbackFile(record, path, expectedBlob) {
   if (expectedBlob !== undefined) assert.equal(blob, expectedBlob);
   return {path, blob, data, sha256:hash(data), bytes:data.length, width:record.width, height:record.height};
 }
+
+test("the documented offline bootstrap writes the exact PNG in the producer's chosen workspace", t => {
+  const doc = readLocal("docs/NATIVE_IMAGE_BYTES.md").toString("utf8");
+  const section = doc.split("### Offline PNG bootstrap\n")[1];
+  const snippet = section.match(/^```python\n([\s\S]+?)\n```$/m)[1];
+  const directory = mkdtempSync(join(require("node:os").tmpdir(), "producer workspace-"));
+  t.after(() => rmSync(directory, {recursive:true}));
+  const run = sharedDirectory => require("node:child_process").spawnSync("python3",
+    ["-c", "import sys\nshared_directory = sys.argv[1]\n" + snippet, sharedDirectory], {encoding:"utf8"});
+  const result = run(directory);
+  assert.equal(result.status, 0, result.stderr);
+  const files = readdirSync(directory);
+  assert.equal(files.length, 1);
+  assert.ok(result.stdout.includes(join(directory, files[0])));
+  assert.deepEqual(readFileSync(join(directory, files[0])), readLocal("tests/fixtures/photo-transport.png"));
+  for (const invalid of [".", join(directory, "missing")]) {
+    assert.notEqual(run(invalid).status, 0);
+  }
+  assert.deepEqual(readdirSync(directory), files);
+});
 
 function originalTransportFixture({active = true, changedReadback = false, fileError = false, offline = false,
   readerFailure, changedFileBytes = false, blobFailure = false} = {}) {
@@ -1012,6 +1032,96 @@ test("a missing or unreadable file handle cannot pass the original transport che
     status:"blocked", route:"file", operation:"read_candidate_png", reason:"Photo transport tool failed (BLOCKED_FILE_REFERENCE)"
   });
   assert.deepEqual(calls, ["fetch_file", "readCandidatePng"]);
+});
+
+test("received-file preflight verifies the whole current local PNG but only transports its existing first part", async () => {
+  const source = largePng(512,384);
+  const {api,state,github} = setup(source);
+  const input = packet(), source_sha256 = hash(source);
+  const asset = await api.uploadDataUrl(dataUrl(source), source_sha256, 0, 2);
+  input.assets = [{...asset, source_ordinal:1}];
+  const receipt = await api.publish(input, await api.prepare(input));
+  const ref = {issue:input.issue, model_id:input.model_id, source_chat_url:input.source_chat_url,
+    file:"/current-library/original.png", commit:receipt.commit, receipt_sha256:receipt.receipt_sha256, source_sha256};
+  const partPath = "maintenance/photo-issue-plans/" + ref.issue + "/originals/" + source_sha256 + ".png.part000";
+  const fetch = github.fetch_file, partReads = [];
+  github.fetch_file = async args => {
+    if (args.path.endsWith(".png.part000")) partReads.push([args.path,args.ref]);
+    return fetch(args);
+  };
+  const checks = state.writes.length, blobs = state.blobs.size;
+  const result = await api.checkReceivedOriginalTransport(ref);
+  assert.deepEqual(result, {status:"verified", route:"file", receipt_commit:receipt.commit,
+    sha256:source_sha256, bytes:source.length, part_bytes:524288, blob:asset.parts[0].blob});
+  assert.equal(state.fileReads,1);
+  assert.deepEqual(partReads,[[partPath,receipt.commit],[partPath,receipt.commit]]);
+  assert.deepEqual(state.writes.slice(checks), ["create_blob"]);
+  assert.equal(state.blobs.size,blobs);
+  for (const [patch, expected] of [
+    [{file:"https://example.org/original.png"},"select_route"],[{file:dataUrl(png)},"select_route"],
+    [{file:"//example.org/original.png"},"select_route"],[{file:"/a/../original.png"},"select_route"],
+    [{model_id:"different-model"},"verify_receipt"],[{source_chat_url:"https://example.org/c/other"},"verify_receipt"],
+    [{receipt_sha256:"0".repeat(64)},"verify_receipt"],[{commit:"main"},"verify_receipt"],
+    [{source_sha256:hash(png)},"verify_receipt"]
+  ]) {
+    const denied = await api.checkReceivedOriginalTransport({...ref,...patch});
+    assert.equal(denied.status,"blocked");assert.equal(denied.operation,expected);
+  }
+  assert.equal(state.fileReads,1);
+  // A changed suffix has a matching first part but must still fail whole-file SHA.
+  const changed = Buffer.from(source); changed[changed.length-1] ^= 1;
+  for (const metadata of [{image_url:dataUrl(changed)}, {height:1}, {bytes:source.length+1}]) {
+    state.fileMetadata = metadata;
+    assert.equal((await api.checkReceivedOriginalTransport(ref)).status,"blocked");
+  }
+  state.fileMetadata = {};
+  github.fetch_file = async args => args.ref === "cast-source-drafts" ? {content:JSON.stringify({})} : fetch(args);
+  assert.equal((await api.checkReceivedOriginalTransport(ref)).operation,"verify_producer");
+  github.fetch_file = async args => {
+    const part = await fetch(args);
+    return args.path === partPath ? {...part,sha:"0".repeat(40)} : part;
+  };
+  const badPart = await api.checkReceivedOriginalTransport(ref);
+  assert.equal(badPart.status,"blocked");assert.equal(badPart.operation,"verify_existing_part");
+  github.fetch_file = fetch;
+  state.stopOnFile = partPath;
+  const stopped = await api.checkReceivedOriginalTransport(ref);
+  assert.equal(stopped.status,"blocked");assert.equal(stopped.operation,"cloud_status");
+  assert.deepEqual(state.writes.slice(checks),["create_blob"]);
+  assert.equal((await api.checkReceivedOriginalTransport(ref)).operation,"cloud_status");
+});
+
+test("real file-reader refusals and failed immutable readbacks never certify a received-file transport", async () => {
+  const {api,state,github,runtime} = setup(), input = packet(), source_sha256 = hash(png);
+  const asset = await api.uploadDataUrl(dataUrl(png),source_sha256);
+  input.assets = [{...asset,source_ordinal:1}];
+  const saved = await api.publish(input, await api.prepare(input));
+  const ref = {...saved,issue:input.issue,model_id:input.model_id,source_chat_url:input.source_chat_url,
+    file:"/current-library/input.png",source_sha256};
+  const checks = state.writes.length;
+  const blockedReader = helper.create({github,runtime,cloudStatus:async()=>({public:true,state:"active",main_commit_sha:main,jpeg_bytes:1}),
+    readCandidatePng:async()=>{throw Object.assign(Error("private file locator"),{code:"BLOCKED_FILE_REFERENCE"});}});
+  const denied = await blockedReader.checkReceivedOriginalTransport(ref);
+  assert.equal(denied.status,"blocked");assert.equal(denied.operation,"read_candidate_png");
+  assert.equal(denied.reason,"Photo transport tool failed (BLOCKED_FILE_REFERENCE)");
+  assert.equal(state.writes.length,checks);
+  const createBlob = github.create_blob;
+  github.create_blob = async () => ({sha:"0".repeat(40)});
+  const unconfirmed = await api.checkReceivedOriginalTransport(ref);
+  assert.equal(unconfirmed.status,"blocked");
+  assert.equal(unconfirmed.operation,"create_blob");
+  assert.equal(unconfirmed.reason,"Unconfirmed probe blob");
+  github.create_blob = createBlob;
+  const fetch = github.fetch_file;
+  let partReads = 0;
+  github.fetch_file = async args => {
+    const answer = await fetch(args);
+    if (args.path.endsWith(".png.part000") && ++partReads === 2) return {...answer,content:"AAAA"};
+    return answer;
+  };
+  const failed = await api.checkReceivedOriginalTransport(ref);
+  assert.equal(failed.status,"blocked");assert.equal(failed.operation,"fetch_file_readback");
+  assert.deepEqual(state.writes.slice(checks),["create_blob"]);
 });
 
 test("weekly file preflight identifies where to resume without disclosing raw connector errors", async () => {
