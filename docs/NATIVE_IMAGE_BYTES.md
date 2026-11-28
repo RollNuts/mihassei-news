@@ -422,11 +422,12 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 Choose the route for the generator actually available in this execution. A file-returning generator must use its real `readCandidatePng` reader.
 
-- With top-level Python, run the [138-byte offline bootstrap](#offline-png-bootstrap) in the current shared workspace. Use the returned file path and the reviewed main commit SHA as shown below. An accepted existing original can identify a working reader; the weekly preflight still uses its fixed fixture.
+- With top-level Python, run the [138-byte offline bootstrap](#offline-png-bootstrap) in the current shared workspace. Use the returned file path and the reviewed main commit SHA as shown below.
 - With a writer callable from code mode, bind `writeProbeFile(base64)` to decode the helper’s GitHub fixture into a new temporary PNG in the generator’s workspace and return the path. Pass `{route:"file", writeProbeFile}`. If that favicon fixture already has a handle, pass `{route:"file", file}`.
+- If the Library's normal individual-original export is read-only and cannot host a temporary fixture, use an independently authorized, already received PNG from this producer with its immutable split-original receipt. This option requires the same export and reader to be available for prospective originals in this execution.
 - Use `{route:"inline_png"}` without a file reader only when the generator actually returns the original PNG data URL.
 
-The file route must reopen the exact fixture. Record the failed operation before reserving an image. A `read_candidate_png` failure with `BLOCKED_FILE_REFERENCE` requires a changed, authorized file reference. For an existing original, follow [Library recovery](#blocked-photo-file-reference). After the reader returns bytes, a `verify_png` failure identifies a byte or metadata mismatch. For `cloud_status`, `create_blob` or `fetch_file_readback` failures, keep the same verified fixture and address the indicated stop or GitHub operation.
+File probes must reopen the selected input through the normal reader. A connector refusal applies to that file. Stop and record the operation and safe error. A successful test on a separately authorized file does not release the refused file. See [Library recovery](#blocked-photo-file-reference) for an original that is independently available for export. After the reader returns bytes, a `verify_png` failure identifies a byte or metadata mismatch. For `cloud_status`, `create_blob` or `fetch_file_readback` failures, keep the same verified fixture and address the indicated stop or GitHub operation.
 
 Load the original handoff, native byte and staging helpers at the reviewed main commit. The verification runtime loads only SHA-256. Keep the byte-bearing tool results inside code mode.
 
@@ -438,7 +439,14 @@ const handoff = H.create({runtime, github, cloudStatus, readCandidatePng});
 text(await handoff.checkOriginalTransport({route:"file", file:probeSource, offlineProbeCommit:reviewedMainCommit}));
 ```
 
-This writes the chosen fixture’s verified public bytes through the chosen route and re-reads their existing immutable GitHub path, checking the acknowledged blob ID and SHA-256. Remove only your temporary probe after completing its checks. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
+For the read-only Library route, use this call in place of `checkOriginalTransport`. Set `file` to the actual local path provided by the current authorized export.
+
+```js
+text(await handoff.checkReceivedOriginalTransport({file, issue, commit, receipt_sha256, source_sha256,
+  model_id, source_chat_url}));
+```
+
+This checks the producer, immutable receipt and entire local original. It verifies the first stored part before and after submitting those same bytes (at most 512 KiB) to their existing Git blob. The fixture route likewise verifies its existing blob. Remove only a temporary fixture you created. It creates no branch, image, or reservation. A successful probe verifies **downstream transport only**. With the matching generator and return format available, continue in this run with the [normal reservation](#weekly-photo-quota). After a fresh grant, generate one original, checkpoint and re-read its full SHA before the next. On failure retain the operation and safe connector error, or name the missing generator/reader and observed result type. Keep a pending original on its own reservation.
 
 <a id="weekly-photo-quota"></a>
 ### Reserve one original in the producer’s weekly allowance
