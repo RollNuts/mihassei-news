@@ -1222,6 +1222,39 @@ test("daily snapshot pages the default photo lookup within budget when several o
   assert(w.calls.length <= 14);
 });
 
+test("current photo inventory paginates with a shared article edit and another open PR", async () => {
+  const w = docsAdvance(), check = w.checked.check_runs[0];
+  check.head_sha = REF;
+  check.output.text = JSON.stringify({ checkout_sha: REF, photo_followup: w.rows });
+  w.missing = w.checked;
+  for (const number of [1037, 1079]) w.open.push({ number, state: "open", draft: false, body: "",
+    head: { sha: GIT(number), repo: { full_name: REPO } }, base: { sha: REF, ref: "main", repo: { full_name: REPO } } });
+  const opts = { ref: REF, fetchRepository: async arg => {
+    const route = new URL(arg.url).pathname.replace("/repos/" + REPO, "");
+    if (route.startsWith("/compare/")) {
+      w.calls.push(route); return { merge_base_commit: { sha: BASE } };
+    }
+    if (/^\/pulls\/\d+\/files$/.test(route)) {
+      w.calls.push(route);
+      return [{ filename: route.includes("/1037/") ? "content/articles.json" : "docs/OPERATIONS.md", status: "modified" }];
+    }
+    return w.fetchRepository(arg);
+  }, fetchFile: async ({ path, ref }) => {
+    w.calls.push(path);
+    return { path, sha: GIT(25), encoding: "utf-8", content: JSON.stringify([{ slug: "evening", title: ref }]) };
+  } };
+  const first = await context.readPhotoHandoffs(opts);
+  assert.equal(first.status, "checked"); assert.equal(first.next_offset, 2);
+  assert.deepEqual(first.selected.map(row => row.pr), [101]);
+  assert.deepEqual(first.attention, [{ slug: "evening", reason: "open_owner", pr: 1037 }]);
+  assert.equal(first.may_generate, false); assert(w.calls.length <= 14);
+  w.calls.length = 0;
+  const next = await context.readPhotoHandoffs({ ...opts, offset: first.next_offset });
+  assert.equal(next.status, "checked"); assert.equal(next.next_offset, null);
+  assert.deepEqual(next.selected.map(row => row.pr), [103, 104]);
+  assert.equal(next.may_generate, false); assert(w.calls.length <= 14);
+});
+
 test("snapshot carry rejects edits, mixed or unproven changes and a changed main", async () => {
   for (const change of [
     w => { w.diff.files[0].status = "modified"; },

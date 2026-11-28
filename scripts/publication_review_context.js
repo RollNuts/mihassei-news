@@ -468,19 +468,35 @@ var PublicationReviewContext = (function () {
       let selected = [];
       const attention = [];
       let cursor = offset;
-      let open;
+      const shared = {
+        "content/articles.json": null, "assets/generated/manifest.json": ["images", "rejected"],
+        "content/visual_reviews.json": ["reviews"], "content/approved_photos.json": ["approved"] };
+      let open, ownerFiles, comparisonReads = 0;
       async function listOpen() {
         const prs = await get(API + OPEN + "&per_page=100");
         require(Array.isArray(prs) && prs.length < 100, "Open photograph owner inventory incomplete");
         prs.forEach(identity);
         return prs;
       }
-      // Keep each read within the connector callback budget, even with a large backlog.
+      async function loadOwnerFiles() {
+        if (ownerFiles) return;
+        open = await listOpen();
+        ownerFiles = [];
+        for (const pr of open) {
+          const changes = await get(API + "/pulls/" + pr.number + "/files?per_page=100");
+          require(Array.isArray(changes) && changes.length < 100 && changes.every(f => typeof f.filename === "string"),
+            "Incomplete open PR files");
+          const paths = new Set(changes.flatMap(f => [f.filename, f.previous_filename].filter(Boolean)));
+          const common = Object.keys(shared).filter(path => paths.has(path));
+          if (common.length) comparisonReads += 1 + 2 * common.length; // merge base, then before/after per catalog
+          ownerFiles.push({ pr, paths, common });
+        }
+      }
       for (; cursor < rows.length && cursor < offset + batchSize && selected.length < 3; cursor++) {
-        // After a carried check yields a candidate, reserve one file listing
-        // per open PR as well as the final owner and main checks.
-        if (checkRef !== ref && selected.length && !open) open = await listOpen();
-        if (checkRef !== ref && operations + (open ? 4 + open.length : 5) > readBudget) {
+        if (selected.length) await loadOwnerFiles();
+        // Budget the next search + PR, any outstanding owner comparisons, and final identity reads.
+        const finishReads = ownerFiles ? comparisonReads + 2 : (checkRef !== ref ? 3 : 1);
+        if (operations + 2 + finishReads > readBudget) {
           require(cursor > offset, "Photo read budget reached before checking a handoff");
           break;
         }
@@ -514,11 +530,8 @@ var PublicationReviewContext = (function () {
         }
       }
       if (selected.length) {
-        if (!open) open = await listOpen();
+        await loadOwnerFiles();
         const occupied = new Set();
-        const shared = {
-          "content/articles.json": null, "assets/generated/manifest.json": ["images", "rejected"],
-          "content/visual_reviews.json": ["reviews"], "content/approved_photos.json": ["approved"] };
         async function recordMap(path, revision) {
           require(typeof fetchFile === "function", "Use fetchFile to verify the open owner's article data");
           countRead();
@@ -531,11 +544,7 @@ var PublicationReviewContext = (function () {
           require(shared[path].every(field => object(data[field])), "Invalid open photograph records");
           return slug => shared[path].map(field => data[field][slug] ?? null);
         }
-        for (const pr of open) {
-          const changes = await get(API + "/pulls/" + pr.number + "/files?per_page=100");
-          require(Array.isArray(changes) && changes.length < 100 && changes.every(f => typeof f.filename === "string"),
-            "Incomplete open PR files");
-          const paths = new Set(changes.flatMap(f => [f.filename, f.previous_filename].filter(Boolean)));
+        for (const { pr, paths, common } of ownerFiles) {
           const mark = row => { if (!occupied.has(row.slug)) attention.push({
             slug: row.slug, reason: "open_owner", pr: pr.number }); occupied.add(row.slug); };
           const declared = new Set([...(pr.body || "").matchAll(/^[ *-]*(?:対象\s*slug|slug)\s*[:：]\s*`?([a-z0-9-]+)`?[ *]*$/gmi)].map(m => m[1]));
@@ -545,7 +554,6 @@ var PublicationReviewContext = (function () {
             if (declared.has(row.slug) || [...paths].some(path => path.includes("/" + row.slug + ".")
                 || path.includes("/" + row.slug + "/"))) mark(row);
           }
-          const common = Object.keys(shared).filter(path => paths.has(path));
           if (!common.length || occupied.size === selected.length) continue;
           const base = (await get(API + "/compare/" + pr.base.sha + "..." + pr.head.sha + "?per_page=1")).merge_base_commit?.sha;
           require(matches(GIT, base), "Open PR merge base unavailable");
