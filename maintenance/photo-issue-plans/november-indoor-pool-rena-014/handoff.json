@@ -486,7 +486,7 @@
       "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/1ac6e092f6e338eb7dbe958722ccd1933603b900/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
       "weekly_quota_next_step": "原本保存試験の修理は transport_repair へ引き継ぐ。本人は変更済みの正規経路を同じ制作枠で検証し、成功後に実行日の週台帳と生成ツールの返却形式を確認して1枚を予約する。",
       "transport_repair": {
-        "status": "route_updated_awaiting_producer_verification",
+        "status": "producer_verification_blocked",
         "owner": "Veripsa サイト日次改善",
         "candidate_commit_at_review": "5177013ee37824dbc8aa12245c6e5b57a06759b6",
         "producer_dates_jst": [
@@ -497,7 +497,7 @@
         "observed_error": "BLOCKED_FILE_REFERENCE",
         "evidence": "両日とも本人枠で138バイトの検証PNGを作り、SHA照合に成功。readerへの受渡しで停止し、生成予約・新規生成は各0件。",
         "editor_checked_on_jst": "2026-11-28",
-        "next_operation": "本人の次の通常枠で docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport を参照。今回の生成器とファイル読取ツールが共有する書込可能な場所が分かれば、そこで検証PNGを1枚照合する。新規原本も同じ正規の読取専用Library経路で受け渡せる場合は、items内のsource_ordinal 7のLibrary参照とoriginals_receiptでcheckReceivedOriginalTransportを1回実行する。拒否された入力は再送しない。入力権限またはSHAを確認できない場合はその場で終了。いずれも検証成功だけで生成を許可せず、実行日の本人用週台帳で新規予約が成立した場合だけ続ける。",
+        "next_operation": "本人の正規Library exportは実行できたが、同実行のreaderがファイル参照を拒否した。拒否された参照を再送せず、サイト日次改善へこの実証結果を返す。次回は変更された正規経路または新たな認可済み参照がある場合のみ本人枠で検証。新規原本の返却と保存経路の確認、週台帳の新規予約成立前には生成しない。",
         "verification_owner": "月城れなの既存制作枠",
         "repair_revision": "82d40a5cecd20c658171dc5b8e548b76dad40267",
         "repair_pr": "https://github.com/RollNuts/mihassei-news/pull/1083",
@@ -523,6 +523,32 @@
             "test_input": "修理用checkoutにある受領済み原本のコピー。読取ツールから元の全体SHAと寸法を確認し、既存の先頭部分をGitHubと照合した。本人のLibraryからの取得は未確認。"
           },
           "working_news_fixture_receipt": "ed7f6456ae43fec5808173568a6f069f74bc07dc"
+        },
+        "producer_verification": {
+          "date_jst": "2026-11-28",
+          "checked_at": "2026-11-28T11:39:19.845Z",
+          "candidate_ref": "eeae663fdc909ed244d45677d1fa380049f81d28",
+          "main_ref": "cd3884943d5913144ee7fcf4d74c58450c664b45",
+          "catalog_blob_sha": "b08a5e395530413415096973da3bb210addbfab5",
+          "route": "authorized_library_materialize",
+          "source_ordinal": 7,
+          "source_sha256": "d0e48375980014de5148d76069f4ca71edfac3bb710a9d647f03bb6711c3d36c",
+          "library_file_id": "libfile_fde3_f-d4bf8f572b308191aea893e921cbb535_3e0ce6a2e8348191be296e0419d0b8cc",
+          "file_id": "file_00000000021c81faa4346597b177c6ed",
+          "materialized_bytes": 2032499,
+          "operation": "checkReceivedOriginalTransport / read_candidate_png",
+          "status": "blocked",
+          "error": "Photo transport tool failed (BLOCKED_FILE_REFERENCE)",
+          "receipt_commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+          "receipt_unchanged": true,
+          "reservations_this_run": 0,
+          "new_generations": 0,
+          "weekly_ledger_commit": "6381c48d5dba3e8fbf4b256abe817fc2ad84f1d3",
+          "weekly_ledger_attempts": 0,
+          "published_sha_overlaps": 0,
+          "received_originals": 9,
+          "max_distinct_candidates": 6,
+          "minimum_issue_shortfall": 4
         }
       },
       "editorial_screening_20261125": {
