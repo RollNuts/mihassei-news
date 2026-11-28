@@ -486,15 +486,44 @@
       "weekly_quota_coverage_ref": "https://github.com/RollNuts/mihassei-news/blob/1ac6e092f6e338eb7dbe958722ccd1933603b900/maintenance/photo-issue-plans/november-indoor-pool-rena-014/handoff.json",
       "weekly_quota_next_step": "原本保存試験の修理は transport_repair へ引き継ぐ。本人は変更済みの正規経路を同じ制作枠で検証し、成功後に実行日の週台帳と生成ツールの返却形式を確認して1枚を予約する。",
       "transport_repair": {
-        "status": "requested",
+        "status": "route_updated_awaiting_producer_verification",
         "owner": "Veripsa サイト日次改善",
         "candidate_commit_at_review": "5177013ee37824dbc8aa12245c6e5b57a06759b6",
-        "producer_dates_jst": ["2026-11-26", "2026-11-27"],
+        "producer_dates_jst": [
+          "2026-11-26",
+          "2026-11-27"
+        ],
         "operation": "checkOriginalTransport / read_candidate_png",
         "observed_error": "BLOCKED_FILE_REFERENCE",
         "evidence": "両日とも本人枠で138バイトの検証PNGを作り、SHA照合に成功。readerへの受渡しで停止し、生成予約・新規生成は各0件。",
         "editor_checked_on_jst": "2026-11-28",
-        "next_operation": "修理担当は本人枠の生成ツールが返す原本の形式と、その形式を正規に受け渡せる参照・readerを特定し、検証できた経路または不足する機能をこの候補へ返す。本人は受け取った変更点があるときに同じ枠で原本保存・遠隔読戻しを確認する。"
+        "next_operation": "本人の次の通常枠で docs/NATIVE_IMAGE_BYTES.md#weekly-original-transport を参照。今回の生成器とファイル読取ツールが共有する書込可能な場所が分かれば、そこで検証PNGを1枚照合する。新規原本も同じ正規の読取専用Library経路で受け渡せる場合は、items内のsource_ordinal 7のLibrary参照とoriginals_receiptでcheckReceivedOriginalTransportを1回実行する。拒否された入力は再送しない。入力権限またはSHAを確認できない場合はその場で終了。いずれも検証成功だけで生成を許可せず、実行日の本人用週台帳で新規予約が成立した場合だけ続ける。",
+        "verification_owner": "月城れなの既存制作枠",
+        "repair_revision": "82d40a5cecd20c658171dc5b8e548b76dad40267",
+        "repair_pr": "https://github.com/RollNuts/mihassei-news/pull/1083",
+        "checked_at": "2026-11-28T12:48:38+09:00",
+        "repair_evidence": {
+          "scope": "修理担当の環境で検証。本人の次回制作枠と次の新規原本は未検証。",
+          "fixture": {
+            "bytes": 138,
+            "sha256": "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744",
+            "github_blob": "c3063fe8e5305c6f2d554e4870610fdc51ef5fa3",
+            "readback": "matched"
+          },
+          "received_original": {
+            "method": "checkReceivedOriginalTransport",
+            "status": "verified",
+            "source_ordinal": 7,
+            "source_sha256": "d0e48375980014de5148d76069f4ca71edfac3bb710a9d647f03bb6711c3d36c",
+            "source_bytes": 2032499,
+            "receipt_commit": "648c694c364843b48c3cb9690c818dabf2fa7c62",
+            "receipt_sha256": "dcdc4c86c7249734c42e87f4d912e1ba0f28eb6c809560c2ef9f6a164249e7c2",
+            "verified_first_part_bytes": 524288,
+            "verified_first_part_blob": "e66b523d79586d069191cb8fc9012c49f098e50c",
+            "test_input": "修理用checkoutにある受領済み原本のコピー。読取ツールから元の全体SHAと寸法を確認し、既存の先頭部分をGitHubと照合した。本人のLibraryからの取得は未確認。"
+          },
+          "working_news_fixture_receipt": "ed7f6456ae43fec5808173568a6f069f74bc07dc"
+        }
       },
       "editorial_screening_20261125": {
         "status": "observations_only_no_adoption_guard_timeout",
