@@ -135,6 +135,21 @@
         "cut_id": "09",
         "image_sha256": "ce649a006a9b83a5720ff85da192f86a6757b5f81d397b39731de5287951a53a"
       }
+    },
+    {
+      "id": "shioba-rio-post-20261128092027781000",
+      "model_id": "shioba-rio",
+      "published_at": "2026-11-28T09:20:27.781+09:00",
+      "setting": {
+        "year": 2031,
+        "month": 11
+      },
+      "text": "朝、泳ぎに行く支度をしていたら、水泳帽が見つからず部屋を一周。結局、昨夜の私が玄関に用意してくれていました。",
+      "source": {
+        "issue_slug": "november-coast-city-rio-015",
+        "cut_id": "03",
+        "image_sha256": "2a378fb236072479792ba8990b356d54c134039ffe4e882010263f9e4b15beef"
+      }
     }
   ]
 }
