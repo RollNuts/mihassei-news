@@ -194,15 +194,20 @@ The reader preserves the exact PNG bytes, including C2PA chunks. It checks MIME,
 
 ### Offline PNG bootstrap
 
-When this worker exposes a top-level Python executor, create this deterministic transport fixture there using only the standard library (outside `functions.exec`). It avoids raw-GitHub DNS, external downloads and manual Mac attachments:
+Use a file workspace exposed to **this execution's** generator, writer and file adapter. Set `shared_directory` in the Python cell to the absolute writable directory named in the current execution's workspace instructions. When an existing producer PNG is already available there, its actual returned file path can also identify the directory: read that file once with `read_candidate_png` in code mode and match its SHA, length and dimensions to its retained record before using its writable parent. Keep the bytes private. This file check requires no upload.
+
+Use the current working directory only when the execution identifies it as that shared workspace. A Python temp folder or a scratch path recorded by a different run does not establish connector access. If Python and the file adapter have separate workspaces, use the current runtime's supported file transfer or [Library materialization](#blocked-photo-file-reference) when available. Pass its returned current file path to the reader. If no such transfer is available, retain the handoff.
 
 ```python
 import base64, hashlib, tempfile
 from pathlib import Path
+directory = Path(shared_directory)
+if not directory.is_absolute() or not directory.is_dir():
+    raise ValueError("Expected the existing absolute directory supplied by this execution")
 png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAYAAAA7KqwyAAAAUUlEQVR4nNXRMQ0AMAwDQUMMiAILnCLpbAbpF4LHTqdfIkuRpCmdaTTmvc7U0jQa49bm4uYiGuMWM4o5jda7mDYzijmNxrjFjGJOozHu/79wAV5JS/CTcXlMAAAAAElFTkSuQmCC", validate=True)
 expected = "e7d768652abcb3292c99905f5544c3eeb91933aef573ee912e7babb3450d1744"
 assert len(png) == 138 and hashlib.sha256(png).hexdigest() == expected
-with tempfile.NamedTemporaryFile(dir="/mnt/data", prefix="mihassei-probe-", suffix=".png", delete=False) as probe:
+with tempfile.NamedTemporaryFile(dir=directory, prefix="mihassei-probe-", suffix=".png", delete=False) as probe:
     probe.write(png)
     path = Path(probe.name)
 print({"probeSource": str(path), "expectedProbeSha256": expected, "probeSourceRef": str(path),
@@ -417,7 +422,7 @@ They use an in-memory GitHub fake and an explicitly synthetic PNG, with no real 
 
 Choose the route for the generator actually available in this execution. A file-returning generator must use its real `readCandidatePng` reader.
 
-- With top-level Python, run the [138-byte offline bootstrap](#offline-png-bootstrap) there. Use the returned path and the reviewed main commit SHA as shown below. Only the path crosses tools.
+- With top-level Python, run the [138-byte offline bootstrap](#offline-png-bootstrap) in the current shared workspace. Use the returned file path and the reviewed main commit SHA as shown below. An accepted existing original can identify a working reader; the weekly preflight still uses its fixed fixture.
 - With a writer callable from code mode, bind `writeProbeFile(base64)` to decode the helper’s GitHub fixture into a new temporary PNG in the generator’s workspace and return the path. Pass `{route:"file", writeProbeFile}`. If that favicon fixture already has a handle, pass `{route:"file", file}`.
 - Use `{route:"inline_png"}` without a file reader only when the generator actually returns the original PNG data URL.
 

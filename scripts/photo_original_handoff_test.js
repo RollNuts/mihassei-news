@@ -877,7 +877,7 @@ test("a completed receipt stages one verified JPEG on its own branch and recover
   assert.equal(state.writes.length,writes);
 });
 
-const {readFileSync} = require("node:fs");
+const {readFileSync, mkdtempSync, readdirSync, rmSync} = require("node:fs");
 const {resolve} = require("node:path");
 const checkout = resolve(__dirname, "..");
 const readLocal = path => readFileSync(resolve(checkout, path));
@@ -892,6 +892,26 @@ function readbackFile(record, path, expectedBlob) {
   if (expectedBlob !== undefined) assert.equal(blob, expectedBlob);
   return {path, blob, data, sha256:hash(data), bytes:data.length, width:record.width, height:record.height};
 }
+
+test("the documented offline bootstrap writes the exact PNG in the producer's chosen workspace", t => {
+  const doc = readLocal("docs/NATIVE_IMAGE_BYTES.md").toString("utf8");
+  const section = doc.split("### Offline PNG bootstrap\n")[1];
+  const snippet = section.match(/^```python\n([\s\S]+?)\n```$/m)[1];
+  const directory = mkdtempSync(join(require("node:os").tmpdir(), "producer workspace-"));
+  t.after(() => rmSync(directory, {recursive:true}));
+  const run = sharedDirectory => require("node:child_process").spawnSync("python3",
+    ["-c", "import sys\nshared_directory = sys.argv[1]\n" + snippet, sharedDirectory], {encoding:"utf8"});
+  const result = run(directory);
+  assert.equal(result.status, 0, result.stderr);
+  const files = readdirSync(directory);
+  assert.equal(files.length, 1);
+  assert.ok(result.stdout.includes(join(directory, files[0])));
+  assert.deepEqual(readFileSync(join(directory, files[0])), readLocal("tests/fixtures/photo-transport.png"));
+  for (const invalid of [".", join(directory, "missing")]) {
+    assert.notEqual(run(invalid).status, 0);
+  }
+  assert.deepEqual(readdirSync(directory), files);
+});
 
 function originalTransportFixture({active = true, changedReadback = false, fileError = false, offline = false,
   readerFailure, changedFileBytes = false, blobFailure = false} = {}) {
