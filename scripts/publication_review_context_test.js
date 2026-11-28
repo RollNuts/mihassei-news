@@ -1143,6 +1143,44 @@ function docsAdvance() {
   return fixture;
 }
 
+test("missing photo rows expose only validated original checkpoint pointers without extra GitHub reads", async () => {
+  const w = docsAdvance(), row = w.rows[0], id = "a".repeat(64);
+  const source = { version: 2, kind: "native_reservation_steps", phase: "claim_final", identity: id,
+    plan: { repository: REPO, slug: row.slug, articleSha256: row.article_sha256, identity: id,
+      prompt: "PRIVATE ORIGINAL PROMPT", branch: "native-image-candidate/morning/" + row.article_sha256.slice(0,16) + "-123456789abc" },
+    claim: { kind: "native_image_generation_claim", status: "reserved_generation_unconfirmed",
+      branch: "native-image-generation-claim/" + id, commit_sha: GIT(4), receipt_sha256: "c".repeat(64),
+      receipt_path: "maintenance/native-image-generation-claims/" + id + ".json" } };
+  const fixture = extra => "\n```json\n" + JSON.stringify(extra) + "\n```\n";
+  async function lookup(extra, entry = row) {
+    w.calls.length = 0;
+    const result = await context.readPhotoHandoffs({ ref: REF, report: { checkout_sha: REF, photo_followup: [entry] },
+      fetchRepository: async args => {
+        const value = await w.fetchRepository(args);
+        return value.number ? { ...value, updated_at: "2026-11-28T01:00:00Z", body: value.body + extra } : value;
+      } });
+    assert.equal(result.status, "checked"); assert.equal(result.selected[0].pr, 101);
+    assert.equal(result.may_generate, false);
+    return result.selected[0].original_lookup;
+  }
+  await lookup("");
+  const baseline = [...w.calls];
+  const expected = { candidate_branch: source.plan.branch, claim_branch: source.claim.branch, claim_commit: GIT(4),
+    next_operation: "check_existing_candidate_ref", source_pr_updated_at: "2026-11-28T01:00:00Z" };
+  assert.deepEqual(await lookup(fixture(source)), expected);
+  assert.deepEqual(w.calls, baseline);
+  assert.deepEqual(await lookup(fixture({checkpoint:{ ...source, phase:"preflight_commit" }})
+    + fixture({plan:source.plan, checkpoint:source})), expected);
+  assert.equal(await lookup(fixture(source), { ...row, status: "pending" }), undefined);
+  assert.equal(await lookup("claim_final reserved_generation_unconfirmed " + source.claim.branch), undefined);
+  assert.equal(await lookup(fixture({...source,plan:{...source.plan,articleSha256:"e".repeat(64)}})), undefined);
+  assert.equal(await lookup(fixture({plan:{...source.plan,identity:"f".repeat(64)}, checkpoint:source})), undefined);
+  assert.equal(await lookup(fixture({...source,plan:{...source.plan,branch:source.plan.branch+"-ready-"+id}})), undefined);
+  assert.equal(await lookup(fixture(source)+fixture({...source,claim:{...source.claim,commit_sha:GIT(13)}})), undefined);
+  assert.equal(await lookup(fixture(source)+fixture({...source,phase:"capture",identity:"d".repeat(64),
+    plan:{...source.plan,identity:"d".repeat(64)}})), undefined);
+});
+
 const guidanceDay = "2026-11-27";
 const guidanceText = guidanceDay + ": published=1; tracked=1; desk_next=スポーツ; next=quality-first"
   + "\n題材比較（指定JST日までの直近7本・公開順）：見出し・summary"

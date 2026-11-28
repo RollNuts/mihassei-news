@@ -19,6 +19,8 @@ python3 scripts/build.py
 
 記事を挿絵で先に公開し、写真の回収を続ける場合は、元PR本文の引継ぎに `<!-- photo-recovery -->` を1行で付け、元plan・checkpoint・候補・claimと次操作を保持する。既存reviewerの `photo_recovery.selected` は`Photograph completion` と元PRの明示引継ぎ・記事SHAを照合した一覧。固定mainにチェックがなければ第一親を順に照合する。マージ途中も含めて変更が `docs/**` 内、または単一親のコミットで `analytics/daily/YYYY-MM-DD.json` を1件追加しただけと証明できた区間に限り、写真回収・執筆前配分の資料を引き継ぐ。`check_sha` は元のチェックのSHAで、本番配信の確認は対象の公開版で行う。`unverified` は対象0件として扱わず、同じSHAの本番artifactを `report` として `readPhotoHandoffs` に渡せる。`next_offset` が残れば同じSHAの `offset` に渡す。本番で写真待ちの行に対応する元PRが見つからない場合は、記事SHAと既存の引継ぎを照合し、元PRの目印や担当の記載漏れを修正する。元PRの発見だけでは生成できない。担当PR・進行中run・候補の有無を再確認し、既存claimでは同一の生成物だけを回収する。元PRが統合済みなら元planを継続し、採用した写真差分だけを現mainから通常PRで公開する。
 
+写真待ちの行に `original_lookup` があれば、現記事SHAに対応する元PRの予約checkpointから候補枝とclaimを取得済み。前回と同じPR更新日時・候補で新しい原本通知もなければ、元PRを再読せず `GET /git/matching-refs/heads/<candidate_branch>` で同名refの到着を確認する。末尾に `-ready-…` が付いた準備枝は候補に数えない。同名refがあれば固定commitの原本とJPEGを検証する。同名refがなければ専用挿絵を維持し、元の出力を待つ。初回、更新日時や参照が変わった時、原本が別途届いた時、取得失敗時は元引継ぎを確認する。checkpointは生成許可や原本不在の証明にならない。
+
 時間切れ・表示不能は検品完了とせず、担当中の同PR・既存引継ぎで待つ。生成成功だけで終えず、現在の実画像を採用して本番照合するか、不合格を記録して本文に合う専用SVGを本番照合する。写真待ちでも記事発行は続け、無料枠・停止範囲・容量・Mac負荷・X/OFFの保護はOPERATIONSと各正本を維持する。
 
 各実行の新規生成はNative・手動CPUを合わせて1記事1回まで。既存素材の回収は最大3記事とし、未検品JPEGや正常な専用SVGがある品質保留を通常再生成しない。失敗・待機超過では先に元run・失敗step・artifact・claimを確認し、記事指紋と原manifest・seedを保った同じ素材を回収する。手動CPUレビューの成功候補は[専用候補ブランチ](FREE_CPU_IMAGES.md)と1日保持artifactから回収し、同じrunの元JPEGを再生成で置き換えない。

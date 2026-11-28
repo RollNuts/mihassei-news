@@ -273,7 +273,7 @@ python3 scripts/editorial_mix.py --day YYYY-MM-DD
 
 ### 実測の読み方
 
-日次は`analytics/daily/`の前日JSTの`daily_page_views`を主指標にする。coverageが`partial`なら途中開始、`unmeasured`や項目欠落は未計測であり、0や一日分の実績にしない。PVは表示回数で、実人数・読了・満足度・面白さの証明ではない。
+朝編集は前日JSTのPVを使う。日次ファイル `analytics/daily/YYYY-MM-DD.json` がまだなければ、`https://veripsa.com/api/engagement?view=public&day=YYYY-MM-DD&articles=slug1,slug2` に前日の掲載slugを入れて1回GETする。`day.dateJst` が対象日と一致すれば、紙面全体は `day.pageViews`、各記事は `articles[slug].requestedDayPageViews` を読む。日次ファイルの `daily_page_views` と同じ対象日で、`day.pageViewsCoverage` が `complete` の時だけ一日分として扱う。`partial` は途中開始、`unmeasured`・取得不能は欠測。取得元と日付を残し、日次集計の再実行や代替ファイルの作成は不要。PVは表示回数で、実人数や読了を表さない。
 
 記事比較には取得時点の`page_views_last_7_days`と対象期間、公開後の経過時間、流入元、サンプル数を添える。`page_views_per_hour`は補助で、`continuation_share`も別記事へ進んだ粗い回遊指標に留める。`daily_visitors / daily_article_reads / visitors_cumulative`をPVへ換算せず、おすすめ順にも使わない。未記録記事のレーン・トーンを推測で後付け分類しない。
 

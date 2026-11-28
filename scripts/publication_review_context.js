@@ -444,6 +444,38 @@ var PublicationReviewContext = (function () {
       return { status: "unavailable" };
     }
   }
+  // The source PR is already in memory. Extract read pointers, never its prompt or a generation grant.
+  function originalPhotoLookup(pr, row) {
+    if (row.status !== "missing") return null;
+    let identity, lookup;
+    const prefix = "native-image-candidate/" + row.slug + "/" + row.article_sha256.slice(0, 16) + "-";
+    for (const match of pr.body.matchAll(/^```json[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*\r?$/gm)) {
+      let record;
+      try { record = JSON.parse(match[1]); } catch (_) { continue; }
+      const step = record?.checkpoint ?? record, plan = step?.plan;
+      if (step?.kind !== "native_reservation_steps" || plan?.slug !== row.slug
+          || plan.articleSha256 !== row.article_sha256) continue;
+      if (step !== record && record.plan && ["repository", "slug", "articleSha256", "identity", "branch"]
+          .some(key => record.plan[key] !== plan[key])) return null;
+      if (step.version !== 2 || plan.repository !== REPOSITORY || !matches(HASH, plan.identity)
+          || step.identity !== plan.identity || (identity && identity !== plan.identity)) return null;
+      identity = plan.identity;
+      if (step.phase !== "claim_final") continue;
+      const claim = step.claim;
+      if (typeof plan.branch !== "string" || !plan.branch.startsWith(prefix)
+          || !matches(/^[0-9a-f]{12}$/, plan.branch.slice(prefix.length))
+          || claim?.kind !== "native_image_generation_claim" || claim.status !== "reserved_generation_unconfirmed"
+          || claim.branch !== "native-image-generation-claim/" + identity
+          || !matches(GIT, claim.commit_sha) || !matches(HASH, claim.receipt_sha256)
+          || claim.receipt_path !== "maintenance/native-image-generation-claims/" + identity + ".json"
+          || (lookup && (lookup.candidate_branch !== plan.branch || lookup.claim_commit !== claim.commit_sha))) return null;
+      lookup = { candidate_branch: plan.branch, claim_branch: claim.branch, claim_commit: claim.commit_sha,
+        next_operation: "check_existing_candidate_ref" };
+    }
+    if (lookup && matches(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/, pr.updated_at))
+      lookup.source_pr_updated_at = pr.updated_at;
+    return lookup;
+  }
   // A merged news PR can still own its missing photograph. A source pointer
   // does not grant generation, adoption, or permission to write.
   async function readPhotoHandoffs({ fetchRepository, fetchFile, ref, report, offset = 0, batchSize = 4 } = {}, readBudget = 14) {
@@ -524,9 +556,10 @@ var PublicationReviewContext = (function () {
           attention.push({ ...source, pr: number, reason: "source_approval_not_current" });
         } else {
           const approval = JSON.parse(pr.body.match(/<!-- publication-finalize\s*\n([\s\S]*?)\n-->/)[1]);
-          if (approval.article_sha256[row.slug] === row.article_sha256)
-            selected.push({ ...source, pr: number, head: pr.head.sha });
-          else attention.push({ ...source, pr: number, reason: "source_article_sha_mismatch" });
+          if (approval.article_sha256[row.slug] === row.article_sha256) {
+            const original = originalPhotoLookup(pr, row);
+            selected.push({ ...source, pr: number, head: pr.head.sha, ...(original && { original_lookup: original }) });
+          } else attention.push({ ...source, pr: number, reason: "source_article_sha_mismatch" });
         }
       }
       if (selected.length) {
