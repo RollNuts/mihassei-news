@@ -4,13 +4,12 @@ from __future__ import annotations
 import copy
 import json
 import re
-import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 from xml.etree import ElementTree as ET
 
 from scripts import build
+from tests.site_build_fixture import built_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,18 +57,15 @@ class SavedStoriesTests(unittest.TestCase):
         self.assertIn('&amp; hello', fragment)
 
     def test_saved_list_hidden_from_sitemap_and_free_assets(self):
-        with tempfile.TemporaryDirectory() as temp:
-            with patch.object(build, "OUT", Path(temp)):
-                build.other_files(self.articles)
-            urlset = ET.parse(Path(temp) / "sitemap.xml")
-            locs = [
-                element.text or ""
-                for element in urlset.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
-            ]
-            self.assertFalse(any("/saved/" in path for path in locs))
-            headers = (Path(temp) / "_headers").read_text(encoding="utf-8")
-            self.assertIn("/saved/*", headers)
-            self.assertIn("X-Robots-Tag: noindex", headers)
+        urlset = ET.fromstring(built_text("sitemap.xml"))
+        locs = [
+            element.text or ""
+            for element in urlset.findall(".//{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
+        ]
+        self.assertFalse(any("/saved/" in path for path in locs))
+        headers = built_text("_headers")
+        self.assertIn("/saved/*", headers)
+        self.assertIn("X-Robots-Tag: noindex", headers)
         self.assertIn('<a href="/saved/">あとで読む</a>', build.layout("test", "test", "/", "<p>hello</p>"))
         js = (ROOT / "assets/bookmarks.js").read_text(encoding="utf-8")
         self.assertNotIn("fetch(", js)

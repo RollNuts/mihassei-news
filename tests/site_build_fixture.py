@@ -55,6 +55,12 @@ def ensure_site_build() -> None:
         _built = True
 
 
+def built_text(relative_path: str) -> str:
+    """Read UTF-8 output from this process's successful clean site build."""
+    ensure_site_build()
+    return (ROOT / "dist" / relative_path).read_text(encoding="utf-8")
+
+
 def changed_files(base, event):
     """A complete PR/push diff, or None when narrowing cannot be proved safe."""
     if (event not in ("pull_request", "push") or not isinstance(base, str)

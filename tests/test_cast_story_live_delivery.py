@@ -70,11 +70,11 @@ class CastStoryLiveDeliveryTests(unittest.TestCase):
         stories[0]["text"] = 'カフェで「Tea & Cake」。"一杯だけ"のつもりが、看板の &amp; まで気になった。'
         self.assertEqual(self.verify(self.fixture(stories), stories=stories), 7)
 
-    def test_correct_text_in_modal_or_noscript_cannot_hide_a_stale_visible_card(self):
+    def test_correct_text_in_modal_cannot_hide_a_stale_visible_card(self):
         markup = self.fixture()
         post = self.posts[0]
         changed = self.replace_card(markup, html.escape(post["text"]), "昨日のままの本文")
-        self.assertIn(html.escape(post["text"]), changed)
+        self.assertIn(json.dumps(post["text"], ensure_ascii=False), changed)
         with self.assertRaisesRegex(RuntimeError, "visible text mismatch"):
             self.verify(changed)
 
@@ -143,10 +143,10 @@ class CastStoryLiveDeliveryTests(unittest.TestCase):
 
     def test_correct_cards_cannot_hide_a_circle_linked_to_another_person(self):
         post = self.posts[0]
-        before = '<a class="photo-story-open" href="' + html.escape(post["sourceUrl"], quote=True) + '"'
-        after = '<a class="photo-story-open" href="' + html.escape(self.posts[1]["sourceUrl"], quote=True) + '"'
+        before = '<a class="photo-story-open" href="' + post["profileUrl"] + "#post-" + post["id"] + '"'
+        after = '<a class="photo-story-open" href="' + self.posts[1]["profileUrl"] + "#post-" + self.posts[1]["id"] + '"'
         markup = self.fixture().replace(before, after, 1)
-        with self.assertRaisesRegex(RuntimeError, "latest source mismatch"):
+        with self.assertRaisesRegex(RuntimeError, "latest post link or preview mismatch"):
             self.verify(markup)
 
     def test_live_jpeg_error_wrong_mime_truncation_or_same_size_corruption_fails(self):

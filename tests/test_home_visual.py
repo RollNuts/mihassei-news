@@ -2,14 +2,14 @@
 import re
 import unittest
 from pathlib import Path
-from scripts.build import home, load
+from tests.site_build_fixture import built_text
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class HomepageVisualTests(unittest.TestCase):
     def test_headline_then_picture_then_teaser_and_action(self):
-        markup=home(load())
+        markup = built_text("index.html")
         lead=markup.split('<article class="lead">',1)[1].split('</article>',1)[0]
         heading=lead.index('<h1>')
         picture=lead.index('<a class="lead-media"')
@@ -20,7 +20,7 @@ class HomepageVisualTests(unittest.TestCase):
         self.assertIn('class="hero-image"',lead)
 
     def test_first_screen_prioritizes_headlines_without_a_how_to_panel(self):
-        markup = home(load())
+        markup = built_text("index.html")
         opening = markup.split('<section class="hero-grid">', 1)[0]
         lead = markup.split('<article class="lead">', 1)[1].split('</article>', 1)[0]
         self.assertNotIn("この新聞の読み方", opening)
@@ -36,7 +36,7 @@ class HomepageVisualTests(unittest.TestCase):
         self.assertEqual(css.count("{"), css.count("}"))
 
     def test_stories_take_priority_over_optional_issue_picker(self):
-        markup = home(load())
+        markup = built_text("index.html")
         content = markup.split('<div class="container index-main">', 1)[1]
         positions = [
             content.index('class="hero-grid"'),

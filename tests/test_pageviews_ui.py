@@ -6,6 +6,7 @@ import re
 from html.parser import HTMLParser
 
 from scripts import build
+from tests.site_build_fixture import built_text
 
 
 class PvBadges(HTMLParser):
@@ -23,7 +24,7 @@ class PvBadges(HTMLParser):
 class PageViewPresentationTests(unittest.TestCase):
     def test_home_shows_publishing_volume_and_only_conditional_cumulative_pv(self):
         articles = build.load()
-        html = build.home(articles)
+        html = built_text("index.html")
         header = html.split('<nav class="nav-bar"', 1)[0]
         self.assertNotIn("data-pv-widget", header)
         section = html.split('<section class="newsroom-snapshot"', 1)[1].split("</section>", 1)[0]
@@ -41,8 +42,8 @@ class PageViewPresentationTests(unittest.TestCase):
 
     def test_only_home_carries_full_archive_thumbnail_metadata(self):
         articles = build.load()
-        index = build.home(articles)
-        article = build.story(articles[0], articles)
+        index = built_text("index.html")
+        article = built_text(f'articles/{articles[0]["slug"]}/index.html')
         pattern = r'data-popular-options="([^"]+)"'
         home_data = json.loads(html.unescape(re.search(pattern, index).group(1)))
         article_data = json.loads(html.unescape(re.search(pattern, article).group(1)))
@@ -54,9 +55,9 @@ class PageViewPresentationTests(unittest.TestCase):
 
     def test_archive_cards_do_not_show_pv_but_story_header_can_display_it(self):
         articles = build.load()
-        self.assertEqual(PvBadges(build.archive(articles)).slugs, [])
+        self.assertEqual(PvBadges(built_text("archive/index.html")).slugs, [])
         article = articles[0]
-        html = build.story(article, articles)
+        html = built_text(f'articles/{article["slug"]}/index.html')
         header = html.split('<header class="article-header">', 1)[1].split("</header>", 1)[0]
         self.assertEqual(PvBadges(header).slugs, [article["slug"]])
         self.assertIn('<strong data-article-pv-count></strong>', header)
