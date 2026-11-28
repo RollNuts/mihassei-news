@@ -82,7 +82,15 @@
 
 ニュース・市況・本人近況の承認済みPRが未統合なら、同じPR・head・実CIを下記の`readHandoffStatus`へ渡す。本人近況のPR・headは初読一覧の`outside_scope`で確認できる。`finalizer_run_id`を省くと当該CI実行・attemptに対応する失敗runを1回探す。許可を後で記入した場合は`Publication head <head> (PR #<番号>)`の実run IDを渡す。`latest_main_requires_fresh_ci`は、種別・PR・head・CIが一致した失敗ログに基づく。`tested_main`と`current_main`は停止時の値なので、現担当と最新の実行状況を照合して上の手順で復旧する。
 
-朝編集の2文書を引き継いだ担当は、同じ実行で下記の `readValidationStatus` を使う。CI進行中なら返却された実runを待ち、現head・担当・必要CI・最新mainとの整合を再確認できた時点で通常統合する。実行時間の上限に達した場合は次の担当へそのrunを引き継ぐ。
+朝編集の `docs/DAILY_EDITORIAL_BRIEF.md`・`docs/EDITORIAL_IDEAS.md` のみを更新したPRでは、編集担当が候補・引継ぎ・最新mainを確認した後、同PR本文の既存引継ぎ欄に次の許可を1つだけ保存・読み戻す。下書きなら同じ担当がreadyへ変更する。
+
+```text
+<!-- ordinary-editorial-merge
+{"version":1,"approved_head":"<確認したheadの完全SHA>","authorized_by":"<保存したGitHubのlogin>","editor_run":"<担当の実run ID>","merge_after_ci":true}
+-->
+```
+
+既存の公開検証workflowが、GitHub記録上の本文編集者、同一headの最新CI、検査したmainが現mainと一致すること、差分が対象2文書内の通常ファイルの変更だけであることを確認して通常mergeする。統合後は本番revisionが一致するか、その祖先から文書差分だけかを確認する。許可後にheadかmainが動いた場合は、同PRへ最新mainを取り込み、現headで確認して許可を更新する。写真・動画選抜・記事本文などを含む通常統合は、既存担当が下記の `readValidationStatus` と現main差分を確認し、CI成功後にGitHubの `merge_pull_request` へ `expected_head_sha` と `merge_method: merge` を渡す。
 
 通常統合のPRに対応外ファイルを通すための`publication-finalize`許可を付けない。現headの必要CIと既存統合条件を満たして通常mergeし、返却merge SHAに対応する既存の本番確認へ進む。放送室は既存動画処理の最終commit・MP4・字幕の配信まで追い、統合だけで完了としない。
 

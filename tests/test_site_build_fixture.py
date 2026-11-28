@@ -66,6 +66,23 @@ class CISelectionTests(unittest.TestCase):
             self.assertTrue(fixture.native_image_engine_tests_required(
                 [("M", "content/future-data.json")], "pull_request"))
 
+    def test_news_draft_and_single_new_photo_skip_synthetic_engine_only_on_pr(self):
+        draft = [("M", "content/articles.json")]
+        records = draft + [("M", "assets/generated/manifest.json"), ("M", "content/visual_reviews.json")]
+        jpeg = "assets/generated/example-story.jpg"
+        photo = records + [("A", jpeg)]
+        for changes in (draft, photo):
+            self.assertFalse(fixture.native_image_engine_tests_required(changes, "pull_request"))
+            self.assertTrue(fixture.image_fallback_browser_required(changes, "pull_request"))
+            self.assertIn("discover", fixture.python_test_command(changes, "pull_request"))
+            self.assertTrue(fixture.native_image_engine_tests_required(changes, "push"))
+        for changes in (records, records[1:] + [("A", jpeg)], records + [("M", jpeg)], records + [("D", jpeg)],
+                        records + [("A", "assets/generated/nested/example.jpg")],
+                        records + [("A", "assets/generated/example.svg")], photo + [("A", "assets/generated/second.jpg")],
+                        photo + [("M", "scripts/native_image_stage.js")], draft + [("M", "docs/OPERATIONS.md")]):
+            with self.subTest(changes=changes):
+                self.assertTrue(fixture.native_image_engine_tests_required(changes, "pull_request"))
+
     def test_editorial_doc_scope_requires_only_modifications_to_listed_files(self):
         brief = "docs/DAILY_EDITORIAL_BRIEF.md"
         ideas = "docs/EDITORIAL_IDEAS.md"
@@ -140,9 +157,11 @@ class CISelectionTests(unittest.TestCase):
                  ("pull_request", [("M", "scripts/photo_original_handoff.js")], "true"),
                  ("push", [("M", "docs/NATIVE_IMAGE_BYTES.md")], "true"),
                  ("pull_request", None, "true"), ("pull_request", [], "true")]
+        cases = [(event, changes, expected, expected) for event, changes, expected in cases]
+        cases.append(("pull_request", [("M", "content/articles.json")], "false", "true"))
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder) / "github-output"
-            for event, changes, expected in cases:
+            for event, changes, expected, browser in cases:
                 with self.subTest(event=event, changes=changes), \
                      patch.dict(os.environ, {"GITHUB_OUTPUT": str(output)}), \
                      patch.object(fixture, "changed_files", return_value=changes), \
@@ -150,7 +169,8 @@ class CISelectionTests(unittest.TestCase):
                     output.write_text("another_output=kept\n")
                     self.assertEqual(fixture.main(["--base", "a" * 40, "--event", event]), 0)
                     self.assertEqual(output.read_text(), "another_output=kept\n"
-                                     + "run_native_image_engine_tests=" + expected + "\n")
+                                     + "run_native_image_engine_tests=" + expected + "\n"
+                                     + "run_image_fallback_browser=" + browser + "\n")
                     run.assert_called_once_with(fixture.python_test_command(changes, event), cwd=fixture.ROOT,
                                                 env={key: value for key, value in os.environ.items()
                                                      if key != "GITHUB_OUTPUT"})
@@ -160,6 +180,8 @@ class CISelectionTests(unittest.TestCase):
         control_step, native_step = workflow.split("      - name: Verify native image bytes", 1)
         self.assertNotIn("run_native_image_engine_tests", control_step)
         self.assertIn("run: node scripts/native_image_ci_test.js", native_step)
+        browser_step = workflow.split("      - name: Verify photograph recovery in the runner's real Chrome", 1)[1]
+        self.assertIn("if: steps.python_checks.outputs.run_image_fallback_browser != 'false'", browser_step.split("run:", 1)[0])
 
     def test_child_python_cannot_overwrite_the_parent_native_engine_scope_output(self):
         child = """import os
@@ -175,7 +197,7 @@ if output:
                  patch.object(fixture, "changed_files", return_value=[("M", fixture.PHOTO_STORY_PATH)]), \
                  patch.object(fixture, "python_test_command", return_value=[sys.executable, "-c", child]):
                 self.assertEqual(fixture.main(["--base", "a" * 40, "--event", "pull_request"]), 0)
-                self.assertEqual(output.read_text(), "run_native_image_engine_tests=false\n")
+                self.assertEqual(output.read_text(), "run_native_image_engine_tests=false\nrun_image_fallback_browser=false\n")
 
     def test_only_existing_modified_market_data_can_narrow_the_suite(self):
         for path in fixture.MARKET_DATA_PATHS:
